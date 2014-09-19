@@ -4,6 +4,8 @@ class Admin2 < ActiveRecord::Base
   validates :name, presence: true, uniqueness: { case_sensitive: true, message: "该用户名已被使用！" }
   attr_reader :password
   has_secure_password :validations => false
+  has_many :admin2_menus, :dependent => :destroy
+  has_many :menu_trees, :through => :admin2_menus, :source  => :menu
   def Admin2.new_remember_token
     SecureRandom.urlsafe_base64
   end

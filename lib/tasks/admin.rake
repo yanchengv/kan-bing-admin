@@ -7,7 +7,7 @@ end
 
 def admin_data
   Admin2.delete_all
-  @province1=Admin2.create(
+  @admin1=Admin2.create(
       name: 'system_admin',
       email:'773198076@qq.com',
       password:'password'
