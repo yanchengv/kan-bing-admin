@@ -1,11 +1,11 @@
-window.WebAdmin =
-  Models: {}
-  Collections: {}
-  Views: {}
-  Routers: {}
-  initialize: -> alert 'Hello from Backbone!'
-
-$(document).ready ->
-  WebAdmin.initialize()
+#window.WebAdmin =
+#  Models: {}
+#  Collections: {}
+#  Views: {}
+#  Routers: {}
+#  initialize: -> alert 'Hello from Backbone!'
+#
+#$(document).ready ->
+#  WebAdmin.initialize()
 
 

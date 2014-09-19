@@ -1,0 +1,46 @@
+.login_box {
+    background: url('login_bg.png') no-repeat center center;
+    width: 340px;
+    height: 248px;
+    position:absolute;
+    top:25%;
+    left:50%;
+    margin-left:-170px;
+
+}
+
+.form_box {
+    margin-top: 35px;
+}
+
+.input_box {
+    border-width: 0px;
+}
+
+.username {
+    margin-top: 83px;
+    height: 35px;
+    width: 235px;
+    margin-left: 80px;
+    outline-width: 0px;
+}
+.password {
+    margin-top: 8px;
+    height: 35px;
+    width: 235px;
+    margin-left: 80px;
+    outline-width: 0px;
+}
+.login_button{
+    margin-left:26px;
+    width:297px;
+    height:49px;
+    border:0px;
+    margin-top:10px;
+    background:url("b.png") no-repeat -8px -8px;
+}
+.login_button:focus{
+    border-width:0px;
+    outline-width:0px;
+    background:url("pb.png") no-repeat -8px -8px;
+}

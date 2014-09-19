@@ -1,39 +1,33 @@
-<div style="margin-top:15px;margin-bottom:10px;">
+
+<div style="margin-top:85px;margin-bottom:10px;" class="login_box">
   <% provide(:title, "Sign in") %>
-  <%= form_for(:session, :style=>'margin-top:8px;',:url => {:action => 'create', :controller=>'sessions' }, :html=>{:id => 'sess_form'}) do |f| %>
-      <div class="col-md-12" style="padding:0;">
-        <!--<div  class="col-md-2 col-sm-2 col-xs-2  " style="padding:0;">-->
-        <%= f.label :username,"用户名",:class=>"font-14 font-yahei" ,:style=>"min-width:42px;margin-right:5px;font-weight:normal;line-height:34px;height:34px;overflow:hidden;color:#7a828f"%>
-        <!--</div>-->
-        <div class="col-md-12 col-sm-12 col-xs-12" style="padding:0px;">
-          <div class="input-group">
-            <!--<span class="input-group-addon "><%#=image_tag "lock.png"%></span>-->
-            <%= f.text_field :username, :id=>"us" ,:placeholder=>"用户名/邮箱" ,:class=>"form-control",:style=>""%>
-          </div>
-        </div>
-        <div class="clearfix"></div>
-      </div>
-      <div class="col-md-12" style="padding:0;margin:10px 0;margin:2px 0 3px 0 \9;">
-        <!--<div for="inputEmail3" class="col-md-2 col-sm-2 col-xs-2" style="padding:0;">-->
-        <%= f.label :password,"密码",:class=>"font-14 font-yahei" ,:style=>"font-weight:normal;line-height:34px;height:34px;overflow:hidden;color:#7a828f"%>
-        <!--</div>-->
-        <div class="col-md-12 col-sm-12 col-xs-12" style="padding:0px;">
-          <div class="input-group">
-            <!--<span class="input-group-addon"><%#=image_tag "user.png"%></span>-->
-            <%= f.password_field :password, :id=>"pa" ,:placeholder=>"密码" ,:class=>"form-control",:style=>""%>
-          </div>
-        </div>
-        <div class="clearfix"></div>
-      </div>
-      <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top:-7px;margin-bottom:4px;">
-        <%#= link_to '忘记密码?', "/sessions/find_pwd_type",class:" font-12 font-yahei password pull-right",style:"color:#999999;"%>
-      </div>
-      <div class="col-md-12" style="padding:0;margin:0">
-
-        <%= f.submit '登录',:class=>"btn-submit btn_blue font-color5 btn font-14" ,:style =>""%>
-
-      </div>
-      <!--<div class='pull-right' style='font-size: 12px;margin-top: 10px;'>如果您还没有账号，请点击 <a href='/sessions/register_page'><b> 注册>></b></a> </div>-->
+  <%= form_for(:session, :class => '', :url => {:action => 'create', :controller => 'sessions'}, :html => {:id => 'sess_form'}) do |f| %>
+      <%#= f.label :username,"用户名"%>
+      <%= f.text_field :username, :id => "us", :placeholder => "用户名/邮箱", :class => "input_box username", :style => "" %>
+      <%#= f.label :password,"密码"%>
+      <%= f.password_field :password, :id => "pa", :placeholder => "密码", :class => "input_box password", :style => "" %>
+      <%= f.submit '', :class => "login_button", :style => "" %>
   <% end %>
   <div class="clearfix"></div>
+</div>
+<script type="text/javascript">
+    window.onresize = window.onload = function(){
+        var w,h
+        if(!!(window.attachEvent && !window.opera))
+        {
+            h = document.documentElement.clientHeight;
+            w = document.documentElement.clientWidth;
+        }else{
+            h = window.innerHeight;
+            w = window.innerWidth;
+        }
+        var bgImg = document.getElementById('bg').getElementsByTagName('img')[0];
+        bgImg.width = (w);
+        bgImg.height= (h) ;
+
+    }
+</script>
+
+<div id="bg">
+  <%=image_tag("bg.jpg", alt:"default", style:"margin:0;padding:0;position:absolute;left:0;top:0;z-index:-1;") %>
 </div>
