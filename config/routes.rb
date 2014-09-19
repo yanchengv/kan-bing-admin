@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  resources :menu_permissions
+
+  resources :admin2_menus
+
+  resources :menus
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
