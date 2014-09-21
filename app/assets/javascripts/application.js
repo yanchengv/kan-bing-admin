@@ -22,4 +22,5 @@
 //= require_tree ./collections
 //= require_tree ./views
 //= require_tree ./routers
+//= require jquery-ui.min.js
 //= require_tree .

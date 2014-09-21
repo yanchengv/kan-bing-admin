@@ -4,7 +4,7 @@ class CreateMenus < ActiveRecord::Migration
       t.string :name
       t.integer :parent_id
       t.string :table_name
-      t.string :Model_class
+      t.string :model_class
 
       t.timestamps
     end
