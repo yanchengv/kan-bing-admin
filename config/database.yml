@@ -31,12 +31,3 @@ production:
   username: root
   password: 123
 
-pacs_system:
-#  host: fitark.org
-#  port: 8401
-  adapter: postgresql
-  encoding: unicode
-  database: dcm4chee-arc
-  pool: 5
-  username: postgres
-  password: 123
