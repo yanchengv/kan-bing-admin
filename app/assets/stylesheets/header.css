@@ -1,0 +1,61 @@
+.navbar .ui-widget-content {
+    border-width: 0px;
+    background: transparent;
+    color: #d9dfe7;
+
+}
+
+#menu li a {
+    color: #d9dfe7;
+    font-family: "Microsoft YaHei", Arial;
+    height: 50px;
+    display: inline-block;
+    padding-top: 15px !important;
+    text-align: center !important;
+
+}
+
+#menu #fat-menu li a {
+    height: 20px;
+    line-height: normal !important;
+}
+
+#menu li ul {
+    top: 50px !important;
+    left: 0px !important;
+    background: #2f343a;
+}
+
+#menu li ul li {
+    line-height: 30px !important;
+}
+
+.navbar-inverse {
+    background-color: #2f343a;
+}
+
+#menu .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+    border-width: 0px !important;
+    background: #272b34 !important;
+    color: #ffffff !important;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    border-width: 0px !important;
+    background: #272b34 !important;
+    color: #ffffff !important;
+}
+
+.drown-menu li a:hover {
+    background: transparent;
+}
+
+.logo {
+    margin-left: 20px;
+    font-size: 24px;
+    color: #ffffff;
+    line-height: 50px;
+    font-family: "Microsoft YaHei", Arial;
+}
+
+
