@@ -14,7 +14,8 @@
  *= require bootstrap
  *= require login.css
  *= require header.css
- *= require jquery-ui.min
+ *= require jquery-ui
+  *= require zTreeStyle
  *= require_self
 
  */

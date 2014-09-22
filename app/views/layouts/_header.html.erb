@@ -28,10 +28,11 @@
               </li>
             </ul>
           </li>
-      <% else %>
-          <li><%= link_to "登录", '/sessions/sign_in' %></li>
       <% end %>
     </ul>
   </div>
   </div>
 </header>
+<script>
+    $( "#menu" ).menu();
+</script>

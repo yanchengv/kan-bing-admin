@@ -14,6 +14,10 @@ class Admin2 < ActiveRecord::Base
     Digest::SHA1.hexdigest(token.to_s)
   end
 
+  # 用户header的菜单
+  def menus id
+      Admin2Menu.where(admin2_id: id)
+  end
   private
   def create_remember_token
     self.remember_token=Admin2.encrypt(Admin2.new_remember_token)

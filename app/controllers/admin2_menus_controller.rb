@@ -7,6 +7,7 @@ class Admin2MenusController < ApplicationController
     @admin2_menus = Admin2Menu.all
   end
 
+
   # GET /admin2_menus/1
   # GET /admin2_menus/1.json
   def show

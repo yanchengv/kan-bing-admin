@@ -6,6 +6,16 @@ namespace :db do
 end
 def meun_data
   Menu.delete_all
+  @menu4=Menu.create(
+      name: '基础信息'
+  )
+  @menu1=Menu.create(
+      name: '用户管理',
+      parent_id:@menu4,
+      table_name: 'doctors',
+      model_class:'Doctor'
+
+  )
   @menu1=Menu.create(
       name: '医生管理',
       parent_id:@menu4,
@@ -19,12 +29,16 @@ def meun_data
       table_name: 'patients',
       model_class:'Patient'
   )
+  @menu2=Menu.create(
+      name: '管理员管理',
+      parent_id:@menu4,
+      table_name: 'admin2s',
+      model_class:'Admin2'
+  )
   @menu3=Menu.create(
       name: '字典管理'
   )
-  @menu4=Menu.create(
-      name: '用户管理'
-  )
+
   @menu5=Menu.create(
       name: '医院管理',
       table_name: 'hospitals',
@@ -52,100 +66,113 @@ def meun_data
       name: '留言管理',
       table_name: ''
   )
+  @menu11=Menu.create(
+      name: '权限管理',
+      table_name: 'menus',
+      model_class:'Menu'
+  )
   Admin2Menu.delete_all
   @menu_admin_1=Admin2Menu.create(
-      admin2_id: @admin1,
-      menu_id: @menu1
+      admin2_id: @admin1.id,
+      menu_id: @menu1.id
   )
   @menu_admin_2=Admin2Menu.create(
-      admin2_id: @admin1,
-      menu_id: @menu2
+      admin2_id: @admin1.id,
+      menu_id: @menu2.id
   )
   @menu_admin_3=Admin2Menu.create(
-      admin2_id: @admin1,
-      menu_id: @menu3
+      admin2_id: @admin1.id,
+      menu_id: @menu3.id
   )
   @menu_admin_4=Admin2Menu.create(
-      admin2_id: @admin1,
-      menu_id: @menu4
+      admin2_id: @admin1.id,
+      menu_id: @menu4.id
   )
   @menu_admin_5=Admin2Menu.create(
-      admin2_id: @admin1,
-      menu_id: @menu5
+      admin2_id: @admin1.id,
+      menu_id: @menu5.id
   )
   @menu_admin_6=Admin2Menu.create(
-      admin2_id: @admin1,
-      menu_id: @menu6
+      admin2_id: @admin1.id,
+      menu_id: @menu6.id
   )
   @menu_admin_7=Admin2Menu.create(
-      admin2_id: @admin1,
-      menu_id: @menu7
+      admin2_id: @admin1.id,
+      menu_id: @menu7.id
   )
   @menu_admin_8=Admin2Menu.create(
-      admin2_id: @admin1,
-      menu_id: @menu8
+      admin2_id: @admin1.id,
+      menu_id: @menu8.id
   )
   @menu_admin_9=Admin2Menu.create(
-      admin2_id: @admin1,
-      menu_id: @menu9
+      admin2_id: @admin1.id,
+      menu_id: @menu9.id
   )
   @menu_admin_10=Admin2Menu.create(
-      admin2_id: @admin1,
-      menu_id: @menu10
+      admin2_id: @admin1.id,
+      menu_id: @menu10.id
+  )
+  @menu_admin_10=Admin2Menu.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu11.id
   )
   MenuPermission.delete_all
   @menu_permission1 = MenuPermission.create(
-      admin2_id: @admin1,
-      menu_id: @menu1,
+      admin2_id: @admin1.id,
+      menu_id: @menu1.id,
       # is_manage:true
   )
   MenuPermission.create(
-      admin2_id: @admin1,
-      menu_id: @menu2,
+      admin2_id: @admin1.id,
+      menu_id: @menu2.id,
       is_manage:true
   )
   MenuPermission.create(
-      admin2_id: @admin1,
-      menu_id: @menu3,
+      admin2_id: @admin1.id,
+      menu_id: @menu3.id,
       is_manage:true
   )
   MenuPermission.create(
-      admin2_id: @admin1,
-      menu_id: @menu4,
+      admin2_id: @admin1.id,
+      menu_id: @menu4.id,
       is_manage:true
   )
   MenuPermission.create(
-      admin2_id: @admin1,
-      menu_id: @menu5,
+      admin2_id: @admin1.id,
+      menu_id: @menu5.id,
       is_manage:true
   )
   MenuPermission.create(
-      admin2_id: @admin1,
-      menu_id: @menu6,
+      admin2_id: @admin1.id,
+      menu_id: @menu6.id,
       is_manage:true
   )
   MenuPermission.create(
-      admin2_id: @admin1,
-      menu_id: @menu7,
+      admin2_id: @admin1.id,
+      menu_id: @menu7.id,
       is_manage:true
   )
   MenuPermission.create(
-      admin2_id: @admin1,
-      menu_id: @menu8,
+      admin2_id: @admin1.id,
+      menu_id: @menu8.id,
       is_manage:true
   )
   MenuPermission.create(
-      admin2_id: @admin1,
-      menu_id: @menu9,
+      admin2_id: @admin1.id,
+      menu_id: @menu9.id,
       is_manage:true
   )
   MenuPermission.create(
-      admin2_id: @admin1,
-      menu_id: @menu10,
+      admin2_id: @admin1.id,
+      menu_id: @menu10.id,
       is_manage:true
   )
 
-
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu11.id,
+      is_manage:true
+  )
 
 
 end

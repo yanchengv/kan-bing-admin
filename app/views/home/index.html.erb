@@ -1,73 +1,7 @@
-<style>
-    .ui-menu:after {
-        content: ".";
-        display: block;
-        clear: both;
-        visibility: hidden;
-        line-height: 0;
-        height: 0;
-    }
-
-    .ui-menu .ui-menu-item {
-        display: inline-block;
-        float: left;
-        margin: 0;
-        padding: 0;
-        width: auto;
-    }
-    #menu li {
-            width: 150px;
-            text-align:center !important;
-        }
-
-</style>
-
 <h1>home</h1>
 
-
-<button id="check">用户登录</button>
-<ul id="world-list">
-</ul>
-
-
-<script>
-    (function ($) {
-
-        $( "#menu" ).menu();
-
-
-        World = Backbone.Model.extend({
-            //创建一个World的对象，拥有name属性
-            name: null
-        });
-
-        Worlds = Backbone.Collection.extend({
-            //World对象的集合
-            initialize: function (models, options) {
-                this.bind("add", options.view.addOneWorld);
-            }
-        });
-
-        AppView = Backbone.View.extend({
-            el: $("body"),
-            initialize: function () {
-                //构造函数，实例化一个World集合类，并且以字典方式传入AppView的对象
-                this.worlds = new Worlds(null, { view : this })
-            },
-            events: {
-                "click #check":  "checkIn"   //事件绑定，绑定Dom中id为check的元素
-            },
-            checkIn: function () {
-                var world_name = prompt("请登录");
-                if(world_name == "") world_name = '未知';
-                var world = new World({ name: world_name });
-                this.worlds.add(world);
-            },
-            addOneWorld: function(model) {
-                $("#world-list").append("<li>这里是来自 <b>" + model.get('name') + "</b> ！</li>");
-            }
-        });
-        //实例化AppView
-        var appview = new AppView;
-    })(jQuery);
-</script>
+<%# @menus.each do |menu|%>
+         <%#menu[:children].each do |m|%>
+        <%#= m[:name]%>
+    <%#end%>
+<%#end%>
