@@ -13,6 +13,7 @@
  *require_tree .
  *= require bootstrap
  *= require login.css
+ *= require header.css
  *= require jquery-ui.min
  *= require_self
 
