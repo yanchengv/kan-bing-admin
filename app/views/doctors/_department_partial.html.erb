@@ -1,0 +1,26 @@
+<select id="doctor_department_id" name="doctor[department_id]" >
+<option value="">---请选择---</option>
+  <% if @department.nil? %>
+      <% @department = Department.all %>
+  <% end %>
+      <% if !@department.empty? %>
+      <% @department.each do |dep| %>
+          <option id="dep_<%= dep.id %>" value="<%= dep.id %>"><%= dep.name %></option>
+      <% end %>
+      <% end %>
+
+</select>
+<script>
+    $(function() {
+       $("#doctor_department_id").select2();
+        <% if !params[:id].nil? %>
+        <% dep_id = Doctor.find_by(id:params[:id]).department_id %>
+        <% department = Doctor.find_by(id:params[:id]).department %>
+        <% if !dep_id.nil? && dep_id != ''%>
+        $('#s2id_doctor_department_id').children('.select2-choice').children('.select2-chosen').html('<%=department.name%>')
+        document.getElementById('dep_<%= dep_id %>').setAttribute('selected','selected')
+
+        <% end %>
+        <% end %>
+    })
+</script>

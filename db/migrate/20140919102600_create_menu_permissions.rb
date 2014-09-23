@@ -3,8 +3,8 @@ class CreateMenuPermissions < ActiveRecord::Migration
     create_table :menu_permissions do |t|
       t.integer :menu_id
       t.integer :admin2_id
-      t.integer :hospital_id ,:limit => 8
-      t.integer :department_id  ,:limit => 8
+      t.string  :hospital_id
+      t.string :department_id
       t.boolean :is_show,:default => true
       t.boolean :is_edit,:default => false
       t.boolean :is_add,:default => false

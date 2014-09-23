@@ -25,6 +25,15 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :doctors do
+    collection do
+      get 'get_department', to:'doctors#get_department'
+      get 'get_hospital', to:'doctors#get_hospital'
+      get 'get_city', to:'doctors#get_city'
+      get 'is_executable', to:'doctors#is_executable'
+    end
+  end
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

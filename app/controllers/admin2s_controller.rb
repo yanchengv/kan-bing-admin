@@ -62,7 +62,7 @@ class Admin2sController < ApplicationController
   end
 
   def setting
-    render template: 'admins/setting'
+    render template: 'admin2s/setting'
   end
 
   def password_update

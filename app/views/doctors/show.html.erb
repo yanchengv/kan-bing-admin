@@ -1,0 +1,174 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>姓名:</strong>
+  <%= @doctor.name %>
+</p>
+
+<p>
+  <strong>证件类型:</strong>
+  <%= @doctor.credential_type %>
+</p>
+
+<p>
+  <strong>证件号码:</strong>
+  <%= @doctor.credential_type_number %>
+</p>
+
+<p>
+  <strong>性别:</strong>
+  <%= @doctor.gender %>
+</p>
+
+<p>
+  <strong>出生日期:</strong>
+  <%= @doctor.birthday %>
+</p>
+
+<p>
+  <strong>出生地:</strong>
+  <%= @doctor.birthplace %>
+</p>
+
+<p>
+  <strong>省:</strong>
+  <%= @doctor.province_id %>
+</p>
+
+<p>
+  <strong>市:</strong>
+  <%= @doctor.city_id %>
+</p>
+
+<p>
+  <strong>医院:</strong>
+  <%= @doctor.hospital_id %>
+</p>
+
+<p>
+  <strong>科室:</strong>
+  <%= @doctor.department %>
+</p>
+
+<p>
+  <strong>地址:</strong>
+  <%= @doctor.address %>
+</p>
+
+<p>
+  <strong>民族:</strong>
+  <%= @doctor.nationality %>
+</p>
+
+<p>
+  <strong>国籍:</strong>
+  <%= @doctor.citizenship %>
+</p>
+
+<p>
+  <strong>照片:</strong>
+  <%= @doctor.photo %>
+</p>
+
+<p>
+  <strong>婚姻情况</strong>
+  <%= @doctor.marriage %>
+</p>
+
+<p>
+  <strong>手机号码</strong>
+  <%= @doctor.mobile_phone %>
+</p>
+
+<p>
+  <strong>家庭电话</strong>
+  <%= @doctor.home_phone %>
+</p>
+
+<p>
+  <strong>家庭地址</strong>
+  <%= @doctor.home_address %>
+</p>
+
+<p>
+  <strong>联系人</strong>
+  <%= @doctor.contact %>
+</p>
+
+<p>
+  <strong>联系电话</strong>
+  <%= @doctor.contact_phone %>
+</p>
+
+<p>
+  <strong>家庭邮编</strong>
+  <%= @doctor.home_postcode %>
+</p>
+
+<p>
+  <strong>个人电子邮件</strong>
+  <%= @doctor.email %>
+</p>
+
+<p>
+  <strong>说明</strong>
+  <%= @doctor.introduction %>
+</p>
+
+<p>
+  <strong>专业职称</strong>
+  <%= @doctor.professional_title %>
+</p>
+
+<p>
+  <strong>职位</strong>
+  <%= @doctor.position %>
+</p>
+
+<p>
+  <strong>雇佣日期</strong>
+  <%= @doctor.hire_date %>
+</p>
+
+<p>
+  <strong>证书号码</strong>
+  <%= @doctor.certificate_number %>
+</p>
+
+<p>
+  <strong>专长</strong>
+  <%= @doctor.expertise %>
+</p>
+
+<p>
+  <strong>学历</strong>
+  <%= @doctor.degree %>
+</p>
+
+<p>
+  <strong>毕业学校</strong>
+  <%= @doctor.graduated_from %>
+</p>
+
+<p>
+  <strong>毕业时间</strong>
+  <%= @doctor.graduated_at %>
+</p>
+
+<p>
+  <strong>论文</strong>
+  <%= @doctor.research_paper %>
+</p>
+
+<p>
+  <strong>微信</strong>
+  <%= @doctor.wechat %>
+</p>
+
+<p>
+  <strong>奖励</strong>
+  <%= @doctor.rewards %>
+</p>
+
+<%= link_to 'Edit', edit_doctor_path(@doctor) %> |
+<%= link_to 'Back', doctors_path %>

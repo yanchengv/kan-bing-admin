@@ -5,24 +5,37 @@
   <div class="navbar-inner col-md-9 col-sm-7 col-xs-6">
     <ul id="menu">
       <% if signed_in? %>
-
-          <li><%= link_to "Home", root_path %></li>
-          <li><%= link_to "Admins", '' %></li>
-          <li><%= link_to "用户管理", '' %>
-            <ul>
-              <li>医生管理</li>
-              <li>患者管理</li>
-              <li>user管理</li>
-            </ul>
-          </li>
+          <% @menus = current_user.menu_trees %>
+          <% if !@menus.nil? && !@menus.empty? %>
+              <% @menus.each do |menu| %>
+                  <% if menu.parent_id.nil? %>
+                      <li><%= link_to menu.name, '/'+menu.table_name.to_s+'?menu_id='+menu.id.to_s %>
+                        <ul>
+                        <% @menus.each do |child_menu| %>
+                            <% if child_menu.parent_id==menu.id %>
+                              <li><%= link_to child_menu.name, '/'+child_menu.table_name.to_s+'?menu_id='+child_menu.id.to_s %></li>
+                            <% end %>
+                        <% end %>
+                        </ul>
+                      </li>
+                  <% end %>
+              <% end %>
+          <% end %>
+          <!--<li><%#= link_to "Home", root_path %></li>-->
+          <!--<li><%#= link_to "Admins", '' %></li>-->
+          <li><%#= link_to "用户管理", '' %>
+            <!--<ul>-->
+              <!--<li>医生管理</li>-->
+              <!--<li>患者管理</li>-->
+              <!--<li>user管理</li>-->
+            <!--</ul>-->
+          <!--</li>-->
           <li id="fat-menu" class="pull-right">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               Account <b class="caret"></b>
             </a>
             <ul>
-              <!--<li><%#= link_to "Profile", current_user %></li>-->
-              <li><%= link_to "setting", '#' %></li>
-              <!--<li class="divider"></li>-->
+              <li><%= link_to "setting", '/admin2s/setting' %></li>
               <li>
                 <%= link_to "退出", '/sessions/sign_out', method: "delete" %>
               </li>

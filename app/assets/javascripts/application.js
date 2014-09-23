@@ -17,6 +17,9 @@
 //= require bootstrap
 //= require backbone
 //= require web_admin
+//= require select2
+//= require jquery.datetimepicker
+//= require jquery.jqGrid
 //= require_tree ./templates
 //= require_tree ./models
 //= require_tree ./collections

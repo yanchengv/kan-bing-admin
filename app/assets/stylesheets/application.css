@@ -15,6 +15,9 @@
  *= require login.css
  *= require header.css
  *= require jquery-ui
+ *= require select2
+ *= require ui.jqgrid
+ *= require jquery.datetimepicker
   *= require zTreeStyle
  *= require_self
 

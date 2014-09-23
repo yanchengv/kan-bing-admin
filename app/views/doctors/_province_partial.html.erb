@@ -1,0 +1,60 @@
+<% @province = Province.all %>
+<select id="doctor_province_id" name="doctor[province_id]"  onchange="search_city()" >
+    <option value="">---请选择---</option>
+  <% @province.each do |pro| %>
+      <option id='pro_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
+  <% end %>
+</select>
+<!--<a class="btn btn-info create" data-link="/admin/province/new?modal=true" href="#" style="margin-left:10px"><i class="icon-plus icon-white"></i> 新建一个Province</a>-->
+<!--<a class="btn btn-info update disabled" data-link="/admin/province/__ID__/edit?modal=true" href="#" style="margin-left:10px"><i class="icon-pencil icon-white"></i> 编辑这个Province</a>-->
+<script>
+    $(function() {
+        $("#doctor_province_id").select2();
+        <% if !params[:id].nil? %>
+        <% pro_id = Doctor.find_by(id:params[:id]).province_id %>
+        <% if !pro_id.nil? && pro_id != ''%>
+        document.getElementById('pro_<%= pro_id %>').setAttribute('selected','selected')
+        <% end %>
+        <% end %>
+    })
+    function search_city() {
+        var pro_id = $("#doctor_province_id").val();
+        change_city(pro_id)
+        change_hospital(pro_id)
+        change_department(pro_id)
+    }
+    function change_city(pro_id){
+        $.ajax({
+                    type: "get",
+                    url: '/doctors/get_city?province_id=' + pro_id,
+                    data: 'text',
+                    success: function (data) {
+                        $("#doc_city").html(data)
+                    }
+                }
+        );
+    }
+    function change_hospital(pro_id){
+        $.ajax({
+                    type: "get",
+                    url: '/doctors/get_hospital?province_id=' + pro_id,
+                    data: 'text',
+                    success: function (data) {
+                        $("#doc_hospital").html(data);
+                    }
+                }
+        );
+    }
+    function change_department(pro_id){
+        $.ajax({
+                    type: "get",
+                    url: '/doctors/get_department?province_id=' + pro_id,
+                    data: 'text',
+                    success: function (data) {
+                        $("#doc_department").html(data);
+
+                    }
+                }
+        );
+    }
+</script>

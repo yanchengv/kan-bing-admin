@@ -36,6 +36,8 @@ gem 'backbone-on-rails'
 gem 'jquery-ui-rails', '~> 5.0.0'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
+gem "select2-rails"
+gem "ruby-pinyin", "~> 0.2.3" #汉字转拼音码
 
 # Use unicorn as the app server
 # gem 'unicorn'

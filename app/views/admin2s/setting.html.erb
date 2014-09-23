@@ -1,0 +1,32 @@
+<div id="reminder"></div>
+<%= form_for 'admin', :remote => true, :url=>{:action=>'password_update'}, :html => { :method => :post} do |f| %>
+    <div class="form-group">
+      <label for="old_pass" class="col-sm-2 col-cd-2 col-xs-6 control-label" style="line-height:34px;color:#6b6b6d;"><%= f.label :old_password, '旧密码'%></label>
+      <div class="col-md-6 col-sm-10 col-xs-6">
+        <%= f.password_field :old_password, :id=>'old_pass',:style => "width:65%", class:"form-control pull-left",:onblur=> 'check_old(this.value)' %>
+        <div id="old_pwd_div" class='pull-left'></div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="form-group" style="margin-top:10px;clear:both;">
+      <label for="pass" class="col-sm-2 col-cd-2 col-xs-6 control-label" style="line-height:34px;color:#6b6b6d;"><%= f.label :new_password,'新密码' %></label>
+      <div class="col-md-6 col-sm-10 col-xs-6">
+        <%= f.password_field :new_password, :id=>'pass', :style => "width:65%", class:"form-control pull-left" ,:onkeyup => 'set_new2(this.value)',:onfocus => 'check_remind(this.value)',:onblur=> 'check_new(this.value)' %>
+        <div id="new_pwd_div" class='pull-left'></div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="form-group" style="margin-top:10px;clear:both;">
+      <label for="pass_con" class="col-sm-2 col-cd-2 col-xs-6 control-label" style="line-height:34px;color:#6b6b6d;"><%= f.label :password_confirmation, '确认密码'%></label>
+      <div class="col-md-6 col-sm-10 col-xs-6">
+        <%= f.password_field :password_confirmation , :id=>'pass_con', :style => "width:65%",class:"form-control pull-left" ,:onblur=> 'check_new2(this.value)'%>
+        <div id="new_pwd2_div" class='pull-left'></div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-md-6 col-sm-10 col-xs-6 col-md-offset-2">
+      <div class="form-group " style="margin-top:10px;clear:both;">
+        <%= f.submit '确定', :id => 'password_update' ,:class=>'btn btn_g '%>
+      </div>
+    </div>
+<% end %>

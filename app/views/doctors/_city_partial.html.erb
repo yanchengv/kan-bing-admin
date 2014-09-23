@@ -1,0 +1,62 @@
+<style>
+        .select2-container{
+            width:300px;
+
+        }
+</style>
+  <select  id="doctor_city_id" name="doctor[city_id]" onchange="search_hos()">
+  <option value="">---请选择---</option>
+  <% if @city.nil? %>
+      <% @city = City.all %>
+  <% end %>
+  <% if !@city.empty? %>
+      <% @city.each do |city| %>
+          <option id='city_<%= city.id %>' value="<%= city.id %>"><%= city.name %></option>
+      <% end %>
+  <% end %>
+
+</select>
+<script>
+    $(function() {
+        $("#doctor_city_id").select2();
+        <% if !params[:id].nil? %>
+        <% city_id = Doctor.find_by(id:params[:id]).city_id %>
+        <% city = Doctor.find_by(id:params[:id]).city %>
+        <% if !city_id.nil? && city_id != ''%>
+//        $('#s2id_doctor_city_id').children('.select2-choice').children('.select2-chosen').html('<%=city.name%>')
+        document.getElementById('city_<%= city_id %>').setAttribute('selected','selected')
+        <% end %>
+        <% end %>
+    })
+    function search_hos() {
+        var pro_id = $("#doctor_province").val();
+        var city_id = $("#doctor_city_id").val();
+        get_hospital(pro_id,city_id)
+        get_department(pro_id,city_id)
+
+    }
+    function get_hospital(pro_id,city_id){
+        $.ajax({
+                    type: "get",
+                    url: '/doctors/get_hospital?province_id=' + pro_id +'&city_id='+city_id,
+                    data: 'text',
+                    success: function (data) {
+                        $("#doc_hospital").html(data);
+
+                    }
+                }
+        );
+    }
+     function get_department(pro_id,city_id){
+         $.ajax({
+                     type: "get",
+                     url: '/doctors/get_department?province_id=' + pro_id +'&city_id='+city_id,
+                     data: 'text',
+                     success: function (data) {
+                         $("#doc_department").html(data);
+
+                     }
+                 }
+         );
+     }
+</script>

@@ -1,0 +1,43 @@
+<% if @hospital.nil? %>
+    <% @hospital = Hospital.all %>
+<% end %>
+
+  <select  id="doctor_hospital_id" name="doctor[hospital_id]" onchange="search()" >
+  <option value="">---请选择---</option>
+<% if !@hospital.empty? %>
+
+     <% @hospital.each do |hos| %>
+        <option id='hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+     <% end %>
+<% end %>
+    <%#= f.select :hospital,options_from_collection_for_select(Hospital.all,'id','name'), :placeholder => "搜索",:style => "display:none;" %>
+   </select>
+
+<script>
+    $(function() {
+        $("#doctor_hospital_id").select2();
+        <% if !params[:id].nil? %>
+        <% hos_id = Doctor.find_by(id:params[:id]).hospital_id %>
+        <% hospital = Doctor.find_by(id:params[:id]).hospital %>
+        <% if !hos_id.nil? && hos_id != ''%>
+        $('#s2id_doctor_hospital_id').children('.select2-choice').children('.select2-chosen').html('<%=hospital.name%>')
+        document.getElementById('hos_<%= hos_id %>').setAttribute('selected','selected')
+        <% end %>
+        <% end %>
+    })
+    function search(str) {
+        var hos = $("#doctor_hospital_id").val();
+        change_department(hos, 'department_id') ;
+    }
+    function change_department(hos_id, select_id){
+        $.ajax({
+                    type: "get",
+                    url: '/doctors/get_department?hospital_id=' + hos_id,
+                    data: 'text',
+                    success: function (data) {
+                        $("#doc_department").html(data);
+                    }
+                }
+        );
+    }
+</script>
