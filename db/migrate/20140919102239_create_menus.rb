@@ -3,6 +3,7 @@ class CreateMenus < ActiveRecord::Migration
     create_table :menus do |t|
       t.string :name
       t.integer :parent_id
+      t.string :uri
       t.string :table_name
       t.string :model_class
 
