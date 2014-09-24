@@ -11,7 +11,7 @@ require 'mina/rvm'    # for rvm support. (http://rvm.io)
 #   branch       - Branch name to deploy. (needed by mina/git)
 
 set :domain, 'fitark.org'
-set :deploy_to, '/dfs/deploy'
+set :deploy_to, '/dfs/deploy/webadmin_deploy'
 set :repository, 'git@fitark.org:saturn/webadmin.git'
 set :branch, 'master'
 set :term_mode, :system
@@ -31,7 +31,7 @@ task :environment do
   # invoke :'rbenv:load'
 
   # For those using RVM, use this to load an RVM version@gemset.
-  invoke :'rvm:use[ruby-2.0.0-p353]'
+  invoke :'rvm:use[ruby-2.0.0]'
 end
 
 # Put any custom mkdir's in here for when `mina setup` is ran.
@@ -62,7 +62,7 @@ task :deploy => :environment do
     to :launch do
       queue! %[mkdir -p "#{deploy_to}/current/tmp/pids"]
       queue! %[chmod g+rx,u+rwx "#{deploy_to}/current/tmp/pids"]
-      queue! %[ln  -s /dfs/pacs/    /home/git/deploy/current/public/]
+      queue! %[ln  -s /dfs/pacs/    /dfs/deploy/webadmin_deploy/current/public/]
     end
   end
 end
@@ -86,7 +86,6 @@ task :maintenance_on  do
   queue! %[  ps aux |grep unicorn|grep -v grep |awk '{print $2}'|xargs kill -9 ]
   queue! %[ unicorn_rails -c "#{deploy_to}/current/config/unicorn.rb -D  -E production" ]
   queue! %[ cd  #{deploy_to}/current; unicorn -c #{deploy_to}/current/config/unicorn.rb -D  -E production]
-  queue! %[ curl  localhost:9000 ]
 
   #queue! %[rainbows config.ru -c "#{deploy_to}/current/config/unicorn.rb -E production -D "]
 end
