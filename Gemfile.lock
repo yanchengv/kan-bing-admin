@@ -44,6 +44,8 @@ GEM
     bcrypt (3.1.7)
     bootstrap-sass (3.0.2.0)
       sass (~> 3.2)
+    bootstrap-will_paginate (0.0.10)
+      will_paginate
     builder (3.2.2)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -145,6 +147,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    will_paginate (3.0.7)
 
 PLATFORMS
   ruby
@@ -153,6 +156,7 @@ DEPENDENCIES
   backbone-on-rails
   bcrypt (~> 3.1.7)
   bootstrap-sass (= 3.0.2)
+  bootstrap-will_paginate
   coffee-rails (~> 4.0.0)
   jbuilder (~> 2.0)
   jquery-rails

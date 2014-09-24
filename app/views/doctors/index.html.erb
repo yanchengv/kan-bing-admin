@@ -1,10 +1,16 @@
+
+<style>
+    .ui-pg-input{
+        height:30px;
+    }
+</style>
 <h1>Listing doctors</h1>
 <div style="margin:10px;">
   <a id="create_doctor" class="btn btn-primary btn-sm active" role="button">添加医生</a>
-  <a id="edit_doctor" href="" class="btn btn-default btn-sm disabled" role="button">编辑医生</a>
-  <a id="delete_doctor" href="" class="btn btn-default btn-sm disabled" role="button">删除医生</a>
-  <a id="send_email_doctor" href="" class="btn btn-default btn-sm disabled" role="button">发送邮箱激活码</a>
-  <a id="send_phone_doctor" href="" class="btn btn-default btn-sm disabled" role="button">发送手机激活码</a>
+  <a id="edit_doctor" class="btn btn-default btn-sm disabled" role="button">编辑医生</a>
+  <a id="delete_doctor" class="btn btn-default btn-sm disabled" role="button">删除医生</a>
+  <a id="send_email_doctor" class="btn btn-default btn-sm disabled" role="button">发送邮箱激活码</a>
+  <a id="send_phone_doctor" class="btn btn-default btn-sm disabled" role="button">发送手机激活码</a>
 </div>
 <table id="list12"></table>
 <div id="pager12"></div>
@@ -13,12 +19,15 @@
     <% @id = nil%>
     var row_id;
     var ids;
+    var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
     jQuery("#list12").jqGrid({
+        url: "/doctors?menu_id=3",
         datatype: "json",
-        height: 460,
-        colNames:['ID','姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','职称','简介'],
+        height: "auto",
+        colNames:['姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','职称','简介'],
         colModel:[
-            {name:'id',index:'id', width:120, sorttype:"int"},
+//            {name:'act',index:'act', width:75,sortable:false},
+//            {name:'id',index:'id', width:120, sorttype:"int"},
             {name:'name',index:'name', width:55},
             {name:'credential_type',index:'credential_type', width:100},
             {name:'credential_type_number',index:'credential_type_number', width:180},
@@ -34,22 +43,26 @@
             {name:'professional_title',index:'professional_title', width:80,align:"right",sorttype:"float"},
             {name:'introduction',index:'introduction', width:260, sortable:false}
         ],
-//        rowNum:20,
-//        rowList:[20,30],
-//        pager: '#pager12',
-//        sortname: 'id',
+        pager: jQuery('#pager12'),
+        sortname: 'id',
+        pgbuttons: true, // 分页按钮是否显示
+        pginput: true, // 是否允许输入分页页数
+//        loadurl:"disable",
+//        treeGrid:true,
+        ExpandColumn: "menu",
+//        autowidth: true,
+        rowNum: 20,
+        rowList:[10,20,30],
+        altRows: true,
+        ignoreCase: true,
         onSortCol: function(name,index){ alert("Column Name: "+name+" Column Index: "+index);},
         ondblClickRow: function(id){ alert("You double click row with id: "+id);},
         onSelectRow: function(id){
             row_id = id
             ids = id
-            $('#send_email_doctor').removeClass('disabled')
-            $('#send_email_doctor').addClass('active')
-            $('#send_phone_doctor').removeClass('disabled')
-            $('#send_phone_doctor').addClass('active')
             $.ajax({
                 type:'get',
-                url:'/doctors/is_executable?id='+id+'&menu_id=<%=@menu_id%>',
+                url:'/doctors/is_executable?id='+selectedIds+'&menu_id=<%=@menu_id%>',
                 success:function(data){
                     if (data['is_manage']) {
                         $('#edit_doctor').removeClass('disabled')
@@ -65,16 +78,37 @@
                         $('#delete_doctor').removeClass('disabled')
                         $('#delete_doctor').addClass('active')
                     }
-                    console.log(data['is_add'])
+                    var selected_ids = ''+selectedIds
+                    if (selected_ids.split(',').length>0) {
+                        $('#send_email_doctor').removeClass('disabled')
+                        $('#send_email_doctor').addClass('active')
+                        $('#send_phone_doctor').removeClass('disabled')
+                        $('#send_phone_doctor').addClass('active')
+                    }else{
+                        $('#edit_doctor').removeClass('active')
+                        $('#edit_doctor').addClass('disabled')
+                        $('#delete_doctor').removeClass('active')
+                        $('#delete_doctor').addClass('disabled')
+                        $('#send_email_doctor').removeClass('active')
+                        $('#send_email_doctor').addClass('disabled')
+                        $('#send_phone_doctor').removeClass('active')
+                        $('#send_phone_doctor').addClass('disabled')
+                    }
+                    if (selected_ids.split(',').length>1){
+                        $('#edit_doctor').removeClass('active')
+                        $('#edit_doctor').addClass('disabled')
+                    }
                 }
             })
         },
-//        viewrecords: true,
+        viewrecords: true,
 //        sortorder: "desc",
 //        editurl:"",
         multiselect: true,
         caption: "医生列表"
     });
+    jQuery("#list12").jqGrid('navGrid','#pager12',{edit:false,add:false,del:false});
+    var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
     $(function() {
         var dialog, form,
                 emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
@@ -170,65 +204,102 @@
             addUser();
         });
 
-        $( "#create_doctor" ).button().on( "click", function() {
-            $.ajax({
-                type:'get',
-                url:'/doctors/new?&menu_id=<%=@menu_id%>',
-                success:function(data){
-                    $('#dialog-form').html(data)
-
-                }
-            })
-            dialog.dialog( "open" );
-        });
-        $( "#edit_doctor").button().on( "click", function() {
+//        $( "#create_doctor" ).button().on( "click", function() {
 //            $.ajax({
 //                type:'get',
-//                url:'/doctors/'+row_id+'/edit?menu_id=<%=@menu_id%>',
+//                url:'/doctors/new?&menu_id=<%=@menu_id%>',
 //                success:function(data){
 //                    $('#dialog-form').html(data)
+//
 //                }
 //            })
-            dialog.dialog( "open" );
-        });
-        $( "#delete_doctor").button().on( "click", function() {
-            $.ajax({
-                type:'get',
-                url:'/doctors/edit/?&menu_id=<%=@menu_id%>',
-                success:function(data){
-//                    $('#dialog-form').html(data)
-
-                }
-            })
-            dialog.dialog( "open" );
-        });
-        $( "#send_email_doctor").button().on( "click", function() {
-            $.ajax({
-                type:'get',
-                url:'/doctors/edit/?&menu_id=<%=@menu_id%>',
-                success:function(data){
-//                    $('#dialog-form').html(data)
-
-                }
-            })
-            dialog.dialog( "open" );
-        });
-        $( "#send_phone_doctor").button().on( "click", function() {
-            $.ajax({
-                type:'get',
-                url:'/doctors/edit/?&menu_id=<%=@menu_id%>',
-                success:function(data){
-//                    $('#dialog-form').html(data)
-
-                }
-            })
-            dialog.dialog( "open" );
-        });
+//            dialog.dialog( "open" );
+//        });
+//        $( "#edit_doctor").button().on( "click", function() {
+////            $.ajax({
+////                type:'get',
+////                url:'/doctors/'+row_id+'/edit?menu_id=<%=@menu_id%>',
+////                success:function(data){
+////                    $('#dialog-form').html(data)
+////                }
+////            })
+//            dialog.dialog( "open" );
+//        });
+//        $( "#delete_doctor").button().on( "click", function() {
+//            $.ajax({
+//                type:'get',
+//                url:'/doctors/edit/?&menu_id=<%=@menu_id%>',
+//                success:function(data){
+////                    $('#dialog-form').html(data)
+//
+//                }
+//            })
+//            dialog.dialog( "open" );
+//        });
+//        $( "#send_email_doctor").button().on( "click", function() {
+//            $.ajax({
+//                type:'get',
+//                url:'/doctors/edit/?&menu_id=<%=@menu_id%>',
+//                success:function(data){
+////                    $('#dialog-form').html(data)
+//
+//                }
+//            })
+//            dialog.dialog( "open" );
+//        });
+//        $( "#send_phone_doctor").button().on( "click", function() {
+//            $.ajax({
+//                type:'get',
+//                url:'/doctors/edit/?&menu_id=<%=@menu_id%>',
+//                success:function(data){
+////                    $('#dialog-form').html(data)
+//
+//                }
+//            })
+//            dialog.dialog( "open" );
+//        });
     });
+    $( "#create_doctor" ).button().on( "click", function() {
+                $.ajax({
+                    type:'get',
+                    url:'/doctors/new?&menu_id=<%=@menu_id%>',
+                    success:function(data){
+                        $('#create_or_edit_form').html(data)
 
+                    }
+                })
+                $('#create_or_edit_form').modal('show')
+            });
+    $( "#edit_doctor").button().on( "click", function() {
+                $.ajax({
+                    type:'get',
+                    url:'/doctors/'+row_id+'/edit?menu_id=<%=@menu_id%>',
+                    success:function(data){
+                        $('#create_or_edit_form').html(data)
+                    }
+                })
+        $('#create_or_edit_form').modal('show')
+            });
+    $( "#delete_doctor").button().on( "click", function() {
+        alert(selectedIds)
+        $.ajax({
+            type:'delete',
+            url:'/doctors/'+selectedIds+'?menu_id=<%=@menu_id%>',
+            success:function(data){
+//                $('#create_or_edit_form').html(data)
+            }
+        })
+//        $('#create_or_edit_form').modal('show')
+        var url= "/doctors?menu_id=3"
+        jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+        $('#refresh_list12').click()
+    });
 </script>
 <div id="dialog-form" title="Create or edit user">
   <%#= render 'form' %>
+</div>
+<div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
 </div>
 <!--<table>-->
   <!--<thead>-->
