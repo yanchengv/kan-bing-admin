@@ -11,27 +11,27 @@ def meun_data
   )
   @menu1=Menu.create(
       name: '用户管理',
-      parent_id:@menu4,
+      parent_id:@menu4.id,
       table_name: 'doctors',
       model_class:'Doctor'
 
   )
   @menu1=Menu.create(
       name: '医生管理',
-      parent_id:@menu4,
+      parent_id:@menu4.id,
       table_name: 'doctors',
       model_class:'Doctor'
 
   )
   @menu2=Menu.create(
       name: '患者管理',
-      parent_id:@menu4,
+      parent_id:@menu4.id,
       table_name: 'patients',
       model_class:'Patient'
   )
   @menu2=Menu.create(
       name: '管理员管理',
-      parent_id:@menu4,
+      parent_id:@menu4.id,
       table_name: 'admin2s',
       model_class:'Admin2'
   )
@@ -69,7 +69,8 @@ def meun_data
   @menu11=Menu.create(
       name: '权限管理',
       table_name: 'menus',
-      model_class:'Menu'
+      model_class:'Menu',
+      uri:'/menus/show'
   )
   Admin2Menu.delete_all
   @menu_admin_1=Admin2Menu.create(

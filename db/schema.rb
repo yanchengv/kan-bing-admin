@@ -54,13 +54,13 @@ ActiveRecord::Schema.define(version: 20140919102600) do
   create_table "menu_permissions", force: true do |t|
     t.integer  "menu_id"
     t.integer  "admin2_id"
-    t.integer  "hospital_id",   limit: 8
-    t.integer  "department_id", limit: 8
-    t.boolean  "is_show",                 default: true
-    t.boolean  "is_edit",                 default: false
-    t.boolean  "is_add",                  default: false
-    t.boolean  "is_delete",               default: false
-    t.boolean  "is_manage",               default: false
+    t.string   "hospital_id"
+    t.string   "department_id"
+    t.boolean  "is_show",       default: true
+    t.boolean  "is_edit",       default: false
+    t.boolean  "is_add",        default: false
+    t.boolean  "is_delete",     default: false
+    t.boolean  "is_manage",     default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20140919102600) do
   create_table "menus", force: true do |t|
     t.string   "name"
     t.integer  "parent_id"
+    t.string   "uri"
     t.string   "table_name"
     t.string   "model_class"
     t.datetime "created_at"

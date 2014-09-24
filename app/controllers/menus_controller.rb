@@ -3,8 +3,8 @@ class MenusController < ApplicationController
 
   # GET /menus
   # GET /menus.json
-  def index
-    @menus = Menu.all
+  def show
+    @menus = Menu.select('id','parent_id as pId','name','table_name','model_class').all
   end
 
   # GET /menus/1
@@ -15,6 +15,7 @@ class MenusController < ApplicationController
   # GET /menus/new
   def new
     @menu = Menu.new
+
   end
 
   # GET /menus/1/edit
@@ -69,6 +70,6 @@ class MenusController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def menu_params
-      params.require(:menu).permit(:name, :parent_id, :table_name, :model_class)
+      params.require(:menu).permit(:name, :parent_id,:uri, :table_name, :model_class)
     end
 end

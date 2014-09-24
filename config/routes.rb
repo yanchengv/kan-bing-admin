@@ -3,7 +3,12 @@ Rails.application.routes.draw do
 
   resources :admin2_menus
 
-  resources :menus
+  resources :menus do
+    collection do
+
+      get 'show',to:'menus#show'
+    end
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

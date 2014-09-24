@@ -9,11 +9,14 @@
           <% if !@menus.nil? && !@menus.empty? %>
               <% @menus.each do |menu| %>
                   <% if menu.parent_id.nil? %>
-                      <li><%= link_to menu.name, '/'+menu.table_name.to_s+'?menu_id='+menu.id.to_s %>
+                      <li><%#= link_to menu.name, '/'+menu.table_name.to_s+'?menu_id='+menu.id.to_s %>
+                        <%= link_to menu.name, menu.uri.to_s %>
                         <ul>
                         <% @menus.each do |child_menu| %>
                             <% if child_menu.parent_id==menu.id %>
-                              <li><%= link_to child_menu.name, '/'+child_menu.table_name.to_s+'?menu_id='+child_menu.id.to_s %></li>
+                              <li><%#= link_to child_menu.name, '/'+child_menu.table_name.to_s+'?menu_id='+child_menu.id.to_s %>
+                                <%= link_to child_menu.name, child_menu.uri.to_s %>
+                              </li>
                             <% end %>
                         <% end %>
                         </ul>
