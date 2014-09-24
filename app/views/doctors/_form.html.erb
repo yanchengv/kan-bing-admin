@@ -3,7 +3,14 @@
         width :300px;
     }
 </style>
-<%= form_for(@doctor) do |f| %>
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h4 class="modal-title"><b>创建或编辑医生</b></h4>
+</div>
+<div class="modal-body">
+<%= form_for(@doctor,remote:true) do |f| %>
   <% if @doctor.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@doctor.errors.count, "error") %> prohibited this doctor from being saved:</h2>
@@ -15,24 +22,30 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
+  <div class="row">
+  <div class="col-md-6 field">
     <%= f.label '姓名' %><br>
     <%= f.text_field :name ,class:"form-control"%>
+  </div>
+    <div class="col-md-6 field">
+      <%= f.label :性别 %><br>
+      <div id="doc_gender"><%= render partial: 'doctors/gender_partial' %></div>
+      <%#= f.text_field :gender ,class:"form-control"%>
+    </div>
   </div>
   <div class="field">
     <%= f.label '证件类型' %><br>
     <select id="doctor_credential_type" name="doctor[credential_type]" >
       <option value="">---请选择---</option>
-      <option id='' value="">居民身份证</option>
-      <option id='' value="">军官证</option>
-      <option id='' value="">护照</option>
-      <option id='' value="">武警警官证</option>
-      <option id='' value="">士兵证</option>
-      <option id='' value="">港澳同胞回乡证</option>
-      <option id='' value="">外国人居留证</option>
-      <option id='' value="">外国人出入境证</option>
-      <option id='' value="">其它</option>
+      <option id='' value="居民身份证">居民身份证</option>
+      <option id='' value="军官证">军官证</option>
+      <option id='' value="护照">护照</option>
+      <option id='' value="武警警官证">武警警官证</option>
+      <option id='' value="士兵证">士兵证</option>
+      <option id='' value="港澳同胞回乡证">港澳同胞回乡证</option>
+      <option id='' value="外国人居留证">外国人居留证</option>
+      <option id='' value="外国人出入境证">外国人出入境证</option>
+      <option id='' value="其它">其它</option>
     </select>
     <%#= f.text_field :credential_type ,class:"form-control"%>
   </div>
@@ -40,11 +53,7 @@
     <%= f.label '证件号码' %><br>
     <%= f.text_field :credential_type_number,class:"form-control" %>
   </div>
-  <div class="field">
-    <%= f.label :性别 %><br>
-    <div id="doc_gender"><%= render partial: 'doctors/gender_partial' %></div>
-    <%#= f.text_field :gender ,class:"form-control"%>
-  </div>
+
   <div class="field">
     <%= f.label :生日 %><br>
     <input id='doc_birthday' data-format="yyyy-MM-dd" name='doctor[birthday]' type="text" class="form-control"/>
@@ -61,7 +70,7 @@
   </div>
     <div class="field">
       <%= f.label :省名称 %><br>
-      <%= f.text_field :province_name %>
+      <%= f.text_field :province_name,class:"form-control" %>
     </div>
   <div class="field">
     <%= f.label :选择市 %><br>
@@ -70,7 +79,7 @@
   </div>
     <div class="field">
       <%= f.label :市名称 %><br>
-      <%= f.text_field :city_name %>
+      <%= f.text_field :city_name ,class:"form-control"%>
     </div>
     <div class="field">
       <%= f.label :选择医院 %><br>
@@ -78,7 +87,7 @@
     </div>
     <div class="field">
       <%= f.label :医院名称 %><br>
-      <%= f.text_field :hospital_name %>
+      <%= f.text_field :hospital_name ,class:"form-control"%>
     </div>
     <div class="field">
       <%= f.label :选择科室 %><br>
@@ -86,67 +95,67 @@
     </div>
     <div class="field">
       <%= f.label :科室名称 %><br>
-      <%= f.text_field :department_name %>
+      <%= f.text_field :department_name,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :地址 %><br>
-      <%= f.text_field :address %>
+      <%= f.text_field :address ,class:"form-control"%>
     </div>
     <div class="field">
       <%= f.label :民族 %><br>
-      <%= f.text_field :nationality %>
+      <%= f.text_field :nationality,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :国籍 %><br>
-      <%= f.text_field :citizenship %>
+      <%= f.text_field :citizenship,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :照片 %><br>
-      <%= f.text_field :photo %>
+      <%= f.text_field :photo,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :婚姻情况 %><br>
-      <%= f.text_field :marriage %>
+      <%= f.text_field :marriage,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :手机号 %><br>
-      <%= f.text_field :mobile_phone %>
+      <%= f.text_field :mobile_phone,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :家庭电话 %><br>
-      <%= f.text_field :home_phone %>
+      <%= f.text_field :home_phone,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :家庭地址 %><br>
-      <%= f.text_field :home_address %>
+      <%= f.text_field :home_address,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :联系人 %><br>
-      <%= f.text_field :contact %>
+      <%= f.text_field :contact,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :联系电话 %><br>
-      <%= f.text_field :contact_phone %>
+      <%= f.text_field :contact_phone,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :家庭邮编 %><br>
-      <%= f.text_field :home_postcode %>
+      <%= f.text_field :home_postcode,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :个人电子邮件 %><br>
-      <%= f.text_field :email %>
+      <%= f.text_field :email,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :说明 %><br>
-      <%= f.text_field :introduction %>
+      <%= f.text_field :introduction,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :专业职称 %><br>
-      <%= f.text_field :professional_title %>
+      <%= f.text_field :professional_title,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :职位 %><br>
-      <%= f.text_field :position %>
+      <%= f.text_field :position,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :雇佣日期 %><br>
@@ -154,19 +163,19 @@
     </div>
     <div class="field">
       <%= f.label :证书号码 %><br>
-      <%= f.text_field :certificate_number %>
+      <%= f.text_field :certificate_number,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :专长 %><br>
-      <%= f.text_field :expertise %>
+      <%= f.text_field :expertise,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :学历 %><br>
-      <%= f.text_field :degree %>
+      <%= f.text_field :degree,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :毕业学校 %><br>
-      <%= f.text_field :graduated_from %>
+      <%= f.text_field :graduated_from,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :毕业时间 %><br>
@@ -174,21 +183,46 @@
     </div>
     <div class="field">
       <%= f.label :论文 %><br>
-      <%= f.text_field :research_paper %>
+      <%= f.text_field :research_paper,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :微信 %><br>
-      <%= f.text_field :wechat %>
+      <%= f.text_field :wechat,class:"form-control" %>
     </div>
     <div class="field">
       <%= f.label :奖励 %><br>
-      <%= f.text_field :rewards %>
+      <%= f.text_field :rewards,class:"form-control" %>
     </div>
-  <div class="actions" style="display: none">
-    <%= f.submit id:'new_or_edit_doctor'%>
+      <div class="actions" style="display:none;">
+        <%= f.submit id:'new_or_edit_doctor'%>
+      </div>
+
+</div>
+  <div class="modal-footer">
+      <%= f.submit '确定',id:'new_or_edit_submit',class:"btn btn-primary",onclick:'create_or_update()'%>
+      <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+  <% end %>
   </div>
-<% end %>
+</div>
+</div>
 <script>
+  function create_or_update(){
+      $('#new_or_edit_doctor').click()
+      $('#create_or_edit_form').modal('hide')
+//      var url= "/doctors?menu_id=3"
+      jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+//      $.ajax({
+//                type:'put',
+//                url:'/doctors/<%#= @doctor.id %>?menu_id=<%#=@menu_id%>',
+//                success:function(data){
+//                    alert(data['success'])
+//                 if (data['success']){
+//                     $('#create_or_edit_form').modal('hide')
+//                 }
+//
+//                }
+//            })
+  }
     $(function() {
         $('#doc_graduated_at').datetimepicker({
             lang:'ch',

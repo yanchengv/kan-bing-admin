@@ -7,7 +7,10 @@ class DoctorsController < ApplicationController
   def index
     # @doctor = Doctor.new
     # @doctors = Doctor.all
+    noOfRows = params[:rows]
+    page = params[:page]
     @menu_id = params[:menu_id]
+    @doctors_all=nil
     if params[:menu_id]
       menu_permission = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
       # menu_permission_dep = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
@@ -30,21 +33,63 @@ class DoctorsController < ApplicationController
       if menu_permission_dep_id != []
         if menu_permission_hos_id != []
           sql="hospital_id in (#{menu_permission_hos_id.join(",")}) or department_id in (#{menu_permission_dep_id.join(",")})"
-          @doctors = Doctor.where(sql).distinct!
+          @doctors_all = Doctor.where(sql).distinct!
           # @doctors = Doctor.where(hospital_id:menu_permission_hos_id,department_id:menu_permission_dep_id)
         else
-          @doctors = Doctor.where(department_id:menu_permission_dep_id)
+          @doctors_all = Doctor.where(department_id:menu_permission_dep_id)
         end
       else
         if !menu_permission_hos_id.nil? && menu_permission_hos_id != []
-          @doctors = Doctor.where(hospital_id:menu_permission_hos_id)
+          @doctors_all = Doctor.where(hospital_id:menu_permission_hos_id)
         else
-          @doctors = Doctor.all
+          @doctors_all = Doctor.all
         end
       end
     else
-      @doctors = Doctor.all
+      @doctors_all = Doctor.all
     end
+    records = @doctors_all.length
+    # @doctors = @doctors_all
+    p records
+    p noOfRows
+    @doctors = @doctors_all.paginate(:per_page => noOfRows, :page => page)
+    @total=1
+    if !noOfRows.nil?
+      if records%noOfRows.to_i == 0
+        @total = records/noOfRows.to_i
+      else
+        @total = (records/noOfRows.to_i)+1
+      end
+    end
+    p @doctors
+    @rows=[]
+    @doctors.each do |doc|
+      a={id:doc.id,
+         cell:[
+             doc.id,
+             doc.name,
+             doc.credential_type,
+             doc.credential_type_number,
+             doc.gender,
+             doc.birthday,
+             doc.birthplace,
+             doc.province_id,
+             doc.city_id,
+             doc.hospital_id,
+             doc.department_id,
+             doc.mobile_phone,
+             doc.email,
+             doc.professional_title,
+             doc.introduction
+         ]
+      }
+      @rows.push(a)
+    end
+    @objJSON = {total:@total,rows:@rows,page:page,records:records}
+    # @doctors[0]["total"]=@total
+
+    @objJSON.as_json
+    p @objJSON.as_json
   end
 
   # GET /doctors/1
@@ -60,6 +105,7 @@ class DoctorsController < ApplicationController
 
   # GET /doctors/1/edit
   def edit
+    @doctor = Doctor.where(id:params[:id]).first
     render partial: 'doctors/form'
   end
 
@@ -67,40 +113,55 @@ class DoctorsController < ApplicationController
   # POST /doctors.json
   def create
     @doctor = Doctor.new(doctor_params)
-
-    respond_to do |format|
-      if @doctor.save
-        format.html { redirect_to @doctor, notice: 'Doctor was successfully created.' }
-        format.json { render :show, status: :created, location: @doctor }
-      else
-        format.html { render :new }
-        format.json { render json: @doctor.errors, status: :unprocessable_entity }
-      end
-    end
+    render json:{success:true,data:@doctor}
+    # respond_to do |format|
+    #   if @doctor.save
+    #     format.html { redirect_to @doctor, notice: 'Doctor was successfully created.' }
+    #     format.json { render :show, status: :created, location: @doctor }
+    #   else
+    #     format.html { render :new }
+    #     format.json { render json: @doctor.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # PATCH/PUT /doctors/1
   # PATCH/PUT /doctors/1.json
   def update
-    respond_to do |format|
-      if @doctor.update(doctor_params)
-        format.html { redirect_to @doctor, notice: 'Doctor was successfully updated.' }
-        format.json { render :show, status: :ok, location: @doctor }
-      else
-        format.html { render :edit }
-        format.json { render json: @doctor.errors, status: :unprocessable_entity }
-      end
+    if @doctor.update(doctor_params)
+      render json:{success:true}
+    else
+      render json:{success:false}
     end
+
+    # respond_to do |format|
+    #   if @doctor.update(doctor_params)
+    #     # format.html { redirect_to @doctor, notice: 'Doctor was successfully updated.' }
+    #     format.json { render :show, status: :ok, location: @doctor }
+    #   else
+    #     format.html { render :edit }
+    #     format.json { render json: @doctor.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # DELETE /doctors/1
   # DELETE /doctors/1.json
   def destroy
-    @doctor.destroy
-    respond_to do |format|
-      format.html { redirect_to doctors_url, notice: 'Doctor was successfully destroyed.' }
-      format.json { head :no_content }
+    ids = params[:id]
+    ids_arr = ids.split(',')
+    @doctors = Doctor.where(id:ids_arr)
+    if !@doctors.empty?
+      @doctors.each do |doc|
+        doc.destroy
+      end
     end
+    render json:{suceess:true}
+    # @doctor.destroy
+    # respond_to do |format|
+    #   format.html { redirect_to doctors_url, notice: 'Doctor was successfully destroyed.' }
+    #   format.json { head :no_content }
+    # end
   end
 
   def get_department
@@ -171,70 +232,142 @@ class DoctorsController < ApplicationController
 
   def is_executable
     @menu_permissions = MenuPermission.where(menu_id: params[:menu_id], admin2_id: current_user.id)
-    @doctor = Doctor.find_by(id:params[:id])
-    is_manage=false
-    is_add=false
-    is_show=false
-    is_edit=false
-    is_delete=false
-    flag=true
-    if !@menu_permissions.empty?
-      @menu_permissions.each do |menu_per|
-        if !menu_per.hospital_id.nil? && !menu_per.hospital_id.split(",").index(@doctor.hospital_id.to_s).nil?
-          flag=false
-          if is_manage == false
-            is_manage = menu_per.is_manage
+    ids = params[:id].to_s
+    p ids
+    ids_arr = ids.split(',')
+    @doctor=nil
+    @doctors=nil
+    if ids_arr != []
+      if ids_arr.length == 1
+        @doctor = Doctor.where(id:ids_arr).first
+      else
+        @doctors = Doctor.where(id:ids_arr)
+      end
+      # @doctor = Doctor.where(id:ids_arr)
+      is_manage=false
+      is_add=false
+      is_show=false
+      is_edit=false
+      is_delete=false
+      if !@menu_permissions.empty? && !@doctor.nil?
+        p 'doctor'
+        @menu_permissions.each do |menu_per|
+          if !menu_per.hospital_id.nil? && !menu_per.hospital_id.split(",").index(@doctor.hospital_id.to_s).nil?
+            flag=false
+            if is_manage == false
+              is_manage = menu_per.is_manage
+            end
+            if is_show == false
+              is_show = menu_per.is_show
+            end
+            if is_add == false
+              is_add = menu_per.is_add
+            end
+            if is_edit == false
+              is_edit = menu_per.is_edit
+            end
+            if is_delete == false
+              is_delete = menu_per.is_delete
+            end
           end
-          if is_show == false
-            is_show = menu_per.is_show
+          if !menu_per.department_id.nil? &&  !menu_per.department_id.split(",").index(@doctor.department_id.to_s).nil?
+            flag=false
+            if is_manage == false
+              is_manage = menu_per.is_manage
+            end
+            if is_show == false
+              is_show = menu_per.is_show
+            end
+            if is_add == false
+              is_add = menu_per.is_add
+            end
+            if is_edit == false
+              is_edit = menu_per.is_edit
+            end
+            if is_delete == false
+              is_delete = menu_per.is_delete
+            end
           end
-          if is_add == false
-            is_add = menu_per.is_add
-          end
-          if is_edit == false
-            is_edit = menu_per.is_edit
-          end
-          if is_delete == false
-            is_delete = menu_per.is_delete
-          end
-        end
-        if !menu_per.department_id.nil? &&  !menu_per.department_id.split(",").index(@doctor.department_id.to_s).nil?
-          flag=false
-          if is_manage == false
-            is_manage = menu_per.is_manage
-          end
-          if is_show == false
-            is_show = menu_per.is_show
-          end
-          if is_add == false
-            is_add = menu_per.is_add
-          end
-          if is_edit == false
-            is_edit = menu_per.is_edit
-          end
-          if is_delete == false
-            is_delete = menu_per.is_delete
-          end
-        end
-        if menu_per.department_id.nil? && menu_per.hospital_id.nil?
-          if is_manage == false
-            is_manage = menu_per.is_manage
-          end
-          if is_show == false
-            is_show = menu_per.is_show
-          end
-          if is_add == false
-            is_add = menu_per.is_add
-          end
-          if is_edit == false
-            is_edit = menu_per.is_edit
-          end
-          if is_delete == false
-            is_delete = menu_per.is_delete
+          if menu_per.department_id.nil? && menu_per.hospital_id.nil?
+            if is_manage == false
+              is_manage = menu_per.is_manage
+            end
+            if is_show == false
+              is_show = menu_per.is_show
+            end
+            if is_add == false
+              is_add = menu_per.is_add
+            end
+            if is_edit == false
+              is_edit = menu_per.is_edit
+            end
+            if is_delete == false
+              is_delete = menu_per.is_delete
+            end
           end
         end
       end
+      if !@menu_permissions.empty? && !@doctors.nil? && !@doctors.empty?
+        p 'doctors'
+        @menu_permissions.each do |menu_per|
+          if menu_per.department_id.nil? && menu_per.hospital_id.nil?
+            if is_manage == false
+              is_manage = menu_per.is_manage
+            end
+            if is_show == false
+              is_show = menu_per.is_show
+            end
+            if is_delete == false
+              is_delete = menu_per.is_delete
+            end
+          end
+          is_m=true
+          is_s=true
+          is_d=true
+          @doctors.each do |doctor|
+            if !menu_per.hospital_id.nil? && !menu_per.hospital_id.split(",").index(doctor.hospital_id.to_s).nil?
+              if is_m
+                is_m = menu_per.is_manage
+              end
+              if is_s
+                is_s = menu_per.is_show
+              end
+              if is_d
+                is_d = menu_per.is_delete
+              end
+            end
+            if !menu_per.department_id.nil? &&  !menu_per.department_id.split(",").index(doctor.department_id.to_s).nil?
+              if is_m
+                is_m = menu_per.is_manage
+              end
+              if is_s
+                is_s = menu_per.is_show
+              end
+              if is_d
+                is_d = menu_per.is_delete
+              end
+            end
+          end
+          p is_d
+          p is_m
+          p 'i'
+          if is_manage == false
+            is_manage=is_m
+          end
+          if is_show == false
+            is_show=is_s
+          end
+          if is_show == false
+            is_show=is_m
+          end
+        end
+        is_edit=false
+        is_add=true
+      end
     end
+    p 'end'
+    p is_delete
+    p is_manage
     render json:{is_add:is_add,is_delete:is_delete,is_show:is_show,is_edit:is_edit,is_manage:is_manage}
   end
 
