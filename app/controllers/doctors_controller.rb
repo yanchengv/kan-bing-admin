@@ -1,4 +1,6 @@
 class DoctorsController < ApplicationController
+  require 'httparty'
+  include HTTParty
   before_filter :signed_in_user
   before_action :set_doctor, only: [:show, :edit, :update, :destroy]
 
@@ -48,45 +50,44 @@ class DoctorsController < ApplicationController
     else
       @doctors_all = Doctor.all
     end
-    records = @doctors_all.length
-    # @doctors = @doctors_all
-    p records
-    p noOfRows
-    @doctors = @doctors_all.paginate(:per_page => noOfRows, :page => page)
-    @total=1
-    if !noOfRows.nil?
-      if records%noOfRows.to_i == 0
-        @total = records/noOfRows.to_i
-      else
-        @total = (records/noOfRows.to_i)+1
+    records=0
+    @total=0
+    if !@doctors_all.nil? && !@doctors_all.empty?
+      # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
+      records = @doctors_all.length
+      @doctors = @doctors_all.paginate(:per_page => noOfRows, :page => page)
+      if !noOfRows.nil?
+        if records%noOfRows.to_i == 0
+          @total = records/noOfRows.to_i
+        else
+          @total = (records/noOfRows.to_i)+1
+        end
+      end
+      @rows=[]
+      @doctors.each do |doc|
+        a={id:doc.id,
+           cell:[
+               # doc.id,
+               doc.name,
+               doc.credential_type,
+               doc.credential_type_number,
+               doc.gender,
+               doc.birthday,
+               doc.birthplace,
+               doc.province_id,
+               doc.city_id,
+               doc.hospital_id,
+               doc.department_id,
+               doc.mobile_phone,
+               doc.email,
+               doc.professional_title,
+               doc.introduction
+           ]
+        }
+        @rows.push(a)
       end
     end
-    p @doctors
-    @rows=[]
-    @doctors.each do |doc|
-      a={id:doc.id,
-         cell:[
-             doc.id,
-             doc.name,
-             doc.credential_type,
-             doc.credential_type_number,
-             doc.gender,
-             doc.birthday,
-             doc.birthplace,
-             doc.province_id,
-             doc.city_id,
-             doc.hospital_id,
-             doc.department_id,
-             doc.mobile_phone,
-             doc.email,
-             doc.professional_title,
-             doc.introduction
-         ]
-      }
-      @rows.push(a)
-    end
     @objJSON = {total:@total,rows:@rows,page:page,records:records}
-    # @doctors[0]["total"]=@total
 
     @objJSON.as_json
     p @objJSON.as_json
@@ -99,12 +100,14 @@ class DoctorsController < ApplicationController
 
   # GET /doctors/new
   def new
+    @menu_id = params[:menu_id]
     @doctor = Doctor.new
     render partial: 'doctors/form'
   end
 
   # GET /doctors/1/edit
   def edit
+    @menu_id = params[:menu_id]
     @doctor = Doctor.where(id:params[:id]).first
     render partial: 'doctors/form'
   end
@@ -112,7 +115,7 @@ class DoctorsController < ApplicationController
   # POST /doctors
   # POST /doctors.json
   def create
-    @doctor = Doctor.new(doctor_params)
+    @doctor = Doctor.create(doctor_params)
     render json:{success:true,data:@doctor}
     # respond_to do |format|
     #   if @doctor.save
@@ -156,7 +159,7 @@ class DoctorsController < ApplicationController
         doc.destroy
       end
     end
-    render json:{suceess:true}
+    render json:{success:true}
     # @doctor.destroy
     # respond_to do |format|
     #   format.html { redirect_to doctors_url, notice: 'Doctor was successfully destroyed.' }
@@ -249,6 +252,7 @@ class DoctorsController < ApplicationController
       is_show=false
       is_edit=false
       is_delete=false
+      is_activated=true
       if !@menu_permissions.empty? && !@doctor.nil?
         p 'doctor'
         @menu_permissions.each do |menu_per|
@@ -306,6 +310,9 @@ class DoctorsController < ApplicationController
             end
           end
         end
+        if @doctor.is_activated == 1
+          is_activated=false
+        end
       end
       if !@menu_permissions.empty? && !@doctors.nil? && !@doctors.empty?
         p 'doctors'
@@ -347,6 +354,9 @@ class DoctorsController < ApplicationController
                 is_d = menu_per.is_delete
               end
             end
+            if doctor.is_activated == 1
+              is_activated=false
+            end
           end
           p is_d
           p is_m
@@ -368,7 +378,129 @@ class DoctorsController < ApplicationController
     p 'end'
     p is_delete
     p is_manage
-    render json:{is_add:is_add,is_delete:is_delete,is_show:is_show,is_edit:is_edit,is_manage:is_manage}
+    render json:{is_add:is_add,is_delete:is_delete,is_show:is_show,is_edit:is_edit,is_manage:is_manage,is_activated:is_activated}
+  end
+
+  def send_email
+    doc_ids = params[:doc_ids].to_s
+    doc_ids_arr=doc_ids.split(',')
+    flag=false
+    if doc_ids_arr.length > 0
+      @doctors = Doctor.where(id:doc_ids_arr)
+      if !@doctors.empty?
+        @doctors.each do |doc|
+          code=""
+          6.times do
+            code=code+rand(9).to_s
+          end
+          p code
+          doc.update_attributes(verify_code:code)
+          path=''
+          param={}
+          if !doc.email.nil? && doc.email!=''
+            path='/mailers/account_active'
+            param={email:doc.email, id:doc.id ,verify_code:doc.verify_code}
+          end
+          params={:query => param}
+          response = HTTParty.post(Settings.mimas+path, params)
+          if response['success']==true
+            doc.update_attributes(is_checked:1)
+            flag=true
+            # render :json=> {success:true}
+          end
+        end
+      end
+    # else
+    #   @pat = Patient.find_by(id:params[:pat_id])
+    #   # @user = User.new(name:PinYin.permlink(@doc.name,'')+random.to_s,password:'123456',doctor_id:@doc.id,email:@doc.email,mobile_phone:@doc.mobile_phone,credential_type_number:@doc.credential_type_number)
+    #   # @user.save
+    #   # p @user.name
+    #   code=""
+    #   6.times do
+    #     code=code+rand(9).to_s
+    #   end
+    #   @pat.update_attributes(verify_code:code)
+    #   path=''
+    #   param={}
+    #   if !@pat.email.nil? && @pat.email!=''
+    #     path='/mailers/account_active'
+    #     param={email:@pat.email, id:@pat.id ,verify_code:@pat.verify_code}
+    #   end
+    #   params={:query => param}
+    #   response = HTTParty.post(Settings.mimas+path, params)
+    #   if response['success']==true
+    #     @pat.update_attributes(is_checked:1)
+    #     @patient = Patient.where(is_checked:0)#.paginate(:per_page => 20, :page => params[:page])
+    #     render :partial => 'doctors/doc_show'
+    #   else
+    #     render :json => {success:false}
+    #   end
+    end
+    if flag
+      render :json => {success:true}
+    else
+      render :json => {success:false}
+    end
+  end
+
+  def send_phone
+    doc_ids = params[:doc_ids].to_s
+    doc_ids_arr=doc_ids.split(',')
+    flag=false
+    if doc_ids_arr.length > 0
+      @doctors = Doctor.where(id:doc_ids_arr)
+      if !@doctors.empty?
+        @doctors.each do |doc|
+          code=""
+          6.times do
+            code=code+rand(9).to_s
+          end
+          doc.update_attributes(verify_code:code)
+          path=''
+          param={}
+          if !doc.mobile_phone.nil? && doc.mobile_phone!=''
+            path='/mobile_app/sms_center/sent'
+            param={mobile_phone:doc.mobile_phone, id:doc.id ,verify_code:doc.verify_code}
+          end
+          params={:query => param}
+          response = HTTParty.post(Settings.mimas+path, params)
+          if response['flag'] == 0
+            doc.update_attributes(is_checked:1)
+            flag=true
+          end
+        end
+      end
+    # else
+    #   @pat = Patient.find_by(id:params[:pat_id])
+    #   # @user = User.new(name:PinYin.permlink(@doc.name,'')+random.to_s,password:'123456',doctor_id:@doc.id,email:@doc.email,mobile_phone:@doc.mobile_phone,credential_type_number:@doc.credential_type_number)
+    #   # @user.save
+    #   # p @user.name
+    #   code=""
+    #   6.times do
+    #     code=code+rand(9).to_s
+    #   end
+    #   @pat.update_attributes(verify_code:code)
+    #   path=''
+    #   param={}
+    #   if !@pat.mobile_phone.nil? && @pat.mobile_phone!=''
+    #     path='/mobile_app/sms_center/sent'
+    #     param={mobile_phone:@pat.mobile_phone, id:@pat.id ,verify_code:@pat.verify_code}
+    #   end
+    #   params={:query => param}
+    #   response = HTTParty.post(Settings.mimas+path, params)
+    #   if response['flag'] == 0
+    #     @pat.update_attributes(is_checked:1)
+    #     @patient = Patient.where(is_checked:0)#.paginate(:per_page => 20, :page => params[:page])
+    #     render :partial => 'doctors/doc_show'
+    #   else
+    #     render :json => {success:false}
+    #   end
+    end
+    if flag
+      render :json => {success:true}
+    else
+      render :json => {success:false}
+    end
   end
 
   private
@@ -379,6 +511,6 @@ class DoctorsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def doctor_params
-      params.require(:doctor).permit(:name, :credential_type, :credential_type_number, :gender, :birthday, :birthplace, :province_id, :city_id, :hospital_id, :department_id,:province_name, :city_name, :hospital_name, :department_name, :address, :nationality, :citizenship, :photo, :marriage, :mobile_phone, :home_phone, :home_address, :contact, :contact_phone, :home_postcode, :email, :introduction, :professional_title, :position, :hire_date, :certificate_number, :expertise, :degree, :graduated_from, :graduated_at, :research_paper, :wechat, :rewards)
+      params.require(:doctor).permit(:name, :credential_type, :credential_type_number, :gender, :birthday, :birthplace, :province_id, :city_id, :hospital_id, :department_id,:province_name, :city_name, :hospital_name, :department_name, :address, :nationality, :citizenship, :photo, :marriage, :mobile_phone, :home_phone, :home_address, :contact, :contact_phone, :home_postcode, :email, :introduction, :professional_title, :position, :hire_date, :certificate_number, :expertise, :degree, :graduated_from, :graduated_at, :research_paper, :wechat, :rewards, :is_checked, :is_activated, :verify_code,:is_public)
     end
 end

@@ -40,6 +40,9 @@ gem 'bcrypt', '~> 3.1.7'
 gem "select2-rails"
 gem "ruby-pinyin", "~> 0.2.3" #汉字转拼音码
 
+gem 'settingslogic'
+gem "httparty", "~> 0.12.0"
+
 # Use unicorn as the app server
 # gem 'unicorn'
 

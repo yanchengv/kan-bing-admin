@@ -63,7 +63,7 @@ module SessionsHelper
     require 'securerandom'
     random=SecureRandom.random_number(8999)+SecureRandom.random_number(599)+SecureRandom.random_number(399)
     time=Time.now.to_i
-    id=(001+time.to_s+random.to_s).to_i
+    id=(Settings.hospital_code.yuquan+time.to_s+random.to_s).to_i
     return id
   end
 end
