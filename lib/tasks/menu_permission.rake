@@ -9,29 +9,31 @@ def meun_data
   @menu4=Menu.create(
       name: '基础信息'
   )
-  @menu1=Menu.create(
+  @menu12=Menu.create(
       name: '用户管理',
-      parent_id:@menu4,
-      table_name: 'doctors',
-      model_class:'Doctor'
-
+      parent_id:@menu4.id,
+      table_name: 'users',
+      model_class:'User',
+      uri:'/users'
   )
   @menu1=Menu.create(
       name: '医生管理',
-      parent_id:@menu4,
+      parent_id:@menu4.id,
       table_name: 'doctors',
-      model_class:'Doctor'
+      model_class:'Doctor' ,
+      uri:'/doctors'
 
   )
   @menu2=Menu.create(
       name: '患者管理',
-      parent_id:@menu4,
+      parent_id:@menu4.id,
       table_name: 'patients',
-      model_class:'Patient'
+      model_class:'Patient',
+      uri:'/patients'
   )
-  @menu2=Menu.create(
+  @menu13=Menu.create(
       name: '管理员管理',
-      parent_id:@menu4,
+      parent_id:@menu4.id,
       table_name: 'admin2s',
       model_class:'Admin2'
   )
@@ -69,7 +71,8 @@ def meun_data
   @menu11=Menu.create(
       name: '权限管理',
       table_name: 'menus',
-      model_class:'Menu'
+      model_class:'Menu',
+      uri:'/menus/show'
   )
   Admin2Menu.delete_all
   @menu_admin_1=Admin2Menu.create(
@@ -112,9 +115,17 @@ def meun_data
       admin2_id: @admin1.id,
       menu_id: @menu10.id
   )
-  @menu_admin_10=Admin2Menu.create(
+  @menu_admin_11=Admin2Menu.create(
       admin2_id: @admin1.id,
       menu_id: @menu11.id
+  )
+  @menu_admin_12=Admin2Menu.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu12.id
+  )
+  @menu_admin_13=Admin2Menu.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu13.id
   )
   MenuPermission.delete_all
   @menu_permission1 = MenuPermission.create(
@@ -171,6 +182,18 @@ def meun_data
   MenuPermission.create(
       admin2_id: @admin1.id,
       menu_id: @menu11.id,
+      is_manage:true
+  )
+
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu12.id,
+      is_manage:true
+  )
+
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu13.id,
       is_manage:true
   )
 

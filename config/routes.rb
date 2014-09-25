@@ -3,7 +3,12 @@ Rails.application.routes.draw do
 
   resources :admin2_menus
 
-  resources :menus
+  resources :menus do
+    collection do
+
+      get 'show',to:'menus#show'
+    end
+  end
 
   resources :provinces
 
@@ -45,6 +50,8 @@ Rails.application.routes.draw do
       get 'get_hospital', to:'doctors#get_hospital'
       get 'get_city', to:'doctors#get_city'
       get 'is_executable', to:'doctors#is_executable'
+      get 'send_email', to:'doctors#send_email'
+      get 'send_phone', to:'doctors#send_phone'
     end
   end
 

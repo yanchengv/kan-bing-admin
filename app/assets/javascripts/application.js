@@ -19,6 +19,7 @@
 //= require web_admin
 //= require select2
 //= require jquery.datetimepicker
+//= require grid.locale-cn
 //= require jquery.jqGrid
 //= require_tree ./templates
 //= require_tree ./models
