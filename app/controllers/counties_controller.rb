@@ -1,18 +1,38 @@
 class CountiesController < ApplicationController
   before_action :set_province, only: [:show, :edit, :update, :destroy]
   def index
-    @city_id = params[:city_id]
-    if @city_id
-      @county = County.where(:city_id => @city_id)
-    else
-      @county = County.all
+    noOfRows = params[:rows]
+    page = params[:page]
+    @counties = County.all
+    records=0
+    @total=0
+    if !@counties.nil? && !@counties.empty?
+      # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
+      records = @counties.length
+      @counties = @counties.paginate(:per_page => noOfRows, :page => page)
+      if !noOfRows.nil?
+        if records%noOfRows.to_i == 0
+          @total = records/noOfRows.to_i
+        else
+          @total = (records/noOfRows.to_i)+1
+        end
+      end
+      @rows=[]
+      @counties.each do |doc|
+        a={id:doc.id,
+           cell:[
+               doc.id,
+               doc.name,
+               doc.province_id
+           ]
+        }
+        @rows.push(a)
+      end
     end
-    total = @county.count
-    county = @county
-    @json = '{"success":true,"total":' << "#{total}" << ',"county":' << county.to_json << ' }'
-    respond_to do |format|
-      format.json{render :json => @json}
-    end
+    @objJSON = {total:@total,rows:@rows,page:page,records:records}
+
+    @objJSON.as_json
+    p @objJSON.as_json
   end
 
   def new

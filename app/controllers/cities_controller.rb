@@ -2,18 +2,38 @@ class CitiesController < ApplicationController
   before_action :set_city, only: [:show, :edit, :update, :destroy]
   respond_to :js
   def index
-    @province_id = params[:province_id]
-    if @province_id
-      @cities = City.where(:province_id => @province_id)
-    else
-      @cities = City.all
+    noOfRows = params[:rows]
+    page = params[:page]
+    @cities = City.all
+    records=0
+    @total=0
+    if !@cities.nil? && !@cities.empty?
+      # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
+      records = @cities.length
+      @cities = @cities.paginate(:per_page => noOfRows, :page => page)
+      if !noOfRows.nil?
+        if records%noOfRows.to_i == 0
+          @total = records/noOfRows.to_i
+        else
+          @total = (records/noOfRows.to_i)+1
+        end
+      end
+      @rows=[]
+      @cities.each do |doc|
+        a={id:doc.id,
+           cell:[
+               doc.id,
+               doc.name,
+               doc.province_id
+           ]
+        }
+        @rows.push(a)
+      end
     end
-    total = @cities.count
-    cities = @cities
-    @json = '{"success":true,"total":' << "#{total}" << ',"cities":' << cities.to_json << ' }'
-    respond_to do |format|
-      format.json {render  :json =>@json}
-    end
+    @objJSON = {total:@total,rows:@rows,page:page,records:records}
+
+    @objJSON.as_json
+    p @objJSON.as_json
   end
 
   def new
