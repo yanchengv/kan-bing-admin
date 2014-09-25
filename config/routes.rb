@@ -6,7 +6,8 @@ Rails.application.routes.draw do
   resources :menus do
     collection do
 
-      get 'show',to:'menus#show'
+      get 'show',to:'menus#show_menus'
+      get 'menus_to_user',tp:'menus#menus_to_user'
     end
   end
 

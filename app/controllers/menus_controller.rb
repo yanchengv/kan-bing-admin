@@ -1,12 +1,17 @@
 class MenusController < ApplicationController
-  before_action :set_menu, only: [:show, :edit, :update, :destroy]
+  before_action :set_menu, only: [ :edit, :update, :destroy]
 
   # GET /menus
   # GET /menus.json
-  def show
+  def show_menus
     @menus = Menu.select('id','parent_id as pId','name','table_name','model_class').all
+    render template: 'menus/show'
   end
 
+  def menus_to_user
+   p 122
+    render template: menus_to_user
+  end
   # GET /menus/1
   # GET /menus/1.json
   def show
