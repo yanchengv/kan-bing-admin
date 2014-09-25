@@ -31,6 +31,8 @@ Rails.application.routes.draw do
       get 'get_hospital', to:'doctors#get_hospital'
       get 'get_city', to:'doctors#get_city'
       get 'is_executable', to:'doctors#is_executable'
+      get 'send_email', to:'doctors#send_email'
+      get 'send_phone', to:'doctors#send_phone'
     end
   end
 
