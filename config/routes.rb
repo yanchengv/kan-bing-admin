@@ -5,6 +5,20 @@ Rails.application.routes.draw do
 
   resources :menus
 
+  resources :provinces
+
+  resources :cities do
+    collection do
+      get 'cities/:province_id', to: 'cities#index'
+    end
+  end
+
+  resources :counties do
+    collection do
+      get 'counties/:city_id', to: 'counties#index'
+    end
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

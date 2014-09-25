@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140919102600) do
+ActiveRecord::Schema.define(version: 20140925030450) do
 
   create_table "admin2_menus", force: true do |t|
     t.integer  "admin2_id"
@@ -51,6 +51,21 @@ ActiveRecord::Schema.define(version: 20140919102600) do
   add_index "admin2s", ["reset_password_token"], name: "index_admin2s_on_reset_password_token", unique: true, using: :btree
   add_index "admin2s", ["unlock_token"], name: "index_admin2s_on_unlock_token", unique: true, using: :btree
 
+  create_table "cities", force: true do |t|
+    t.string   "name"
+    t.integer  "province_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "counties", force: true do |t|
+    t.string   "name"
+    t.integer  "city_id"
+    t.integer  "province_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "menu_permissions", force: true do |t|
     t.integer  "menu_id"
     t.integer  "admin2_id"
@@ -70,6 +85,15 @@ ActiveRecord::Schema.define(version: 20140919102600) do
     t.integer  "parent_id"
     t.string   "table_name"
     t.string   "model_class"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "provinces", force: true do |t|
+    t.string   "name"
+    t.string   "short_name"
+    t.string   "spell_name"
+    t.string   "en_abbreviation"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
