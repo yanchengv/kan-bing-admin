@@ -2,14 +2,40 @@ class ProvincesController < ApplicationController
   before_action :set_province, only: [:show, :edit, :update, :destroy]
   respond_to :js
   def index
+    noOfRows = params[:rows]
+    page = params[:page]
     @provinces = Province.all
-    total = @provinces.count
-    provinces = @provinces
-    @json = '{"success":true,"total":' << "#{total}" << ',"provinces":' << provinces.to_json << ' }'
-    respond_with(@provinces) do |format|
-      format.html{render "dictionaries/index.html.erb"}
-      format.json {render  :json =>@json ,:id =>true  ,:root => true  }
+    records=0
+    @total=0
+    if !@provinces.nil? && !@provinces.empty?
+      # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
+      records = @provinces.length
+      @provinces = @provinces.paginate(:per_page => noOfRows, :page => page)
+      if !noOfRows.nil?
+        if records%noOfRows.to_i == 0
+          @total = records/noOfRows.to_i
+        else
+          @total = (records/noOfRows.to_i)+1
+        end
+      end
+      @rows=[]
+      @provinces.each do |doc|
+        a={id:doc.id,
+           cell:[
+               doc.id,
+               doc.name,
+               doc.short_name,
+               doc.spell_name,
+               doc.en_abbreviation
+           ]
+        }
+        @rows.push(a)
+      end
     end
+    @objJSON = {total:@total,rows:@rows,page:page,records:records}
+
+    @objJSON.as_json
+    p @objJSON.as_json
   end
 
   def new

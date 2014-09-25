@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140925030450) do
+ActiveRecord::Schema.define(version: 20140925102646) do
 
   create_table "admin2_menus", force: true do |t|
     t.integer  "admin2_id"
