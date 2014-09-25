@@ -4,7 +4,14 @@ class Admin2sController < ApplicationController
   # GET /admins
   # GET /admins.json
   def index
+  end
+
+  def test_index
     @admins = Admin2.all
+    count = @admins.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @admins = @admins.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:admin2s => @admins.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
   # GET /admins/1
