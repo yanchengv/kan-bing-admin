@@ -1,16 +1,20 @@
+ <style>
+     div.left{float: left;width: 250px !important;}
+     div.right{float: left;width: 200px !important;}
+     ul.ztree {margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width:220px;height:360px;overflow-y:scroll;overflow-x:auto;}
+ </style>
+
 <SCRIPT type="text/javascript">
     <!--
     var setting = {
-        view: {
-            addHoverDom: addHoverDom,
-            removeHoverDom: removeHoverDom,
-            selectedMulti: false
-        },
         edit: {
             enable: true,
-            editNameSelectAll: true,
-            showRemoveBtn: showRemoveBtn,
-            showRenameBtn: showRenameBtn
+            showRemoveBtn: false,
+            showRenameBtn: false,
+            drag:{
+                isCopy:true,
+                isMove:false
+            }
         },
         data: {
             simpleData: {
@@ -19,101 +23,99 @@
         },
         callback: {
             beforeDrag: beforeDrag,
-            beforeEditName: beforeEditName,
-            beforeRemove: beforeRemove,
-            beforeRename: beforeRename,
-            onRemove: onRemove,
-            onRename: onRename
+            beforeDrop: beforeDrop
         }
     };
-    var zNodes =<%=raw @menus.to_json%>
-    var log, className = "dark";
+
+    var zNodes =<%= raw @menus.to_json%>
+
     function beforeDrag(treeId, treeNodes) {
-        return false;
-    }
-    function beforeEditName(treeId, treeNode) {
-        className = (className === "dark" ? "":"dark");
-        showLog("[ "+getTime()+" beforeEditName ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-        zTree.selectNode(treeNode);
-        return confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？");
-    }
-    function beforeRemove(treeId, treeNode) {
-        className = (className === "dark" ? "":"dark");
-        showLog("[ "+getTime()+" beforeRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-        zTree.selectNode(treeNode);
-        return confirm("确认删除 节点 -- " + treeNode.name + " 吗？");
-    }
-    function onRemove(e, treeId, treeNode) {
-        showLog("[ "+getTime()+" onRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
-    }
-    function beforeRename(treeId, treeNode, newName, isCancel) {
-        className = (className === "dark" ? "":"dark");
-        showLog((isCancel ? "<span style='color:red'>":"") + "[ "+getTime()+" beforeRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name + (isCancel ? "</span>":""));
-        if (newName.length == 0) {
-            alert("节点名称不能为空.");
-            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-            setTimeout(function(){zTree.editName(treeNode)}, 10);
-            return false;
+        for (var i=0,l=treeNodes.length; i<l; i++) {
+            if (treeNodes[i].drag === false) {
+                return false;
+            }
         }
         return true;
     }
-    function onRename(e, treeId, treeNode, isCancel) {
-        showLog((isCancel ? "<span style='color:red'>":"") + "[ "+getTime()+" onRename ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name + (isCancel ? "</span>":""));
-    }
-    function showRemoveBtn(treeId, treeNode) {
-        return !treeNode.isFirstNode;
-    }
-    function showRenameBtn(treeId, treeNode) {
-        return !treeNode.isLastNode;
-    }
-    function showLog(str) {
-        if (!log) log = $("#log");
-        log.append("<li class='"+className+"'>"+str+"</li>");
-        if(log.children("li").length > 8) {
-            log.get(0).removeChild(log.children("li")[0]);
-        }
-    }
-    function getTime() {
-        var now= new Date(),
-                h=now.getHours(),
-                m=now.getMinutes(),
-                s=now.getSeconds(),
-                ms=now.getMilliseconds();
-        return (h+":"+m+":"+s+ " " +ms);
-    }
+    function beforeDrop(treeId, treeNodes, targetNode, moveType) {
+        var drag_id
+        drag_id=treeNodes[0]['id'] //获取被拖拽的id
+        var left_treeObj = $.fn.zTree.getZTreeObj(treeId);
+        console.log(treeId)
+        var nodes = left_treeObj.getNodesByParam("id", drag_id, null);    //查找用户是否已经存在此菜单节点
+       if (nodes.length==0){
+           //用户不存在此菜单节点，可以进行拖拽
+           if (treeNodes[0].level>0) {
+               var parent_id=treeNodes[0].pId
+               var right_treeObj = $.fn.zTree.getZTreeObj('menusTree');
+               var right_nodes = right_treeObj.getNodesByParam("id", parent_id, null);  //right总菜单中查找
+               var left_nodes = left_treeObj.getNodesByParam("id", parent_id, null);   //left admin菜单中查找
+               if (left_nodes.length==0){
+                   var nodes=[
+                           {id:right_nodes[0].id,name:right_nodes[0].name,pId:null},
+                           {id:treeNodes[0].id,name:treeNodes[0].name,pId:right_nodes[0].id}
+                   ]
+                   left_treeObj.addNodes(null,nodes)
+                    return false;
+               }else{
+                   return targetNode ? targetNode.drop !== false : true;
+               }
+           } else{
+               return targetNode ? targetNode.drop !== false : true;
+           }
 
-    var newCount = 1;
-    function addHoverDom(treeId, treeNode) {
-        var sObj = $("#" + treeNode.tId + "_span");
-        if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
-        var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
-                + "' title='add node' onfocus='this.blur();'></span>";
-        sObj.after(addStr);
-        var btn = $("#addBtn_"+treeNode.tId);
-        if (btn) btn.bind("click", function(){
-            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-            zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, name:"new node" + (newCount++)});
-            return false;
-        });
-    };
-    function removeHoverDom(treeId, treeNode) {
-        $("#addBtn_"+treeNode.tId).unbind().remove();
-    };
-    function selectAll() {
-        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
-        zTree.setting.edit.editNameSelectAll =  $("#selectAll").attr("checked");
+
+       }else{
+           alert(nodes[0].name+"已存在");
+           return false;
+
+       }
+
     }
 
     $(document).ready(function(){
-        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-        $("#selectAll").bind("click", selectAll);
+        $.fn.zTree.init($("#menusTree"), setting, zNodes);
+        $.fn.zTree.init($("#treeToUser"), setting);
+
     });
     //-->
 </SCRIPT>
- <h1>权限管理</h1>
-<div class="content_wrap">
-    <ul id="treeDemo" class="ztree"></ul>
+ <h1>menus</h1>
 
-</div>
+ <!-- Button trigger modal -->
+
+ <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+   菜单分配
+ </button>
+
+ <!-- Modal -->
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+         <h4 class="modal-title" id="myModalLabel">菜单分配</h4>
+       </div>
+       <div class="modal-body">
+
+         <div class="zTreeDemoBackground left">
+           总菜单：
+           <ul id="menusTree" class="ztree"></ul>
+         </div>
+
+         <div class="pull-left" style="height:360px;line-height:360px;font-size:24px;margin-right:15px;"><span class="glyphicon glyphicon-resize-horizontal"></span></div>
+         <div class="right">
+           管理员菜单：
+           <ul id="treeToUser" class="ztree"></ul>
+         </div>
+
+
+       </div>
+       <div style="clear:both;"></div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+         <button type="button" class="btn btn-primary">确定</button>
+       </div>
+     </div>
+   </div>
+ </div>
