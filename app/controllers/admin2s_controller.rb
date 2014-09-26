@@ -32,16 +32,21 @@ class Admin2sController < ApplicationController
   # POST /admins.json
   def create
     @admin = Admin2.new(admin_params)
-
-    respond_to do |format|
-      if @admin.save
-        format.html { redirect_to @admin, notice: 'Admin was successfully created.' }
-        format.json { render :show, status: :created, location: @admin }
-      else
-        format.html { render :new }
-        format.json { render json: @admin.errors, status: :unprocessable_entity }
-      end
+    if @admin.save
+      redirect_to :action => :index
+    else
+      render :json=> {:success => false, :errors => '添加失败！'}
     end
+
+    #respond_to do |format|
+    #  if @admin.save
+    #    format.html { redirect_to @admin, notice: 'Admin was successfully created.' }
+    #    format.json { render :show, status: :created, location: @admin }
+    #  else
+    #    format.html { render :new }
+    #    format.json { render json: @admin.errors, status: :unprocessable_entity }
+    #  end
+    #end
   end
 
   # PATCH/PUT /admins/1
@@ -103,6 +108,7 @@ class Admin2sController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def admin_params
-      params.require(:admin).permit(:id, :name, :email, :photo, :password_digest, :remember_token, :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :confirmation_token, :confirmed_at, :confirmation_sent_at, :unconfirmed_email, :failed_attempts, :unlock_token, :locked_at)
+      puts "==============#{params.to_json}"
+      params.permit(:id, :name, :email, :photo, :password_digest, :remember_token, :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :confirmation_token, :confirmed_at, :confirmation_sent_at, :unconfirmed_email, :failed_attempts, :unlock_token, :locked_at)
     end
 end
