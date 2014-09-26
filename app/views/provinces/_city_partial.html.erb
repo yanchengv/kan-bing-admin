@@ -1,0 +1,32 @@
+<style>
+        .select2-container{
+            width:200px;
+
+        }
+</style>
+  <select  id="doctor_city_id" name="city[province_id]" onchange="search_county()">
+  <option value="">---请选择---</option>
+  <% if @city.nil? %>
+      <% @city = City.all %>
+  <% end %>
+  <% if !@city.empty? %>
+      <% @city.each do |city| %>
+          <option id='city_<%= city.id %>' value="<%= city.id %>"><%= city.name %></option>
+      <% end %>
+  <% end %>
+
+</select>
+<script>
+
+    function search_county() {
+        var city_id = $("#doctor_city_id").val();
+        $.ajax({
+            type : 'get',
+            url : '/provinces/get_county?city_id='+city_id,
+            data : 'text',
+            success : function(data){
+                $("#county").html(data);
+            }
+        })
+    };
+</script>

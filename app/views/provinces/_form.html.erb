@@ -1,0 +1,104 @@
+<style>
+    .form-control{
+        width :200px;
+    }
+</style>
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  <h4 class="modal-title"><b>创建或编辑省市</b></h4>
+</div>
+<div class="modal-body">
+<%= form_for(@province,remote:true) do |f| %>
+    <% if @province.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@province.errors.count, "error") %> prohibited this doctor from being saved:</h2>
+
+          <ul>
+            <% @doctor.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+    <div class="row">
+      <div class="col-md-6 field">
+        <%= f.label :选择省 %>
+        <div id="doc_province"><%= render partial: 'provinces/province_partial' %></div>
+        <%#= f.text_field :province_id %>
+      </div>
+      <div class="col-md-6 field">
+        <%= f.label :省名称 %>
+        <%= f.text_field :name,class:"form-control" %>
+      </div>
+    </div>
+      <div class="row">
+        <div class="col-md-6 field">
+          <%= f.label :选择市 %>
+          <div id="doc_city"><%= render partial: 'provinces/city_partial' %></div>
+          <%#= f.number_field :city_id %>
+        </div>
+        <div class="col-md-6 field">
+          <%= f.label :市名称 %>
+          <%= f.text_field :name ,class:"form-control"%>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 field">
+          <%= f.label :选择县 %>
+          <div id="doc_county"><%= render partial: 'provinces/county_partial' %></div>
+          <%#= f.number_field :city_id %>
+        </div>
+        <div class="col-md-6 field">
+          <%= f.label :县名称 %>
+          <%= f.text_field :name ,class:"form-control"%>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <%= f.submit '确定',id:'new_or_edit_submit',class:"btn btn-primary",onclick:'create_or_update()'%>
+      <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+<% end %>
+</div>
+</div>
+</div>
+<script>
+    function create_or_update(){
+        var result = $('#new_or_edit_doctor').click()
+        console.log(result)
+        $('#create_or_edit_form').modal('hide')
+        var url= "/doctors?menu_id=<%=@menu_id%>"
+        jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+    }
+    $(function() {
+        $('#doc_graduated_at').datetimepicker({
+            lang:'ch',
+            timepicker:false,
+            format:'Y-m-d'
+        });
+        $('#doc_hire_date').datetimepicker({
+            lang:'ch',
+            timepicker:false,
+            format:'Y-m-d'
+        });
+        $('#doctor_credential_type').select2();
+        $('#doc_birthday').datetimepicker({
+            lang:'ch',
+            timepicker:false,
+            format:'Y-m-d'
+        });
+        <% if !params[:id].nil? %>
+        <% doctor = Doctor.find_by(id:params[:id]) %>
+        $('#doc_birthday').val('<%=doctor.birthday%>')
+        $('#doc_hire_date').val('<%=doctor.hire_date%>')
+        $('#doc_graduated_at').val('<%=doctor.graduated_at%>')
+        <% doc = Doctor.find_by(id:params[:id]) %>
+        $('#s2id_doctor_credential_type').children('.select2-choice').children('.select2-chosen').html('<%=doc.credential_type%>')
+        document.getElementById('<%=doc.credential_type%>').setAttribute('selected','selected')
+//        document.getElementById('doctor_birthday').setAttribute('selected','selected')
+        <% end %>
+    })
+</script>

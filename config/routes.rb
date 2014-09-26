@@ -11,7 +11,14 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :provinces
+  resources :provinces do
+    collection do
+      get 'get_city', to:'provinces#get_city'
+      get 'get_county', to:'provinces#get_county'
+      get 'get_search_result', to:'provinces#get_search_result'
+      get 'delete_result', to:'provinces#delete_result'
+    end
+  end
 
   resources :cities do
     collection do
