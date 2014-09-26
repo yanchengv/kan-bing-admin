@@ -1,9 +1,3 @@
-<style>
-        .select2-container{
-            width:200px;
-
-        }
-</style>
   <select  id="doctor_city_id" name="doctor[city_id]" onchange="search_hos()">
   <option value="">---请选择---</option>
   <% if @city.nil? %>
@@ -22,7 +16,7 @@
         <% if !params[:id].nil? %>
         <% city_id = Doctor.find_by(id:params[:id]).city_id %>
         <% city = Doctor.find_by(id:params[:id]).city %>
-        <% if !city_id.nil? && city_id != ''%>
+        <% if !city_id.nil? && city_id != '' && !city.nil?%>
 //        $('#s2id_doctor_city_id').children('.select2-choice').children('.select2-chosen').html('<%=city.name%>')
         document.getElementById('city_<%= city_id %>').setAttribute('selected','selected')
         <% end %>

@@ -69,7 +69,7 @@ class DoctorsController < ApplicationController
         p doc
         a={id:doc.id,
            cell:[
-               # doc.id,
+               doc.id,
                doc.name,
                doc.credential_type,
                doc.credential_type_number,
@@ -104,6 +104,29 @@ class DoctorsController < ApplicationController
   def new
     @menu_id = params[:menu_id]
     @doctor = Doctor.new
+    menu_permission = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
+    # menu_permission_dep = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
+    menu_permission_hos_id=[]
+    menu_permission_dep_id=[]
+    menu_permission.each do |hos|
+      if !hos.hospital_id.nil?
+        p menu_permission_hos_id
+        menu_permission_hos_id.concat(hos.hospital_id.split(","))
+      end
+      if !hos.department_id.nil?
+        menu_permission_dep_id.concat(hos.department_id.split(","))
+      end
+    end
+    if menu_permission_hos_id != []
+      @hospital = Hospital.where(id:menu_permission_hos_id)
+    else
+      @hospital = Hospital.all
+    end
+    if menu_permission_dep_id != []
+      @department = Department.where(id:menu_permission_dep_id)
+    else
+      @department = Department.all
+    end
     render partial: 'doctors/form'
   end
 
@@ -111,6 +134,29 @@ class DoctorsController < ApplicationController
   def edit
     @menu_id = params[:menu_id]
     @doctor = Doctor.where(id:params[:id]).first
+    menu_permission = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
+    # menu_permission_dep = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
+    menu_permission_hos_id=[]
+    menu_permission_dep_id=[]
+    menu_permission.each do |hos|
+      if !hos.hospital_id.nil?
+        p menu_permission_hos_id
+        menu_permission_hos_id.concat(hos.hospital_id.split(","))
+      end
+      if !hos.department_id.nil?
+        menu_permission_dep_id.concat(hos.department_id.split(","))
+      end
+    end
+    if menu_permission_hos_id != []
+      @hospital = Hospital.where(id:menu_permission_hos_id)
+    else
+      @hospital = Hospital.all
+    end
+    if menu_permission_dep_id != []
+      @department = Department.where(id:menu_permission_dep_id)
+    else
+      @department = Department.all
+    end
     render partial: 'doctors/form'
   end
 
@@ -188,13 +234,17 @@ class DoctorsController < ApplicationController
     if !params[:hospital_id].nil? && params[:hospital_id] != '' && params[:hospital_id]!='undefined'
       @hospital_id =params[:hospital_id]
     end
-    if !@hospital_id.nil? || @hospital !=''
+    if !@hospital_id.nil? || @hospital_id !=''
       @department = Department.where(hospital_id:@hospital_id)
     end
     # @doctor = Doctor.new
     # @doctor.set_part
     # render json:{success:true,data:@department}
-    render partial: 'doctors/department_partial'
+    if params[:model_class] == 'patient'
+      render partial: 'patients/department_partial'
+    else
+      render partial: 'doctors/department_partial'
+    end
   end
 
   def get_city
@@ -230,6 +280,8 @@ class DoctorsController < ApplicationController
     end
     if params[:model_class] == 'department'
       render partial: 'departments/hospital_partial'
+    elsif params[:model_class] == 'patient'
+      render partial: 'patients/hospital_partial'
     else
       render partial: 'doctors/hospital_partial'
     end
@@ -318,6 +370,9 @@ class DoctorsController < ApplicationController
       end
       if !@menu_permissions.empty? && !@doctors.nil? && !@doctors.empty?
         p 'doctors'
+        is_m=true
+        is_s=true
+        is_d=true
         @menu_permissions.each do |menu_per|
           if menu_per.department_id.nil? && menu_per.hospital_id.nil?
             if is_manage == false
@@ -330,9 +385,6 @@ class DoctorsController < ApplicationController
               is_delete = menu_per.is_delete
             end
           end
-          is_m=true
-          is_s=true
-          is_d=true
           @doctors.each do |doctor|
             if !menu_per.hospital_id.nil? && !menu_per.hospital_id.split(",").index(doctor.hospital_id.to_s).nil?
               if is_m
@@ -363,14 +415,16 @@ class DoctorsController < ApplicationController
           p is_d
           p is_m
           p 'i'
-          if is_manage == false
-            is_manage=is_m
-          end
-          if is_show == false
-            is_show=is_s
-          end
-          if is_show == false
-            is_show=is_m
+          if !menu_per.department_id.nil? || !menu_per.hospital_id.nil?
+            if is_manage == false
+              is_manage=is_m
+            end
+            if is_show == false
+              is_show=is_s
+            end
+            if is_delete == false
+              is_delete=is_d
+            end
           end
         end
         is_edit=false

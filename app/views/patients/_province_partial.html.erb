@@ -1,0 +1,61 @@
+<% @province = Province.all %>
+<select id="patient_province_id" name="patient[province_id]" placeholder="搜索" onchange="search_city()" >
+  <option value="">---请选择---</option>
+  <% @province.each do |pro| %>
+      <option id='pro_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
+  <% end %>
+</select>
+<script>
+    $(function() {
+        $("#patient_province_id").select2();
+        <% if !params[:id].nil? %>
+        <% pro_id = Patient.find_by(id:params[:id]).province_id %>
+        <% pro = Province.find_by(id:pro_id) %>
+        <% if !pro_id.nil? && pro_id != '' && !pro.nil?%>
+//        $('#s2id_patient_province').children('.select2-choice').children('.select2-chosen').html('<%=pro.name%>')
+        $('#s2id_patient_province_id').children('.select2-choice').children('.select2-chosen').html('<%=pro.name%>')
+        document.getElementById('pro_<%= pro_id %>').setAttribute('selected','selected')
+        <% end %>
+        <% end %>
+    })
+    function search_city() {
+        var pro_id = $("#patient_province_id").val();
+        change_city1(pro_id,'patient')
+        change_hospital1(pro_id,'patient')
+        change_department1(pro_id,'patient')
+    }
+    function change_city1(pro_id,model_class){
+        $.ajax({
+                    type: "get",
+                    url: '/patients/get_city?province_id=' + pro_id+'&model_class=' + model_class,
+                    data: 'text',
+                    success: function (data) {
+                        $("#pat_city").html(data)
+                    }
+                }
+        );
+    }
+    function change_hospital1(pro_id,model_class){
+        $.ajax({
+                    type: "get",
+                    url: '/patients/get_hospital?province_id=' + pro_id+'&model_class=' + model_class,
+                    data: 'text',
+                    success: function (data) {
+                        $("#pat_hospital").html(data);
+                    }
+                }
+        );
+    }
+    function change_department1(pro_id,model_class){
+        $.ajax({
+                    type: "get",
+                    url: '/patients/get_department?province_id=' + pro_id+'&model_class=' + model_class,
+                    data: 'text',
+                    success: function (data) {
+                        $("#pat_department").html(data);
+
+                    }
+                }
+        );
+    }
+</script>
