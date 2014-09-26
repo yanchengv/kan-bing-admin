@@ -4,12 +4,25 @@ class MenusController < ApplicationController
   # GET /menus
   # GET /menus.json
   def show_menus
+    id=params[:id]
+    id ? @admin_id=id : @admin_id=false
+    menus=[]
+    @admin2=Admin2.where(id:id).first
+    if  @admin2
+      admin_menus=Admin2Menu.select('menu_id').where(admin2_id: @admin2.id)
+      if  !admin_menus.nil?
+      admin_menus.each do |admin_menu|
+        menus.push(admin_menu.menu_id)
+      end
+      @admin_menus=Menu.select('id','parent_id as pId','name','table_name','model_class').where(id:menus)
+      end
+
+    end
     @menus = Menu.select('id','parent_id as pId','name','table_name','model_class').all
     render template: 'menus/show'
   end
 
   def menus_to_user
-   p 122
     render template: menus_to_user
   end
   # GET /menus/1
@@ -31,6 +44,7 @@ class MenusController < ApplicationController
   # POST /menus.json
   def create
     @menu = Menu.new(menu_params)
+
 
     respond_to do |format|
       if @menu.save

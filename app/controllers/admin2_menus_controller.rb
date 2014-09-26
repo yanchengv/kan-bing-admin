@@ -25,17 +25,33 @@ class Admin2MenusController < ApplicationController
   # POST /admin2_menus
   # POST /admin2_menus.json
   def create
-    @admin2_menu = Admin2Menu.new(admin2_menu_params)
+    menu_ids=[]
+    data=params[:data]
+    admin_id=params['admin_id']
+       data.each do |node|
+           childrens= node[1]['children']
+           menu_ids.push(node[1]['id'])
+           if !childrens.nil?
+              childrens.each do |children|
+                menu_ids.push(children[1]['id'])
+              end
 
-    respond_to do |format|
-      if @admin2_menu.save
-        format.html { redirect_to @admin2_menu, notice: 'Admin2 menu was successfully created.' }
-        format.json { render :show, status: :created, location: @admin2_menu }
-      else
-        format.html { render :new }
-        format.json { render json: @admin2_menu.errors, status: :unprocessable_entity }
-      end
+           end
+       end
+    menu_ids.each do |menu_id|
+      @admin2_menu = Admin2Menu.new(admin2_id:admin_id   ,menu_id:menu_id)
+      @admin2_menu.save
     end
+    render json:{flag:true}
+    # respond_to do |format|
+    #   if @admin2_menu.save
+    #     format.html { redirect_to @admin2_menu, notice: 'Admin2 menu was successfully created.' }
+    #     format.json { render :show, status: :created, location: @admin2_menu }
+    #   else
+    #     format.html { render :new }
+    #     format.json { render json: @admin2_menu.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # PATCH/PUT /admin2_menus/1
