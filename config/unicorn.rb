@@ -1,7 +1,7 @@
 worker_processes 1
 
-#APP_PATH = "/home/fitark/mimas"
-APP_PATH = "/dfs/deploy/webadmin_deploy/current"
+APP_PATH = "/home/ubuntu/webadmin_deploy/current"
+#APP_PATH = "/dfs/deploy/webadmin_deploy/current"
 
 working_directory APP_PATH
 

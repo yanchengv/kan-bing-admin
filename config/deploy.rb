@@ -11,7 +11,8 @@ require 'mina/rvm'    # for rvm support. (http://rvm.io)
 #   branch       - Branch name to deploy. (needed by mina/git)
 
 set :domain, 'fitark.org'
-set :deploy_to, '/dfs/deploy/webadmin_deploy'
+set :deploy_to, '/home/ubuntu/webadmin_deploy'
+#set :deploy_to, '/dfs/deploy/webadmin_deploy'
 set :repository, 'git@fitark.org:saturn/webadmin.git'
 set :branch, 'master'
 set :term_mode, :system
