@@ -20,15 +20,18 @@ class CitiesController < ApplicationController
       end
       @rows=[]
       @cities.each do |doc|
+        doc.counties.each do |d|
         a={id:doc.id,
            cell:[
                doc.id,
                doc.name,
-               doc.province_id
+               doc.province_id,
+               d.name
            ]
         }
         @rows.push(a)
-      end
+        end
+        end
     end
     @objJSON = {total:@total,rows:@rows,page:page,records:records}
 

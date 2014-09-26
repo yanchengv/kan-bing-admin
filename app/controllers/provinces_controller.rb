@@ -4,13 +4,17 @@ class ProvincesController < ApplicationController
   def index
     noOfRows = params[:rows]
     page = params[:page]
-    @provinces = Province.all
+    if !params[:id].nil? && params[:id] != ''
+      @provinces_all = Province.where(id:params[:id])
+    else
+      @provinces_all = Province.all
+    end
     records=0
     @total=0
-    if !@provinces.nil? && !@provinces.empty?
+    if !@provinces_all.nil? && !@provinces_all.empty?
       # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
-      records = @provinces.length
-      @provinces = @provinces.paginate(:per_page => noOfRows, :page => page)
+      records = @provinces_all.length
+      @provinces = @provinces_all.paginate(:per_page => noOfRows, :page => page)
       if !noOfRows.nil?
         if records%noOfRows.to_i == 0
           @total = records/noOfRows.to_i
@@ -19,17 +23,22 @@ class ProvincesController < ApplicationController
         end
       end
       @rows=[]
-      @provinces.each do |doc|
-        a={id:doc.id,
+      @provinces.each do |province|
+        province.cities.each do |city|
+          province.counties.each do |county|
+        a={id:county.id,
            cell:[
-               doc.id,
-               doc.name,
-               doc.short_name,
-               doc.spell_name,
-               doc.en_abbreviation
+               province.id,
+               province.name,
+               province.short_name,
+               province.spell_name,
+               city.name,
+               county.name
            ]
         }
         @rows.push(a)
+        end
+        end
       end
     end
     @objJSON = {total:@total,rows:@rows,page:page,records:records}
@@ -39,23 +48,58 @@ class ProvincesController < ApplicationController
   end
 
   def new
+    @menu_id = params[:menu_id]
     @province = Province.new
+    render partial: 'provinces/form'
   end
+
   def edit
+    @menu_id = params[:menu_id]
+    @province = Province.new
+    render partial: 'provinces/form'
   end
 
   def create
-    @province = Province.new(province_params)
+    @province = Province.create(province_params)
+    render json: {success:true,data:@province}
+  end
 
-    respond_to do |format|
-      if @province.save
-        format.html { redirect_to @province, notice: 'Province was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @province }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @province.errors, status: :unprocessable_entity }
+  def get_city
+    @city = City.all
+    if !params[:province_id].nil? && params[:province_id] != ''
+      @city = City.where(province_id:params[:province_id])
+    end
+    render partial: 'provinces/city_partial'
+  end
+
+  def get_county
+    @county = County.all
+    if !params[:province_id].nil? && params[:province_id]!= ''
+      @county = County.where(province_id:params[:province_id])
+    else if !params[:city_id].nil? && params[:city_id]!= ''
+        @county = County.where(city_id: params[:city_id])
       end
     end
+    render partial: 'provinces/county_partial'
+  end
+
+  def get_search_result
+    render '/provinces'
+  end
+
+  def delete_result
+    ids = params[:ids]
+    ids_arr = ids.split(',')
+    @provinces = Province.where(id:ids_arr)
+    if !@provinces.empty?
+      @provinces.each do |doc|
+        doc.destroy
+      end
+    end
+    render json:{success:true}
+  end
+
+  def show
   end
 
   def update
