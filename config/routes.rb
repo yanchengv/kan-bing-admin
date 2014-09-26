@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
   resources :menu_permissions
 
-  resources :admin2_menus
+  resources :admin2_menus do
+    collection do
+      post 'delete_nodes',to:'admin2_menus#delete_nodes'
+    end
+  end
 
   resources :menus do
     collection do

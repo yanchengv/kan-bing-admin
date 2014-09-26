@@ -6,7 +6,8 @@
 
 <SCRIPT type="text/javascript">
     <!--
-    var setting = {
+//    总菜单的设置
+    var leftSetting = {
         edit: {
             enable: true,
             showRemoveBtn: false,
@@ -28,7 +29,36 @@
         }
     };
 
+//    admin 菜单的设置
+    var rightSetting = {
+        edit: {
+            enable: true,
+            showRemoveBtn: false,
+            showRenameBtn: false,
+            showRemoveBtn: true,
+            removeTitle: setRemoveTitle,
+
+
+            drag:{
+                isCopy:false,
+                isMove:false
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+//            beforeDrag: beforeDrag,
+//            beforeDrop: beforeDrop,
+            beforeRemove:beforeRemove,
+            onRemove:onRemove
+        }
+    };
+
     var zNodes =<%= raw @menus.to_json%>
+    <!--admin原有的菜单-->
     var adminNodes=<%= raw @admin_menus.to_json%>
 
     var admin_id=<%= @admin_id%>
@@ -39,26 +69,43 @@
             }
         }
         return true;
-    }
+    };
     function beforeDrop(treeId, treeNodes, targetNode, moveType) {
         var drag_id
         drag_id=treeNodes[0]['id'] //获取被拖拽的id
-        var left_treeObj = $.fn.zTree.getZTreeObj(treeId);
-        console.log(treeId)
-        var nodes = left_treeObj.getNodesByParam("id", drag_id, null);    //查找用户是否已经存在此菜单节点
+        var right_treeObj = $.fn.zTree.getZTreeObj(treeId);
+        var nodes = right_treeObj.getNodesByParam("id", drag_id, null);    //查找用户是否已经存在此菜单节点
        if (nodes.length==0){
            //用户不存在此菜单节点，可以进行拖拽
            if (treeNodes[0].level>0) {
                var parent_id=treeNodes[0].pId
-               var right_treeObj = $.fn.zTree.getZTreeObj('menusTree');
-               var right_nodes = right_treeObj.getNodesByParam("id", parent_id, null);  //right总菜单中查找
-               var left_nodes = left_treeObj.getNodesByParam("id", parent_id, null);   //left admin菜单中查找
-               if (left_nodes.length==0){
+               var left_treeObj = $.fn.zTree.getZTreeObj('menusTree');
+               var left_nodes = left_treeObj.getNodesByParam("id", parent_id, null);  //left总菜单中查找
+               var right_nodes = right_treeObj.getNodesByParam("id", parent_id, null);   //right admin菜单中查找
+               if (right_nodes.length==0){
                    var nodes=[
-                           {id:right_nodes[0].id,name:right_nodes[0].name,pId:null},
-                           {id:treeNodes[0].id,name:treeNodes[0].name,pId:right_nodes[0].id}
+                           {id:left_nodes[0].id,name:left_nodes[0].name,pId:null},
+                           {id:treeNodes[0].id,name:treeNodes[0].name,pId:left_nodes[0].id}
                    ]
-                   left_treeObj.addNodes(null,nodes)
+                   right_treeObj.addNodes(null,nodes);
+//                   发送后台的数据格式
+                   var nodes2={"0":{id:left_nodes[0].id,name:left_nodes[0].name,pId:null,'children':{"0":{id:treeNodes[0].id,name:treeNodes[0].name,pId:left_nodes[0].id}}}}
+                   var right_treeObj2 = $.fn.zTree.getZTreeObj("treeToUser");//treeId=treeToUser
+//        判断是否拖拽成功
+                   var nodes2=right_treeObj.getNodesByParam("id", treeNodes[0].id, null);
+                    if   (nodes2.length>0&&admin_id!=false){
+                        $.ajax({
+                            type:'post',
+                            url:'/admin2_menus',
+                            data:{data:nodes2,admin_id:admin_id},
+                            success:function(data, response){
+                            },
+                            error:function(){
+
+                            }
+                        })
+                    }
+
                     return false;
                }else{
                    return targetNode ? targetNode.drop !== false : true;
@@ -76,22 +123,56 @@
 
     };
     function onDrop(event, treeId, treeNodes, targetNode, moveType){
-        $.ajax({
-            type:'post',
-            url:'/admin2_menus',
-            data:{data:treeNodes,admin_id:admin_id},
-            success:function(data, response){
+        var right_treeObj = $.fn.zTree.getZTreeObj("treeToUser");//treeId=treeToUser
+//        判断是否拖拽成功
+        var nodes=right_treeObj.getNodesByParam("id", treeNodes[0].id, null);
+        if (nodes.length>0&&admin_id!=false) {
+            $.ajax({
+                type: 'post',
+                url: '/admin2_menus',
+                data: {data: treeNodes, admin_id: admin_id},
+                success: function (data, response) {
 
-            },
-            error:function(){
+                },
+                error: function () {
 
-            }
-        })
+                }
+            })
+        }
+    } ;
+//    设置父节点删除按钮的 Title 辅助信息为: "删除父节点"
+    function setRemoveTitle(treeId, treeNode) {
+        return treeNode.isParent ? "删除父节点":"删除叶子节点";
     }
+//    删除之前的确定操作
+    function beforeRemove(treeId, treeNode){
+        alert(treeNode.isParent ? "确定删除父节点？":"确定删除此节点？")
+    };
+   function onRemove(event, treeId, treeNode){
+       var nodeIds=new Array();
+       if (treeNode.isParent){
+           var right_treeObj = $.fn.zTree.getZTreeObj("treeToUser");//treeId=treeToUser
+           var childNodes = right_treeObj.removeChildNodes(treeNode);
 
+           nodeIds.push(treeNode.id)
+           for(var i = 0; i < childNodes.length; i++){
+               nodeIds.push(childNodes[i].id);
+           }
+       }else{
+           nodeIds.push(treeNode.id)
+       };
+       $.ajax({
+           type:'post',
+           url:'/admin2_menus/delete_nodes',
+           data: {data: nodeIds, admin_id: admin_id},
+           success: function (data, response) {
+
+           }
+       })
+   }
     $(document).ready(function(){
-        $.fn.zTree.init($("#menusTree"), setting, zNodes);
-        $.fn.zTree.init($("#treeToUser"), setting,adminNodes);
+        $.fn.zTree.init($("#menusTree"), leftSetting, zNodes);
+        $.fn.zTree.init($("#treeToUser"), rightSetting,adminNodes);
 
     });
     //-->
