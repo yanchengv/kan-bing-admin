@@ -1,0 +1,17 @@
+<input type="radio" id="patient_gender_1" name="patient[gender]" value="男"/> 男
+
+<input type="radio" id="patient_gender_2" name="patient[gender]" value="女" /> 女
+<script>
+    $(function() {
+        var gender_id = 1
+        <% if !params[:id].nil? %>
+        <% gender = Patient.find_by(id:params[:id]).gender %>
+        <% if gender=='男' %>
+        gender_id = 1
+        <% else %>
+        gender_id = 2
+        <% end %>
+        <% end %>
+        document.getElementById('patient_gender_'+gender_id).setAttribute('checked','checked')
+    })
+</script>

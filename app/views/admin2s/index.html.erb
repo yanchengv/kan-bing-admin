@@ -1,5 +1,11 @@
+<div style="margin:10px;">
+  <a id="create_admin2" class="btn btn-primary btn-sm active" role="button">添加</a>
+  <a id="edit_admin2" class="btn btn-default btn-sm disabled" role="button">编辑</a>
+  <a id="delete_admin2" class="btn btn-default btn-sm disabled" role="button">删除</a>
+</div>
 <table id="list"></table>
 <div id="pager"></div>
+<div id="grid"></div>
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -9,7 +15,7 @@
             mtype: 'GET',
             colNames: ['ID', '姓名', '邮箱', '电话'],
             colModel: [
-                { name: 'id', index: 'id', width: 40, align: "left" },
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true },
                 { name: 'email', index: 'email', width: 100, align: "center", editable: true},
                 { name: 'photo', index: 'photo', width: 150, align: "center", search: false, editable: true}
@@ -29,19 +35,15 @@
             prmNames: {
                 page: "page", // 表示请求页码的参数名称
                 rows: "rows", // 表示请求行数的参数名称
-                // sort: "sidx", // 表示用于排序的列名的参数名称
-                // order: "sord", // 表示采用的排序方式的参数名称
-                // search: "_search", // 表示是否是搜索请求的参数名称
-                // nd: "nd", // 表示已经发送请求的次数的参数名称
                 id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
-                oper: "admin2", // operation参数名称
-                editoper: "admin2s", // 当在edit模式中提交数据时，操作的名称
-                addoper: "admin2s", // 当在add模式中提交数据时，操作的名称
-                deloper: "admin2s", // 当在delete模式中提交数据时，操作的名称
-                subgridid: "id", // 当点击以载入数据到子表时，传递的数据名称
-                //  npage: null,
-                totalrows: "totalrows" // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                npage: null,
+                totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                editoper: "update", // 当在edit模式中提交数据时，操作的名称
+                addoper: "create", // 当在add模式中提交数据时，操作的名称
+                deloper: "delete", // 当在delete模式中提交数据时，操作的名称
+                subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
             },
+            editurl:'admin2s',
             pager: jQuery('#pager'),
             multiselect: true,
             rowNum: 20,
@@ -49,13 +51,15 @@
             width: '500',
             height: 'auto',
             caption: "管理员管理"
-        }).navGrid('#pager', { add: true, edit: true, del: true, search: false, refresh: true })
-                .navButtonAdd('#pager', {
-                    caption: "添加其它按钮",
-                    buttonicon: "ui-icon-add",
-                    onClickButton: function () {
-                    },
-                    position: "last"
-                })
+        }).navGrid('#pager', {
+            cloneToTop: true,
+            edit: true, add: true, del: true, view: true, callback: function(){
+
+                    } },
+                { closeOnEscape: true })
     });
+    $("#create_admin2").click(function () {
+        jQuery("#grid").jqGrid('editGridRow', 'new', {height: 280, reloadAfterSubmit: true, closeOnEscape: true, addedrow: first});
+    });
+
 </script>

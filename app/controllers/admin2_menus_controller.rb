@@ -53,7 +53,15 @@ class Admin2MenusController < ApplicationController
     #   end
     # end
   end
+  def delete_nodes
+   node_ids=params[:data]
+   admin_id=params[:admin_id]
+   node_ids.each do |node_id|
+     Admin2Menu.destroy_all(["admin2_id=? AND(menu_id=?)",admin_id,node_id])
+end
 
+    render json:{flag:true}
+  end
   # PATCH/PUT /admin2_menus/1
   # PATCH/PUT /admin2_menus/1.json
   def update
@@ -76,7 +84,9 @@ class Admin2MenusController < ApplicationController
       format.html { redirect_to admin2_menus_url, notice: 'Admin2 menu was successfully destroyed.' }
       format.json { head :no_content }
     end
+
   end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

@@ -1,4 +1,4 @@
-<select id="doctor_department_id" name="doctor[department_id]" >
+<select id="patient_department_id" name="patient[department_id]" >
 <option value="">---请选择---</option>
   <% if @department.nil? %>
       <% @department = Department.all %>
@@ -12,12 +12,12 @@
 </select>
 <script>
     $(function() {
-       $("#doctor_department_id").select2();
+       $("#patient_department_id").select2();
         <% if !params[:id].nil? %>
-        <% dep_id = Doctor.find_by(id:params[:id]).department_id %>
-        <% department = Doctor.find_by(id:params[:id]).department %>
+        <% dep_id = Patient.find_by(id:params[:id]).department_id %>
+        <% department = Patient.find_by(id:params[:id]).department %>
         <% if !dep_id.nil? && dep_id != '' && !department.nil?%>
-        $('#s2id_doctor_department_id').children('.select2-choice').children('.select2-chosen').html('<%=department.name%>')
+        $('#s2id_patient_department_id').children('.select2-choice').children('.select2-chosen').html('<%=department.name%>')
         document.getElementById('dep_<%= dep_id %>').setAttribute('selected','selected')
 
         <% end %>

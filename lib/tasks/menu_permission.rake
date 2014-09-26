@@ -131,7 +131,14 @@ def meun_data
   @menu_permission1 = MenuPermission.create(
       admin2_id: @admin1.id,
       menu_id: @menu1.id,
+      hospital_id:2
       # is_manage:true
+  )
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu1.id,
+      is_manage:true,
+      hospital_id:1
   )
   MenuPermission.create(
       admin2_id: @admin1.id,

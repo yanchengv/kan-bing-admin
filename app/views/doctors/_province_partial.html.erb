@@ -12,8 +12,10 @@
         $("#doctor_province_id").select2();
         <% if !params[:id].nil? %>
         <% pro_id = Doctor.find_by(id:params[:id]).province_id %>
-        <% if !pro_id.nil? && pro_id != ''%>
-        document.getElementById('pro_<%= pro_id %>').setAttribute('selected','selected')
+        <% province = Doctor.find_by(id:params[:id]).province %>
+        <% if !pro_id.nil? && pro_id != '' && !province.nil?%>
+        $('#s2id_doctor_province_id').children('.select2-choice').children('.select2-chosen').html('<%=province.name%>');
+        document.getElementById('pro_<%= pro_id %>').setAttribute('selected','selected');
         <% end %>
         <% end %>
     })

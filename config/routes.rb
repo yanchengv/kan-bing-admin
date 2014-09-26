@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
   resources :menu_permissions
 
-  resources :admin2_menus
+  resources :admin2_menus do
+    collection do
+      post 'delete_nodes',to:'admin2_menus#delete_nodes'
+    end
+  end
 
   resources :menus do
     collection do
@@ -61,6 +65,17 @@ Rails.application.routes.draw do
       get 'is_executable', to:'doctors#is_executable'
       get 'send_email', to:'doctors#send_email'
       get 'send_phone', to:'doctors#send_phone'
+    end
+  end
+
+  resources :patients do
+    collection do
+      get 'get_department', to:'doctors#get_department'
+      get 'get_hospital', to:'doctors#get_hospital'
+      get 'get_city', to:'doctors#get_city'
+      get 'is_executable', to:'patients#is_executable'
+      get 'send_email', to:'patients#send_email'
+      get 'send_phone', to:'patients#send_phone'
     end
   end
 
