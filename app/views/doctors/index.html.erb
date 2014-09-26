@@ -16,30 +16,31 @@
 <div id="pager12"></div>
 
 <script>
+var lastSel = 0
     var row_id;
     var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
     jQuery("#list12").jqGrid({
         url: "/doctors?menu_id=<%=@menu_id%>",
         datatype: "json",
         height: "auto",
-        colNames:['姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','职称','简介'],
+        colNames:['ID','姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','职称'],
         colModel:[
 //            {name:'act',index:'act', width:75,sortable:false},
-//            {name:'id',index:'id', width:120, sorttype:"int"},
-            {name:'name',index:'name', width:55},
-            {name:'credential_type',index:'credential_type', width:100},
-            {name:'credential_type_number',index:'credential_type_number', width:180},
-            {name:'gender',index:'gender', width:40},
-            {name:'birthday',index:'birthday', width:90},
-            {name:'birthplace',index:'birthplace', width:80},
-            {name:'province_name',index:'province_name', width:100},
-            {name:'city_name',index:'city_name', width:100},
-            {name:'hospital_id',index:'hospital_id', width:100},
-            {name:'department_id',index:'department_id', width:100},
-            {name:'mobile_phone',index:'mobile_phone', width:100, align:"right",sorttype:"float"},
-            {name:'email',index:'email', width:130, align:"right",sorttype:"float"},
-            {name:'professional_title',index:'professional_title', width:80,align:"right",sorttype:"float"},
-            {name:'introduction',index:'introduction', width:260, sortable:false}
+            {name:'id',index:'id', width:120, sorttype:"int"},
+            {name:'name',index:'name', width:55, editable: true },
+            {name:'credential_type',index:'credential_type', width:100, editable: true ,edittype:"select",editoptions:{value:"身份证:身份证;其他:其他"}},
+            {name:'credential_type_number',index:'credential_type_number', width:180, editable: true },
+            {name:'gender',index:'gender', width:40, editable: true },
+            {name:'birthday',index:'birthday', width:90, editable: true },
+            {name:'birthplace',index:'birthplace', width:80, editable: true },
+            {name:'province_name',index:'province_name', width:100, editable: true },
+            {name:'city_name',index:'city_name', width:100, editable: true },
+            {name:'hospital_id',index:'hospital_id', width:100, editable: true },
+            {name:'department_id',index:'department_id', width:100, editable: true },
+            {name:'mobile_phone',index:'mobile_phone', width:100, align:"right", editable: true },
+            {name:'email',index:'email', width:130, align:"right", editable: true },
+            {name:'professional_title',index:'professional_title', width:80,align:"right",editable: true },
+//            {name:'introduction',index:'introduction', width:260, sortable:false}
         ],
         pager: jQuery('#pager12'),
         sortname: 'id',
@@ -54,6 +55,11 @@
 //        onSortCol: function(name,index){ alert("Column Name: "+name+" Column Index: "+index);},
 //        ondblClickRow: function(id){ alert("You double click row with id: "+id);},
         onSelectRow: function(id){
+//            {
+//                jQuery('#list12').restoreRow(lastSel);	// restore last grid row
+//                jQuery('#list12').editRow(id,true);		// show form elements for the row selected to enable updates
+//                lastSel = id;												// save current row ID so that when focus is gone it can be restored
+//            }
             selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
             row_id = id
             $.ajax({
@@ -110,7 +116,7 @@
         },
         viewrecords: true,
 //        sortorder: "desc",
-//        editurl:"",
+        editurl:'/doctors/',
         multiselect: true,
         caption: "医生列表"
     });
@@ -210,61 +216,6 @@
             event.preventDefault();
             addUser();
         });
-
-//        $( "#create_doctor" ).button().on( "click", function() {
-//            $.ajax({
-//                type:'get',
-//                url:'/doctors/new?&menu_id=<%=@menu_id%>',
-//                success:function(data){
-//                    $('#dialog-form').html(data)
-//
-//                }
-//            })
-//            dialog.dialog( "open" );
-//        });
-//        $( "#edit_doctor").button().on( "click", function() {
-////            $.ajax({
-////                type:'get',
-////                url:'/doctors/'+row_id+'/edit?menu_id=<%=@menu_id%>',
-////                success:function(data){
-////                    $('#dialog-form').html(data)
-////                }
-////            })
-//            dialog.dialog( "open" );
-//        });
-//        $( "#delete_doctor").button().on( "click", function() {
-//            $.ajax({
-//                type:'get',
-//                url:'/doctors/edit/?&menu_id=<%=@menu_id%>',
-//                success:function(data){
-////                    $('#dialog-form').html(data)
-//
-//                }
-//            })
-//            dialog.dialog( "open" );
-//        });
-//        $( "#send_email_doctor").button().on( "click", function() {
-//            $.ajax({
-//                type:'get',
-//                url:'/doctors/edit/?&menu_id=<%=@menu_id%>',
-//                success:function(data){
-////                    $('#dialog-form').html(data)
-//
-//                }
-//            })
-//            dialog.dialog( "open" );
-//        });
-//        $( "#send_phone_doctor").button().on( "click", function() {
-//            $.ajax({
-//                type:'get',
-//                url:'/doctors/edit/?&menu_id=<%=@menu_id%>',
-//                success:function(data){
-////                    $('#dialog-form').html(data)
-//
-//                }
-//            })
-//            dialog.dialog( "open" );
-//        });
     });
     $( "#create_doctor" ).button().on( "click", function() {
                 $.ajax({
@@ -280,7 +231,7 @@
     $( "#edit_doctor").button().on( "click", function() {
                 $.ajax({
                     type:'get',
-                    url:'/doctors/'+row_id+'/edit?menu_id=<%=@menu_id%>',
+                    url:'/doctors/'+selectedIds+'/edit?menu_id=<%=@menu_id%>',
                     success:function(data){
                         $('#create_or_edit_form').html(data)
                     }

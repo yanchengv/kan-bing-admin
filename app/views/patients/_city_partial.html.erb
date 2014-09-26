@@ -1,0 +1,57 @@
+<select id="patient_city_id" name="patient[city_id]" placeholder="搜索"  onchange="search_hos()">
+  <option value="">---请选择---</option>
+  <% if @city.nil? %>
+      <% @city = City.all %>
+  <% end %>
+  <% if !@city.empty? %>
+      <% @city.each do |city| %>
+          <option id='city_<%= city.id %>' value="<%= city.id %>"><%= city.name %></option>
+      <% end %>
+  <% end %>
+
+</select>
+<script>
+    $(function() {
+        $("#patient_city_id").select2();
+        <% if !params[:id].nil? %>
+        <% city = Patient.find_by(id:params[:id]).city %>
+        <% city_id = Patient.find_by(id:params[:id]).city_id %>
+        <% if !city_id.nil? && city_id != '' && !city.nil?%>
+        $('#s2id_patient_city_id').children('.select2-choice').children('.select2-chosen').html('<%=city.name%>')
+            document.getElementById('city_<%= city_id %>').setAttribute('selected','selected')
+        <% end %>
+        <% end %>
+    })
+    function search_hos() {
+        var pro_id = $("#patient_province_id").val();
+        var city_id = $("#patient_city_id").val();
+        get_hospital(pro_id,city_id,'patient')
+        get_department(pro_id,city_id,'patient')
+
+    }
+    function get_hospital(pro_id,city_id,model_class){
+        $.ajax({
+                    type: "get",
+                    url: '/patients/get_hospital?province_id=' + pro_id +'&city_id='+city_id+'&model_class=' + model_class,
+                    data: 'text',
+                    success: function (data) {
+                        $("#pat_hospital").html(data);
+
+                    }
+                }
+        );
+    }
+    function get_department(pro_id,city_id,model_class){
+        $.ajax({
+                    type: "get",
+                    url: '/patients/get_department?province_id=' + pro_id +'&city_id='+city_id+'&model_class=' + model_class,
+                    data: 'text',
+                    success: function (data) {
+                        $("#pat_department").html(data);
+
+                    }
+                }
+        );
+    }
+
+</script>

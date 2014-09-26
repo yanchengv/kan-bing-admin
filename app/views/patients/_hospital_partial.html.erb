@@ -2,7 +2,7 @@
     <% @hospital = Hospital.all %>
 <% end %>
 
-  <select  id="doctor_hospital_id" name="doctor[hospital_id]" onchange="search()" >
+  <select  id="patient_hospital_id" name="patient[hospital_id]" onchange="search()" >
   <option value="">---请选择---</option>
 <% if !@hospital.empty? %>
 
@@ -15,27 +15,27 @@
 
 <script>
     $(function() {
-        $("#doctor_hospital_id").select2();
+        $("#patient_hospital_id").select2();
         <% if !params[:id].nil? %>
-        <% hos_id = Doctor.find_by(id:params[:id]).hospital_id %>
-        <% hospital = Doctor.find_by(id:params[:id]).hospital %>
+        <% hos_id = Patient.find_by(id:params[:id]).hospital_id %>
+        <% hospital = Patient.find_by(id:params[:id]).hospital %>
         <% if !hos_id.nil? && hos_id != '' && !hospital.nil?%>
-        $('#s2id_doctor_hospital_id').children('.select2-choice').children('.select2-chosen').html('<%=hospital.name %>')
+        $('#s2id_patient_hospital_id').children('.select2-choice').children('.select2-chosen').html('<%=hospital.name%>')
         document.getElementById('hos_<%= hos_id %>').setAttribute('selected','selected')
         <% end %>
         <% end %>
     })
-    function search(str) {
-        var hos = $("#doctor_hospital_id").val();
-        change_department(hos, 'department_id') ;
+    function search() {
+        var hos = $("#patient_hospital_id").val();
+        change_department2(hos) ;
     }
-    function change_department(hos_id, select_id){
+    function change_department2(hos_id){
         $.ajax({
                     type: "get",
-                    url: '/doctors/get_department?hospital_id=' + hos_id,
+                    url: '/patients/get_department?hospital_id=' + hos_id,
                     data: 'text',
                     success: function (data) {
-                        $("#doc_department").html(data);
+                        $("#pat_department").html(data);
                     }
                 }
         );

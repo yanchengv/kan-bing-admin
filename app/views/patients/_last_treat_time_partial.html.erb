@@ -1,0 +1,14 @@
+<input id='patient_last_treat_time' data-format="yyyy-MM-dd" name='patient[last_treat_time]' type="text" class="form-control"/>
+<script>
+    $(function() {
+        $('#patient_last_treat_time').datetimepicker({
+            lang:'ch',
+            timepicker:false,
+            format:'Y-m-d'
+        });
+        <% if !params[:id].nil? %>
+        <% last_treat_time = Patient.find_by(id:params[:id]).last_treat_time %>
+        $('#patient_last_treat_time').val('<%=last_treat_time%>')
+        <% end %>
+    })
+</script>
