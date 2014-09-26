@@ -65,6 +65,8 @@ class DoctorsController < ApplicationController
       end
       @rows=[]
       @doctors.each do |doc|
+        p 888888888888
+        p doc
         a={id:doc.id,
            cell:[
                # doc.id,
