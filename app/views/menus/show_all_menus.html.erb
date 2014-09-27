@@ -6,70 +6,130 @@
 
 <SCRIPT type="text/javascript">
     <!--
-    //    总菜单的设置
-    var Setting = {
+    var setting = {
+        check: {
+            enable: true,
+                chkStyle: "checkbox",
+                chkboxType: { "Y": "ps", "N": "ps" }
+        },
         edit: {
             enable: true,
             showRemoveBtn: false,
-            showRenameBtn: true,
-            removeTitle: setRemoveTitle
+            showRenameBtn: false,
+            drag:{
+                isCopy:true,
+                isMove:false
+            }
         },
         data: {
             simpleData: {
                 enable: true
             }
+        }
+    };
+
+    var roleSetting = {
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: { "Y": "ps", "N": "ps" }
         },
-        callback: {
-            beforeRemove:beforeRemove,
-            onRemove:onRemove
+        edit: {
+            enable: true,
+            showRemoveBtn: true,
+            showRenameBtn: false,
+            drag:{
+                isCopy:true,
+                isMove:false
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
         }
     };
 
 
-    var zNodes2 =<%= raw @all_menus.to_json%>
 
-    //    设置父节点删除按钮的 Title 辅助信息为: "删除父节点"
-    function setRemoveTitle(treeId, treeNode) {
-        return treeNode.isParent ? "删除父节点":"删除叶子节点";
-    }
-    //    删除之前的确定操作
-    function beforeRemove(treeId, treeNode){
-        alert(treeNode.isParent ? "确定删除父节点？":"确定删除此节点？")
-    };
-    function onRemove(event, treeId, treeNode){
-        var nodeIds=new Array();
-        if (treeNode.isParent){
-            var right_treeObj = $.fn.zTree.getZTreeObj("treeToUser");//treeId=treeToUser
-            var childNodes = right_treeObj.removeChildNodes(treeNode);
+    var perNodes =[
+        { id:1, pId:0, name:"权限管理", open:true},
+        { id:2, pId:1, name:"字典管理"},
+        { id:3, pId:1, name:"医院管理"},
+        { id:5, pId:1, name:"视频管理"},
+        { id:6, pId:1, name:"文章管理"},
+        { id:7, pId:1, name:"孕育知识管理"},
+        { id:8, pId:1, name:"用户管理"},
+        { id:9, pId:3, name:"清华大学玉泉医院"},
+        { id:10, pId:3, name:"武警总医院"},
+        { id:11, pId:3, name:"海南省人民医院"},
+        { id:12, pId:3, name:"海南省第二人民医院"},
+        { id:13, pId:3, name:"东方市人民医院"},
 
-            nodeIds.push(treeNode.id)
-            for(var i = 0; i < childNodes.length; i++){
-                nodeIds.push(childNodes[i].id);
-            }
-        }else{
-            nodeIds.push(treeNode.id)
-        };
-        $.ajax({
-            type:'post',
-            url:'/admin2_menus/delete_nodes',
-            data: {data: nodeIds, admin_id: admin_id},
-            success: function (data, response) {
+        { id:19, pId:23, name:"添加"},
+        { id:20, pId:23, name:"删除"},
+        { id:21, pId:23, name:"修改"},
+        { id:22, pId:23, name:"查看"},
+        { id:23, pId:9, name:"医生"},
+        { id:24, pId:9, name:"患者"},
 
-            }
-        })
-    }
+        { id:25, pId:24, name:"添加"},
+        { id:26, pId:24, name:"删除"},
+        { id:27, pId:24, name:"修改"},
+        { id:28, pId:24, name:"查看"},
+
+
+        { id:29, pId:10, name:"医生"},
+        { id:30, pId:10, name:"患者"},
+        { id:31, pId:29, name:"添加"},
+        { id:32, pId:29, name:"删除"},
+        { id:33, pId:29, name:"修改"},
+        { id:34, pId:29, name:"查看"},
+
+        { id:35, pId:30, name:"添加"},
+        { id:36, pId:30, name:"删除"},
+        { id:37, pId:30, name:"修改"},
+        { id:38, pId:30, name:"查看"},
+
+        { id:39, pId:2, name:"省市县字典"},
+        { id:40, pId:2, name:"医院字典"},
+
+
+        { id:41, pId:39, name:"添加"},
+        { id:42, pId:39, name:"删除"},
+        { id:43, pId:39, name:"修改"},
+        { id:44, pId:39, name:"查看"}
+
+//        { id:24, pId:10, name:"添加"},
+//        { id:25, pId:10, name:"删除"},
+//        { id:26, pId:10, name:"修改"},
+//        { id:27, pId:10, name:"查看"}
+    ];
+
+    var roleNodes=[
+        {id:1,pId:0,name:"系统角色"},
+        {id:2,pId:1,name:"系统管理员"},
+        {id:3,pId:1,name:"超级管理员"},
+        {id:4,pId:1,name:"普通管理员"},
+        {id:5,pId:1,name:"玉泉医院管理员"},
+        {id:6,pId:1,name:"武警总医院管理员"}
+    ]
     $(document).ready(function(){
-        $.fn.zTree.init($("#menusTree"), Setting, zNodes2);
-
+        $.fn.zTree.init($("#perTree"), setting, perNodes);
+        $.fn.zTree.init($("#roleTree"), roleSetting, roleNodes);
     });
     //-->
 </SCRIPT>
-<h1>menus</h1>
+
 
 
 <div class="zTreeDemoBackground left">
-  总菜单：
-  <ul id="menusTree" class="ztree"></ul>
+  系统权限：
+  <ul id="perTree" class="ztree"></ul>
 </div>
 
+<div class="pull-left" style="height:360px;line-height:360px;font-size:24px;margin-right:15px;"><span class="glyphicon glyphicon-resize-horizontal"></span></div>
+<div class="right">
+  系统角色：
+  <ul id="roleTree" class="ztree"></ul>
 </div>

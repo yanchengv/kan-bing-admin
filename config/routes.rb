@@ -9,10 +9,10 @@ Rails.application.routes.draw do
 
   resources :menus do
     collection do
-
       get 'show',to:'menus#show_menus'
       get 'menus_to_user',to:'menus#menus_to_user'
       get 'show_all_menus',to:'menus#show_all_menus'
+      get 'permissions_list',to:'menus#permissions_list'
     end
   end
 

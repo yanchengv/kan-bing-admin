@@ -1,0 +1,76 @@
+
+<style>
+    div.left{float: left;width: 250px !important;}
+    div.right{float: left;width: 200px !important;}
+    ul.ztree {margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width:220px;height:360px;overflow-y:scroll;overflow-x:auto;}
+</style>
+
+<SCRIPT type="text/javascript">
+    <!--
+    //    总菜单的设置
+    var Setting = {
+        edit: {
+            enable: true,
+            showRemoveBtn: false,
+            showRenameBtn: true,
+            removeTitle: setRemoveTitle
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            beforeRemove:beforeRemove,
+            onRemove:onRemove
+        }
+    };
+
+
+    var zNodes2 =<%= raw @all_menus.to_json%>
+
+        //    设置父节点删除按钮的 Title 辅助信息为: "删除父节点"
+            function setRemoveTitle(treeId, treeNode) {
+                return treeNode.isParent ? "删除父节点":"删除叶子节点";
+            }
+    //    删除之前的确定操作
+    function beforeRemove(treeId, treeNode){
+        alert(treeNode.isParent ? "确定删除父节点？":"确定删除此节点？")
+    };
+    function onRemove(event, treeId, treeNode){
+        var nodeIds=new Array();
+        if (treeNode.isParent){
+            var right_treeObj = $.fn.zTree.getZTreeObj("treeToUser");//treeId=treeToUser
+            var childNodes = right_treeObj.removeChildNodes(treeNode);
+
+            nodeIds.push(treeNode.id)
+            for(var i = 0; i < childNodes.length; i++){
+                nodeIds.push(childNodes[i].id);
+            }
+        }else{
+            nodeIds.push(treeNode.id)
+        };
+        $.ajax({
+            type:'post',
+            url:'/admin2_menus/delete_nodes',
+            data: {data: nodeIds, admin_id: admin_id},
+            success: function (data, response) {
+
+            }
+        })
+    }
+    $(document).ready(function(){
+        $.fn.zTree.init($("#menusTree"), Setting, zNodes2);
+
+    });
+    //-->
+</SCRIPT>
+<h1>menus</h1>
+
+
+<div class="zTreeDemoBackground left">
+  总菜单：
+  <ul id="menusTree" class="ztree"></ul>
+</div>
+
+</div>

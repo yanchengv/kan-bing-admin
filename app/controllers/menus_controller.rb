@@ -29,6 +29,10 @@ class MenusController < ApplicationController
   def menus_to_user
     render template: menus_to_user
   end
+
+  def permissions_list
+
+  end
   # GET /menus/1
   # GET /menus/1.json
   def show
