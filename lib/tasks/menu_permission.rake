@@ -72,8 +72,23 @@ def meun_data
       name: '权限管理',
       table_name: 'menus',
       model_class:'Menu',
+      uri:'/'
+  )
+  @menu14=Menu.create(
+      name: '模块管理',
+      parent_id:@menu11.id,
+      table_name: 'menus',
+      model_class:'Menu',
       uri:'/menus/show'
   )
+  @menu15=Menu.create(
+      name: '角色管理',
+      parent_id:@menu11.id,
+      table_name: 'menus',
+      model_class:'Menu',
+      uri:'/'
+  )
+
   Admin2Menu.delete_all
   @menu_admin_1=Admin2Menu.create(
       admin2_id: @admin1.id,
@@ -126,6 +141,15 @@ def meun_data
   @menu_admin_13=Admin2Menu.create(
       admin2_id: @admin1.id,
       menu_id: @menu13.id
+  )
+
+  @menu_admin_14=Admin2Menu.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu14.id
+  )
+  @menu_admin_15=Admin2Menu.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu15.id
   )
   MenuPermission.delete_all
   @menu_permission1 = MenuPermission.create(
@@ -203,6 +227,5 @@ def meun_data
       menu_id: @menu13.id,
       is_manage:true
   )
-
 
 end
