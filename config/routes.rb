@@ -11,7 +11,8 @@ Rails.application.routes.draw do
     collection do
 
       get 'show',to:'menus#show_menus'
-      get 'menus_to_user',tp:'menus#menus_to_user'
+      get 'menus_to_user',to:'menus#menus_to_user'
+      get 'show_all_menus',to:'menus#show_all_menus'
     end
   end
 
