@@ -24,25 +24,18 @@ class ProvincesController < ApplicationController
       end
       @rows=[]
       @provinces.each do |province|
-        #province.cities.each do |city|
-         # province.counties.each do |county|
         a={id:province.id,
            cell:[
                province.id,
                province.name,
                province.short_name,
                province.spell_name,
-               #city.name,
-               #county.name
            ]
         }
         @rows.push(a)
-       # end
-        # end
       end
     end
     @objJSON = {total:@total,rows:@rows,page:page,records:records}
-
     @objJSON.as_json
     p @objJSON.as_json
   end

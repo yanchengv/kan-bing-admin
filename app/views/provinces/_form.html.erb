@@ -22,43 +22,20 @@
           </ul>
         </div>
     <% end %>
-    <div class="row">
-      <div class="col-md-6 field">
-        <%= f.label :选择省 %>
-        <div class="province"><%= render partial: 'provinces/province_partial' %></div>
-        <%#= f.text_field :province_id %>
-      </div>
-      <div class="col-md-6 field">
-        <%= f.label :省名称 %>
-        <%= f.text_field :name,class:"form-control" %>
-      </div>
-    </div>
-      <div class="row" id="city_div" style="display: none">
-        <div class="col-md-6 field">
+
+      <div class="row">
+        <div class="col-md-6 field" style="float: left">
+          <%= f.label :选择省 %>
+          <div class="province"><%= render partial: 'provinces/province_partial' %></div>
           <%= f.label :选择市 %>
           <div class="city"><%= render partial: 'provinces/city_partial' %></div>
-          <%#= f.number_field :city_id %>
-        </div>
-        <div class="col-md-6 field">
-          <%= f.label :市名称 %>
-          <%= f.text_field :name ,class:"form-control"%>
-        </div>
-      </div>
-
-      <div class="row" id="county_div" style="display: none">
-        <div class="col-md-6 field">
           <%= f.label :选择县 %>
           <div class="county"><%= render partial: 'provinces/county_partial' %></div>
-          <%#= f.number_field :city_id %>
+          <%#= f.text_field :province_id %>
         </div>
-        <div class="col-md-6 field">
-          <%= f.label :县名称 %>
-          <%= f.text_field :name ,class:"form-control"%>
-        </div>
-      </div>
-
-      <div class="row" id="province_div">
-        <div class="col-md-6 field" style="float: right">
+        <div class="col-md-6 field" id= "province_div" style="float: right">
+          <%= f.label :省名称 %>
+          <%= f.text_field :name,class:"form-control" %>
           <%= f.label :简称 %>
           <%= f.text_field :short_name ,class:"form-control"%>
 
@@ -67,6 +44,14 @@
 
           <%= f.label :缩写 %>
           <%= f.text_field :en_abbreviation ,class:"form-control"%>
+        </div>
+        <div class="col-md-6 field" id="city_div"  style="float: right;display: none">
+          <%= f.label :市名称 %>
+          <%= f.text_field :name ,class:"form-control"%>
+        </div>
+        <div class="col-md-6 field" id="county_div"  style="float: right;display: none">
+          <%= f.label :县名称 %>
+          <%= f.text_field :name ,class:"form-control"%>
         </div>
       </div>
     </div>

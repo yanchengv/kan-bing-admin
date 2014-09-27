@@ -4,7 +4,13 @@ class CitiesController < ApplicationController
   def index
     noOfRows = params[:rows]
     page = params[:page]
-    @cities = City.all
+    ids = params[:province_id]
+    if !ids.nil? && ids !=''
+      ids_arr = ids.split(',')
+      @cities = City.where(province_id:ids_arr)
+    else
+      @cities = City.all
+    end
     records=0
     @total=0
     if !@cities.nil? && !@cities.empty?
@@ -20,17 +26,14 @@ class CitiesController < ApplicationController
       end
       @rows=[]
       @cities.each do |doc|
-        doc.counties.each do |d|
         a={id:doc.id,
            cell:[
                doc.id,
                doc.name,
                doc.province_id,
-               d.name
            ]
         }
         @rows.push(a)
-        end
         end
     end
     @objJSON = {total:@total,rows:@rows,page:page,records:records}

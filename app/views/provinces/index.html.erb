@@ -4,48 +4,76 @@
   <a id="edit_province" href="javascript:edit_result()" class="btn btn-default btn-sm disabled" role="button">编辑省市</a>
   <a id="delete_province" class="btn btn-default btn-sm disabled" role="button">删除省市</a>
 </div>
-<table id="list12"></table>
-<div id="pager12"></div>
-
+<div id="province_city_county">
+<div>
+<table id="list_province"></table>
+<div id="page_province"></div>
+</div>
+<div>
+<table id = "list_city"></table>
+<div id="page_city"></div>
+</div>
+<div>
+<table id = "list_county"></table>
+<div id="page_county" style="float: left"></div>
+</div>
+</div>
 <script>
     var row_id;
-    var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
-    jQuery("#list12").jqGrid({
+    var selectedIds  = jQuery("#list_province").jqGrid("getGridParam","selarrrow");
+    jQuery("#list_province").jqGrid({
         url:'/provinces',
         datatype: "json",
         colNames:['ID','省','简称', '英文拼写'],
         colModel:[
-            {name:'ID',index:'id', width:240},
-            {name:'name',index:'name', width:355},
-            {name:'short_name',index:'short_name', width:300},
-            {name:'spell_name',index:'spell_name', width:300},
-
+            {name:'ID',index:'id',width:150},
+            {name:'name',index:'name',width:150},
+            {name:'short_name',index:'short_name',width:150},
+            {name:'spell_name',index:'spell_name',width:150}
         ],
-        pager: jQuery('#pager12'),
+        pager: jQuery('#page_province'),
         sortname: 'id',
         rowNum:20,
-        autowidth: true,
+
         altRows: true,
         ignoreCase: true,
         multiselect: true,
         rowList:[10,20,30,40],
         sortname: 'id',
         onSelectRow : function(id){
-            selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
+            selectedIds  = jQuery("#list_province").jqGrid("getGridParam","selarrrow");
             if(selectedIds.length!=0){
                 $('#edit_province').removeClass('disabled');
                 $('#delete_province').removeClass('disabled');
-            }else{
-                $('#edit_province').addClass('active');
-                $('#delete_province').addClass('active');
+                if(jQuery("#list_city").jqGrid('getGridParam','records') >0 )
+                {
+                    jQuery("#list_city").jqGrid('setGridParam',{url:"cities?province_id="+selectedIds});
+                    jQuery("#list_city").jqGrid('setCaption',"市列表")
+                            .trigger('reloadGrid');
+                }
+            } else {
+                jQuery("#list_city").jqGrid('setGridParam',{url:"cities"});
+                jQuery("#list_city").jqGrid('setCaption',"市列表")
+                        .trigger('reloadGrid');
             }
         },
-        sortorder: "asc",
+        gridComplete: function(){
+            if(selectedIds){
+                var selected_ids = ''+selectedIds
+                if (selected_ids.split(',')[0]!=''){
+                    for(var i=0; i<selected_ids.split(',').length;i++){
+                        $(this).jqGrid("setSelection",selected_ids.split(',')[i]);
+                    }
+                }
+            }
+        },
+        sortorder: "desc",
         viewrecords: true,
-        caption:"省市列表"
+        editurl:'/provinces/',
+        caption:"省列表"
     });
-    jQuery("#list12").jqGrid('navGrid','#pager12',{edit:false,add:false,del:false});
-    var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
+    jQuery("#list_province").jqGrid('navGrid','#page_province',{edit:false,add:false,del:false});
+    var selectedIds  = jQuery("#list_province").jqGrid("getGridParam","selarrrow");
     $(function(){
         $( "#create_province" ).button().on( "click", function() {
             $.ajax({
@@ -72,7 +100,7 @@
                 })
             }
             var url= "/provinces?menu_id=<%=@menu_id%>"
-            jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+            jQuery("#list_province").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
         });
     });
     function edit_result(){
@@ -82,13 +110,117 @@
         }
         $.ajax({
             type:'get',
-            url:'/provinces/new',
+            url:'/provinces/'+selectedIds+'/edit?menu_id=<%=@menu_id%>',
             success:function(data){
                 $('#create_or_edit_form').html(data);
             }
         })
         $('#create_or_edit_form').modal('show');
     };
+</script>
+<script>
+    var row_id;
+    var selectedIds  = jQuery("#list_city").jqGrid("getGridParam","selarrrow");
+    jQuery("#list_city").jqGrid({
+        url:'/cities',
+        datatype: "json",
+        colNames:['ID','市名称','省ID'],
+        colModel:[
+            {name:'ID',index:'id'},
+            {name:'name',index:'name'},
+            {name:'province_id',index:'province_id'}
+        ],
+        pager: jQuery('#page_city'),
+        sortname: 'id',
+        rowNum:20,
+        altRows: true,
+        ignoreCase: true,
+        multiselect: true,
+        rowList:[10,20,30,40],
+        sortname: 'id',
+        onSelectRow : function(id){
+            selectedIds  = jQuery("#list_city").jqGrid("getGridParam","selarrrow");
+            if(selectedIds.length!=0){
+                $('#edit_province').removeClass('disabled');
+                $('#delete_province').removeClass('disabled');
+                if(jQuery("#list_county").jqGrid('getGridParam','records') >0 )
+                {
+                    jQuery("#list_county").jqGrid('setGridParam',{url:"counties?city_id="+selectedIds});
+                    jQuery("#list_county").jqGrid('setCaption',"县列表")
+                            .trigger('reloadGrid');
+                }
+            } else {
+                jQuery("#list_county").jqGrid('setGridParam',{url:"counties"});
+                jQuery("#list_county").jqGrid('setCaption',"县列表")
+                        .trigger('reloadGrid');
+            }
+        },
+        gridComplete: function(){
+            if(selectedIds){
+                var selected_ids = ''+selectedIds
+                if (selected_ids.split(',')[0]!=''){
+                    for(var i=0; i<selected_ids.split(',').length;i++){
+                        $(this).jqGrid("setSelection",selected_ids.split(',')[i]);
+                    }
+                }
+            }
+        },
+        sortorder: "desc",
+        viewrecords: true,
+        editurl:'/cities/',
+        caption:"市列表"
+    });
+    jQuery("#list_city").jqGrid('navGrid','#page_city',{edit:false,add:false,del:false});
+    var selectedIds  = jQuery("#list_city").jqGrid("getGridParam","selarrrow");
+</script>
+<script>
+    var row_id;
+    var selectedIds  = jQuery("#list_county").jqGrid("getGridParam","selarrrow");
+    jQuery("#list_county").jqGrid({
+        url:'/counties',
+        datatype: "json",
+        colNames:['ID','县','市ID', '省ID'],
+        colModel:[
+            {name:'ID',index:'id'},
+            {name:'name',index:'name'},
+            {name:'city_id',index:'city_id'},
+            {name:'province_id',index:'province_id'}
+        ],
+        pager: jQuery('#page_county'),
+        sortname: 'id',
+        rowNum:20,
+        altRows: true,
+        ignoreCase: true,
+        multiselect: true,
+        rowList:[10,20,30,40],
+        sortname: 'id',
+        onSelectRow : function(id){
+            selectedIds  = jQuery("#list_province").jqGrid("getGridParam","selarrrow");
+            if(selectedIds.length!=0){
+                $('#edit_province').removeClass('disabled');
+                $('#delete_province').removeClass('disabled');
+            }else{
+                $('#edit_province').addClass('active');
+                $('#delete_province').addClass('active');
+            }
+        },
+        gridComplete: function(){
+            if(selectedIds){
+                var selected_ids = ''+selectedIds
+                if (selected_ids.split(',')[0]!=''){
+                    for(var i=0; i<selected_ids.split(',').length;i++){
+                        $(this).jqGrid("setSelection",selected_ids.split(',')[i]);
+                    }
+                }
+            }
+        },
+        sortorder: "desc",
+        viewrecords: true,
+        editurl:'/counties/',
+        caption:"县列表"
+    });
+    jQuery("#list_county").jqGrid('navGrid','#page_county',{edit:false,add:false,del:false});
+    var selectedIds  = jQuery("#list_county").jqGrid("getGridParam","selarrrow");
 </script>
 
 <div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

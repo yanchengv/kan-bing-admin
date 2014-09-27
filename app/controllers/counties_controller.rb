@@ -3,7 +3,13 @@ class CountiesController < ApplicationController
   def index
     noOfRows = params[:rows]
     page = params[:page]
-    @counties = County.all
+    ids = params[:city_id]
+    if !ids.nil? && ids!= ''
+      ids_arr = ids.split(',')
+      @counties = County.where(city_id:ids_arr)
+    else
+      @counties = County.all
+    end
     records=0
     @total=0
     if !@counties.nil? && !@counties.empty?
@@ -23,6 +29,7 @@ class CountiesController < ApplicationController
            cell:[
                doc.id,
                doc.name,
+               doc.city_id,
                doc.province_id
            ]
         }
