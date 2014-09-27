@@ -48,7 +48,7 @@ class ProvincesController < ApplicationController
 
   def edit
     @menu_id = params[:menu_id]
-    @province = Province.new
+    @province = Province.where(id:params[:id]).first
     render partial: 'provinces/form'
   end
 

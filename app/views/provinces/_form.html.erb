@@ -22,18 +22,16 @@
           </ul>
         </div>
     <% end %>
+      <div class="col-md-6 field">
 
+        <div class="province" style="float: left"><%= f.label :选择省 %><%= render partial: 'provinces/province_partial' %></div>
+
+        <div class="city" style="float: left"><%= f.label :选择市 %><%= render partial: 'provinces/city_partial' %></div>
+
+        <div class="county" style="float: left"><%= f.label :选择县 %><%= render partial: 'provinces/county_partial' %></div>
+      </div>
       <div class="row">
-        <div class="col-md-6 field" style="float: left">
-          <%= f.label :选择省 %>
-          <div class="province"><%= render partial: 'provinces/province_partial' %></div>
-          <%= f.label :选择市 %>
-          <div class="city"><%= render partial: 'provinces/city_partial' %></div>
-          <%= f.label :选择县 %>
-          <div class="county"><%= render partial: 'provinces/county_partial' %></div>
-          <%#= f.text_field :province_id %>
-        </div>
-        <div class="col-md-6 field" id= "province_div" style="float: right">
+        <div class="col-md-6 field" id= "province_div">
           <%= f.label :省名称 %>
           <%= f.text_field :name,class:"form-control" %>
           <%= f.label :简称 %>
@@ -45,13 +43,13 @@
           <%= f.label :缩写 %>
           <%= f.text_field :en_abbreviation ,class:"form-control"%>
         </div>
-        <div class="col-md-6 field" id="city_div"  style="float: right;display: none">
+        <div class="col-md-6 field" id="city_div"  style="display: none">
           <%= f.label :市名称 %>
-          <%= f.text_field :name ,class:"form-control"%>
+          <%= f.text_field :name,class:"form-control" %>
         </div>
-        <div class="col-md-6 field" id="county_div"  style="float: right;display: none">
+        <div class="col-md-6 field" id="county_div"  style="display: none">
           <%= f.label :县名称 %>
-          <%= f.text_field :name ,class:"form-control"%>
+          <%= f.text_field :name,class:"form-control" %>
         </div>
       </div>
     </div>
@@ -64,7 +62,7 @@
 </div>
 <script>
     function create_or_update(){
-        var data = $('#pro_form').serialize()
+        var data = $('#pro_form').serialize();
         <% if !params[:id].nil? %>
         $.ajax({
             type:'put',
@@ -74,7 +72,7 @@
                 if (data['success']){
                     $('#create_or_edit_form').modal('hide')
                     var url= "/provinces?menu_id=<%=@menu_id%>"
-                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+                    jQuery("#list_province").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                     alert('更新成功!');
                 }else{
                     alert('更新失败!')
@@ -90,7 +88,7 @@
                 if (data['success']){
                     $('#create_or_edit_form').modal('hide')
                     var url= "/provinces?menu_id=<%=@menu_id%>"
-                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+                    jQuery("#list_province").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                     alert('添加成功!');
                 }else{
                     alert('添加失败!');
