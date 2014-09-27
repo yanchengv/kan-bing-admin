@@ -21,14 +21,13 @@
     jQuery("#list12").jqGrid({
         url:'/provinces',
         datatype: "json",
-        colNames:['ID','省','简称', '英文拼写','市','县'],
+        colNames:['ID','省','简称', '英文拼写'],
         colModel:[
             {name:'ID',index:'id', width:240},
             {name:'name',index:'name', width:355},
             {name:'short_name',index:'short_name', width:300},
             {name:'spell_name',index:'spell_name', width:300},
-            {name:'name',index:'city.name', width:355},
-            {name:'name',index:'county.name', width:255}
+
         ],
         pager: jQuery('#pager12'),
         sortname: 'id',
