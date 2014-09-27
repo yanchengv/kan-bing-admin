@@ -1,11 +1,10 @@
 <div style="margin:10px;">
-  <a id="create_admin2" class="btn btn-primary btn-sm active" role="button">添加</a>
-  <a id="edit_admin2" class="btn btn-default btn-sm disabled" role="button">编辑</a>
-  <a id="delete_admin2" class="btn btn-default btn-sm disabled" role="button">删除</a>
+  姓名：<input type="text" id="search_name"> 邮箱：<input type="text" id="search_email">
+  电话：<input type="text" id="search_tel">
+  <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>
 </div>
 <table id="list"></table>
 <div id="pager"></div>
-<div id="grid"></div>
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -13,12 +12,16 @@
             url: 'admin2s/test_index',
             datatype: "json",
             mtype: 'GET',
-            colNames: ['ID', '姓名', '邮箱', '电话'],
+            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '电话'],
             colModel: [
                 { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
-                { name: 'name', index: 'name', width: 100, align: "center", editable: true },
-                { name: 'email', index: 'email', width: 100, align: "center", editable: true},
-                { name: 'photo', index: 'photo', width: 150, align: "center", search: false, editable: true}
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
+                { name: 'password', index: 'password', width: 100, align: "center", editable: true,
+                    edittype: "password", hidden:true, editrules:{edithidden:true} },
+                { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
+                    editable: true, edittype: "password", hidden: true, editrules: {edithidden: true} },
+                { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {email: true, required: false} },
+                { name: 'photo', index: 'photo', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}}
             ],
             rowList: [10, 20, 30],
             sortname: 'id',
@@ -36,14 +39,14 @@
                 page: "page", // 表示请求页码的参数名称
                 rows: "rows", // 表示请求行数的参数名称
                 id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
-                npage: null,
+             //   npage: null,
                 totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
-                editoper: "update", // 当在edit模式中提交数据时，操作的名称
-                addoper: "create", // 当在add模式中提交数据时，操作的名称
-                deloper: "delete", // 当在delete模式中提交数据时，操作的名称
+                editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+                addoper: "add", // 当在add模式中提交数据时，操作的名称
+                deloper: "del", // 当在delete模式中提交数据时，操作的名称
                 subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
             },
-            editurl:'admin2s',
+            editurl:'admin2s/oper_action',
             pager: jQuery('#pager'),
             multiselect: true,
             rowNum: 20,
@@ -52,14 +55,49 @@
             height: 'auto',
             caption: "管理员管理"
         }).navGrid('#pager', {
-            cloneToTop: true,
-            edit: true, add: true, del: true, view: true, callback: function(){
-
-                    } },
+            cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
+                    deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
+//                    searchtext: "搜索", searchtitle: "搜索",
+                    refreshtext: "更新", refreshtitle: "更新"},
                 { closeOnEscape: true })
+          .navButtonAdd('#pager', {position: 'last', title: '授权', caption: '授权', onClickButton: admin_privilege})
     });
-    $("#create_admin2").click(function () {
-        jQuery("#grid").jqGrid('editGridRow', 'new', {height: 280, reloadAfterSubmit: true, closeOnEscape: true, addedrow: first});
+    //搜索
+    $('#search_btn').click(function () {
+        var name = $('#search_name').val();
+        var email = $('#search_email').val();
+        var tel = $('#search_tel').val();
+        jQuery("#list").jqGrid('setGridParam', {url: "admin2s/test_index?name=" + name + "&email=" + email + "&photo=" + tel}).trigger("reloadGrid")
     });
-
+    //验证电话号
+    function check_phone(){
+        console.log(arguments);
+        var reg = /\d{2,5}-\d{7,8}/;
+        if (arguments[0] != '' && !reg.test(arguments[0])) {
+            return [false, "手机号格式不正确！"];
+        } else {
+            return [true, ""];
+        }
+    }
+    //验证姓名
+    function check_name() {
+        console.log(arguments);
+        var reg = /^[a-zA-Z\u4e00-\u9fa5]+$/;
+        if (!reg.test(arguments[0])) {
+            return [false, "不能为空，只能为汉字或字母！"];
+        } else {
+            return [true, ""];
+        }
+    }
+    //授权
+    function admin_privilege(){
+        <% if current_user%>
+        var id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+        if (id == null){
+            alert('请选择授权人！')
+        }else{
+            window.location.href = 'menus/show?id=' + id
+        }
+    }
+        <%end%>
 </script>

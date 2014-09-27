@@ -54,6 +54,7 @@ Rails.application.routes.draw do
       get 'setting', to:'admin2s#setting'
       post 'password_update', to:'admin2s#password_update'
       get 'test_index', to:'admin2s#test_index'
+      post 'oper_action', to:'admin2s#oper_action'
     end
   end
 
