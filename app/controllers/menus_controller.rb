@@ -19,9 +19,17 @@ class MenusController < ApplicationController
 
     end
     @menus = Menu.select('id','parent_id as pId','name','table_name','model_class').all
+    p 888888888888
+    p @menus
     render template: 'menus/show'
   end
 
+  def show_all_menus
+    @all_menus = Menu.select('id','parent_id as pId','name','table_name','model_class').all
+    p 999999999999
+    p @all_menus
+    render template: 'menus/show_all_menus'
+  end
   def menus_to_user
     render template: menus_to_user
   end
