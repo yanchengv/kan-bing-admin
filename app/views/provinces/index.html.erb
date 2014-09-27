@@ -4,14 +4,6 @@
   <a id="edit_province" href="javascript:edit_result()" class="btn btn-default btn-sm disabled" role="button">编辑省市</a>
   <a id="delete_province" href="javascript:delete_result()" class="btn btn-default btn-sm disabled" role="button">删除省市</a>
 </div>
-  <div id="doc_province">
-    <span id = "province"><%= render partial: 'provinces/province_partial' %></span>
-    <span id = "city"><%= render partial: 'provinces/city_partial' %></span>
-    <span id = "county"><%= render partial: 'provinces/county_partial' %></span>
-    <span id = "search"><a class="btn btn-primary btn-sm active" role="button" onclick="javascript:search_result()">查询</a></span>
-  </div>
-
-<br/>
 <table id="list12"></table>
 <div id="pager12"></div>
 
@@ -52,7 +44,8 @@
         viewrecords: true,
         caption:"省市列表"
     });
-
+    jQuery("#list12").jqGrid('navGrid','#pager12',{edit:false,add:false,del:false});
+    var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
     $(function(){
         $( "#create_province" ).button().on( "click", function() {
             $.ajax({
