@@ -4,7 +4,8 @@
 
         }
 </style>
-  <select  id="doctor_city_id" name="city[province_id]" onchange="search_county()">
+<div id = 'city_'>
+  <select  id="city" name="city[id]" onchange="search_county()">
   <option value="">---请选择---</option>
   <% if @city.nil? %>
       <% @city = City.all %>
@@ -16,16 +17,17 @@
   <% end %>
 
 </select>
+</div>
 <script>
 
     function search_county() {
-        var city_id = $("#doctor_city_id").val();
+        var city_id = $("#city").val();
         $.ajax({
             type : 'get',
             url : '/provinces/get_county?city_id='+city_id,
             data : 'text',
             success : function(data){
-                $("#county").html(data);
+                $("#county_").html(data);
             }
         })
     };

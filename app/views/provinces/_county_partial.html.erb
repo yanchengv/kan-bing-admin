@@ -4,7 +4,8 @@
 
         }
 </style>
-  <select  id="doctor_county_id" name="doctor[city_id]" onchange="search_hos()">
+<div id="county_">
+  <select  id="doctor_county_id" name="doctor[city_id]">
   <option value="">---请选择---</option>
   <% if @county.nil? %>
       <% @county = County.all %>
@@ -16,6 +17,7 @@
   <% end %>
 
 </select>
+</div>
 <script>
 
     function search_hos() {
