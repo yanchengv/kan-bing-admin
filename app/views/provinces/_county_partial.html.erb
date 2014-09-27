@@ -1,11 +1,10 @@
 <style>
         .select2-container{
             width:200px;
-
         }
 </style>
 <div id="county_">
-  <select  id="doctor_county_id" name="doctor[city_id]">
+  <select  id="county" name="county[id]">
   <option value="">---请选择---</option>
   <% if @county.nil? %>
       <% @county = County.all %>
@@ -15,40 +14,5 @@
           <option id='city_<%= city.id %>' value="<%= city.id %>"><%= city.name %></option>
       <% end %>
   <% end %>
-
 </select>
 </div>
-<script>
-
-    function search_hos() {
-        var pro_id = $("#doctor_province").val();
-        var city_id = $("#doctor_city_id").val();
-        get_hospital(pro_id,city_id)
-        get_department(pro_id,city_id)
-
-    }
-    function get_hospital(pro_id,city_id){
-        $.ajax({
-                    type: "get",
-                    url: '/doctors/get_hospital?province_id=' + pro_id +'&city_id='+city_id,
-                    data: 'text',
-                    success: function (data) {
-                        $("#doc_hospital").html(data);
-
-                    }
-                }
-        );
-    }
-     function get_department(pro_id,city_id){
-         $.ajax({
-                     type: "get",
-                     url: '/doctors/get_department?province_id=' + pro_id +'&city_id='+city_id,
-                     data: 'text',
-                     success: function (data) {
-                         $("#doc_department").html(data);
-
-                     }
-                 }
-         );
-     }
-</script>

@@ -2,7 +2,7 @@
 <div style="margin:10px;">
   <a id="create_province" class="btn btn-primary btn-sm active" role="button">添加省市</a>
   <a id="edit_province" href="javascript:edit_result()" class="btn btn-default btn-sm disabled" role="button">编辑省市</a>
-  <a id="delete_province" href="javascript:delete_result()" class="btn btn-default btn-sm disabled" role="button">删除省市</a>
+  <a id="delete_province" class="btn btn-default btn-sm disabled" role="button">删除省市</a>
 </div>
 <table id="list12"></table>
 <div id="pager12"></div>
@@ -50,21 +50,31 @@
         $( "#create_province" ).button().on( "click", function() {
             $.ajax({
                 type:'get',
-                url:'/provinces/new',
+                url:'/provinces/new?&menu_id=<%=@menu_id%>',
                 success:function(data){
                     $('#create_or_edit_form').html(data)
-
                 }
             })
-            $('#create_or_edit_form').modal('show')
+            $('#create_or_edit_form').modal('show');
+        });
+        $( "#delete_province").button().on( "click", function() {
+            if(confirm("确定要删除吗？") ) {
+                $.ajax({
+                    type: 'delete',
+                    url: '/provinces/' + selectedIds + '?menu_id=<%=@menu_id%>',
+                    success: function (data) {
+                        if (data['success']) {
+                            alert('删除成功!');
+                        } else {
+                            alert('删除失败!');
+                        }
+                    }
+                })
+            }
+            var url= "/provinces?menu_id=<%=@menu_id%>"
+            jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
         });
     });
-    function search_result(){
-        var pro_id = $("#doctor_province_id").val();
-        var city_id = $("#doctor_city_id").val();
-        var county_id = $("#doctor_county_id").val();
-        window.location.href = "/provinces?id=" + pro_id;
-    };
     function edit_result(){
         if(selectedIds.length!=1){
             alert("请选中一个数据在进行编辑！");
@@ -79,21 +89,6 @@
         })
         $('#create_or_edit_form').modal('show');
     };
-    function delete_result(){
-        if(confirm("确定要删除吗？") ) {
-            $.ajax({
-                type: 'delete',
-                url: '/provinces/delete_result?ids=' + selectedIds,
-                success: function (data) {
-                    if (data['success']) {
-                        alert('删除成功!')
-                    } else {
-                        alert('删除失败!')
-                    }
-                }
-            });
-        }
-    }
 </script>
 
 <div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

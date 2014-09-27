@@ -10,7 +10,7 @@
   <h4 class="modal-title"><b>创建或编辑省市</b></h4>
 </div>
 <div class="modal-body">
-<%= form_for(@province,remote:true) do |f| %>
+<%= form_for(@province,remote:true,html:{id:'pro_form'}) do |f| %>
     <% if @province.errors.any? %>
         <div id="error_explanation">
           <h2><%= pluralize(@province.errors.count, "error") %> prohibited this doctor from being saved:</h2>
@@ -25,7 +25,7 @@
     <div class="row">
       <div class="col-md-6 field">
         <%= f.label :选择省 %>
-        <div id="doc_province"><%= render partial: 'provinces/province_partial' %></div>
+        <div class="province"><%= render partial: 'provinces/province_partial' %></div>
         <%#= f.text_field :province_id %>
       </div>
       <div class="col-md-6 field">
@@ -33,10 +33,10 @@
         <%= f.text_field :name,class:"form-control" %>
       </div>
     </div>
-      <div class="row">
+      <div class="row" id="city_div" style="display: none">
         <div class="col-md-6 field">
           <%= f.label :选择市 %>
-          <div id="doc_city"><%= render partial: 'provinces/city_partial' %></div>
+          <div class="city"><%= render partial: 'provinces/city_partial' %></div>
           <%#= f.number_field :city_id %>
         </div>
         <div class="col-md-6 field">
@@ -45,10 +45,10 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" id="county_div" style="display: none">
         <div class="col-md-6 field">
           <%= f.label :选择县 %>
-          <div id="doc_county"><%= render partial: 'provinces/county_partial' %></div>
+          <div class="county"><%= render partial: 'provinces/county_partial' %></div>
           <%#= f.number_field :city_id %>
         </div>
         <div class="col-md-6 field">
@@ -57,6 +57,18 @@
         </div>
       </div>
 
+      <div class="row" id="province_div">
+        <div class="col-md-6 field" style="float: right">
+          <%= f.label :简称 %>
+          <%= f.text_field :short_name ,class:"form-control"%>
+
+          <%= f.label :英文拼写 %>
+          <%= f.text_field :spell_name ,class:"form-control"%>
+
+          <%= f.label :缩写 %>
+          <%= f.text_field :en_abbreviation ,class:"form-control"%>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <%= f.submit '确定',id:'new_or_edit_submit',class:"btn btn-primary",onclick:'create_or_update()'%>
@@ -67,38 +79,40 @@
 </div>
 <script>
     function create_or_update(){
-        var result = $('#new_or_edit_doctor').click()
-        console.log(result)
-        $('#create_or_edit_form').modal('hide')
-        var url= "/doctors?menu_id=<%=@menu_id%>"
-        jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
-    }
-    $(function() {
-        $('#doc_graduated_at').datetimepicker({
-            lang:'ch',
-            timepicker:false,
-            format:'Y-m-d'
-        });
-        $('#doc_hire_date').datetimepicker({
-            lang:'ch',
-            timepicker:false,
-            format:'Y-m-d'
-        });
-        $('#doctor_credential_type').select2();
-        $('#doc_birthday').datetimepicker({
-            lang:'ch',
-            timepicker:false,
-            format:'Y-m-d'
-        });
+        var data = $('#pro_form').serialize()
         <% if !params[:id].nil? %>
-        <% doctor = Doctor.find_by(id:params[:id]) %>
-        $('#doc_birthday').val('<%=doctor.birthday%>')
-        $('#doc_hire_date').val('<%=doctor.hire_date%>')
-        $('#doc_graduated_at').val('<%=doctor.graduated_at%>')
-        <% doc = Doctor.find_by(id:params[:id]) %>
-        $('#s2id_doctor_credential_type').children('.select2-choice').children('.select2-chosen').html('<%=doc.credential_type%>')
-        document.getElementById('<%=doc.credential_type%>').setAttribute('selected','selected')
-//        document.getElementById('doctor_birthday').setAttribute('selected','selected')
+        $.ajax({
+            type:'put',
+            url:'/provinces/<%= params[:id] %>?menu_id=<%=@menu_id%>',
+            data:data,
+            success:function(data){
+                if (data['success']){
+                    $('#create_or_edit_form').modal('hide')
+                    var url= "/provinces?menu_id=<%=@menu_id%>"
+                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+                    alert('更新成功!');
+                }else{
+                    alert('更新失败!')
+                }
+            }
+        }) ;
+        <% else %>
+        $.ajax({
+            type:'post',
+            url:'/provinces?menu_id=<%=@menu_id%>',
+            data:data,
+            success:function(data){
+                if (data['success']){
+                    $('#create_or_edit_form').modal('hide')
+                    var url= "/provinces?menu_id=<%=@menu_id%>"
+                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+                    alert('添加成功!');
+                }else{
+                    alert('添加失败!');
+                }
+
+            }
+        }) ;
         <% end %>
-    })
+    }
 </script>

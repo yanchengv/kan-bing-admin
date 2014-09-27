@@ -20,7 +20,7 @@
     function search_city() {
         var pro_id = $("#province").val();
         change_city(pro_id);
-        change_county(pro_id);
+        //change_county(pro_id);
     };
     function change_city(pro_id){
         $.ajax({
@@ -28,7 +28,9 @@
                     url: '/provinces/get_city?province_id=' + pro_id,
                     data: 'text',
                     success: function (data) {
-                        $("#city_").html(data)
+                        $("#city_").html(data);
+                        $("#city_div").css('display','block');
+                        $("#province_div").css('display','none');
                     }
                 }
         );

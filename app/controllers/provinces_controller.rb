@@ -87,18 +87,6 @@ class ProvincesController < ApplicationController
     render '/provinces'
   end
 
-  def delete_result
-    ids = params[:ids]
-    ids_arr = ids.split(',')
-    @provinces = Province.where(id:ids_arr)
-    if !@provinces.empty?
-      @provinces.each do |doc|
-        doc.destroy
-      end
-    end
-    render json:{success:true}
-  end
-
   def show
   end
 
@@ -115,10 +103,15 @@ class ProvincesController < ApplicationController
   end
 
   def destroy
-    @province.destroy
-    respond_to do |format|
-      format.json { head :no_content }
+    ids = params[:ids]
+    ids_arr = ids.split(',')
+    @provinces = Province.where(id:ids_arr)
+    if !@provinces.empty?
+      @provinces.each do |doc|
+        doc.destroy
+      end
     end
+    render json:{success:true}
   end
 
   private
