@@ -1,45 +1,38 @@
 class CountiesController < ApplicationController
-  before_action :set_province, only: [:show, :edit, :update, :destroy]
+  before_action :set_county, only: [:show, :edit, :update, :destroy]
   def index
-    noOfRows = params[:rows]
-    page = params[:page]
+  end
+  def test_index
     ids = params[:city_id]
-    if !ids.nil? && ids!= ''
+    if !ids.nil? && ids !=''
       ids_arr = ids.split(',')
       @counties = County.where(city_id:ids_arr)
     else
       @counties = County.all
     end
-    records=0
-    @total=0
-    if !@counties.nil? && !@counties.empty?
-      # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
-      records = @counties.length
-      @counties = @counties.paginate(:per_page => noOfRows, :page => page)
-      if !noOfRows.nil?
-        if records%noOfRows.to_i == 0
-          @total = records/noOfRows.to_i
-        else
-          @total = (records/noOfRows.to_i)+1
-        end
-      end
-      @rows=[]
-      @counties.each do |doc|
-        a={id:doc.id,
-           cell:[
-               doc.id,
-               doc.name,
-               doc.city_id,
-               doc.province_id
-           ]
-        }
-        @rows.push(a)
-      end
+    sql = 'true'
+    if params[:county_name] && params[:county_name] != ''
+      sql << " and name like '%#{params[:county_name]}%'"
+      sql << " or city_id = '#{params[:county_name].to_i}'"
+      sql << " or province_id = '#{params[:county_name].to_i}'"
+      @counties = County.where(sql)
     end
-    @objJSON = {total:@total,rows:@rows,page:page,records:records}
+    count = @counties.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @counties = @counties.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:counties => @counties.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
 
-    @objJSON.as_json
-    p @objJSON.as_json
+  def oper_action
+    if params[:oper] == 'add'
+      create
+    elsif params[:oper] == 'del'
+      set_county
+      destroy
+    elsif params[:oper] == 'edit'
+      set_county
+      update
+    end
   end
 
   def new
@@ -51,43 +44,32 @@ class CountiesController < ApplicationController
 
   def create
     @county = County.new(county_params)
-    respond_to do |format|
-      if @county.save
-        format.html{redirect_to @county , notice: 'County was successfully created.'}
-        format.json{render action: 'show',status: :created,location: @county}
-      else
-        format.html{render action: 'new'}
-        format.json{render json: @county.errors,status: :unprocessable_entity}
-      end
+    if @county.save
+      render :json => {:success => true}
+    else
+      render :json => {:success => false, :errors => '添加失败'}
     end
   end
-=begin
+
   def update
-    respond_to do |format|
-      if @county.update(county_params)
-        format.html{redirect_to @county,notice: 'County was successfully updated.'}
-        format.json{head :no_content}
-      else
-        format.html{render action: 'edit'}
-        format.json{render json: @county.errors,status: :unprocessable_entity}
-      end
+    if @county.update(county_params)
+      render :json => {:success => true}
+    else
+      render :json => {:success => false, :errors => '修改失败！'}
     end
   end
-=end
-=begin
+
   def destroy
-    @county.destroy()
-    respond_to do |format|
-      format.json { head :no_content }
+    if @county.destroy
+      render :json => {:success => true}
     end
   end
-=end
 
   private
   def set_county
     @county = County.find(params[:id])
   end
   def county_params
-    params.require(:county).permit(:name, :city_id)
+    params.permit(:id, :name, :city_id, :province_id)
   end
 end
