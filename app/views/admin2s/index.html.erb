@@ -12,7 +12,7 @@
             url: 'admin2s/test_index',
             datatype: "json",
             mtype: 'GET',
-            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '电话'],
+            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号'],
             colModel: [
                 { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
@@ -76,10 +76,10 @@
         var tel = $('#search_tel').val();
         jQuery("#list").jqGrid('setGridParam', {url: "admin2s/test_index?name=" + name + "&email=" + email + "&photo=" + tel}).trigger("reloadGrid")
     });
-    //验证电话号
+    //验证手机号
     function check_phone(){
         console.log(arguments);
-        var reg = /\d{2,5}-\d{7,8}/;
+        var reg = /^0?(13[0-9]|15[012356789]|18[0-9]|14[57])[0-9]{8}$/;
         if (arguments[0] != '' && !reg.test(arguments[0])) {
             return [false, "手机号格式不正确！"];
         } else {
