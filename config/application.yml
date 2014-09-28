@@ -39,7 +39,7 @@ production:
   files_mount: '/dfs/'
   xml_path: '/dfs/xml/'
   mimas: 'http://www.kanbing365.com'
-
+#  mimas: 'http://fitark.org:9001/'
   #服务接口所在的主机 就是video
 
   Phoebe:
