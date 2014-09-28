@@ -1,0 +1,114 @@
+<table id="list_ques"></table>
+<div id="page_ques"></div>
+<table id="list_result"></table>
+<div id="page_result"></div>
+<script type="text/javascript">
+
+    jQuery("#list_ques").jqGrid({
+        url: 'consult_accuses/index_accuses',
+        datatype: "json",
+        height: 190,
+        colNames: ['咨询ID', '咨询内容', '创建时间'],
+        colModel: [
+            {name: 'id', index: 'id'},
+            {name: 'consult_content', index: 'consult_content'},
+            {name: 'created_at', index: 'created_at', formatter: 'date', formatoptions: {newformat: 'Y-m-d'}}
+        ],
+        rowNum: 8,
+        rowList: [8, 10, 20, 30],
+        pager: '#page_ques',
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        multiselect: false,
+        subGrid: true,
+        caption: "咨询举报管理",
+        jsonReader: {
+            root: "consult_questions",
+            repeatitems: false
+        },
+        subGridRowExpanded: function (subgrid_id, row_id) {
+            var subgrid_table_id, pager_id;
+            subgrid_table_id = subgrid_id + "_t";
+            pager_id = "p_" + subgrid_table_id;
+            $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table><div id='" + pager_id + "' class='scroll'></div>");
+            jQuery("#" + subgrid_table_id).jqGrid({
+                url: "consult_accuses/get_accuses?question_id=" + row_id,
+                datatype: "json",
+                colNames: ['举报ID', '举报原因', '创建时间'],
+                colModel: [
+                    {name: "id", index: "id", key: true},
+                    {name: "reason", index: "reason"},
+                    {name: "created_at", index: "created_at", formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, align: "right"}
+                ],
+                rowNum: 20,
+                pager: pager_id,
+                sortname: 'num',
+                sortorder: "asc",
+                height: '100%',
+                jsonReader: {
+                    root: "consult_accuses",
+                    repeatitems: false
+                }
+            });
+            jQuery("#" + subgrid_table_id).jqGrid('navGrid', "#" + pager_id, {edit: false, add: false, del: false})
+        },
+        subGridRowColapsed: function (subgrid_id, row_id) {
+        }
+    });
+    jQuery("#list_ques").jqGrid('navGrid', '#page_ques', {add: false, edit: false, del: true});
+//回复举报
+    jQuery("#list_result").jqGrid({
+        url: 'consult_accuses/index_results',
+        datatype: "json",
+        height: 190,
+        colNames: ['回复ID', '回复内容', '创建时间'],
+        colModel: [
+            {name: 'id', index: 'id'},
+            {name: 'respond_content', index: 'respond_content'},
+            {name: 'created_at', index: 'created_at', formatter: 'date', formatoptions: {newformat: 'Y-m-d'}}
+        ],
+        rowNum: 8,
+        rowList: [8, 10, 20, 30],
+        pager: '#page_result',
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        multiselect: false,
+        subGrid: true,
+        caption: "回复举报管理",
+        jsonReader: {
+            root: "consult_results",
+            repeatitems: false
+        },
+        subGridRowExpanded: function (subgrid_id_r, row_id_r) {
+            var subgrid_table_id_r, pager_id_r;
+            subgrid_table_id_r = subgrid_id_r + "_t";
+            pager_id_r = "p_" + subgrid_table_id_r;
+            $("#" + subgrid_id_r).html("<table id='" + subgrid_table_id_r + "' class='scroll'></table><div id='" + pager_id_r + "' class='scroll'></div>");
+            jQuery("#" + subgrid_table_id_r).jqGrid({
+                url: "consult_accuses/get_accuses?result_id=" + row_id_r,
+                datatype: "json",
+                colNames: ['举报ID', '举报原因', '创建时间'],
+                colModel: [
+                    {name: "id", index: "id", key: true},
+                    {name: "reason", index: "reason"},
+                    {name: "created_at", index: "created_at", formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, align: "right"}
+                ],
+                rowNum: 20,
+                pager: pager_id_r,
+                sortname: 'num',
+                sortorder: "asc",
+                height: '100%',
+                jsonReader: {
+                    root: "consult_accuses",
+                    repeatitems: false
+                }
+            });
+            jQuery("#" + subgrid_table_id_r).jqGrid('navGrid', "#" + pager_id_r, {edit: false, add: false, del: true})
+        },
+        subGridRowColapsed: function (subgrid_id_r, row_id_r) {
+        }
+    });
+    jQuery("#list_result").jqGrid('navGrid', '#page_result', {add: false, edit: false, del: false});
+</script>

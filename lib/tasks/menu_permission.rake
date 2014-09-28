@@ -35,7 +35,8 @@ def meun_data
       name: '管理员管理',
       parent_id:@menu4.id,
       table_name: 'admin2s',
-      model_class:'Admin2'
+      model_class:'Admin2',
+      uri: '/admin2s'
   )
   @menu3=Menu.create(
       name: '字典管理'
@@ -66,7 +67,9 @@ def meun_data
   )
   @menu10=Menu.create(
       name: '留言管理',
-      table_name: ''
+      table_name: 'consult_accuses',
+      model_class: 'ConsultAccuse',
+      uri: '/consult_accuses'
   )
   @menu11=Menu.create(
       name: '权限管理',

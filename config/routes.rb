@@ -16,6 +16,15 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :consult_accuses do
+    collection do
+      get 'get_accuses', to: 'consult_accuses#get_accuses'
+      get 'index_accuses', to:'consult_accuses#index_accuses'
+      get 'index_results', to:'consult_accuses#index_results'
+    end
+
+  end
+
   resources :provinces do
     collection do
       get 'get_city', to:'provinces#get_city'
