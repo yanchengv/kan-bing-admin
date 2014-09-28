@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140925102646) do
+ActiveRecord::Schema.define(version: 20140927100030) do
 
   create_table "admin2_menus", force: true do |t|
     t.integer  "admin2_id"
@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 20140925102646) do
   create_table "admin2s", force: true do |t|
     t.string   "name",                   default: "", null: false
     t.string   "email",                  default: "", null: false
-    t.string   "photo"
+    t.string   "mobile_phone"
     t.string   "password_digest",        default: "", null: false
     t.string   "remember_token"
     t.string   "reset_password_token"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20140925102646) do
     t.datetime "locked_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "photo"
   end
 
   add_index "admin2s", ["confirmation_token"], name: "index_admin2s_on_confirmation_token", unique: true, using: :btree

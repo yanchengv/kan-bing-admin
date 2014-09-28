@@ -44,7 +44,6 @@ class CitiesController < ApplicationController
 
   def create
     @city = City.new(city_params)
-
     if @city.save
       render :json => {:success => true}
     else
