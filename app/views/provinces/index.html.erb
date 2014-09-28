@@ -61,16 +61,27 @@
             editurl:'provinces/oper_action',
             pager: jQuery('#page_province'),
             multiselect: true,
+            multiboxonly:true,
             rowNum: 10,
             altclass: 'altRowsColour',
             width: '500',
             caption: "省管理",
+            beforeSelectRow: function(rowid, e)
+            {
+                jQuery("#list_province").jqGrid('resetSelection');
+                return(true);
+            },
+            onCellSelect: function (id, status) {
+                var name = "jqg_grid-table_" + id;
+                $.each($("input[CHECKED='checked']"), function () {
+                    if (name != $(this).attr("name")) {
+                        $(this).attr("CHECKED", false);
+                        $(this).parent().parent().removeClass("ui-state-highlight");
+                    }
+                });
+            },
             onSelectRow: function(id){
                 selectedIds  = jQuery("#list_province").jqGrid("getGridParam","selarrrow");
-                if(selectedIds.length>1){
-                    alert("请选中一个在进行操作");
-                    return;
-                }
                 jQuery("#list_city").jqGrid('setGridParam',{url:"/cities/test_index?province_id="+selectedIds});
                 jQuery("#list_city").jqGrid('setCaption',"市列表")
                         .trigger('reloadGrid');
@@ -79,7 +90,11 @@
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
                     deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
                     refreshtext: "更新", refreshtitle: "更新"},
-                { closeOnEscape: true,closeAfterEdit:true,closeAfterAdd:true})
+                {
+                    closeAfterEdit:true
+                },{
+                    closeAfterAdd:true
+                })
     });
 
     $(function(){
@@ -177,6 +192,11 @@
             altclass: 'altRowsColour',
             width: '500',
             caption: "市管理",
+            beforeSelectRow: function(rowid, e)
+            {
+                jQuery("#list_city").jqGrid('resetSelection');
+                return(true);
+            },
             onSelectRow: function(id){
                 selectedIds  = jQuery("#list_city").jqGrid("getGridParam","selarrrow");
                 if(selectedIds.length>1){
@@ -191,7 +211,11 @@
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
                     deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
                     refreshtext: "更新", refreshtitle: "更新"},
-                { closeOnEscape: true,closeAfterEdit:true,closeAfterAdd:true})
+                {
+                    closeAfterEdit:true
+                },{
+                    closeAfterAdd:true
+                })
     });
 </script>
 <script>
@@ -235,12 +259,21 @@
             rowNum: 10,
             altclass: 'altRowsColour',
             width: '500',
-            caption: "县管理"
+            caption: "县管理",
+            beforeSelectRow: function(rowid, e)
+            {
+                jQuery("#list_county").jqGrid('resetSelection');
+                return(true);
+            }
         }).navGrid('#page_county', {
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
                     deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
                     refreshtext: "更新", refreshtitle: "更新"},
-                { closeOnEscape: true,closeAfterEdit:true,closeAfterAdd:true})
+                {
+                    closeAfterEdit:true
+                },{
+                    closeAfterAdd:true
+                })
     });
 </script>
 

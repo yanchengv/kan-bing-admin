@@ -28,9 +28,6 @@ Rails.application.routes.draw do
 
   resources :provinces do
     collection do
-      get 'get_city', to:'provinces#get_city'
-      get 'get_county', to:'provinces#get_county'
-      get 'get_search_result', to:'provinces#get_search_result'
       get 'test_index', to:'provinces#test_index'
       post 'oper_action', to:'provinces#oper_action'
     end

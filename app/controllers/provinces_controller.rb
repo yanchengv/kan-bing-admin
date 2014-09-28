@@ -47,29 +47,6 @@ class ProvincesController < ApplicationController
     end
   end
 
-  def get_city
-    @city = City.all
-    if !params[:province_id].nil? && params[:province_id] != ''
-      @city = City.where(province_id:params[:province_id])
-    end
-    render partial: 'provinces/city_partial'
-  end
-
-  def get_county
-    @county = County.all
-    if !params[:province_id].nil? && params[:province_id]!= ''
-      @county = County.where(province_id:params[:province_id])
-    else if !params[:city_id].nil? && params[:city_id]!= ''
-        @county = County.where(city_id: params[:city_id])
-      end
-    end
-    render partial: 'provinces/county_partial'
-  end
-
-  def get_search_result
-    render '/provinces'
-  end
-
   def show
   end
 
