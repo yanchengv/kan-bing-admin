@@ -107,6 +107,7 @@ class ConsultAccusesController < ApplicationController
   def destroy_que
     if !params[:id].nil? && params[:id] != ''
       if ConsultQuestion.find(params[:id]).destroy
+        ConsultAccuse.where(question_id: params[:id]).delete_all
         render :json => {:success => true}
       else
         render :json => {:success => false, :error => '删除失败！'}
@@ -119,6 +120,7 @@ class ConsultAccusesController < ApplicationController
   def destroy_res
     if !params[:id].nil? && params[:id] != ''
       if ConsultResult.find(params[:id]).destroy
+        ConsultAccuse.where(result_id: params[:id]).delete_all
         render :json => {:success => true}
       else
         render :json => {:success => false, :error => '删除失败！'}
