@@ -60,6 +60,16 @@ class PatientsController < ApplicationController
       end
       @rows=[]
       @patients.each do |pat|
+        @province=Province.where(id:pat.province_id).first
+        @city=City.where(id:pat.city_id).first
+        @hospital=Hospital.where(id:pat.hospital_id).first
+        @department=Department.where(id:pat.department_id).first
+
+
+        @province.nil? ? province_name='':province_name=@province.name
+        @city.nil? ? city_name='':city_name=@city.name
+        @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
+        @department.nil? ? department_name='':department_name=@department.name
         a={id:pat.id,
            cell:[
                # pat.id,
@@ -69,10 +79,14 @@ class PatientsController < ApplicationController
                pat.gender,
                pat.birthday,
                pat.birthplace,
-               pat.province_id,
-               pat.city_id,
-               pat.hospital_id,
-               pat.department_id,
+               # pat.province_id,
+               # pat.city_id,
+               # pat.hospital_id,
+               # pat.department_id,
+               province_name,
+               city_name,
+               hospital_name,
+               department_name,
                pat.mobile_phone,
                pat.email,
                pat.last_treat_time,
@@ -114,7 +128,7 @@ class PatientsController < ApplicationController
     respond_to do |format|
       if @patient.save
         # format.html { redirect_to @patient, notice: 'Patient was successfully created.' }
-        format.json { render json:{success:true} }
+        format.json { render json:{success:'保存成功'} }
       else
         # format.html { render :new }
         format.json { render json: @patient.errors, status: :unprocessable_entity }

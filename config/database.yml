@@ -5,9 +5,16 @@
 #   gem 'sqlite3'
 #
 development:
+#  adapter: mysql2
+#  encoding: utf8
+#  database: mimas_development
+#  pool: 5
+#  username: root
+#  password: 123
+  template: template0
+  host: fitark.org
   adapter: mysql2
-  encoding: utf8
-  database: mimas_development
+  database: mimas_production
   pool: 5
   username: root
   password: 123
