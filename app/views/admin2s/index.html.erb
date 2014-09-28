@@ -21,7 +21,7 @@
                 { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
                     editable: true, edittype: "password", hidden: true, editrules: {edithidden: true} },
                 { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {email: true, required: false} },
-                { name: 'photo', index: 'photo', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}}
+                { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}}
             ],
             rowList: [10, 20, 30],
             sortname: 'id',
@@ -47,6 +47,7 @@
                 subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
             },
             editurl:'admin2s/oper_action',
+            closeAfterAdd:true,
             pager: jQuery('#pager'),
             multiselect: true,
             rowNum: 20,
@@ -59,7 +60,13 @@
                     deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
 //                    searchtext: "搜索", searchtitle: "搜索",
                     refreshtext: "更新", refreshtitle: "更新"},
-                { closeOnEscape: true })
+                {
+                    closeAfterEdit: true
+                },//edit
+                {
+                    closeAfterAdd:true
+                }//add
+                 )
           .navButtonAdd('#pager', {position: 'last', title: '授权', caption: '授权', onClickButton: admin_privilege})
     });
     //搜索
