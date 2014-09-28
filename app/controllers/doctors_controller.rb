@@ -65,8 +65,16 @@ class DoctorsController < ApplicationController
       end
       @rows=[]
       @doctors.each do |doc|
-        p 888888888888
-        p doc
+        @province=Province.where(id:doc.province_id).first
+        @city=City.where(id:doc.city_id).first
+        @hospital=Hospital.where(id:doc.hospital_id).first
+        @department=Department.where(id:doc.department_id).first
+
+
+        @province.nil? ? province_name='':province_name=@province.name
+        @city.nil? ? city_name='':city_name=@city.name
+        @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
+        @department.nil? ? department_name='':department_name=@department.name
         a={id:doc.id,
            cell:[
                doc.id,
@@ -76,10 +84,14 @@ class DoctorsController < ApplicationController
                doc.gender,
                doc.birthday,
                doc.birthplace,
-               doc.province_id,
-               doc.city_id,
-               doc.hospital_id,
-               doc.department_id,
+               # doc.province_id,
+               province_name,
+               city_name,
+               hospital_name,
+               department_name,
+               # doc.city_id,
+               # doc.hospital_id,
+               # doc.department_id,
                doc.mobile_phone,
                doc.email,
                doc.professional_title,
@@ -164,7 +176,7 @@ class DoctorsController < ApplicationController
   # POST /doctors.json
   def create
     @doctor = Doctor.create(doctor_params)
-    render json:{success:true,data:@doctor}
+    render json:{success:'保存成功',data:@doctor}
     # respond_to do |format|
     #   if @doctor.save
     #     format.html { redirect_to @doctor, notice: 'Doctor was successfully created.' }
