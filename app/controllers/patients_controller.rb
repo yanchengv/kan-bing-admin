@@ -3,103 +3,163 @@ class PatientsController < ApplicationController
 
   # GET /patients
   # GET /patients.json
+  # def index
+  #   # @patients = Patient.all
+  #   noOfRows = params[:rows]
+  #   page = params[:page]
+  #   @menu_id = params[:menu_id]
+  #   @patients_all=nil
+  #   if params[:menu_id]
+  #     menu_permission = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
+  #     # menu_permission_dep = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
+  #     menu_permission_hos_id=[]
+  #     menu_permission_dep_id=[]
+  #     menu_permission.each do |hos|
+  #       if !hos.hospital_id.nil?
+  #         p menu_permission_hos_id
+  #         menu_permission_hos_id.concat(hos.hospital_id.split(","))
+  #       end
+  #       if !hos.department_id.nil?
+  #         menu_permission_dep_id.concat(hos.department_id.split(","))
+  #       end
+  #     end
+  #     # menu_permission_dep.each do |dep|
+  #     #   menu_permission_dep_id.concat(dep.hospital_id.split(","))
+  #     # end
+  #     p menu_permission_hos_id
+  #     p menu_permission_dep_id
+  #     if menu_permission_dep_id != []
+  #       if menu_permission_hos_id != []
+  #         sql="hospital_id in (#{menu_permission_hos_id.join(",")}) or department_id in (#{menu_permission_dep_id.join(",")})"
+  #         @patients_all = Patient.where(sql).distinct!
+  #       else
+  #         @patients_all = Patient.where(department_id:menu_permission_dep_id)
+  #       end
+  #     else
+  #       if !menu_permission_hos_id.nil? && menu_permission_hos_id != []
+  #         @patients_all = Patient.where(hospital_id:menu_permission_hos_id)
+  #       else
+  #         @patients_all = Patient.all
+  #       end
+  #     end
+  #   else
+  #     @patients_all = Patient.all
+  #   end
+  #   records=0
+  #   @total=0
+  #   if !@patients_all.nil? && !@patients_all.empty?
+  #     # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
+  #     records = @patients_all.length
+  #     @patients = @patients_all.paginate(:per_page => noOfRows, :page => page)
+  #     if !noOfRows.nil?
+  #       if records%noOfRows.to_i == 0
+  #         @total = records/noOfRows.to_i
+  #       else
+  #         @total = (records/noOfRows.to_i)+1
+  #       end
+  #     end
+  #     @rows=[]
+  #     @patients.each do |pat|
+  #       @province=Province.where(id:pat.province_id).first
+  #       @city=City.where(id:pat.city_id).first
+  #       @hospital=Hospital.where(id:pat.hospital_id).first
+  #       @department=Department.where(id:pat.department_id).first
+  #
+  #
+  #       @province.nil? ? province_name='':province_name=@province.name
+  #       @city.nil? ? city_name='':city_name=@city.name
+  #       @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
+  #       @department.nil? ? department_name='':department_name=@department.name
+  #       a={id:pat.id,
+  #          cell:[
+  #              # pat.id,
+  #              pat.name,
+  #              pat.credential_type,
+  #              pat.credential_type_number,
+  #              pat.gender,
+  #              pat.birthday,
+  #              pat.birthplace,
+  #              # pat.province_id,
+  #              # pat.city_id,
+  #              # pat.hospital_id,
+  #              # pat.department_id,
+  #              province_name,
+  #              city_name,
+  #              hospital_name,
+  #              department_name,
+  #              pat.mobile_phone,
+  #              pat.email,
+  #              pat.last_treat_time,
+  #              pat.introduction
+  #          ]
+  #       }
+  #       @rows.push(a)
+  #     end
+  #   end
+  #   @objJSON = {total:@total,rows:@rows,page:page,records:records}
+  #   @objJSON.as_json
+  # end
+
   def index
-    # @patients = Patient.all
-    noOfRows = params[:rows]
-    page = params[:page]
-    @menu_id = params[:menu_id]
-    @patients_all=nil
-    if params[:menu_id]
-      menu_permission = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
-      # menu_permission_dep = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
-      menu_permission_hos_id=[]
-      menu_permission_dep_id=[]
-      menu_permission.each do |hos|
-        if !hos.hospital_id.nil?
-          p menu_permission_hos_id
-          menu_permission_hos_id.concat(hos.hospital_id.split(","))
-        end
-        if !hos.department_id.nil?
-          menu_permission_dep_id.concat(hos.department_id.split(","))
-        end
-      end
-      # menu_permission_dep.each do |dep|
-      #   menu_permission_dep_id.concat(dep.hospital_id.split(","))
-      # end
-      p menu_permission_hos_id
-      p menu_permission_dep_id
-      if menu_permission_dep_id != []
-        if menu_permission_hos_id != []
-          sql="hospital_id in (#{menu_permission_hos_id.join(",")}) or department_id in (#{menu_permission_dep_id.join(",")})"
-          @patients_all = Patient.where(sql).distinct!
-        else
-          @patients_all = Patient.where(department_id:menu_permission_dep_id)
-        end
-      else
-        if !menu_permission_hos_id.nil? && menu_permission_hos_id != []
-          @patients_all = Patient.where(hospital_id:menu_permission_hos_id)
-        else
-          @patients_all = Patient.all
-        end
-      end
-    else
+      # @patients = Patient.all
+      noOfRows = params[:rows]
+      page = params[:page]
+      @menu_id = params[:menu_id]
       @patients_all = Patient.all
-    end
-    records=0
-    @total=0
-    if !@patients_all.nil? && !@patients_all.empty?
-      # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
-      records = @patients_all.length
-      @patients = @patients_all.paginate(:per_page => noOfRows, :page => page)
-      if !noOfRows.nil?
-        if records%noOfRows.to_i == 0
-          @total = records/noOfRows.to_i
-        else
-          @total = (records/noOfRows.to_i)+1
+      records=0
+      @total=0
+      if !@patients_all.nil? && !@patients_all.empty?
+        # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
+        records = @patients_all.length
+        @patients = @patients_all.paginate(:per_page => noOfRows, :page => page)
+        if !noOfRows.nil?
+          if records%noOfRows.to_i == 0
+            @total = records/noOfRows.to_i
+          else
+            @total = (records/noOfRows.to_i)+1
+          end
+        end
+        @rows=[]
+        @patients.each do |pat|
+          @province=Province.where(id:pat.province_id).first
+          @city=City.where(id:pat.city_id).first
+          @hospital=Hospital.where(id:pat.hospital_id).first
+          @department=Department.where(id:pat.department_id).first
+
+
+          @province.nil? ? province_name='':province_name=@province.name
+          @city.nil? ? city_name='':city_name=@city.name
+          @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
+          @department.nil? ? department_name='':department_name=@department.name
+          a={id:pat.id,
+             cell:[
+                 # pat.id,
+                 pat.name,
+                 pat.credential_type,
+                 pat.credential_type_number,
+                 pat.gender,
+                 pat.birthday,
+                 pat.birthplace,
+                 # pat.province_id,
+                 # pat.city_id,
+                 # pat.hospital_id,
+                 # pat.department_id,
+                 province_name,
+                 city_name,
+                 hospital_name,
+                 department_name,
+                 pat.mobile_phone,
+                 pat.email,
+                 pat.last_treat_time,
+                 pat.introduction
+             ]
+          }
+          @rows.push(a)
         end
       end
-      @rows=[]
-      @patients.each do |pat|
-        @province=Province.where(id:pat.province_id).first
-        @city=City.where(id:pat.city_id).first
-        @hospital=Hospital.where(id:pat.hospital_id).first
-        @department=Department.where(id:pat.department_id).first
-
-
-        @province.nil? ? province_name='':province_name=@province.name
-        @city.nil? ? city_name='':city_name=@city.name
-        @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
-        @department.nil? ? department_name='':department_name=@department.name
-        a={id:pat.id,
-           cell:[
-               # pat.id,
-               pat.name,
-               pat.credential_type,
-               pat.credential_type_number,
-               pat.gender,
-               pat.birthday,
-               pat.birthplace,
-               # pat.province_id,
-               # pat.city_id,
-               # pat.hospital_id,
-               # pat.department_id,
-               province_name,
-               city_name,
-               hospital_name,
-               department_name,
-               pat.mobile_phone,
-               pat.email,
-               pat.last_treat_time,
-               pat.introduction
-           ]
-        }
-        @rows.push(a)
-      end
-    end
-    @objJSON = {total:@total,rows:@rows,page:page,records:records}
-    @objJSON.as_json
+      @objJSON = {total:@total,rows:@rows,page:page,records:records}
+      @objJSON.as_json
   end
-
   # GET /patients/1
   # GET /patients/1.json
   def show
