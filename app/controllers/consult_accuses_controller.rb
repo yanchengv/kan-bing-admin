@@ -9,16 +9,34 @@ class ConsultAccusesController < ApplicationController
 #被举报的咨询
   def index_accuses
     #@consult_accuses = ConsultAccuse.all
-    @consult_questions = ConsultQuestion.where('id in (select question_id from consult_accuses)')
+    sql = 'id in (select question_id from consult_accuses)'
+    if !params[:content].nil? && params[:content] != ''
+      sql << " and consult_content like '%#{params[:content]}%'"
+    end
+    @consult_questions = ConsultQuestion.where( sql )
     render :json => {:consult_questions => @consult_questions.as_json}
   end
   #被举报的回复
   def index_results
+    sql = 'id in (select question_id from consult_accuses)'
+    if !params[:content].nil? && params[:content] != ''
+      sql << " and respond_content like '%#{params[:content]}%'"
+    end
    # @consult_accuses = ConsultAccuse.all
-    @consult_results = ConsultResult.where('id in (select result_id from consult_accuses)')
+    @consult_results = ConsultResult.where(sql)
     render :json => {:consult_results => @consult_results.as_json}
   end
-
+  #操作转向
+  def oper_action
+    if params[:oper] == 'del_que'
+      destroy_que
+    elsif params[:oper] == 'del'
+      set_consult_accuse
+      destroy
+    elsif params[:oper] == 'del_res'
+     destroy_res
+    end
+  end
   # GET /consult_accuses/1
   # GET /consult_accuses/1.json
   def show
@@ -76,10 +94,37 @@ class ConsultAccusesController < ApplicationController
   # DELETE /consult_accuses/1
   # DELETE /consult_accuses/1.json
   def destroy
-    @consult_accuse.destroy
-    respond_to do |format|
-      format.html { redirect_to consult_accuses_url, notice: 'ConsultAccuse was successfully destroyed.' }
-      format.json { head :no_content }
+    if @consult_accuse.destroy
+      render :json => {:success => true}
+    end
+    #@consult_accuse.destroy
+    #respond_to do |format|
+    #  format.html { redirect_to consult_accuses_url, notice: 'ConsultAccuse was successfully destroyed.' }
+    #  format.json { head :no_content }
+    #end
+  end
+
+  def destroy_que
+    if !params[:id].nil? && params[:id] != ''
+      if ConsultQuestion.find(params[:id]).destroy
+        render :json => {:success => true}
+      else
+        render :json => {:success => false, :error => '删除失败！'}
+      end
+    else
+      render :json => {:success => false, :error => '请选择删除对象！'}
+    end
+  end
+
+  def destroy_res
+    if !params[:id].nil? && params[:id] != ''
+      if ConsultResult.find(params[:id]).destroy
+        render :json => {:success => true}
+      else
+        render :json => {:success => false, :error => '删除失败！'}
+      end
+    else
+      render :json => {:success => false, :error => '请选择删除对象！'}
     end
   end
 
