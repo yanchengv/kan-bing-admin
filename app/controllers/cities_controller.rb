@@ -18,7 +18,6 @@ class CitiesController < ApplicationController
       @cities = City.where(sql)
     end
     count = @cities.count
-    puts "#{params[:rows].to_i}"
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @cities = @cities.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:cities => @cities.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}

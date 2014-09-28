@@ -4,9 +4,9 @@
   <a title="county" class="btn btn-default" role="button" href="javascript:click_btn('county')">县管理</a>
   <a title="all" class="btn btn-primary" role="button" href="javascript:click_btn('all')">全部</a>
 </div>
-<div style="margin:10px;">
-  省：<input type="text" id="province_name"> 市：<input type="text" id="city_name" disabled>
-  县：<input type="text" id="county_name" disabled>
+<div id="search_div" style="margin:10px;">
+  省：<input type="text" id="province_name"> 市：<input type="text" id="city_name">
+  县：<input type="text" id="county_name">
   <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>
 </div>
 <div id="province_city_county">
@@ -67,6 +67,10 @@
             caption: "省管理",
             onSelectRow: function(id){
                 selectedIds  = jQuery("#list_province").jqGrid("getGridParam","selarrrow");
+                if(selectedIds.length>1){
+                    alert("请选中一个在进行操作");
+                    return;
+                }
                 jQuery("#list_city").jqGrid('setGridParam',{url:"/cities/test_index?province_id="+selectedIds});
                 jQuery("#list_city").jqGrid('setCaption',"市列表")
                         .trigger('reloadGrid');
@@ -75,7 +79,7 @@
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
                     deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
                     refreshtext: "更新", refreshtitle: "更新"},
-                { closeOnEscape: true ,closeAfterEdit: true})
+                { closeOnEscape: true,closeAfterEdit:true,closeAfterAdd:true})
     });
 
     $(function(){
@@ -83,6 +87,11 @@
             var province_name = $('#province_name').val();
             var city_name = $('#city_name').val();
             var county_name = $('#county_name').val();
+            if($('#search_div input').attr('disabled')!='disabled'){
+                jQuery("#list_province").jqGrid('setGridParam', {url: "/provinces/test_index?province_name=" + province_name}).trigger("reloadGrid")
+                jQuery("#list_city").jqGrid('setGridParam', {url: "/cities/test_index?city_name=" + city_name}).trigger("reloadGrid")
+                jQuery("#list_county").jqGrid('setGridParam', {url: "/counties/test_index?county_name=" + county_name}).trigger("reloadGrid")
+            }
             if($('#province_name').attr('disabled')!='disabled'){
                 jQuery("#list_province").jqGrid('setGridParam', {url: "/provinces/test_index?province_name=" + province_name}).trigger("reloadGrid")
             }else if($('#city_name').attr('disabled')!='disabled'){
@@ -122,8 +131,8 @@
              $('#city').css('display','block');
              $('#county').css('display','block');
              $('#province_name').removeAttr('disabled');
-             $('#city_name').attr('disabled','disabled');
-             $('#county_name').attr('disabled','disabled');
+             $('#city_name').removeAttr('disabled');
+             $('#county_name').removeAttr('disabled');
          }
     };
 </script>
@@ -137,7 +146,7 @@
             colModel: [
                 { name: 'id', index: 'id',width: 40, align: "left", key: 'id'},
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true},
-                { name: 'province_id', index: 'province_id', width: 100, align: "center", editable: true}
+                { name: 'province_id', index: 'province_id', width: 100, align: "center",editable: true}
             ],
             rowList: [10, 20, 30],
             sortname: 'id',
@@ -170,6 +179,10 @@
             caption: "市管理",
             onSelectRow: function(id){
                 selectedIds  = jQuery("#list_city").jqGrid("getGridParam","selarrrow");
+                if(selectedIds.length>1){
+                    alert("请选中一个在进行操作");
+                    return;
+                }
                 jQuery("#list_county").jqGrid('setGridParam',{url:"/counties/test_index?city_id="+selectedIds});
                 jQuery("#list_county").jqGrid('setCaption',"县列表")
                         .trigger('reloadGrid');
@@ -178,7 +191,7 @@
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
                     deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
                     refreshtext: "更新", refreshtitle: "更新"},
-                { closeOnEscape: true ,closeAfterEdit:true})
+                { closeOnEscape: true,closeAfterEdit:true,closeAfterAdd:true})
     });
 </script>
 <script>
@@ -227,7 +240,7 @@
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
                     deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
                     refreshtext: "更新", refreshtitle: "更新"},
-                { closeOnEscape: true ,closeAfterEdit:true})
+                { closeOnEscape: true,closeAfterEdit:true,closeAfterAdd:true})
     });
 </script>
 
