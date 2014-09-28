@@ -21,18 +21,24 @@ Rails.application.routes.draw do
       get 'get_city', to:'provinces#get_city'
       get 'get_county', to:'provinces#get_county'
       get 'get_search_result', to:'provinces#get_search_result'
+      get 'test_index', to:'provinces#test_index'
+      post 'oper_action', to:'provinces#oper_action'
     end
   end
 
   resources :cities do
     collection do
       get 'cities/:province_id', to: 'cities#index'
+      get 'test_index', to:'cities#test_index'
+      post 'oper_action', to:'cities#oper_action'
     end
   end
 
   resources :counties do
     collection do
       get 'counties/:city_id', to: 'counties#index'
+      get 'test_index', to:'counties#test_index'
+      post 'oper_action', to:'counties#oper_action'
     end
   end
 
