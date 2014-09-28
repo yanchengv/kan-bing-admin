@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       get 'get_accuses', to: 'consult_accuses#get_accuses'
       get 'index_accuses', to:'consult_accuses#index_accuses'
       get 'index_results', to:'consult_accuses#index_results'
+      post 'cusult_oper_action', to: 'consult_accuses#oper_action'
     end
 
   end
