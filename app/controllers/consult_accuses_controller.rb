@@ -18,7 +18,7 @@ class ConsultAccusesController < ApplicationController
   end
   #被举报的回复
   def index_results
-    sql = 'id in (select question_id from consult_accuses)'
+    sql = 'id in (select result_id from consult_accuses)'
     if !params[:content].nil? && params[:content] != ''
       sql << " and respond_content like '%#{params[:content]}%'"
     end
@@ -106,8 +106,18 @@ class ConsultAccusesController < ApplicationController
 
   def destroy_que
     if !params[:id].nil? && params[:id] != ''
-      if ConsultQuestion.find(params[:id]).destroy
-        ConsultAccuse.where(question_id: params[:id]).delete_all
+      @questions = ConsultQuestion.where(:id => params[:id])
+      @questions.each do |question|
+        if question
+          question.consult_results.each do |result|
+            result.consult_accuses.delete_all
+          end
+          question.consult_results.delete_all
+        end
+      end
+      if @questions.destroy_all
+        #@accuses = ConsultAccuse.where(question_id: params[:id])
+        #@accuses.delete_all
         render :json => {:success => true}
       else
         render :json => {:success => false, :error => '删除失败！'}
@@ -119,8 +129,14 @@ class ConsultAccusesController < ApplicationController
 
   def destroy_res
     if !params[:id].nil? && params[:id] != ''
-      if ConsultResult.find(params[:id]).destroy
-        ConsultAccuse.where(result_id: params[:id]).delete_all
+      @results = ConsultResult.where(:id => params[:id])
+      @results.each do |result|
+        if result
+          result.consult_accuses.delete_all
+        end
+      end
+      if @results.destroy_all
+        #ConsultAccuse.where(result_id: params[:id]).delete_all
         render :json => {:success => true}
       else
         render :json => {:success => false, :error => '删除失败！'}
