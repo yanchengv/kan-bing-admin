@@ -115,7 +115,7 @@ class ConsultAccusesController < ApplicationController
           question.consult_results.delete_all
         end
       end
-      if @questions.destroy_all
+      if ConsultQuestion.find(params[:id]).destroy
         #@accuses = ConsultAccuse.where(question_id: params[:id])
         #@accuses.delete_all
         render :json => {:success => true}
@@ -135,7 +135,7 @@ class ConsultAccusesController < ApplicationController
           result.consult_accuses.delete_all
         end
       end
-      if @results.destroy_all
+      if ConsultResult.find(params[:id]).destroy
         #ConsultAccuse.where(result_id: params[:id]).delete_all
         render :json => {:success => true}
       else
