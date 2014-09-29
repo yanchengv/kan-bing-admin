@@ -38,6 +38,9 @@
             root: "consult_questions",
             repeatitems: false
         },
+        gridComplete: function(){
+            jQuery("#list_result").jqGrid('setGridParam', {url: "consult_accuses/index_results"}).trigger("reloadGrid");
+        },
         subGridRowExpanded: function (subgrid_id, row_id) {
             var subgrid_table_id, pager_id;
             subgrid_table_id = subgrid_id + "_t";
