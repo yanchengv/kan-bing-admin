@@ -94,6 +94,7 @@ Rails.application.routes.draw do
       get 'is_executable', to:'doctors#is_executable'
       get 'send_email', to:'doctors#send_email'
       get 'send_phone', to:'doctors#send_phone'
+      get 'search_department', to:'doctors#search_department'
     end
   end
 
@@ -105,6 +106,7 @@ Rails.application.routes.draw do
       get 'is_executable', to:'patients#is_executable'
       get 'send_email', to:'patients#send_email'
       get 'send_phone', to:'patients#send_phone'
+      get 'search_department', to:'patients#search_department'
     end
   end
 

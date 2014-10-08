@@ -55,7 +55,7 @@
       </div>
       <div class="col-md-6 field">
         <%= f.label '证件号码' %>
-        <%= f.text_field :credential_type_number,class:"form-control" %>
+        <%= f.text_field :credential_type_number,class:"form-control",onblur:"check_credential_type_number(this.value)" %>
       </div>
     </div>
     <div class="row">
@@ -97,11 +97,29 @@
     <div class="row">
       <div class="col-md-6 field">
         <%= f.label :国籍 %><br>
-        <%= f.text_field :citizenship,class:"form-control" %>
+        <select id="patient_citizenship" name="patient[citizenship]" >
+          <option value="">---请选择---</option>
+          <% @citizenships = Dictionary.where(dictionary_type_id:9) %>
+          <% if !@citizenships.empty? %>
+              <% @citizenships.each do |citizenship| %>
+                  <option id="<%= citizenship.name %>" value="<%= citizenship.name %>"><%= citizenship.name %></option>
+              <% end %>
+          <% end %>
+        </select>
+        <%#= f.text_field :citizenship,class:"form-control" %>
       </div>
       <div class="col-md-6 field">
         <%= f.label :民族 %><br>
-        <%= f.text_field :nationality,class:"form-control" %>
+        <select id="patient_nationality" name="patient[nationality]" >
+          <option value="">---请选择---</option>
+          <% @nationality = Dictionary.where(dictionary_type_id:8) %>
+          <% if !@nationality.empty? %>
+              <% @nationality.each do |national| %>
+                <option id="<%= national.name %>" value="<%= national.name %>"><%= national.name %></option>
+              <% end %>
+          <% end %>
+        </select>
+        <%#= f.text_field :nationality,class:"form-control" %>
       </div>
 
     </div>
@@ -130,7 +148,17 @@
       </div>
       <div class="col-md-6 field">
         <%= f.label :受教育程度 %><br>
-        <%= f.text_field :education,class:"form-control" %>
+        <select id="patient_education" name="patient[education]" >
+          <!--<option value="">---请选择---</option>-->
+          <option id='博士及以上' value="博士及以上">博士及以上</option>
+          <option id='研究生' value="研究生">研究生</option>
+          <option id='本科' value="本科">本科</option>
+          <option id='大专或职高' value="大专或职高">大专或职高</option>
+          <option id='高中或中专' value="高中或中专">高中或中专</option>
+          <option id='初中' value="初中">初中</option>
+          <option id='小学及以下' value="小学及以下">小学及以下</option>
+        </select>
+        <%#= f.text_field :education,class:"form-control" %>
       </div>
     </div>
     <!--<div class="row">-->
@@ -272,6 +300,71 @@
 </div>
 </div>
 <script>
+    var credential_type_number_flag=true
+    function check_credential_type_number(value){
+        if ($('#patient_credential_type').val()=='居民身份证') {
+            var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+            if (reg.test(value) === false) {
+                alert('生份证号格式错误!')
+                credential_type_number_flag = false
+            } else {
+                showBirthday(value)
+            }
+        }
+    }
+
+    function showBirthday(val)
+    {
+        var birthdayValue;
+        if(15==val.length)
+        { //15位身份证号码
+            birthdayValue = val.charAt(6)+val.charAt(7);
+            if(parseInt(birthdayValue)<10)
+            {
+                birthdayValue = '20'+birthdayValue;
+            }
+            else
+            {
+                birthdayValue = '19'+birthdayValue;
+            }
+            birthdayValue=birthdayValue+'-'+val.charAt(8)+val.charAt(9)+'-'+val.charAt(10)+val.charAt(11);
+            if(parseInt(val.charAt(14)/2)*2!=val.charAt(14)) {
+                document.getElementById('patient_gender_2').removeAttribute('checked')
+                document.getElementById('patient_gender_1').setAttribute('checked','checked');
+//            document.all.sex.value='男';
+            }
+            else{
+                document.getElementById('patient_gender_1').removeAttribute('checked')
+                document.getElementById('patient_gender_2').setAttribute('checked','checked');
+//            document.all.sex.value='女';
+            }
+            $('#pat_birthday').val(birthdayValue)
+//        document.all.birthday.value=birthdayValue;
+        }
+        if(18==val.length)
+        { //18位身份证号码
+            birthdayValue=val.charAt(6)+val.charAt(7)+val.charAt(8)+val.charAt(9)+'-'+val.charAt(10)+val.charAt(11)+'-'+val.charAt(12)+val.charAt(13);
+            if(parseInt(val.charAt(16)/2)*2!=val.charAt(16)) {
+                document.getElementById('patient_gender_2').removeAttribute('checked')
+                document.getElementById('patient_gender_1').setAttribute('checked','checked');
+            }
+
+            else{
+                document.getElementById('patient_gender_1').removeAttribute('checked')
+                document.getElementById('patient_gender_2').setAttribute('checked','checked');
+            }
+//            if(val.charAt(17)!=IDCard(val))
+//            {
+//                document.all.idCard.style.backgroundColor='#ffc8c8';
+//            }
+//            else
+//            {
+//                document.all.idCard.style.backgroundColor='white';
+//            }
+//        document.all.birthday.value=birthdayValue;
+            $('#pat_birthday').val(birthdayValue)
+        }
+    }
     function create_or_update(){
 //        var result = $('#new_or_edit_patient').click()
 //        console.log(result.responseJSON)
@@ -323,6 +416,9 @@
         });
         $('#patient_credential_type').select2();
         $('#patient_marriage').select2();
+        $('#patient_education').select2();
+        $('#patient_nationality').select2();
+        $('#patient_citizenship').select2();
         $('#pat_birthday').datetimepicker({
             lang:'ch',
             timepicker:false,
@@ -346,6 +442,18 @@
         $('#s2id_patient_marriage').children('.select2-choice').children('.select2-chosen').html('<%=pat.marriage %>')
         if (document.getElementById('<%=pat.marriage %>')){
             document.getElementById('<%=pat.marriage %>').setAttribute('selected','selected')
+        }
+        $('#s2id_patient_education').children('.select2-choice').children('.select2-chosen').html('<%=pat.education%>')
+        if (document.getElementById('<%=pat.education%>')!=null) {
+            document.getElementById('<%=pat.education%>').setAttribute('selected', 'selected')
+        }
+        $('#s2id_patient_nationality').children('.select2-choice').children('.select2-chosen').html('<%=pat.nationality%>')
+        if (document.getElementById('<%=pat.nationality%>')!=null) {
+            document.getElementById('<%=pat.nationality%>').setAttribute('selected', 'selected')
+        }
+        $('#s2id_patient_citizenship').children('.select2-choice').children('.select2-chosen').html('<%=pat.citizenship%>')
+        if (document.getElementById('<%=pat.citizenship%>')!=null) {
+            document.getElementById('<%=pat.citizenship%>').setAttribute('selected', 'selected')
         }
         <% end %>
     })

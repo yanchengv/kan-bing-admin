@@ -1,7 +1,7 @@
 #encoding:utf-8
 namespace :db do
   task seed: :environment do
-    admin_data
+    # admin_data
   end
 end
 
