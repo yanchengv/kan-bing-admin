@@ -110,10 +110,26 @@ class DoctorsController < ApplicationController
   def index
       # @doctor = Doctor.new
       # @doctors = Doctor.all
+      hos_id = params[:hos_id]
+      dep_id = params[:dep_id]
+      is_activated = params[:is_activated]
       noOfRows = params[:rows]
       page = params[:page]
       @menu_id = params[:menu_id]
-      @doctors_all = Doctor.all
+      @doctors_all = nil
+      if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
+        @doctors_all = Doctor.where(hospital_id:hos_id,department_id:dep_id)
+      elsif !hos_id.nil? && hos_id != ''
+        @doctors_all = Doctor.where(hospital_id:hos_id)
+      else
+        @doctors_all = Doctor.all
+      end
+      if is_activated=='0'
+        @doctors_all =  @doctors_all.where(is_activated:0)
+      end
+      if is_activated=='1'
+        @doctors_all =  @doctors_all.where.not(is_activated:0)
+      end
       records=0
       @total=0
       if !@doctors_all.nil? && !@doctors_all.empty?
@@ -632,6 +648,11 @@ class DoctorsController < ApplicationController
     else
       render :json => {success:false}
     end
+  end
+
+  def search_department
+    @departments = Department.where(hospital_id:params[:hos_id])
+    render partial: 'doctors/search_department'
   end
 
   private

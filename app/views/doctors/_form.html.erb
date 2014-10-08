@@ -1,5 +1,5 @@
 <%#= stylesheet_link_tag    'form-select'%>
-<%#= javascript_include_tag 'form-select'%>
+<%#= javascript_include_tag 'doctor-form'%>
 <style>
     .select2-container{
         width:200px;
@@ -58,7 +58,7 @@
       </div>
       <div class="col-md-6 field">
         <%= f.label '证件号码' %>
-        <%= f.text_field :credential_type_number,class:"form-control" %>
+        <%= f.text_field :credential_type_number,class:"form-control",onblur:"check_credential_type_number(this.value)" %>
       </div>
     </div>
     <div class="row">
@@ -155,12 +155,30 @@
     <!--</div>-->
     <div class="row">
       <div class="col-md-6 field">
-        <%= f.label :国籍 %>
-        <%= f.text_field :citizenship,class:"form-control" %>
+        <%= f.label :国籍 %><br>
+        <select id="doctor_citizenship" name="doctor[citizenship]" >
+          <option value="">---请选择---</option>
+          <% @citizenships = Dictionary.where(dictionary_type_id:9) %>
+          <% if !@citizenships.empty? %>
+              <% @citizenships.each do |citizenship| %>
+                  <option id="<%= citizenship.name %>" value="<%= citizenship.name %>"><%= citizenship.name %></option>
+              <% end %>
+          <% end %>
+        </select>
+        <%#= f.text_field :citizenship,class:"form-control" %>
       </div>
       <div class="col-md-6 field">
-        <%= f.label :民族 %>
-        <%= f.text_field :nationality,class:"form-control" %>
+        <%= f.label :民族 %><br>
+        <select id="doctor_nationality" name="doctor[nationality]" >
+          <option value="">---请选择---</option>
+          <% @nationality = Dictionary.where(dictionary_type_id:8) %>
+          <% if !@nationality.empty? %>
+              <% @nationality.each do |national| %>
+                  <option id="<%= national.name %>" value="<%= national.name %>"><%= national.name %></option>
+              <% end %>
+          <% end %>
+        </select>
+        <%#= f.text_field :nationality,class:"form-control" %>
       </div>
     </div>
     <div class="row">
@@ -176,11 +194,27 @@
     <div class="row">
       <div class="col-md-6 field">
         <%= f.label :职位 %><br>
-        <%= f.text_field :position,class:"form-control" %>
+        <select id="doctor_position" name="doctor[position]" >
+          <option value="">---请选择---</option>
+          <option id="教授" value="教授">教授</option>
+          <option id="副教授" value="副教授">副教授</option>
+          <option id="科主任" value="科主任">科主任</option>
+          <option id="副科主任" value="副科主任">副科主任</option>
+        </select>
+        <%#= f.text_field :position,class:"form-control" %>
       </div>
       <div class="col-md-6 field">
         <%= f.label :专业职称 %><br>
-        <%= f.text_field :professional_title,class:"form-control" %>
+        <select id="doctor_professional_title" name="doctor[professional_title]" >
+          <option value="">---请选择---</option>
+          <option id="主治医师" value="主治医师">主治医师</option>
+          <option id="主任医师" value="主任医师">主任医师</option>
+          <option id="副主任医师" value="副主任医师">副主任医师</option>
+          <option id="主任技师" value="主任技师">主任技师</option>
+          <option id="副主任技师" value="副主任技师">副主任技师</option>
+          <option id="特聘高年资医师" value="特聘高年资医师">特聘高年资医师</option>
+        </select>
+        <%#= f.text_field :professional_title,class:"form-control" %>
       </div>
     </div>
     <div class="row">
@@ -190,7 +224,17 @@
       </div>
       <div class="col-md-6 field">
         <%= f.label :学历 %><br>
-        <%= f.text_field :degree,class:"form-control" %>
+        <select id="doctor_degree" name="doctor[degree]" >
+          <!--<option value="">---请选择---</option>-->
+          <option id='博士及以上' value="博士及以上">博士及以上</option>
+          <option id='研究生' value="研究生">研究生</option>
+          <option id='本科' value="本科">本科</option>
+          <option id='大专或职高' value="大专或职高">大专或职高</option>
+          <option id='高中或中专' value="高中或中专">高中或中专</option>
+          <option id='初中' value="初中">初中</option>
+          <option id='小学及以下' value="小学及以下">小学及以下</option>
+        </select>
+        <%#= f.text_field :degree,class:"form-control" %>
       </div>
     </div>
     <div class="row">
@@ -278,6 +322,71 @@
 </div>
 </div>
 <script>
+    var credential_type_number_flag=true
+    function check_credential_type_number(value){
+       if ($('#doctor_credential_type').val()=='居民身份证') {
+           var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+           if (reg.test(value) === false) {
+               alert('生份证号格式错误!')
+               credential_type_number_flag = false
+           } else {
+               showBirthday(value)
+           }
+       }
+    }
+
+    function showBirthday(val)
+    {
+        var birthdayValue;
+        if(15==val.length)
+        { //15位身份证号码
+            birthdayValue = val.charAt(6)+val.charAt(7);
+            if(parseInt(birthdayValue)<10)
+            {
+                birthdayValue = '20'+birthdayValue;
+            }
+            else
+            {
+                birthdayValue = '19'+birthdayValue;
+            }
+            birthdayValue=birthdayValue+'-'+val.charAt(8)+val.charAt(9)+'-'+val.charAt(10)+val.charAt(11);
+            if(parseInt(val.charAt(14)/2)*2!=val.charAt(14)) {
+                document.getElementById('doctor_gender_2').removeAttribute('checked')
+                document.getElementById('doctor_gender_1').setAttribute('checked','checked');
+//            document.all.sex.value='男';
+            }
+            else{
+                document.getElementById('doctor_gender_1').removeAttribute('checked')
+                document.getElementById('doctor_gender_2').setAttribute('checked','checked');
+//            document.all.sex.value='女';
+            }
+            $('#doc_birthday').val(birthdayValue)
+//        document.all.birthday.value=birthdayValue;
+        }
+        if(18==val.length)
+        { //18位身份证号码
+            birthdayValue=val.charAt(6)+val.charAt(7)+val.charAt(8)+val.charAt(9)+'-'+val.charAt(10)+val.charAt(11)+'-'+val.charAt(12)+val.charAt(13);
+            if(parseInt(val.charAt(16)/2)*2!=val.charAt(16)) {
+                document.getElementById('doctor_gender_2').removeAttribute('checked')
+                document.getElementById('doctor_gender_1').setAttribute('checked','checked');
+            }
+
+            else{
+                document.getElementById('doctor_gender_1').removeAttribute('checked')
+                document.getElementById('doctor_gender_2').setAttribute('checked','checked');
+            }
+//            if(val.charAt(17)!=IDCard(val))
+//            {
+//                document.all.idCard.style.backgroundColor='#ffc8c8';
+//            }
+//            else
+//            {
+//                document.all.idCard.style.backgroundColor='white';
+//            }
+//        document.all.birthday.value=birthdayValue;
+            $('#doc_birthday').val(birthdayValue)
+        }
+    }
     function create_or_update(){
 //      var result = $('#new_or_edit_doctor').click()
 //      console.log(result)
@@ -333,6 +442,11 @@
         });
         $('#doctor_credential_type').select2();
         $('#doctor_marriage').select2()
+        $('#doctor_degree').select2()
+        $('#doctor_nationality').select2();
+        $('#doctor_citizenship').select2();
+        $('#doctor_position').select2();
+        $('#doctor_professional_title').select2();
         $('#doc_birthday').datetimepicker({
             lang:'ch',
             timepicker:false,
@@ -351,6 +465,26 @@
         $('#s2id_doctor_marriage').children('.select2-choice').children('.select2-chosen').html('<%=doc.marriage%>')
         if (document.getElementById('<%=doc.marriage%>')!=null) {
             document.getElementById('<%=doc.marriage%>').setAttribute('selected', 'selected')
+        }
+        $('#s2id_doctor_degree').children('.select2-choice').children('.select2-chosen').html('<%=doc.degree%>')
+        if (document.getElementById('<%=doc.degree%>')!=null) {
+            document.getElementById('<%=doc.degree%>').setAttribute('selected', 'selected')
+        }
+        $('#s2id_doctor_nationality').children('.select2-choice').children('.select2-chosen').html('<%=doc.nationality%>')
+        if (document.getElementById('<%=doc.nationality%>')!=null) {
+            document.getElementById('<%=doc.nationality%>').setAttribute('selected', 'selected')
+        }
+        $('#s2id_doctor_citizenship').children('.select2-choice').children('.select2-chosen').html('<%=doc.citizenship%>')
+        if (document.getElementById('<%=doc.citizenship%>')!=null) {
+            document.getElementById('<%=doc.citizenship%>').setAttribute('selected', 'selected')
+        }
+        $('#s2id_doctor_professional_title').children('.select2-choice').children('.select2-chosen').html('<%=doc.professional_title%>')
+        if (document.getElementById('<%=doc.professional_title%>')!=null) {
+            document.getElementById('<%=doc.professional_title%>').setAttribute('selected', 'selected')
+        }
+        $('#s2id_doctor_position').children('.select2-choice').children('.select2-chosen').html('<%=doc.position%>')
+        if (document.getElementById('<%=doc.position%>')!=null) {
+            document.getElementById('<%=doc.position%>').setAttribute('selected', 'selected')
         }
         <% end %>
     })

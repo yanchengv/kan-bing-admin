@@ -3,8 +3,33 @@
     .ui-pg-input{
         height:30px;
     }
+    .select2-container{
+        width:200px;
+
+    }
 </style>
 <!--<h1>Listing doctors</h1>-->
+<div id="search_div" style="margin:10px;">
+  医院：<select  id="doctor_hos" name="doctor[hospital_id]" onchange="search_hos()" >
+  <option value="">---请选择---</option>
+  <% if @hospitals.nil? %>
+      <% @hospitals = Hospital.all %>
+  <% end %>
+  <% if !@hospitals.empty? %>
+      <% @hospitals.each do |hos| %>
+          <option id='hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+      <% end %>
+  <% end %>
+</select>
+  科室：<span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" onchange="search_dep()" >
+  <option value="">---请选择---</option>
+</select></span>
+  是否激活:<select id="is_activated" onchange="search_activated()">
+      <option value="">全部</option>
+      <option value="1">已经激活</option>
+      <option value="0">未激活</option>
+  </select>
+</div>
 <div style="margin:10px;">
   <a id="create_doctor" class="btn btn-primary btn-sm active" role="button">添加医生</a>
   <a id="edit_doctor" class="btn btn-default btn-sm disabled" role="button">编辑医生</a>
@@ -288,6 +313,28 @@ var lastSel = 0
         var url= "/doctors?menu_id=<%=@menu_id%>"
         jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     });
+    function search_hos(){
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors?hos_id=" + $('#doctor_hos').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        var hos_id = $('#doctor_hos').val()
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_department?hos_id='+hos_id,
+            success: function (data) {
+               $('#search_dep_id').html(data)
+            }
+        })
+    }
+    function search_dep(){
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors?hos_id=" + $('#doctor_hos').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+    }
+    function search_activated(){
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors?hos_id=" + $('#doctor_hos').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+    }
+$(function() {
+    $("#doctor_hos").select2();
+    $("#doctor_dep").select2();
+    $("#is_activated").select2();
+})
 </script>
 <div id="dialog-form" title="Create or edit user">
   <%#= render 'form' %>
@@ -295,42 +342,3 @@ var lastSel = 0
 <div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
 </div>
-<!--<table>-->
-  <!--<thead>-->
-    <!--<tr>-->
-      <!--<th>姓名</th>-->
-      <!--<th>证件类型</th>-->
-      <!--<th>证件号码</th>-->
-      <!--<th>性别</th>-->
-      <!--<th>出生日期</th>-->
-      <!--<th>出生地</th>-->
-      <!--<th>省</th>-->
-      <!--<th>市</th>-->
-      <!--<th>雇佣日期</th>-->
-      <!--<th colspan="3"></th>-->
-    <!--</tr>-->
-  <!--</thead>-->
-
-  <!--<tbody>-->
-    <!--<%# @doctors.each do |doctor| %>-->
-      <!--<tr>-->
-        <!--<td><%#= doctor.name %></td>-->
-        <!--<td><%#= doctor.credential_type %></td>-->
-        <!--<td><%#= doctor.credential_type_number %></td>-->
-        <!--<td><%#= doctor.gender %></td>-->
-        <!--<td><%#= doctor.birthday %></td>-->
-        <!--<td><%#= doctor.birthplace %></td>-->
-        <!--<td><%#= doctor.province_id %></td>-->
-        <!--<td><%#= doctor.city_id %></td>-->
-        <!--<td><%#= doctor.hire_date %></td>-->
-        <!--<td><%#= link_to 'Show', doctor %></td>-->
-        <!--<td><%#= link_to 'Edit', edit_doctor_path(doctor) %></td>-->
-        <!--<td><%#= link_to 'Destroy', doctor, method: :delete, data: { confirm: 'Are you sure?' } %></td>-->
-      <!--</tr>-->
-    <!--<%# end %>-->
-  <!--</tbody>-->
-<!--</table>-->
-
-<!--<br>-->
-
-<%#= link_to 'New Doctor', new_doctor_path %>

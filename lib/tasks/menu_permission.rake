@@ -1,7 +1,7 @@
 #encoding:utf-8
 namespace :db do
   task seed: :environment do
-    meun_data
+    # meun_data
   end
 end
 def meun_data
