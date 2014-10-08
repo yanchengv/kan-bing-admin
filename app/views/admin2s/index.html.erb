@@ -57,9 +57,7 @@
             caption: "管理员管理"
         }).navGrid('#pager', {
             cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
-                    deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
-//                    searchtext: "搜索", searchtitle: "搜索",
-                    refreshtext: "更新", refreshtitle: "更新"},
+                    deltext:"删除",deltitle:"删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
                 {
                     closeAfterEdit: true
                 },//edit
@@ -98,8 +96,8 @@
     }
     //授权
     function admin_privilege(){
-        <% if current_user%>
-        var id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+        <% if current_user %>
+        var id = jQuery("#list").jqGrid('getGridParam', 'selrow');   //选中行的id
         if (id == null){
             alert('请选择授权人！')
         }else{

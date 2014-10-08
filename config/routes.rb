@@ -6,6 +6,21 @@ Rails.application.routes.draw do
       post 'delete_nodes',to:'admin2_menus#delete_nodes'
     end
   end
+  resources :hospitals do
+    collection do
+      get 'index_show', to:'hospitals#show_index'
+      get 'get_provinces', to:'hospitals#get_provinces'
+      get 'get_cities', to: 'hospitals#get_cities'
+      post 'oper_action', to: 'hospitals#oper_action'
+      get 'get_ranks', to:'hospitals#hospital_rank'
+    end
+  end
+  resources :departments do
+    collection do
+      get 'index_show', to: 'departments#show_index'
+      post 'oper_action', to: 'departments#oper_action'
+    end
+  end
 
   resources :menus do
     collection do
