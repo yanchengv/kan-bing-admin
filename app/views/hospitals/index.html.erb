@@ -199,7 +199,7 @@
             { name: 'name', index: 'name', align: "center", editable: true},
             { name: 'short_name', index: 'short_name', align: "center", editable: true},
             { name: 'phone_number', index: 'phone_number', align: "center", editable: true, editrules: {custom: true, required: false, custom_func: check_phone}},
-            { name: 'hospital_id', index: 'hospital_id', align: "center", editable: true,editoptions:{ readonly: 'readonly'}, editrules:{editable: false}},
+            { name: 'hospital_id', index: 'hospital_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, editoptions:{ readonly: 'readonly'}, editrules:{editable: false}},
             { name: 'department_type', index: 'department_type', align: "center", editable: true, edittype: 'select', editoptions: {value: {0:'门诊部', 1: '住院部', 2: '急诊部', 3: '药房', 4: '化验室'}, style: "width:166px"} },
             { name: 'state', index: 'state', align: "center", editable: true, hidden:true },
           //  { name: 'sort', index: 'sort', align: "center", editable: true},

@@ -22,10 +22,11 @@
  *= require_self
 
  */
-
-th.ui-th-column div {
-    /* jqGrid columns name wrap  */
+.ui-jqdialog-content .DataTD {
+    padding: 2px;
+    border: 0 none;
+    vertical-align: top;
     white-space: normal !important;
-    height: auto !important;
-    padding: 0px;
+    height: auto;
 }
+
