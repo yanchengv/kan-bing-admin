@@ -22,3 +22,10 @@
  *= require_self
 
  */
+
+th.ui-th-column div {
+    /* jqGrid columns name wrap  */
+    white-space: normal !important;
+    height: auto !important;
+    padding: 0px;
+}

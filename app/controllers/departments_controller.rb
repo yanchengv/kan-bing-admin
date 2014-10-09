@@ -7,11 +7,17 @@ class DepartmentsController < ApplicationController
   end
 
   def show_index
-    if params[:hospital_id] && params[:hospital_id] != ''
-      @departments = Department.where(:hospital_id => params[:hospital_id])
-    else
-      @departments = Department.all
+    sql = 'true'
+    if !params[:department_type].nil? && params[:department_type] != '-1' && params[:department_type] != 'null'
+      sql << " and department_type = #{params[:department_type]}"
     end
+    if !params[:name].nil? && params[:name] != '' && params[:name] != 'null'
+      sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%' or short_name like '%#{params[:name]}%')"
+    end
+    if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'null'
+      sql << " and hospital_id = #{params[:hospital_id]}"
+    end
+    @departments = Department.where(sql);
     count = @departments.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @departments = @departments.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))

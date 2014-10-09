@@ -4,10 +4,22 @@ class HospitalsController < ApplicationController
   # GET /hospitals
   # GET /hospitals.json
   def index
+    @provinces = Province.all
+    @cities = City.all
   end
 
   def show_index
-    @hospitals = Hospital.all
+    sql = 'true'
+    if !params[:province_id].nil? && params[:province_id] != '0' && params[:province_id] != 'null'
+      sql << " and province_id = #{params[:province_id]}"
+    end
+    if !params[:city_id].nil? && params[:city_id] != '0' && params[:city_id] != 'null'
+      sql << " and city_id = #{params[:city_id]}"
+    end
+    if !params[:name].nil? && params[:name] != '' && params[:name] != 'null'
+      sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%' or short_name like '%#{params[:name]}%')"
+    end
+    @hospitals = Hospital.where(sql)
     count = @hospitals.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @hospitals = @hospitals.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
