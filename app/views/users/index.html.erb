@@ -1,0 +1,108 @@
+<div style="margin:10px;">
+  用户：<input type="text" id="search_name"> 邮箱：<input type="text" id="search_email">
+  手机：<input type="text" id="search_tel"> 身份证：<input type="text" id="search_IDs">
+  <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>
+</div>
+<table id="user_list"></table>
+<div id="user_pager"></div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        jQuery("#user_list").jqGrid({
+            url: 'admin2s/test_index',
+            datatype: "json",
+            mtype: 'GET',
+            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号'],
+            colModel: [
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
+                { name: 'password', index: 'password', width: 100, align: "center", editable: true,
+                    edittype: "password", hidden:true, editrules:{edithidden:true} },
+                { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
+                    editable: true, edittype: "password", hidden: true, editrules: {edithidden: true} },
+                { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {email: true, required: false} },
+                { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}}
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc",
+            autowidth: true,
+            jsonReader: {
+                root: "admin2s",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page", // 表示请求页码的参数名称
+                rows: "rows", // 表示请求行数的参数名称
+                id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+             //   npage: null,
+                totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+                addoper: "add", // 当在add模式中提交数据时，操作的名称
+                deloper: "del", // 当在delete模式中提交数据时，操作的名称
+                subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+            },
+            editurl:'admin2s/oper_action',
+            closeAfterAdd:true,
+            user_pager: jQuery('#user_pager'),
+            multiselect: true,
+            rowNum: 20,
+            altclass: 'altRowsColour',
+            width: '500',
+            height: 'auto',
+            caption: "管理员管理"
+        }).navGrid('#user_pager', {
+            cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
+                    deltext:"删除",deltitle:"删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
+                {
+                    closeAfterEdit: true
+                },//edit
+                {
+                    closeAfterAdd:true
+                }//add
+                 )
+          .navButtonAdd('#user_pager', {position: 'last', title: '授权', caption: '授权', onClickButton: admin_privilege})
+    });
+    //搜索
+    $('#search_btn').click(function () {
+        var name = $('#search_name').val();
+        var email = $('#search_email').val();
+        var tel = $('#search_tel').val();
+        jQuery("#user_list").jqGrid('setGridParam', {url: "admin2s/test_index?name=" + name + "&email=" + email + "&photo=" + tel}).trigger("reloadGrid")
+    });
+    //验证手机号
+    function check_phone(){
+        console.log(arguments);
+        var reg = /^0?(13[0-9]|15[012356789]|18[0-9]|14[57])[0-9]{8}$/;
+        if (arguments[0] != '' && !reg.test(arguments[0])) {
+            return [false, "手机号格式不正确！"];
+        } else {
+            return [true, ""];
+        }
+    }
+    //验证姓名
+    function check_name() {
+        console.log(arguments);
+        var reg = /^[a-zA-Z\u4e00-\u9fa5]+$/;
+        if (!reg.test(arguments[0])) {
+            return [false, "不能为空，只能为汉字或字母！"];
+        } else {
+            return [true, ""];
+        }
+    }
+    //授权
+    function admin_privilege(){
+        <% if current_user %>
+        var id = jQuery("#user_list").jqGrid('getGridParam', 'selrow');   //选中行的id
+        if (id == null){
+            alert('请选择授权人！')
+        }else{
+            window.location.href = 'menus/show?id=' + id
+        }
+    }
+        <%end%>
+</script>
