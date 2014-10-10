@@ -16,14 +16,16 @@
     <div id="page_hos"></div>
   </div>
   <div style="width: 48%;float:left;margin-left: 20px;">
-    <div style="margin-bottom: 10px;">科室类型：<select id="dept_search_type">
-      <option value="-1">---请选择---</option>
-      <option value="0">门诊部</option>
-      <option value="1">住院部</option>
-      <option value="2">急诊部</option>
-      <option value="3">药房</option>
-      <option value="4">化验室</option>
-    </select>&nbsp;&nbsp;科室名称：<input type="text" id="dept_name_search">&nbsp;&nbsp;<a id="search_dept_btn" class="btn btn-default btn-sm" role="button">搜索</a>
+    <div style="margin-bottom: 10px;">
+      <!--科室类型：<select id="dept_search_type">-->
+      <!--<option value="-1">---请选择---</option>-->
+      <!--<option value="0">门诊部</option>-->
+      <!--<option value="1">住院部</option>-->
+      <!--<option value="2">急诊部</option>-->
+      <!--<option value="3">药房</option>-->
+      <!--<option value="4">化验室</option>-->
+    <!--</select>&nbsp;&nbsp;-->
+      科室名称：<input type="text" id="dept_name_search">&nbsp;&nbsp;<a id="search_dept_btn" class="btn btn-default btn-sm" role="button">搜索</a>
     </div>
     <table id="department_list"></table>
     <div id="page_dept"></div>
@@ -193,14 +195,14 @@
         url: 'departments/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: ['ID', '姓名', '简称', '电话', '医院ID', '科室类型','状态', '描述'],
+        colNames: ['ID', '姓名', '简称', '电话', '医院ID', '状态', '描述'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id',hidden:true},
             { name: 'name', index: 'name', align: "center", editable: true},
             { name: 'short_name', index: 'short_name', align: "center", editable: true},
             { name: 'phone_number', index: 'phone_number', align: "center", editable: true, editrules: {custom: true, required: false, custom_func: check_phone}},
-            { name: 'hospital_id', index: 'hospital_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, editoptions:{ readonly: 'readonly'}, editrules:{editable: false}},
-            { name: 'department_type', index: 'department_type', align: "center", editable: true, edittype: 'select', editoptions: {value: {0:'门诊部', 1: '住院部', 2: '急诊部', 3: '药房', 4: '化验室'}, style: "width:166px"} },
+            { name: 'hospital_id', index: 'hospital_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, editoptions:{ readonly: 'readonly'}},
+//            { name: 'department_type', index: 'department_type', align: "center", editable: true, edittype: 'select', editoptions: {value: {0:'门诊部', 1: '住院部', 2: '急诊部', 3: '药房', 4: '化验室'}, style: "width:166px"} },
             { name: 'state', index: 'state', align: "center", editable: true, hidden:true },
           //  { name: 'sort', index: 'sort', align: "center", editable: true},
             { name: 'description', index: 'description', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'textarea', editoptions:{rows: 5, style: "width:200px"}}
