@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   def index
   end
 
-  def test_index
+  def show_index
     sql = 'true'
     if params[:name] && params[:name] != ''
       sql << " and name like '%#{params[:name]}%'"
@@ -18,11 +18,17 @@ class UsersController < ApplicationController
     if params[:photo] && params[:photo] != ''
       sql << " and photo like '%#{params[:photo]}%'"
     end
+    if params[:doctor_id] && params[:doctor_id] != ''
+      sql << " and doctor_id = #{params[:doctor_id]}"
+    end
+    if params[:patient_id] && params[:patient_id] != ''
+      sql << " and patient_id = #{params[:patient_id]}"
+    end
     @users = User.where(sql)
     count = @users.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @users = @users.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-    render :json => {:user2s => @users.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+    render :json => {:users => @users.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
   def oper_action
@@ -108,6 +114,24 @@ class UsersController < ApplicationController
 
   def setting
     render template: 'users/setting'
+  end
+
+  #医生
+  def get_doctors
+    @doctors = Doctor.where('id not in (select doctor_id from users where doctor_id is not null)')
+    count = @doctors.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @doctors = @doctors.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
+  #护士
+  def get_patients
+    @patients = Patient.where('id not in (select patient_id from users where patient_id is not null)')
+    count = @patients.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @patients = @patients.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:patients => @patients.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
   private

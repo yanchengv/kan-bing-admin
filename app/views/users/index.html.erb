@@ -1,27 +1,63 @@
-<div style="margin:10px;">
-  用户：<input type="text" id="search_name"> 邮箱：<input type="text" id="search_email">
-  手机：<input type="text" id="search_tel"> 身份证：<input type="text" id="search_IDs">
-  <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>
+<div style="width: 100%">
+  <div style="width: 18%;float:left;margin-left: 20px;">
+    <div id="btn" style="margin:10px;">
+      <a title="doctor" class="btn btn-primary" role="button" href="javascript:click_btn('doctor')">医生</a>
+      <a title="patient" class="btn btn-default" role="button" href="javascript:click_btn('patient')">患者</a>
+    </div>
+    <div id="doctor_div">
+      <table id="doc_list"></table>
+      <div id="doc_page"></div>
+    </div>
+    <div id="patient_div" style="display: none;">
+      <table id="pat_list"></table>
+      <div id="pat_page"></div>
+    </div>
+  </div>
+  <div style="width: 78%;float:left;margin-left: 20px;">
+    <div style="margin:10px;">
+      用户：<input type="text" id="search_name"> 邮箱：<input type="text" id="search_email">
+      手机：<input type="text" id="search_tel"> 身份证：<input type="text" id="search_IDs">
+      <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>
+    </div>
+    <table id="user_list"></table>
+    <div id="user_page"></div>
+  </div>
 </div>
-<table id="user_list"></table>
-<div id="user_pager"></div>
-<script type="text/javascript">
 
+<script type="text/javascript">
+    function click_btn(value) {
+        $('#btn a[title=' + value + ']').removeClass("btn-default").addClass("btn-primary");
+        $('#btn a[title!=' + value + ']').removeClass("btn-primary").addClass("btn-default");
+        if (value == 'patient') {
+            $('#patient_div').css('display', 'block');
+            $('#doctor_div').css('display', 'none');
+        } else{
+            $('#doctor_div').css('display', 'block');
+            $('#patient_div').css('display', 'none');
+        }
+    }
+    ;
     $(document).ready(function () {
         jQuery("#user_list").jqGrid({
-            url: 'admin2s/test_index',
+            url: 'users/index_show',
             datatype: "json",
             mtype: 'GET',
-            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号'],
+            colNames: ['ID', '用户名', '昵称', '真实姓名', '密码', '确认密码', '证件号', '手机号','邮箱','患者ID', '医生ID','状态'],
             colModel: [
                 { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
-                { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true, custom_func: check_name}},
+                { name: 'nick_name', index: 'nick_name', width: 100, align: "center", editable: true },
+                { name: 'real_name', index: 'real_name', width: 100, align: "center", editable: true },
                 { name: 'password', index: 'password', width: 100, align: "center", editable: true,
-                    edittype: "password", hidden:true, editrules:{edithidden:true} },
+                    edittype: "password", hidden: true, editrules: {edithidden: true} },
                 { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
                     editable: true, edittype: "password", hidden: true, editrules: {edithidden: true} },
+                { name: 'verification_code', index: 'verification_code', width: 100, align: "center", editable: true },
+                { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}},
                 { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {email: true, required: false} },
-                { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}}
+                { name: 'patient_id', index: 'name', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
+                { name: 'doctor_id', index: 'doctor_id', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
+                { name: 'is_enabled', index: 'is_enabled', width: 100, align: "center", editable: true, hidden:true }
             ],
             rowList: [10, 20, 30],
             sortname: 'id',
@@ -29,7 +65,7 @@
             sortorder: "desc",
             autowidth: true,
             jsonReader: {
-                root: "admin2s",
+                root: "users",
                 total: "totalpages",
                 page: "currpage",
                 records: "totalrecords",
@@ -46,16 +82,16 @@
                 deloper: "del", // 当在delete模式中提交数据时，操作的名称
                 subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
             },
-            editurl:'admin2s/oper_action',
+            editurl:'users/oper_action',
             closeAfterAdd:true,
-            user_pager: jQuery('#user_pager'),
+            pager: jQuery('#user_page'),
             multiselect: true,
             rowNum: 20,
             altclass: 'altRowsColour',
             width: '500',
             height: 'auto',
-            caption: "管理员管理"
-        }).navGrid('#user_pager', {
+            caption: "用户管理"
+        }).navGrid('#user_page', {
             cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
                     deltext:"删除",deltitle:"删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
                 {
@@ -65,25 +101,14 @@
                     closeAfterAdd:true
                 }//add
                  )
-          .navButtonAdd('#user_pager', {position: 'last', title: '授权', caption: '授权', onClickButton: admin_privilege})
     });
     //搜索
     $('#search_btn').click(function () {
         var name = $('#search_name').val();
         var email = $('#search_email').val();
         var tel = $('#search_tel').val();
-        jQuery("#user_list").jqGrid('setGridParam', {url: "admin2s/test_index?name=" + name + "&email=" + email + "&photo=" + tel}).trigger("reloadGrid")
+        jQuery("#user_list").jqGrid('setGridParam', {url: "users/index_show?name=" + name + "&email=" + email + "&photo=" + tel}).trigger("reloadGrid")
     });
-    //验证手机号
-    function check_phone(){
-        console.log(arguments);
-        var reg = /^0?(13[0-9]|15[012356789]|18[0-9]|14[57])[0-9]{8}$/;
-        if (arguments[0] != '' && !reg.test(arguments[0])) {
-            return [false, "手机号格式不正确！"];
-        } else {
-            return [true, ""];
-        }
-    }
     //验证姓名
     function check_name() {
         console.log(arguments);
@@ -94,15 +119,131 @@
             return [true, ""];
         }
     }
-    //授权
-    function admin_privilege(){
-        <% if current_user %>
-        var id = jQuery("#user_list").jqGrid('getGridParam', 'selrow');   //选中行的id
-        if (id == null){
-            alert('请选择授权人！')
-        }else{
-            window.location.href = 'menus/show?id=' + id
+    //验证手机号
+    function check_phone() {
+        console.log(arguments);
+        var reg = /^0?(13[0-9]|15[012356789]|18[0-9]|14[57])[0-9]{8}$/;
+        if (arguments[0] != '' && !reg.test(arguments[0])) {
+            return [false, "手机号格式不正确！"];
+        } else {
+            return [true, ""];
         }
     }
-        <%end%>
+        //医生
+    $(document).ready(function () {
+        jQuery("#doc_list").jqGrid({
+            url: 'users/get_doctors',
+            datatype: "json",
+            mtype: 'GET',
+            colNames: ['ID', '医生名','手机号','邮箱', '证件号'],
+            colModel: [
+                { name: 'id', index: 'id', align: "left", key: 'id' },
+                { name: 'name', index: 'name', align: "center"},
+                { name: 'mobile_phone', index: 'mobile_phone', align: "center", hidden: true},
+                { name: 'email', index: 'email', align: "center", hidden: true},
+                { name: 'credential_type_number', index: 'credential_type_number', align: "center", hidden: true}
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc",
+            autowidth: true,
+            jsonReader: {
+                root: "doctors",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page", // 表示请求页码的参数名称
+                rows: "rows", // 表示请求行数的参数名称
+                id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                //   npage: null,
+                totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+            },
+            closeAfterAdd: true,
+            pager: jQuery('#doc_page'),
+            rowNum: 20,
+            altclass: 'altRowsColour',
+            height: 'auto',
+            caption: "非用户医生",
+            onSelectRow: function (rowid) {
+                jQuery("#user_list").jqGrid('setGridParam', {url: "users/index_show?doctor_id=" + rowid }).trigger("reloadGrid");
+                var myGrid = $('#doc_list');
+                var id = myGrid.jqGrid('getGridParam', 'selrow');
+                var name = myGrid.jqGrid('getCell', id, 'name');
+                var tel = myGrid.jqGrid('getCell', id, 'mobile_phone');
+                var email = myGrid.jqGrid('getCell', id, 'email');
+                var ids = myGrid.jqGrid('getCell', id, 'credential_type_number');
+
+                var grid = $("#user_list");
+                grid.setColProp("doctor_id", { editoptions: { defaultValue: id} });
+                grid.setColProp("real_name", { editoptions: { defaultValue: name} });
+                grid.setColProp("email", { editoptions: { defaultValue: email} });
+                grid.setColProp("mobile_phone", { editoptions: { defaultValue: tel} });
+                grid.setColProp("verification_code", { editoptions: { defaultValue: ids} });
+            }
+        })
+    });
+    //患者
+    $(document).ready(function () {
+        jQuery("#pat_list").jqGrid({
+            url: 'users/get_patients',
+            datatype: "json",
+            mtype: 'GET',
+            colNames: ['ID', '患者名', '手机号', '邮箱', '证件号'],
+            colModel: [
+                { name: 'id', index: 'id', align: "left", key: 'id' },
+                { name: 'name', index: 'name', align: "center"},
+                { name: 'mobile_phone', index: 'mobile_phone', align: "center", hidden: true},
+                { name: 'email', index: 'email', align: "center", hidden: true},
+                { name: 'credential_type_number', index: 'credential_type_number', align: "center", hidden: true}
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc",
+            autowidth: true,
+            jsonReader: {
+                root: "patients",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page", // 表示请求页码的参数名称
+                rows: "rows", // 表示请求行数的参数名称
+                id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                //   npage: null,
+                totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+            },
+            closeAfterAdd: true,
+            pager: jQuery('#pat_page'),
+            rowNum: 20,
+            altclass: 'altRowsColour',
+            height: 'auto',
+            caption: "非用户患者",
+            onSelectRow: function (rowid) {
+                jQuery("#user_list").jqGrid('setGridParam', {url: "users/index_show?patient_id=" + rowid }).trigger("reloadGrid");
+
+                var myGrid = $('#pat_list');
+                var id = myGrid.jqGrid('getGridParam', 'selrow');
+                var name = myGrid.jqGrid('getCell', id, 'name');
+                var tel = myGrid.jqGrid('getCell', id, 'mobile_phone');
+                var email = myGrid.jqGrid('getCell', id, 'email');
+                var ids = myGrid.jqGrid('getCell', id, 'credential_type_number');
+
+                var grid = $("#user_list");
+                grid.setColProp("doctor_id", { editoptions: { defaultValue: id} });
+                grid.setColProp("real_name", { editoptions: { defaultValue: name} });
+                grid.setColProp("email", { editoptions: { defaultValue: email} });
+                grid.setColProp("mobile_phone", { editoptions: { defaultValue: tel} });
+                grid.setColProp("verification_code", { editoptions: { defaultValue: ids} });
+            }
+        })
+    });
 </script>

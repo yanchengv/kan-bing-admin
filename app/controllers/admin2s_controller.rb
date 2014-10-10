@@ -14,8 +14,8 @@ class Admin2sController < ApplicationController
     if params[:email] && params[:email] != ''
       sql << " and email like '%#{params[:email]}%'"
     end
-    if params[:photo] && params[:photo] != ''
-      sql << " and photo like '%#{params[:photo]}%'"
+    if params[:mobile_phone] && params[:mobile_phone] != ''
+      sql << " and mobile_phone like '%#{params[:mobile_phone]}%'"
     end
     @admins = Admin2.where(sql)
     count = @admins.count

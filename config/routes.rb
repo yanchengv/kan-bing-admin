@@ -21,7 +21,14 @@ Rails.application.routes.draw do
       post 'oper_action', to: 'departments#oper_action'
     end
   end
-
+  resources :users do
+    collection do
+      get 'index_show', to: 'users#show_index'
+      post 'oper_action', to: 'users#oper_action'
+      get 'get_doctors', to: 'users#get_doctors'
+      get 'get_patients', to: 'users#get_patients'
+    end
+  end
   resources :menus do
     collection do
       get 'show',to:'menus#show_menus'
