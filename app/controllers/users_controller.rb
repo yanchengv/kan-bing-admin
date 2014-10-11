@@ -9,20 +9,23 @@ class UsersController < ApplicationController
 
   def show_index
     sql = 'true'
-    if params[:name] && params[:name] != ''
-      sql << " and name like '%#{params[:name]}%'"
+    if params[:name] && params[:name] != '' && params[:name] != 'null'
+      sql << " and( name like '%#{params[:name]}%' or  nick_name like '%#{params[:name]}%' or  real_name like '%#{params[:name]}%') "
     end
-    if params[:email] && params[:email] != ''
+    if params[:email] && params[:email] != '' && params[:email] != 'null'
       sql << " and email like '%#{params[:email]}%'"
     end
-    if params[:photo] && params[:photo] != ''
+    if params[:photo] && params[:photo] != '' && params[:photo] != 'null'
       sql << " and photo like '%#{params[:photo]}%'"
     end
-    if params[:doctor_id] && params[:doctor_id] != ''
+    if params[:doctor_id] && params[:doctor_id] != '' && params[:doctor_id] != 'null'
       sql << " and doctor_id = #{params[:doctor_id]}"
     end
-    if params[:patient_id] && params[:patient_id] != ''
+    if params[:patient_id] && params[:patient_id] != '' && params[:patient_id] != 'null'
       sql << " and patient_id = #{params[:patient_id]}"
+    end
+    if params[:is_enabled] && params[:is_enabled] != '' && params[:is_enabled] != 'null'
+      sql << " and is_enabled = #{params[:is_enabled]}"
     end
     @users = User.where(sql)
     count = @users.count
@@ -112,6 +115,15 @@ class UsersController < ApplicationController
     #end
   end
 
+  def batch_delete
+    if params[:ids]
+      @users = User.where("id in #{params[:ids].to_s.gsub('[', '(').gsub(']', ')')}")
+      if @users.delete_all
+        render :json => {:success => true}
+      end
+    end
+  end
+
   def setting
     render template: 'users/setting'
   end
@@ -133,6 +145,25 @@ class UsersController < ApplicationController
     @patients = @patients.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:patients => @patients.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
+#修改状态
+  def change_state
+    if params[:ids]
+      @users = User.where("id in #{params[:ids].to_s.gsub('[', '(').gsub(']', ')')}")
+      @users.each do |user|
+        user.update_attribute(:is_enabled, params[:is_enabled])
+      end
+      render :json => {:success => true}
+    else
+      if params[:id] && params[:is_enabled]
+        @user = User.find(params[:id])
+        @user.update_attribute(:is_enabled, params[:is_enabled])
+        render :json => {:success => true}
+      else
+        render :json => {:success => false, :errors => '修改失败！'}
+      end
+    end
+
+  end
 
   private
   # Use callbacks to share common setup or constraints between actions.
@@ -143,6 +174,6 @@ class UsersController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def user_params
-    params.permit(:id, :name, :password, :password_confirmation, :patient_id, :doctor_id, :nurse_id, :is_enabled, :created_by, :manager_id, :level,:technician_id)
+    params.permit(:id, :name, :password, :password_confirmation, :patient_id, :doctor_id, :nurse_id, :is_enabled, :created_by, :manager_id, :level,:technician_id, :nick_name, :real_name, :verification_code, :mobile_phone, :email, :credential_type_number)
   end
 end

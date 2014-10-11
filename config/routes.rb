@@ -27,6 +27,8 @@ Rails.application.routes.draw do
       post 'oper_action', to: 'users#oper_action'
       get 'get_doctors', to: 'users#get_doctors'
       get 'get_patients', to: 'users#get_patients'
+      post 'change_state', to: 'users#change_state'
+      post 'batch_delete', to: 'users#batch_delete'
     end
   end
   resources :menus do
