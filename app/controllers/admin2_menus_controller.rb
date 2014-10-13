@@ -39,8 +39,11 @@ class Admin2MenusController < ApplicationController
            end
        end
     menu_ids.each do |menu_id|
-      @admin2_menu = Admin2Menu.new(admin2_id:admin_id   ,menu_id:menu_id)
-      @admin2_menu.save
+      @admin2_menus = Admin2Menu.where(:admin2_id => admin_id, :menu_id => menu_id)
+      if @admin2_menus.empty?
+        @admin2_menu = Admin2Menu.new(admin2_id: admin_id, menu_id: menu_id)
+        @admin2_menu.save
+      end
     end
     render json:{flag:true}
     # respond_to do |format|

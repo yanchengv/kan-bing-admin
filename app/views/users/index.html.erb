@@ -17,7 +17,7 @@
     <div style="margin:10px;">
       用户：<input type="text" id="search_name"> 邮箱：<input type="text" id="search_email">
       手机：<input type="text" id="search_tel"> 身份证：<input type="text" id="search_IDs">
-      状态：激活<input type="radio" name="state" value='true' onclick="search_state('true')" />&nbsp;禁用：<input type="radio" name="state" value="false" onclick="search_state('false')"/>
+      状态：激活<input type="radio" name="state" value='true' onclick="search_state('true')" />&nbsp;禁用<input type="radio" name="state" value="false" onclick="search_state('false')"/>
       <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>
 
     </div>
@@ -78,7 +78,7 @@
                 { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {email: true, required: false} },
                 { name: 'patient_id', index: 'name', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
                 { name: 'doctor_id', index: 'doctor_id', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
-                { name: 'is_enabled', index: 'is_enabled', align: "center"},
+                { name: 'is_enabled', index: 'is_enabled', align: "center", hidden:true},
                 { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
                     var value = colpos.is_enabled;
                     if (value == true) {
