@@ -49,6 +49,26 @@ Rails.application.routes.draw do
     end
 
   end
+  resources :doctor_friendships do
+    collection do
+      get 'index_show', to: 'doctor_friendships#show_index'
+      get 'get_doctors', to: 'doctor_friendships#get_doctors'
+      post 'oper_action', to:'doctor_friendships#oper_action'
+      post 'batch_delete', to: 'doctor_friendships#batch_delete'
+      get 'get_departments', to: 'doctor_friendships#get_departments'
+    end
+
+  end
+  resources :treatment_relationships do
+    collection do
+      get 'index_show', to: 'treatment_relationships#show_index'
+      get 'get_patients', to: 'treatment_relationships#get_patients'
+      post 'oper_action', to: 'treatment_relationships#oper_action'
+      post 'batch_delete', to: 'treatment_relationships#batch_delete'
+      get 'get_departments', to: 'treatment_relationships#get_departments'
+    end
+
+  end
 
   resources :provinces do
     collection do

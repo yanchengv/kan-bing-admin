@@ -1,5 +1,4 @@
 class DoctorFriendship < ActiveRecord::Base
-  attr_accessible :doctor1_id, :doctor2_id
   belongs_to :doctor1,:foreign_key => :doctor1_id  , class_name:"Doctor"
   belongs_to :doctor2,:foreign_key => :doctor2_id, class_name:"Doctor"
   # has_one :doctor1, class_name:"Doctor"
