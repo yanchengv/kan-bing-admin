@@ -2,12 +2,26 @@ include SessionsHelper
 class Patient < ActiveRecord::Base
   before_create :set_pk_code,:pinyin,:set_default_value
   before_update :update_default_value
-  has_one :user, :dependent => :destroy
   belongs_to :province
   belongs_to :city
   belongs_to :doctor
   belongs_to :hospital
   belongs_to :department
+  has_one :user, :dependent => :destroy
+  has_many :treatment_relationships, :dependent => :destroy
+  has_many :docfriends, :through => :treatment_relationships, :source => :doctor
+  has_many :appointmentblacklists, :dependent => :destroy
+  has_many :appointments, :dependent => :destroy
+  has_many :consultations, :dependent => :destroy
+  has_many :blood_glucoses, :dependent => :destroy
+  has_many :blood_pressures, :dependent => :destroy
+  has_many :blood_fats, :dependent => :destroy
+  has_many :blood_oxygens, :dependent =>:destroy
+  has_many :weights, :dependent => :destroy
+  has_many :us_reports,:dependent => :destroy
+  has_many :inspection_reports,:dependent => :destroy
+
+
   def pinyin
     self.spell_code = PinYin.abbr(self.name)
   end

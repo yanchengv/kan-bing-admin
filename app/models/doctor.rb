@@ -7,6 +7,15 @@ class Doctor < ActiveRecord::Base
   belongs_to :city
   belongs_to :hospital
   belongs_to :department
+  has_many :doctor_friendships, foreign_key: :doctor1_id,:dependent => :destroy
+  has_many :doctor_friendships, foreign_key: :doctor2_id,:dependent => :destroy
+  has_many :treatment_relationships, :dependent => :destroy
+  has_many :patfriends, :through => :treatment_relationships, :source  => :patient
+  has_many :consultations, foreign_key: "owner_id", dependent: :destroy
+  has_many :cons_orders, foreign_key: "owner_id", dependent: :destroy
+  has_many :appointments,:dependent => :destroy
+  has_many :appointment_arranges,:dependent => :destroy
+  has_many :appointment_schedules,:dependent => :destroy
   def pinyin
     self.spell_code = PinYin.abbr(self.name)
   end
