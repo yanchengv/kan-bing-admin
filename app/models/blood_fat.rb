@@ -4,7 +4,7 @@ class BloodFat < ActiveRecord::Base
   #:high_lipoprotein     高密度脂蛋白
   #:low_lipoprotein        低密度脂蛋白
   belongs_to :patient, :foreign_key => :patient_id
-  attr_accessible :patient_id,:total_cholesterol,:triglyceride,:high_lipoprotein,:low_lipoprotein,:measure_time
+  # attr_accessible :patient_id,:total_cholesterol,:triglyceride,:high_lipoprotein,:low_lipoprotein,:measure_time
 
   def add_blood_fat  params
     blood=params

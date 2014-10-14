@@ -1,6 +1,6 @@
 class Weight < ActiveRecord::Base
   belongs_to :patient, :foreign_key => :patient_id
- attr_accessible  :patient_id,:weight_value,:measure_time,:mdevice,:height,:bmi,:bfr,:smrwb,:vfl,:body_age,:bme
+ # attr_accessible  :patient_id,:weight_value,:measure_time,:mdevice,:height,:bmi,:bfr,:smrwb,:vfl,:body_age,:bme
 
 #获取所有的体重
   def all_weight_data patient_id

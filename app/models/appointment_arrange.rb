@@ -3,13 +3,13 @@ class AppointmentArrange < ActiveRecord::Base
   after_create :mimas_sync_create
   before_update :mimas_sync_update
   before_destroy :mimas_sync_destroy
-  attr_accessible :id,
-                  :schedule_id,
-                  :time_arrange,
-                  :doctor_id,
-                  :schedule_date,
-                  :status,
-                  :modality_device_id
+  # attr_accessible :id,
+  #                 :schedule_id,
+  #                 :time_arrange,
+  #                 :doctor_id,
+  #                 :schedule_date,
+  #                 :status,
+  #                 :modality_device_id
   has_one :appointment,:dependent => :destroy
   belongs_to :doctor, :foreign_key => :doctor_id
   belongs_to :appointment_schedule, :foreign_key => :schedule_id

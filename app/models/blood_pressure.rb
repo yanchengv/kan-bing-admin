@@ -1,6 +1,6 @@
 class BloodPressure < ActiveRecord::Base
   belongs_to :patient, :foreign_key => :patient_id
-  attr_accessible :id, :patient_id, :measure_value,:heart_rate, :measure_date,:measure_time,:systolic_pressure,:diastolic_pressure,:mdevice
+  # attr_accessible :id, :patient_id, :measure_value,:heart_rate, :measure_date,:measure_time,:systolic_pressure,:diastolic_pressure,:mdevice
 
   #添加血糖
   def add_blood_pressure (params)

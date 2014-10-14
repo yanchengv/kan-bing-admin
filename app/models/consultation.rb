@@ -1,19 +1,19 @@
 # encoding: utf-8
 
 class Consultation < ActiveRecord::Base
-  attr_accessible :id,
-                  :owner_id,
-                  :patient_id,
-                  :init_info,
-                  :purpose,
-                  :name,
-                  :status,
-                  :number,
-                  :status_description,
-                  :created_at,
-                  :start_time,
-                  :schedule_time,
-                  :end_time
+  # attr_accessible :id,
+  #                 :owner_id,
+  #                 :patient_id,
+  #                 :init_info,
+  #                 :purpose,
+  #                 :name,
+  #                 :status,
+  #                 :number,
+  #                 :status_description,
+  #                 :created_at,
+  #                 :start_time,
+  #                 :schedule_time,
+  #                 :end_time
 
   belongs_to :owner, class_name: "Doctor"
   belongs_to :patient

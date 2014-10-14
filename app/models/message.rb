@@ -11,7 +11,9 @@
 #
 
 class Message < ActiveRecord::Base
+=begin
   attr_accessible :content,:channel_id,:user_id
+=end
   belongs_to :user
   belongs_to :channel
 end

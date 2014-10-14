@@ -16,7 +16,7 @@ class Appointment < ActiveRecord::Base
   belongs_to :appointment_schedule, :foreign_key =>:appointment_schedule_id
   belongs_to :appointment_arrange, :foreign_key =>:appointment_arrange_id
 
-  attr_accessible :id, :patient_id, :doctor_id, :appointment_day, :start_time, :end_time, :status, :hospital_id, :department_id, :appointment_schedule_id, :dictionary_id,:appointment_arrange_id,:patient_name,:doctor_name,:hospital_name,:department_name,:dictionary_name
+  # attr_accessible :id, :patient_id, :doctor_id, :appointment_day, :start_time, :end_time, :status, :hospital_id, :department_id, :appointment_schedule_id, :dictionary_id,:appointment_arrange_id,:patient_name,:doctor_name,:hospital_name,:department_name,:dictionary_name
   def self.authAppointment2(patientId, appointmentId)
     @appointmentMsg = ""
     avalid = false
