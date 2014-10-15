@@ -1,10 +1,5 @@
 <div style="width: 100%">
-  <div style="width: 48%;float:left;margin-left: 20px;">
-  <!--<div style="margin-bottom: 10px;">咨询内容：<input type="text" id="question_content">&nbsp;<a id="search_question_btn" class="btn btn-default btn-sm" role="button">搜索</a></div>-->
-    <table id="list_doc2pat_ships"></table>
-    <div id="page_doc2pats"></div>
-</div>
-  <div style="width: 48%;float:left;margin-left: 20px;">
+  <div style="margin-left: 20px;margin-right: 20px;">
   <div style="margin-bottom: 10px;">医院：<select id="doctor_ship_hos"  style="width: 139px;">
     <option value="0">---请选择---</option>
     <% if !@hospitals.empty? %>
@@ -20,8 +15,8 @@
             <option id='hos_<%= dept.id %>' value="<%= dept.id %>"><%= dept.name %></option>
         <% end %>
     <% end %>
-  </select>&nbsp;医生名：<input type="text" id="doc_name"><br><br>
-    关联医生<input type="radio" name="state" value='true' onclick="search_state('true')"/>&nbsp;非关联医生<input type="radio" name="state" value="false" onclick="search_state('false')"/>
+  </select>&nbsp;医生名：<input type="text" id="doc_name">
+    关联医生<input type="radio" name="state" value='true' checked="checked" onclick="search_state('true')"/>&nbsp;非关联医生<input type="radio" name="state" value="false" onclick="search_state('false')"/>
     <a id="search_ships_btn" class="btn btn-default btn-sm" role="button">搜索</a>
   </div>
 
@@ -112,17 +107,35 @@ $('#search_ships_btn').click(function () {
             var subgrid_table_id, pager_id;
             subgrid_table_id = subgrid_id + "_t";
             pager_id = "p_" + subgrid_table_id;
-            var doctor1 = $('#list_doctors_ships').jqGrid('getRowData', row_id)
+            var doctor = $('#list_doctors_ships').jqGrid('getRowData', row_id);
             $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table><div id='" + pager_id + "' class='scroll'></div>");
             jQuery("#" + subgrid_table_id).jqGrid({
                 url: "doctor_friendships/get_doctors?doctor_id=" + row_id,
                 datatype: "json",
-                colNames: ['ID','医生ID','医生姓名', '关联医生ID', '关联医生姓名', '关联医生性别', '关联医生医院', '关联医生科室' ],
+                colNames: ['ID','医生ID','医生姓名', '关联医生', '关联医生名', '性别', '医院', '科室' ],
                 colModel: [
                     {name: 'id', index: 'id', editable: true, hidden:true, align: "center"},
-                    {name: 'doctor1_id', index: 'doctor1_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, editoptions: { defaultValue: doctor1.id, readonly: 'readonly'}},
-                    {name: 'doctor1_name', index: 'doctor1_name, align: "center"', editable: true, hidden: true, editrules: {edithidden: true}, editoptions: { defaultValue: doctor1.name, readonly: 'readonly'}},
-                    {name: 'doctor2_id', index: 'doctor2_id', editable: true, align: "center"},
+                    {name: 'doctor1_id', index: 'doctor1_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, editoptions: { defaultValue: doctor.id, readonly: 'readonly'}},
+                    {name: 'doctor1_name', index: 'doctor1_name', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, editoptions: {defaultValue: doctor.name, readonly: 'readonly'}, jsonmap: 'doctor1.name'},
+                    {name: 'doctor2_id', index: 'doctor2_id', editable: true, hidden: true, jsonmap: 'doctor2.id', editrules: {edithidden: true}, align: "center", edittype: 'select', formatter: 'select',
+                        editoptions: {
+                            style: "width:166px",
+                            value: function () {
+                                var positions;
+                                $.ajax({
+                                    url: "doctor_friendships/get_n_doctors",
+                                    data: {doctor_id: row_id},
+                                    async: false,
+                                    success: function (data) {
+                                        positions = data.doctors;
+                                    },
+                                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                        alert(textStatus);
+                                    }
+                                });
+                                return positions;
+                            }}
+                    },
                     {name: 'name', index: 'name', jsonmap: 'doctor2.name', align: "center" },
                     {name: 'gender', index: 'gender', jsonmap: 'doctor2.gender', align: "center" },
                     {name: 'hospital_name', index: 'hospital_id', jsonmap: 'doctor2.hospital_name', align: "center"},
@@ -156,7 +169,7 @@ $('#search_ships_btn').click(function () {
                 }
             });
             jQuery("#" + subgrid_table_id).jqGrid('navGrid', "#" + pager_id, {
-                        cloneToTop: true, addtext: "新增", addtitle: "新增", edit: false, view: false,
+                        cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑", view: false,
                         deltext: "删除", deltitle: "删除", search: false,
                         refreshtext: "更新", refreshtitle: "更新"},
                     {

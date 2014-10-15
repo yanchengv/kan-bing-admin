@@ -1,7 +1,5 @@
 <div style="width: 100%">
-  <div style="width: 48%;float:left;margin-left: 20px;">
-</div>
-  <div style="width: 48%;float:left;margin-left: 20px;">
+  <div style="margin-left: 20px;margin-right: 20px;">
   <div style="margin-bottom: 10px;">医院：<select id="patient_ship_hos"  style="width: 139px;">
     <option value="0">---请选择---</option>
     <% if !@hospitals.empty? %>
@@ -17,7 +15,7 @@
             <option id='hos_<%= dept.id %>' value="<%= dept.id %>"><%= dept.name %></option>
         <% end %>
     <% end %>
-  </select>&nbsp;医生名：<input type="text" id="doc_name"><br><br>
+  </select>&nbsp;医生名：<input type="text" id="doc_name">
     关联医生<input type="radio" name="state" value='true' onclick="search_state('true')" checked="checked"/>&nbsp;非关联医生<input type="radio" name="state" value="false" onclick="search_state('false')"/>
     <a id="search_ships_btn" class="btn btn-default btn-sm" role="button">搜索</a>
   </div>
@@ -71,11 +69,11 @@ $('#search_ships_btn').click(function () {
         height: 'auto',
         colNames: ['医生ID', '姓名', '性别', '医院', '科室'],
         colModel: [
-            {name: 'id', index: 'id', width: 120, sorttype: "int", align: "center"},
-            {name: 'name', index: 'name', width: 55, editable: true, align: "center" },
-            {name: 'gender', index: 'gender', width: 40, editable: true, align: "center" },
-            {name: 'hospital_name', index: 'hospital_name', width: 100, editable: true, jsonmap:'hospital.name', align: "center" },
-            {name: 'department_name', index: 'department_name', width: 100, editable: true, jsonmap:'department.name', align: "center" }
+            {name: 'id', index: 'id', sorttype: "int", align: "center"},
+            {name: 'name', index: 'name',editable: true, align: "center" },
+            {name: 'gender', index: 'gender', editable: true, align: "center" },
+            {name: 'hospital_name', index: 'hospital_name', editable: true, jsonmap:'hospital.name', align: "center" },
+            {name: 'department_name', index: 'department_name', editable: true, jsonmap:'department.name', align: "center" }
         ],
         rowNum: 20,
         rowList: [8, 10, 20, 30],
@@ -109,7 +107,7 @@ $('#search_ships_btn').click(function () {
             var subgrid_table_id, pager_id;
             subgrid_table_id = subgrid_id + "_t";
             pager_id = "p_" + subgrid_table_id;
-            var docotr = $('#list_doc2pat_ships').jqGrid('getRowData', row_id)
+            var doc = $('#list_doc2pat_ships').jqGrid('getRowData', row_id);
             $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table><div id='" + pager_id + "' class='scroll'></div>");
             jQuery("#" + subgrid_table_id).jqGrid({
                 url: "treatment_relationships/get_patients?doctor_id=" + row_id,
@@ -117,9 +115,27 @@ $('#search_ships_btn').click(function () {
                 colNames: ['ID','医生ID','医生姓名', '患者ID', '患者姓名', '患者性别'],// '患者医院', '患者科室' ],
                 colModel: [
                     {name: 'id', index: 'id', editable: true, hidden:true, align: "center"},
-                    {name: 'doctor_id', index: 'doctor_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, editoptions: { defaultValue: docotr.id, readonly: 'readonly'}},
-                    {name: 'doctor_name', index: 'doctor_name, align: "center"', editable: true, hidden: true, editrules: {edithidden: true}, editoptions: { defaultValue: docotr.name, readonly: 'readonly'}},
-                    {name: 'patient_id', index: 'patient2_id', editable: true, align: "center"},
+                    {name: 'doctor_id', index: 'doctor_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, editoptions: { defaultValue: doc.id, readonly: 'readonly'}},
+                    {name: 'doctor_name', index: 'doctor_name', align: "center", editable: true, jsonmap: 'doctor.name', hidden: true, editrules: {edithidden: true}, editoptions: { defaultValue: doc.name, readonly: 'readonly'}},
+                    {name: 'patient_id', index: 'patient_id', editable: true, align: "center", hidden: true, editrules: {edithidden: true}, edittype: 'select', formatter: 'select',
+                        editoptions: {
+                            style: "width:166px",
+                            value: function () {
+                                var positions;
+                                $.ajax({
+                                    url: "treatment_relationships/get_n_patients",
+                                    data: {doctor_id: row_id},
+                                    async: false,
+                                    success: function (data) {
+                                        positions = data.patients;
+                                    },
+                                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                        alert(textStatus);
+                                    }
+                                });
+                                return positions;
+                            }}
+                    },
                     {name: 'name', index: 'name', jsonmap: 'patient.name', align: "center" },
                     {name: 'gender', index: 'gender', jsonmap: 'patient.gender', align: "center" }//,
 //                    {name: 'hospital_name', index: 'hospital_id', jsonmap: 'patient.hospital_name', align: "center"},
@@ -153,7 +169,7 @@ $('#search_ships_btn').click(function () {
                 }
             });
             jQuery("#" + subgrid_table_id).jqGrid('navGrid', "#" + pager_id, {
-                        cloneToTop: true, addtext: "新增", addtitle: "新增", edit: false, view: false,
+                        cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑", view: false,
                         deltext: "删除", deltitle: "删除", search: false,
                         refreshtext: "更新", refreshtitle: "更新"},
                     {
@@ -195,82 +211,4 @@ $('#search_ships_btn').click(function () {
             );
         }
     }
-////回复举报
-//    jQuery("#list_doc2pat_ships").jqGrid({
-//        url: 'consult_accuses/index_results',
-//        datatype: "json",
-//        autowidth: true,
-//        height: 'auto',
-//        colNames: ['回复ID', '回复内容', '创建时间'],
-//        colModel: [
-//            {name: 'id', index: 'id', width: 100, align: "center"},
-//            {name: 'respond_content', index: 'respond_content', width: 100, align: "center"},
-//            {name: 'created_at', index: 'created_at', formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, width: 100, align: "center"}
-//        ],
-//        rowNum: 8,
-//        rowList: [8, 10, 20, 30],
-//        pager: '#page_doc2pats',
-//        sortname: 'id',
-//        viewrecords: true,
-//        sortorder: "desc",
-//        multiselect: false,
-//        subGrid: true,
-//        caption: "回复举报管理",
-//        prmNames: {
-//            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
-//            deloper: "del_res", // 当在delete模式中提交数据时，操作的名称
-//            subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
-//        },
-//        editurl: 'consult_accuses/cusult_oper_action',
-//        jsonReader: {
-//            root: "consult_results",
-//            repeatitems: false
-//        },
-//        subGridRowExpanded: function (subgrid_id_r, row_id_r) {
-//            var subgrid_table_id_r, pager_id_r;
-//            subgrid_table_id_r = subgrid_id_r + "_t";
-//            pager_id_r = "p_" + subgrid_table_id_r;
-//            $("#" + subgrid_id_r).html("<table id='" + subgrid_table_id_r + "' class='scroll'></table><div id='" + pager_id_r + "' class='scroll'></div>");
-//            jQuery("#" + subgrid_table_id_r).jqGrid({
-//                url: "consult_accuses/get_accuses?result_id=" + row_id_r,
-//                datatype: "json",
-//                colNames: ['举报ID', '举报原因', '创建时间'],
-//                colModel: [
-//                    {name: "id", index: "id", key: true},
-//                    {name: "reason", index: "reason"},
-//                    {name: "created_at", index: "created_at", formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, align: "right"}
-//                ],
-//                width: '400',
-//                height: 'auto',
-//                rowNum: 20,
-//                pager: pager_id_r,
-//                sortname: 'num',
-//                sortorder: "asc",
-//                prmNames: {
-//                    id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
-//                    deloper: "del", // 当在delete模式中提交数据时，操作的名称
-//                    subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
-//                },
-//                editurl: 'consult_accuses/cusult_oper_action',
-//                jsonReader: {
-//                    root: "consult_accuses",
-//                    repeatitems: false
-//                }
-//            });
-//            jQuery("#" + subgrid_table_id_r).jqGrid('navGrid', "#" + pager_id_r, {edit: false, add: false, deltext: "删除", deltitle: "删除"})
-//        },
-//        subGridRowColapsed: function (subgrid_id_r, row_id_r) {
-//        }
-//    });
-//    jQuery("#list_doc2pat_ships").jqGrid('navGrid', '#page_doc2pats', {add: false, edit: false, deltext: "删除", deltitle: "删除"});
-//    //搜索咨询
-//    $('#search_question_btn').click(function () {
-//        var text = $('#question_content').val();
-//        jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "consult_accuses/index_accuses?content=" + text }).trigger("reloadGrid")
-//    });
-//    //搜索回复
-//    $('#search_result_btn').click(function () {
-//        var text = $('#result_content').val();
-//        jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "consult_accuses/index_results?content=" + text }).trigger("reloadGrid")
-//    });
 </script>

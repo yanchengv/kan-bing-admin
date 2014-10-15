@@ -56,6 +56,7 @@ Rails.application.routes.draw do
       post 'oper_action', to:'doctor_friendships#oper_action'
       post 'batch_delete', to: 'doctor_friendships#batch_delete'
       get 'get_departments', to: 'doctor_friendships#get_departments'
+      get 'get_n_doctors', to: 'doctor_friendships#get_n_doctors'
     end
 
   end
@@ -66,6 +67,7 @@ Rails.application.routes.draw do
       post 'oper_action', to: 'treatment_relationships#oper_action'
       post 'batch_delete', to: 'treatment_relationships#batch_delete'
       get 'get_departments', to: 'treatment_relationships#get_departments'
+      get 'get_n_patients', to: 'treatment_relationships#get_n_patients'
     end
 
   end

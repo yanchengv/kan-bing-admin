@@ -20,10 +20,10 @@ class DoctorFriendshipsController < ApplicationController
       if !params[:name].nil? && params[:name] != '' && params[:name] != 'null'
         sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%')"
       end
-      if params[:str] == 'true'
-        sql << " and id in (select doctor1_id from doctor_friendships)"
-      else
+      if params[:str] == 'false'
         sql << " and id not in (select doctor1_id from doctor_friendships)"
+      else
+        sql << " and id in (select doctor1_id from doctor_friendships)"
       end
       @doctors = Doctor.where(sql)
       count = @doctors.count
@@ -39,8 +39,22 @@ class DoctorFriendshipsController < ApplicationController
         count = @doctor_friendships.count
         totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
         @doctor_friendships = @doctor_friendships.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-        render :json => {:doctor_friendships => @doctor_friendships.as_json(:include => [{:doctor2 => {:only => [:id, :name, :gender, :hospital_name, :department_name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+        render :json => {:doctor_friendships => @doctor_friendships.as_json(:include => [{:doctor1 => {:only => [:id, :name]}},{:doctor2 => {:only => [:id, :name, :gender, :hospital_name, :department_name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
       end
+    end
+
+    #获取非医友关系的医生
+    def get_n_doctors
+      if params[:doctor_id]
+        @doctors = Doctor.where(" id not in (select doctor2_id from doctor_friendships where doctor1_id = ?) and id != ?", params[:doctor_id], params[:doctor_id])
+      else
+        @doctors = Doctor.all
+      end
+      docs = {}
+      @doctors.each do |doc|
+        docs[doc.id] = doc.name
+      end
+      render :json => {:doctors => docs.as_json}
     end
 
     def oper_action
@@ -87,11 +101,17 @@ class DoctorFriendshipsController < ApplicationController
     # POST /doctor_friendships.json
     def create
       @doctor_friendship = DoctorFriendship.new(doctor_friendship_params)
-      if @doctor_friendship.save
-        render :json => {:success => true}
+      @doctor_friendships = DoctorFriendship.where(:doctor1_id => @doctor_friendship.doctor1_id, :doctor2_id => @doctor_friendship.doctor2_id)
+      if @doctor_friendships.empty?
+        if @doctor_friendship.save
+          render :json => {:success => true}
+        else
+          render :json => {:success => false, :errors => '添加失败！'}
+        end
       else
-        render :json => {:success => false, :errors => '添加失败！'}
+        render :json => {:success => false, :errors => '关联关系已存在！'}
       end
+
 
       #respond_to do |format|
       #  if @doctor_friendship.save

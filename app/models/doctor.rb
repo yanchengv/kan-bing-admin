@@ -16,8 +16,8 @@ class Doctor < ActiveRecord::Base
   has_many :appointments,:dependent => :destroy
   has_many :appointment_arranges,:dependent => :destroy
   has_many :appointment_schedules,:dependent => :destroy
-  has_many :doctor_friendships
-  has_many :treatment_relationships
+  has_many :doctor_friendships, :dependent => :destroy
+  has_many :treatment_relationships, :dependent => :destroy
   def pinyin
     self.spell_code = PinYin.abbr(self.name)
   end

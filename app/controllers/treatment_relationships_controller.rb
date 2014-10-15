@@ -39,8 +39,22 @@ class TreatmentRelationshipsController < ApplicationController
         count = @treatment_relationships.count
         totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
         @treatment_relationships = @treatment_relationships.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-        render :json => {:treatment_relationships => @treatment_relationships.as_json(:include => [{:patient => {:only => [:id, :name, :gender, :hospital_name, :department_name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+        render :json => {:treatment_relationships => @treatment_relationships.as_json(:include => [{:doctor => {:only => [:id, :name]}},{:patient => {:only => [:id, :name, :gender, :hospital_name, :department_name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
       end
+    end
+
+    #获取非医患关系的患者
+    def get_n_patients
+      if params[:doctor_id]
+        @patients = Patient.where(" id not in (select patient_id from treatment_relationships where doctor_id = ?)", params[:doctor_id])
+      else
+        @patients = Patient.all
+      end
+      pats = {}
+      @patients.each do |pat|
+        pats[pat.id] = pat.name
+      end
+      render :json => {:patients => pats.as_json}
     end
 
     def oper_action
@@ -87,10 +101,15 @@ class TreatmentRelationshipsController < ApplicationController
     # POST /treatment_relationships.json
     def create
       @treatment_relationship = TreatmentRelationship.new(treatment_relationship_params)
-      if @treatment_relationship.save
-        render :json => {:success => true}
+      @treatment_relationships = TreatmentRelationship.where(:patient_id => @treatment_relationship.patient_id, :doctor_id => @treatment_relationship.doctor_id)
+      if @treatment_relationships.empty?
+        if @treatment_relationship.save
+          render :json => {:success => true}
+        else
+          render :json => {:success => false, :errors => '添加失败！'}
+        end
       else
-        render :json => {:success => false, :errors => '添加失败！'}
+        render :json => {:success => false, :errors => '关联关系已存在！'}
       end
 
       #respond_to do |format|
