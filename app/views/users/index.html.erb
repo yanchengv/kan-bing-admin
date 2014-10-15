@@ -33,10 +33,19 @@
         if (value == 'patient') {
             $('#patient_div').css('display', 'block');
             $('#doctor_div').css('display', 'none');
+            $("#doc_list").resetSelection(); //重围选中行
         } else {
             $('#doctor_div').css('display', 'block');
             $('#patient_div').css('display', 'none');
+            $("#pat_list").resetSelection(); //重围选中行
         }
+        //切换患者或医生时清空form表单
+        var grid = $("#user_list");
+        grid.setColProp("doctor_id", { editoptions: { defaultValue: ''} });
+        grid.setColProp("real_name", { editoptions: { defaultValue: ''} });
+        grid.setColProp("email", { editoptions: { defaultValue: ''} });
+        grid.setColProp("mobile_phone", { editoptions: { defaultValue: ''} });
+        grid.setColProp("verification_code", { editoptions: { defaultValue: ''} });
     }
     function changeState(id,bl){
         $.ajax({
