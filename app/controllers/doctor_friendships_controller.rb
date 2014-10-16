@@ -5,51 +5,23 @@ class DoctorFriendshipsController < ApplicationController
     # GET /doctor_friendships
     # GET /doctor_friendships.json
     def index
-      @hospitals = Hospital.all
-      @departments = Department.all
     end
 
     def show_index
       sql = 'true'
-      if !params[:hospital_id].nil? && params[:hospital_id] != '0' && params[:hospital_id] != 'null'
-        sql << " and hospital_id = #{params[:hospital_id]}"
-      end
-      if !params[:department_id].nil? && params[:department_id] != '0' && params[:department_id] != 'null'
-        sql << " and department_id = #{params[:department_id]}"
-      end
       if !params[:name].nil? && params[:name] != '' && params[:name] != 'null'
-        sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%')"
+        sql << " and doctor1_id in (select id from doctors where name = '#{params[:name]}') or doctor2_id in (select id from doctors where name = '#{params[:name]}')"
       end
-      if params[:str] == 'false'
-        sql << " and id not in (select doctor1_id from doctor_friendships)"
-      else
-        sql << " and id in (select doctor1_id from doctor_friendships)"
-      end
-      @doctors = Doctor.where(sql)
-      count = @doctors.count
+      @doctor_friendships = DoctorFriendship.where(sql)
+      count = @doctor_friendships.count
       totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
-      @doctors = @doctors.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-      render :json => {:doctors => @doctors.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
-    end
-
-    #获取医友信息
-    def get_doctors
-      if params[:doctor_id]
-        @doctor_friendships = DoctorFriendship.where(:doctor1_id => params[:doctor_id])
-        count = @doctor_friendships.count
-        totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
-        @doctor_friendships = @doctor_friendships.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-        render :json => {:doctor_friendships => @doctor_friendships.as_json(:include => [{:doctor1 => {:only => [:id, :name]}},{:doctor2 => {:only => [:id, :name, :gender, :hospital_name, :department_name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
-      end
+      @doctor_friendships = @doctor_friendships.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+      render :json => {:doctor_friendships => @doctor_friendships.as_json(:include => [{:doctor1 => {:only => [:id, :name]}}, {:doctor2 => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
     end
 
     #获取非医友关系的医生
-    def get_n_doctors
-      if params[:doctor_id]
-        @doctors = Doctor.where(" id not in (select doctor2_id from doctor_friendships where doctor1_id = ?) and id != ?", params[:doctor_id], params[:doctor_id])
-      else
-        @doctors = Doctor.all
-      end
+    def get_doctors
+      @doctors = Doctor.all
       docs = {}
       @doctors.each do |doc|
         docs[doc.id] = doc.name
@@ -67,20 +39,6 @@ class DoctorFriendshipsController < ApplicationController
         set_doctor_friendship
         update
       end
-    end
-
-    #科室
-    def get_departments
-      if params[:hospital_id] && params[:hospital_id] != ''
-        @departments = Department.where(:hospital_id => params[:hospital_id])
-      else
-        @departments = City.all
-      end
-      departments = {}
-      @departments.each do |dept|
-        departments[dept.id] = dept.name
-      end
-      render :json => {:departments => departments.as_json}
     end
 
     # GET /doctor_friendships/1
@@ -102,7 +60,8 @@ class DoctorFriendshipsController < ApplicationController
     def create
       @doctor_friendship = DoctorFriendship.new(doctor_friendship_params)
       @doctor_friendships = DoctorFriendship.where(:doctor1_id => @doctor_friendship.doctor1_id, :doctor2_id => @doctor_friendship.doctor2_id)
-      if @doctor_friendships.empty?
+      @doctor_friendships1 = DoctorFriendship.where(:doctor1_id => @doctor_friendship.doctor2_id, :doctor2_id => @doctor_friendship.doctor1_id)
+      if @doctor_friendships.empty? && @doctor_friendships1.empty?
         if @doctor_friendship.save
           render :json => {:success => true}
         else

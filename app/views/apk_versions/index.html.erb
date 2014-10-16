@@ -1,0 +1,104 @@
+<div style="width: 100%">
+  <div style="margin-left: 20px;margin-right: 20px;">
+    <div style="margin-bottom: 10px;">版本号：<input type="text" id="version_num_search">&nbsp;&nbsp;<a id="search_apk_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_apk_btn" class="btn btn-default btn-sm" role="button">清空</a>
+    </div>
+    <table id="apk_list"></table>
+    <div id="page_apk"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    jQuery("#apk_list").jqGrid({
+        url: 'apk_versions/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '版本号', '版本路径', '更改时间', '版本内容'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'version_num', index: 'version_num', align: "center", editable: true},
+            { name: 'version_url', index: 'version_url', align: "center", editable: true},
+            { name: 'update_time', index: 'update_time', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
+                $(element).datetimepicker({
+                    lang: 'ch',
+                    timepicker: false,
+                    format: 'Y-m-d'
+                })
+            } }},
+            { name: 'description', index: 'description', align: "center", editable: true}
+        ],
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "apk_versions",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: 'apk_versions/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_apk'),
+        multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "apk版本管理"
+    });
+    jQuery("#apk_list").jqGrid('navGrid', '#page_apk', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+             ).navButtonAdd('#page_apk', { title: '批量删除', caption: '批量删除', onClickButton: function () {
+                batch_delete()
+            }, position: "last"});
+    //批量删除
+    function batch_delete() {
+        var ids = $('#apk_list').jqGrid('getGridParam', 'selarrrow');
+        if (ids.length == 0) {
+            alert('请选择删除项！');
+        } else {
+            $.ajax({
+                        type: 'post',
+                        url: '/apk_versions/batch_delete',
+                        data: {ids: ids},
+                        success: function (data) {
+                            if (data.success == true) {
+                                jQuery("#apk_list").jqGrid('setGridParam', {url: "apk_versions/index_show"}).trigger("reloadGrid");
+                            } else {
+                                alert('操作失败！');
+                            }
+                        }
+                    }
+            );
+        }
+    }
+    //搜索apk
+    $('#search_apk_btn').click(function () {
+        var version_num = $('#version_num_search').val();
+        jQuery("#apk_list").jqGrid('setGridParam', {url: "apk_versions/index_show?version_num=" + version_num }).trigger("reloadGrid")
+    });
+    //清空k
+    $('#clear_apk_btn').click(function () {
+        $('#version_num_search').val('');
+    });
+</script>

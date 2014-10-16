@@ -18,7 +18,7 @@
       用户：<input type="text" id="search_name"> 邮箱：<input type="text" id="search_email">
       手机：<input type="text" id="search_tel"> 身份证：<input type="text" id="search_IDs">
       状态：激活<input type="radio" name="state" value='true' onclick="search_state('true')" />&nbsp;禁用<input type="radio" name="state" value="false" onclick="search_state('false')"/>
-      <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>
+      <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_btn" class="btn btn-default btn-sm" role="button">清空</a>
 
     </div>
     <table id="user_list"></table>
@@ -65,7 +65,6 @@
     function search_state(bl){
         jQuery("#user_list").jqGrid('setGridParam', {url: "users/index_show?is_enabled=" + bl}).trigger("reloadGrid");
     }
-    //:nick_name, :real_name, :verification_code, :mobile_phone, :email
     $(document).ready(function () {
         jQuery("#user_list").jqGrid({
             url: 'users/index_show',
@@ -179,7 +178,7 @@
     function batch_state(bl){
         var ids = $('#user_list').jqGrid('getGridParam', 'selarrrow');
         if (ids.length == 0) {
-            alert('请选择删除项！');
+            alert('请选择操作项！');
         } else {
             $.ajax({
                         type: 'post',
@@ -215,6 +214,7 @@
         var name = $('#search_name').val();
         var email = $('#search_email').val();
         var tel = $('#search_tel').val();
+        var search_IDs = $('#search_IDs').val();
         var states = document.getElementsByName("state");
         var state = '';
         for (var i = 0; i < states.length; i++) {
@@ -222,7 +222,14 @@
                 state = states[i].value;
             }
         }
-        jQuery("#user_list").jqGrid('setGridParam', {url: "users/index_show?name=" + name + "&email=" + email + "&photo=" + tel + '&is_enabled=' + state}).trigger("reloadGrid")
+        jQuery("#user_list").jqGrid('setGridParam', {url: "users/index_show?name=" + name + "&email=" + email + "&mobile_phone=" + tel + '&verification_code='+ search_IDs +'&is_enabled=' + state}).trigger("reloadGrid")
+    });
+    //清空
+    $('#clear_btn').click(function () {
+        $('#search_name').val('');
+        $('#search_email').val('');
+        $('#search_tel').val('');
+        $('#search_IDs').val('');
     });
     //验证姓名
     function check_name() {

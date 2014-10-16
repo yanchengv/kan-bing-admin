@@ -1,8 +1,8 @@
 <div style="width: 100%"><div style="width: 48%;float:left;margin-left: 20px;">
-  <div style="margin-bottom: 10px;">咨询内容：<input type="text" id="question_content">&nbsp;<a id="search_question_btn" class="btn btn-default btn-sm" role="button">搜索</a></div>
+  <div style="margin-bottom: 10px;">咨询内容：<input type="text" id="question_content">&nbsp;<a id="search_question_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_question_btn" class="btn btn-default btn-sm" role="button">清空</a></div>
   <table id="list_ques"></table>
   <div id="page_ques"></div></div><div style="width: 48%;float:left;margin-left: 20px;">
-  <div style="margin-bottom: 10px;">回复内容：<input type="text" id="result_content">&nbsp;<a id="search_result_btn" class="btn btn-default btn-sm" role="button">搜索</a></div>
+  <div style="margin-bottom: 10px;">回复内容：<input type="text" id="result_content">&nbsp;<a id="search_result_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_result_btn" class="btn btn-default btn-sm" role="button">清空</a></div>
   <table id="list_result"></table>
   <div id="page_result"></div></div> </div>
 
@@ -151,9 +151,17 @@
         var text = $('#question_content').val();
         jQuery("#list_ques").jqGrid('setGridParam', {url: "consult_accuses/index_accuses?content=" + text }).trigger("reloadGrid")
     });
+    //清空搜索咨询条件
+    $('#clear_question_btn').click(function () {
+        $('#question_content').val('');
+    });
     //搜索回复
     $('#search_result_btn').click(function () {
         var text = $('#result_content').val();
         jQuery("#list_result").jqGrid('setGridParam', {url: "consult_accuses/index_results?content=" + text }).trigger("reloadGrid")
+    });
+    //清空搜索回复条件
+    $('#clear_result_btn').click(function () {
+        $('#result_content').val('');
     });
 </script>

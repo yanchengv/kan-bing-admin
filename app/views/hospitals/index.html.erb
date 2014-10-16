@@ -10,14 +10,14 @@
       <% @cities.each do |city| %>
           <option value="<%= city.id %>"><%= city.name %></option>
       <% end if !@cities.empty? %>
-      </select>&nbsp;&nbsp;医院名称：<input type="text" id="hospital_name">&nbsp;&nbsp;<a id="search_hos_btn" class="btn btn-default btn-sm" role="button">搜索</a>
+      </select>&nbsp;&nbsp;医院名称：<input type="text" id="hospital_name">&nbsp;&nbsp;<a id="search_hos_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_hos_btn" class="btn btn-default btn-sm" role="button">清空</a>
     </div>
     <table id="hospital_list"></table>
     <div id="page_hos"></div>
   </div>
   <div style="hight: 48%;margin-top: 10px;margin-left: 20px;margin-right: 20px;">
     <div style="margin-bottom: 10px;">
-      科室名称：<input type="text" id="dept_name_search">&nbsp;&nbsp;<a id="search_dept_btn" class="btn btn-default btn-sm" role="button">搜索</a>
+      科室名称：<input type="text" id="dept_name_search">&nbsp;&nbsp;<a id="search_dept_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_dept_btn" class="btn btn-default btn-sm" role="button">清空</a>
     </div>
     <table id="department_list"></table>
     <div id="page_dept"></div>
@@ -54,6 +54,9 @@
             { name: 'province_name', index: 'province_name', align: "center", editable: false},
             { name: 'province_id', index: 'province_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select', formatter: 'select',
                 editoptions: {
+                    dataInit: function (element) {
+                        $(element).select2();
+                    },
                     style: "width:166px",
                     value: function () {
                         var positions;
@@ -91,6 +94,9 @@
             },
             { name: 'city_id', index: 'city_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select', formatter: 'select',
                 editoptions: {
+                    dataInit: function (element) {
+                        $(element).select2();
+                    },
                     style: "width:166px",
                     value: function () {
                         var positions;
@@ -269,12 +275,21 @@
         var hos_name = $('#hospital_name').val();
         jQuery("#hospital_list").jqGrid('setGridParam', {url: "hospitals/index_show?province_id=" + pro_id +'&city_id=' + city_id + '&name=' + hos_name }).trigger("reloadGrid")
     });
+    //清空搜索医院的查询条件
+    $('#clear_hos_btn').click(function () {
+        $("#province_search_id").select2("val", "0");
+        $('#city_search_id').select2("val", "0");
+        $('#hospital_name').val('');
+    });
     //搜索科室
     $('#search_dept_btn').click(function () {
-     //   var type = $('#dept_search_type').val();
         var name = $('#dept_name_search').val();
         var hos_id = jQuery("#hospital_list").jqGrid('getGridParam', 'selrow');
         jQuery("#department_list").jqGrid('setGridParam', {url: "departments/index_show?name=" + name + '&hospital_id=' + hos_id }).trigger("reloadGrid")
+    });
+    //清空搜索科室
+    $('#clear_dept_btn').click(function () {
+        $('#dept_name_search').val('');
     });
     //验证电话
     function check_phone() {

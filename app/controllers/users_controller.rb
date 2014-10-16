@@ -15,8 +15,11 @@ class UsersController < ApplicationController
     if params[:email] && params[:email] != '' && params[:email] != 'null'
       sql << " and email like '%#{params[:email]}%'"
     end
-    if params[:photo] && params[:photo] != '' && params[:photo] != 'null'
-      sql << " and photo like '%#{params[:photo]}%'"
+    if params[:mobile_phone] && params[:mobile_phone] != '' && params[:mobile_phone] != 'null'
+      sql << " and mobile_phone like '%#{params[:mobile_phone]}%'"
+    end
+    if params[:verification_code] && params[:verification_code] != '' && params[:verification_code] != 'null'
+      sql << " and verification_code like '%#{params[:verification_code]}%'"
     end
     if params[:doctor_id] && params[:doctor_id] != '' && params[:doctor_id] != 'null'
       sql << " and doctor_id = #{params[:doctor_id]}"

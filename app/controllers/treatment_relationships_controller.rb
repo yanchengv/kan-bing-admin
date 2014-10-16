@@ -5,51 +5,36 @@ class TreatmentRelationshipsController < ApplicationController
     # GET /treatment_relationships
     # GET /treatment_relationships.json
     def index
-      @hospitals = Hospital.all
-      @departments = Department.all
     end
 
     def show_index
       sql = 'true'
-      if !params[:hospital_id].nil? && params[:hospital_id] != '0' && params[:hospital_id] != 'null'
-        sql << " and hospital_id = #{params[:hospital_id]}"
+      if !params[:patient_name].nil? && params[:patient_name] != '' && params[:patient_name] != 'null'
+        sql << " and patient_id in (select id from patients where name = '#{params[:patient_name]}')"
       end
-      if !params[:department_id].nil? && params[:department_id] != '0' && params[:department_id] != 'null'
-        sql << " and department_id = #{params[:department_id]}"
+      if !params[:doctor_name].nil? && params[:doctor_name] != '' && params[:doctor_name] != 'null'
+        sql << " and doctor_id in (select id from doctors where name = '#{params[:doctor_name]}')"
       end
-      if !params[:name].nil? && params[:name] != '' && params[:name] != 'null'
-        sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%')"
-      end
-      if params[:str] == 'false'
-        sql << " and id not in (select doctor_id from treatment_relationships)"
-      else
-        sql << " and id in (select doctor_id from treatment_relationships)"
-      end
-      @doctors = Doctor.where(sql)
-      count = @doctors.count
+      @treatment_relationships = TreatmentRelationship.where(sql)
+      count = @treatment_relationships.count
       totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
-      @doctors = @doctors.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-      render :json => {:doctors => @doctors.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+      @treatment_relationships = @treatment_relationships.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+      render :json => {:treatment_relationships => @treatment_relationships.as_json(:include => [{:doctor => {:only => [:id, :name]}}, {:patient => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
     end
 
-    #获取患友信息
+    #获取医生
+    def get_doctors
+      @doctors = Doctor.all
+      docs = {}
+      @doctors.each do |doc|
+        docs[doc.id] = doc.name
+      end
+      render :json => {:doctors => docs.as_json}
+    end
+
+    #获取患者
     def get_patients
-      if params[:doctor_id]
-        @treatment_relationships = TreatmentRelationship.where(:doctor_id => params[:doctor_id])
-        count = @treatment_relationships.count
-        totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
-        @treatment_relationships = @treatment_relationships.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-        render :json => {:treatment_relationships => @treatment_relationships.as_json(:include => [{:doctor => {:only => [:id, :name]}},{:patient => {:only => [:id, :name, :gender, :hospital_name, :department_name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
-      end
-    end
-
-    #获取非医患关系的患者
-    def get_n_patients
-      if params[:doctor_id]
-        @patients = Patient.where(" id not in (select patient_id from treatment_relationships where doctor_id = ?)", params[:doctor_id])
-      else
-        @patients = Patient.all
-      end
+      @patients = Patient.all
       pats = {}
       @patients.each do |pat|
         pats[pat.id] = pat.name
@@ -67,20 +52,6 @@ class TreatmentRelationshipsController < ApplicationController
         set_treatment_relationship
         update
       end
-    end
-
-    #科室
-    def get_departments
-      if params[:hospital_id] && params[:hospital_id] != ''
-        @departments = Department.where(:hospital_id => params[:hospital_id])
-      else
-        @departments = City.all
-      end
-      departments = {}
-      @departments.each do |dept|
-        departments[dept.id] = dept.name
-      end
-      render :json => {:departments => departments.as_json}
     end
 
     # GET /treatment_relationships/1

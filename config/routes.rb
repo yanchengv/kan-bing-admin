@@ -15,6 +15,13 @@ Rails.application.routes.draw do
       get 'get_ranks', to:'hospitals#hospital_rank'
     end
   end
+  resources :apk_versions do
+    collection do
+      get 'index_show', to: 'apk_versions#show_index'
+      post 'oper_action', to: 'apk_versions#oper_action'
+      post 'batch_delete', to: 'apk_versions#batch_delete'
+    end
+  end
   resources :departments do
     collection do
       get 'index_show', to: 'departments#show_index'
@@ -52,11 +59,9 @@ Rails.application.routes.draw do
   resources :doctor_friendships do
     collection do
       get 'index_show', to: 'doctor_friendships#show_index'
-      get 'get_doctors', to: 'doctor_friendships#get_doctors'
       post 'oper_action', to:'doctor_friendships#oper_action'
       post 'batch_delete', to: 'doctor_friendships#batch_delete'
-      get 'get_departments', to: 'doctor_friendships#get_departments'
-      get 'get_n_doctors', to: 'doctor_friendships#get_n_doctors'
+      get 'get_doctors', to: 'doctor_friendships#get_doctors'
     end
 
   end
@@ -66,8 +71,7 @@ Rails.application.routes.draw do
       get 'get_patients', to: 'treatment_relationships#get_patients'
       post 'oper_action', to: 'treatment_relationships#oper_action'
       post 'batch_delete', to: 'treatment_relationships#batch_delete'
-      get 'get_departments', to: 'treatment_relationships#get_departments'
-      get 'get_n_patients', to: 'treatment_relationships#get_n_patients'
+      get 'get_doctors', to: 'treatment_relationships#get_doctors'
     end
 
   end

@@ -1,10 +1,12 @@
+<div style="margin-left: 20px; margin-right: 20px;">
 <div style="margin:10px;">
   姓名：<input type="text" id="search_name"> 邮箱：<input type="text" id="search_email">
   电话：<input type="text" id="search_tel">
-  <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>
+  <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_btn" class="btn btn-default btn-sm" role="button">清空</a>
 </div>
 <table id="list"></table>
 <div id="pager"></div>
+</div>
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -14,7 +16,7 @@
             mtype: 'GET',
             colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号'],
             colModel: [
-                { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden:true},
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
                 { name: 'password', index: 'password', width: 100, align: "center", editable: true,
                     edittype: "password", hidden:true, editrules:{edithidden:true} },
@@ -49,7 +51,7 @@
             editurl:'admin2s/oper_action',
             closeAfterAdd:true,
             pager: jQuery('#pager'),
-            multiselect: true,
+          //  multiselect: true,
             rowNum: 20,
             altclass: 'altRowsColour',
             width: '500',
@@ -73,6 +75,12 @@
         var email = $('#search_email').val();
         var tel = $('#search_tel').val();
         jQuery("#list").jqGrid('setGridParam', {url: "admin2s/test_index?name=" + name + "&email=" + email + "&mobile_phone=" + tel}).trigger("reloadGrid")
+    });
+    //清空搜索条件
+    $('#clear_btn').click(function () {
+        $('#search_name').val('');
+        $('#search_email').val('');
+        $('#search_tel').val('');
     });
     //验证手机号
     function check_phone(){
