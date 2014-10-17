@@ -1,0 +1,13 @@
+<select name="department_id" id="menu_department_id">
+  <option></option>
+  <% if !@departments.nil? && !@departments.empty? %>
+      <% @departments.each do |hos| %>
+          <option id="department_<%= hos.id %>" value="<%= hos.id %>"><%= hos.name %></option>
+      <% end %>
+  <% end %>
+</select>
+<script>
+    $(function() {
+        $('#menu_department_id').select2();
+    })
+</script>

@@ -1,7 +1,7 @@
 class DoctorsController < ApplicationController
   require 'httparty'
   include HTTParty
-  before_filter :signed_in_user
+  before_filter :signed_in_user#,:access_control
   before_action :set_doctor, only: [:show, :edit, :update, :destroy]
 
   # GET /doctors
@@ -110,12 +110,57 @@ class DoctorsController < ApplicationController
   def index
       # @doctor = Doctor.new
       # @doctors = Doctor.all
+    p 'sql'
+     # Admin2.joins(admin2s_role2s:  [{ role2: [{role2s_menu_permissions: [{menu_permission: :priority},{menu_permission: :menu}]}] }]).where(id:current_user.id)
+    # p Role2sMenuPermission.joins(:menu_permission).where(menu_permissions:{hospital_id:1})
+    # p MenuPermission.joins(:priority,:menu).where(menu:{name:'医生管理'})
+    hospital_ids = []
+    department_ids = []
+    @menu_permissions = MenuPermission.joins(role2s_menu_permissions:[{role2: [{admin2s_role2s: :admin2}]}]).where(admin2s:{id:current_user.id})
+    if !@menu_permissions.empty?
+      @menus=[]
+      @menu_permissions.each do |menu_permission|
+        @menus.push(menu_permission.menu)
+      end
+      @menu_permissions.each do |menu_permission|
+        flag=false
+        @menu = Menu.where(name:'医院管理').first
+        if menu_permission.menu.parent_id == @menu.id
+          @child_menus = menu_permission.menu.all_child(@menus)
+          if @child_menus != []
+            @child_menus.each do |menu|
+              if menu.name == '医生管理'
+                flag=true
+              end
+            end
+          end
+          if flag
+            if !menu_permission.hospital_id.nil? && menu_permission.hospital_id != ''
+              hospital_ids.push(menu_permission.hospital_id)
+            end
+            if !menu_permission.department_id.nil? && menu_permission.department_id != ''
+              department_ids.push(menu_permission.department_id)
+            end
+          end
+        end
+      end
+      @hospitals = Hospital.where(id:hospital_ids)
+      if department_ids!= []
+        @departments = Department.where(id:department_ids,hospital_id:hospital_ids[0])
+      else
+        @departments = Department.where(hospital_id:hospital_ids[0])
+      end
+    end
+    @hos = Hospital.find_by(id:hospital_ids[0])
+      hos_id = hospital_ids[0]
+    if !params[:hos_id].nil?
       hos_id = params[:hos_id]
+    end
       dep_id = params[:dep_id]
       is_activated = params[:is_activated]
       noOfRows = params[:rows]
       page = params[:page]
-      @menu_id = params[:menu_id]
+      @menu_name = params[:menu_name]
       @doctors_all = nil
       if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
         @doctors_all = Doctor.where(hospital_id:hos_id,department_id:dep_id)
@@ -533,7 +578,7 @@ class DoctorsController < ApplicationController
     doc_ids_arr=doc_ids.split(',')
     flag=false
     if doc_ids_arr.length > 0
-      @doctors = Doctor.where(id:doc_ids_arr)
+      @doctors = Doctor.where(id:doc_ids_arr,is_activated:0)
       if !@doctors.empty?
         @doctors.each do |doc|
           code=""
@@ -595,7 +640,7 @@ class DoctorsController < ApplicationController
     doc_ids_arr=doc_ids.split(',')
     flag=false
     if doc_ids_arr.length > 0
-      @doctors = Doctor.where(id:doc_ids_arr)
+      @doctors = Doctor.where(id:doc_ids_arr,is_activated:0)
       if !@doctors.empty?
         @doctors.each do |doc|
           code=""
@@ -651,8 +696,74 @@ class DoctorsController < ApplicationController
   end
 
   def search_department
-    @departments = Department.where(hospital_id:params[:hos_id])
+    @menu_permissions = MenuPermission.joins(role2s_menu_permissions:[{role2: [{admin2s_role2s: :admin2}]}]).where(admin2s:{id:current_user.id})
+    if !@menu_permissions.empty?
+      # hospital_ids = []
+      department_ids = []
+      @menu_permissions.each do |menu_permission|
+        @menu = Menu.where(name:'医院管理').first
+        if menu_permission.menu.parent_id == @menu.id
+          # hospital_ids.push(menu_permission.hospital_id)
+          if !menu_permission.department_id.nil? && menu_permission.department_id != ''
+            department_ids.push(menu_permission.department_id)
+          end
+        end
+      end
+      if department_ids == []
+        @departments = Department.where(hospital_id:params[:hos_id])
+      else
+        @departments = Department.where(id:department_ids,hospital_id:params[:hos_id])
+      end
+    end
     render partial: 'doctors/search_department'
+  end
+
+  def is_permission
+    add_flag=false
+    delete_flag=false
+    update_flag=false
+    show_flag=false
+    hos_id = params[:hospital_id]
+    @menu_permissions = MenuPermission.joins(role2s_menu_permissions:[{role2: [{admin2s_role2s: :admin2}]}]).where(admin2s:{id:current_user.id})
+    if !@menu_permissions.empty?
+      @menus=[]
+      @menu_permissions.each do |menu_permission|
+        @menus.push(menu_permission.menu)
+      end
+      @menu_permissions.each do |menu_permission|
+        @menu = Menu.where(name:'医院管理').first
+        if menu_permission.menu.parent_id == @menu.id
+          if menu_permission.hospital_id == hos_id
+            @child_menus = menu_permission.menu.all_child(@menus)
+            if @child_menus != []
+              @child_menus.each do |menu|
+                if menu.name == '医生管理'
+                  menu.menu_permissions.each do |menu_per|
+                    @menu_permissions.each do |menu_permission2|
+                      if menu_per.id == menu_permission2.id
+                        if menu_per.priority_id == 1
+                          add_flag = true
+                        end
+                        if menu_per.priority_id == 2
+                          delete_flag = true
+                        end
+                        if menu_per.priority_id == 3
+                          update_flag = true
+                        end
+                        if menu_per.priority_id == 4
+                          show_flag = true
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    render json: {add:add_flag,delete:delete_flag,update:update_flag,show:show_flag}
   end
 
   private

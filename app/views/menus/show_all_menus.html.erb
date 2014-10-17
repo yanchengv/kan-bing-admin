@@ -17,6 +17,9 @@
             showRemoveBtn: false,
             showRenameBtn: false,
             drag:{
+                prev:false,
+                inner:false,
+                next:false,
                 isCopy:true,
                 isMove:false
             }
@@ -25,6 +28,16 @@
             simpleData: {
                 enable: true
             }
+        },
+        callback: {
+            onClick:onClick,
+//            onCheck:onCheck,
+            beforeDrag: beforeDrag,
+//            onDrag: zTreeOnDrag,
+            beforeDrop: beforeDrop,
+            onDrop: onDrop
+//            beforeRemove:beforeRemove,
+//            onRemove:onRemove
         }
     };
 
@@ -36,84 +49,357 @@
         },
         edit: {
             enable: true,
-            showRemoveBtn: true,
+            showRemoveBtn: setRemoveBtn,
             showRenameBtn: false,
             drag:{
+                prev:false,
+                inner:inner,
+                next:false,
                 isCopy:true,
                 isMove:false
             }
         },
+//        async: {
+//            //异步加载
+//            enable: true,
+//            url: "/menus/show_all_menus",
+//            autoParam: ["id", "pId", "name"]
+//        },
         data: {
             simpleData: {
                 enable: true
             }
+        },
+        callback: {
+//            beforeDrag: beforeDrag,
+//            beforeDrop: beforeDrop,
+            beforeRemove:beforeRemove,
+            onRemove:onRemove
         }
     };
 
+    function onClick(event, treeId, treeNode) {
+        var treeObj = $.fn.zTree.getZTreeObj(treeId);
+        var tree_node = treeNode
+        while (tree_node.level > 0){
+//            if (tree_node.level > 0){
+                tree_node.checked=true
+                treeObj.updateNode(tree_node);
+                tree_node = tree_node.getParentNode()
+//            }
+
+        }
+        var child_nodes=[]
+        var child_nodes=getChildren(child_nodes,treeNode);
+        for (var i=0; i<child_nodes.length;i++){
+            child_nodes[i].checked=true
+            treeObj.updateNode(child_nodes[i]);
+        }
+    }
+
+    function getChildren(child_nodes,treeNode){  //获取所有子结点
+        child_nodes.push(treeNode);
+        if (treeNode.isParent){
+            for(var obj in treeNode.children){
+                getChildren(child_nodes,treeNode.children[obj]);
+            }
+        }
+        return child_nodes;
+    }
+
+    function zTreeOnDrag(event, treeId, treeNodes) {
+        alert(treeNodes[0].id);
+    };
+
+    function inner(treeId,treeNodes,targetNode){     //本树间不可拖拽,且目标结点必须是根结点
+        if(treeId!='perTree' && targetNode.level==1){
+            return true
+        }else{
+            return false
+        }
+
+    }
+    function setRemoveBtn(treeId, treeNode) {  //判断是否为根结点,根结点不可删除
+        if (treeNode.level == 0)
+            return false;
+        else
+            return true;
+    }
+    function beforeDrag(treeId, treeNodes){
+        for (var i=0,l=treeNodes.length; i<l; i++) {
+            if (treeNodes[i].drag === false) {
+                return false;
+            }
+        }
+        var treeObj=$.fn.zTree.getZTreeObj("perTree"),
+                nodes2=treeObj.getCheckedNodes(true);
+        if (nodes2.length==0){
+            alert('请勾选后拖拽!')
+            return false;
+        }
+        return true;
+    }
+
+    function beforeDrop(treeId, treeNodes, targetNode, moveType) {
+        var drag_id
+        drag_id=treeNodes[0]['id'] //获取被拖拽的id
+        var right_treeObj = $.fn.zTree.getZTreeObj(treeId);
+        var nodes = right_treeObj.getNodesByParam("id", drag_id,targetNode);    //查找用户是否已经存在此菜单节点
+        var treeObj=$.fn.zTree.getZTreeObj("perTree"),
+                nodes2=treeObj.getCheckedNodes(true);
+        if (nodes.length==0) {
+//            alert('bb')
+//            var tree_node = treeNodes[0]
+//            var parent_nodes=[]
+//            parent_nodes.push(treeNodes[0])
+//            while (tree_node.getParentNode()!=null){
+//                tree_node = tree_node.getParentNode()
+//                parent_nodes.push(tree_node)
+//            }
+//            for(var i=parent_nodes.length-1;i>=0;i--) {
+//                alert(parent_nodes[i].name)
+//                var right_nodes = right_treeObj.getNodesByParam("id", parent_nodes[i]['id'], targetNode);
+//                if (right_nodes.length==0){
+//                    right_treeObj.addNodes(targetNode, parent_nodes[i]);
+////                    return false
+//                }
+//            }
+
+            //用户不存在此菜单节点，可以进行拖拽
+//        if (treeNodes[0].level > 0) {
+//            var parent_id = treeNodes[0].pId
+//            var left_treeObj = $.fn.zTree.getZTreeObj('perTree');
+//            var left_nodes = left_treeObj.getNodesByParam("id", parent_id, null);  //left总菜单中查找
+//            var right_nodes = right_treeObj.getNodesByParam("id", parent_id, targetNode);   //right admin菜单中查找
+//            if (right_nodes.length==0){
+//                var nodes=[
+//                    {id:left_nodes[0].id,name:left_nodes[0].name,pId:null},
+//                    {id:treeNodes[0].id,name:treeNodes[0].name,pId:left_nodes[0].id}
+//                ]
+            if (true) {
+            var right_parent_nodes = right_treeObj.getNodesByParam("id", treeNodes[0].pId, targetNode);
+            var param_nodes = []
+            var tree_nodes=[]
+            var flag=true
+            for (var i = 0; i < nodes2.length; i++) {
+                if (nodes2[i].level>0) {
+                    var node_i = {id: nodes2[i].id, name: nodes2[i].name, pId: nodes2[i].pId, menu_permission_id: nodes2[i].menu_permission_id}
+                    var is_right_nodes = right_treeObj.getNodesByParam("id", nodes2[i].id, targetNode);
+                    if (is_right_nodes.length == 0) {
+                        tree_nodes.push(node_i)
+                    } else {
+                        flag = false
+                    }
+                    param_nodes.push(node_i)
+                }
+            }
+            if (flag){
+                right_treeObj.addNodes(targetNode, tree_nodes);
+            }else{
+                var first_nodes = right_treeObj.getNodesByParam("id", tree_nodes[0].pId, targetNode);
+                right_treeObj.addNodes(first_nodes[0], tree_nodes);
+            }
+
+//                if (right_parent_nodes.length == 0) {
+//                    right_treeObj.addNodes(targetNode, param_nodes);
+//                    return false;
+//                } else {
+//                    right_treeObj.addNodes(targetNode, treeNodes);
+//                    return false;
+//                }
+                var nodes3=right_treeObj.getNodesByParam("id", treeNodes[0].id, targetNode);
+                if (nodes3.length > 0) {
+                    $.ajax({
+                        type: 'post',
+                        url: '/menus/drag',
+                        data: {data: param_nodes, targetNode: targetNode, nodes: treeNodes},
+                        success: function (data, response) {
+                        },
+                        error: function () {
+
+                        }
+                    })
+                }
+                return false;
+            }
 
 
-    var perNodes =[
-        { id:1, pId:0, name:"权限管理", open:true},
-        { id:2, pId:1, name:"字典管理"},
-        { id:3, pId:1, name:"医院管理"},
-        { id:5, pId:1, name:"视频管理"},
-        { id:6, pId:1, name:"文章管理"},
-        { id:7, pId:1, name:"孕育知识管理"},
-        { id:8, pId:1, name:"用户管理"},
-        { id:9, pId:3, name:"清华大学玉泉医院"},
-        { id:10, pId:3, name:"武警总医院"},
-        { id:11, pId:3, name:"海南省人民医院"},
-        { id:12, pId:3, name:"海南省第二人民医院"},
-        { id:13, pId:3, name:"东方市人民医院"},
-
-        { id:19, pId:23, name:"添加"},
-        { id:20, pId:23, name:"删除"},
-        { id:21, pId:23, name:"修改"},
-        { id:22, pId:23, name:"查看"},
-        { id:23, pId:9, name:"医生"},
-        { id:24, pId:9, name:"患者"},
-
-        { id:25, pId:24, name:"添加"},
-        { id:26, pId:24, name:"删除"},
-        { id:27, pId:24, name:"修改"},
-        { id:28, pId:24, name:"查看"},
+            return targetNode ? targetNode.drop !== false : true;
+            } else {
+            alert('存在')
+                return false;
+            }
+//        } else{
+//            return targetNode ? targetNode.drop !== false : true;
+//        }
 
 
-        { id:29, pId:10, name:"医生"},
-        { id:30, pId:10, name:"患者"},
-        { id:31, pId:29, name:"添加"},
-        { id:32, pId:29, name:"删除"},
-        { id:33, pId:29, name:"修改"},
-        { id:34, pId:29, name:"查看"},
+//        }else{
+//            alert(nodes[0].name+"已存在");
+//            return false;
+//
+//        }
+    };
 
-        { id:35, pId:30, name:"添加"},
-        { id:36, pId:30, name:"删除"},
-        { id:37, pId:30, name:"修改"},
-        { id:38, pId:30, name:"查看"},
+    function onDrop(event, treeId, treeNodes, targetNode, moveType){
+        var treeObj=$.fn.zTree.getZTreeObj("perTree"),
+                nodes2=treeObj.getCheckedNodes(true);
+        var right_treeObj = $.fn.zTree.getZTreeObj("roleTree");
+//        判断是否拖拽成功
+        var nodes=right_treeObj.getNodesByParam("id", treeNodes[0].id, null);
+        var param_nodes = []
+        for (var i = 0; i < nodes2.length; i++) {
+            var node_i = {id: nodes2[i].id, name: nodes2[i].name, pId: nodes2[i].pId}
+            var is_right_nodes = right_treeObj.getNodesByParam("id", nodes2[i].id, targetNode);
+            param_nodes.push(node_i)
+        }
+        if (nodes.length>0) {
+            $.ajax({
+                type: 'post',
+                url: '/menus/drag',
+                data: {data: param_nodes,targetNode:targetNode,nodes:treeNodes},
+                success: function (data, response) {
+//                    right_treeObj.reAsyncChildNodes
+//                    right_treeObj.refresh();
+                    $.fn.zTree.init($("#roleTree"), roleSetting, roleNodes);
+//                    var all_nodes = right_treeObj.getNodes()
+//                    for (var i=0; i<all_nodes.length;i++){
+//                        if (all_nodes[i].level==0){
+//                            all_nodes[i].open=true
+//                            right_treeObj.updateNode(all_nodes[i])
+//                        }
+//
+//                    }
+                },
+                error: function () {
 
-        { id:39, pId:2, name:"省市县字典"},
-        { id:40, pId:2, name:"医院字典"},
+                }
+            })
+        }
+    } ;
+
+    //    删除之前的确定操作
+    function beforeRemove(treeId, treeNode){
+        alert(treeNode.isParent ? "确定删除父节点？":"确定删除此节点？")
+    };
+    function onRemove(event, treeId, treeNode){
+        var right_treeObj = $.fn.zTree.getZTreeObj("roleTree");
+        var target_node,tree_node = treeNode
+        while (tree_node!=null){
+            if (tree_node.level==1){
+                target_node = tree_node
+            }
+            tree_node = tree_node.getParentNode()
+        }
+        //注释部分:当父结点为空时,同时删除父结点
+//        if (treeNode.getParentNode().level!=0&&treeNode.getParentNode().level!=1&&treeNode.getParentNode().children.length==0){
+//            right_treeObj.removeNode(treeNode.getParentNode());
+//            right_treeObj.removeNode(treeNode);
+//        }else{
+////            alert(treeNode.getParentNode().children.length)
+//        }
+        var nodeIds=new Array();
+        if (treeNode.isParent){
+            var right_treeObj = $.fn.zTree.getZTreeObj("roleTree");
+            var childNodes = right_treeObj.removeChildNodes(treeNode);
+            var menu_permission_ids = treeNode.menu_permission_id
+            for (var j = 0; j < menu_permission_ids.length; j++){
+                nodeIds.push(menu_permission_ids[j]);
+            }
+//            nodeIds.push(treeNode.menu_permission_id.join(","))
+            for(var i = 0; i < childNodes.length; i++){
+
+                var menu_permission_ids = childNodes[i].menu_permission_id;
+                for (var j = 0; j < menu_permission_ids.length; j++){
+                    nodeIds.push(menu_permission_ids[j]);
+                }
+
+            }
+        }else{
+            var menu_permission_ids = treeNode.menu_permission_id
+            for (var j = 0; j < menu_permission_ids.length; j++){
+                nodeIds.push(menu_permission_ids[j]);
+            }
+//            nodeIds.push(treeNode.menu_permission_id)
+        };
+        $.ajax({
+            type:'post',
+            url:'/menus/remove_nodes',
+            data: {data: nodeIds,targetNode:target_node},
+            success: function (data, response) {
+
+            }
+        })
+    }
 
 
-        { id:41, pId:39, name:"添加"},
-        { id:42, pId:39, name:"删除"},
-        { id:43, pId:39, name:"修改"},
-        { id:44, pId:39, name:"查看"}
 
-//        { id:24, pId:10, name:"添加"},
-//        { id:25, pId:10, name:"删除"},
-//        { id:26, pId:10, name:"修改"},
-//        { id:27, pId:10, name:"查看"}
-    ];
 
-    var roleNodes=[
-        {id:1,pId:0,name:"系统角色"},
-        {id:2,pId:1,name:"系统管理员"},
-        {id:3,pId:1,name:"超级管理员"},
-        {id:4,pId:1,name:"普通管理员"},
-        {id:5,pId:1,name:"玉泉医院管理员"},
-        {id:6,pId:1,name:"武警总医院管理员"}
-    ]
+    //    var perNodes =[
+//        { id:1, pId:0, name:"权限管理", open:true},
+//        { id:2, pId:1, name:"字典管理"},
+//        { id:3, pId:1, name:"医院管理"},
+//        { id:5, pId:1, name:"视频管理"},
+//        { id:6, pId:1, name:"文章管理"},
+//        { id:7, pId:1, name:"孕育知识管理"},
+//        { id:8, pId:1, name:"用户管理"},
+//        { id:9, pId:3, name:"清华大学玉泉医院"},
+//        { id:10, pId:3, name:"武警总医院"},
+//        { id:11, pId:3, name:"海南省人民医院"},
+//        { id:12, pId:3, name:"海南省第二人民医院"},
+//        { id:13, pId:3, name:"东方市人民医院"},
+//
+//        { id:19, pId:23, name:"添加"},
+//        { id:20, pId:23, name:"删除"},
+//        { id:21, pId:23, name:"修改"},
+//        { id:22, pId:23, name:"查看"},
+//        { id:23, pId:9, name:"医生"},
+//        { id:24, pId:9, name:"患者"},
+//
+//        { id:25, pId:24, name:"添加"},
+//        { id:26, pId:24, name:"删除"},
+//        { id:27, pId:24, name:"修改"},
+//        { id:28, pId:24, name:"查看"},
+//
+//
+//        { id:29, pId:10, name:"医生"},
+//        { id:30, pId:10, name:"患者"},
+//        { id:31, pId:29, name:"添加"},
+//        { id:32, pId:29, name:"删除"},
+//        { id:33, pId:29, name:"修改"},
+//        { id:34, pId:29, name:"查看"},
+//
+//        { id:35, pId:30, name:"添加"},
+//        { id:36, pId:30, name:"删除"},
+//        { id:37, pId:30, name:"修改"},
+//        { id:38, pId:30, name:"查看"},
+//
+//        { id:39, pId:2, name:"省市县字典"},
+//        { id:40, pId:2, name:"医院字典"},
+//
+//
+//        { id:41, pId:39, name:"添加"},
+//        { id:42, pId:39, name:"删除"},
+//        { id:43, pId:39, name:"修改"},
+//        { id:44, pId:39, name:"查看"}
+//
+////        { id:24, pId:10, name:"添加"},
+////        { id:25, pId:10, name:"删除"},
+////        { id:26, pId:10, name:"修改"},
+////        { id:27, pId:10, name:"查看"}
+//    ];
+//
+//    var roleNodes=[
+//        {id:1,pId:0,name:"系统角色"},
+//        {id:2,pId:1,name:"系统管理员"},
+//        {id:3,pId:1,name:"超级管理员"},
+//        {id:4,pId:1,name:"普通管理员"},
+//        {id:5,pId:1,name:"玉泉医院管理员"},
+//        {id:6,pId:1,name:"武警总医院管理员"}
+//    ]
+
+    var perNodes=<%= raw @total_menus.to_json %>
+    var roleNodes=<%= raw @all_roles.to_json %>
     $(document).ready(function(){
         $.fn.zTree.init($("#perTree"), setting, perNodes);
         $.fn.zTree.init($("#roleTree"), roleSetting, roleNodes);

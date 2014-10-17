@@ -80,47 +80,72 @@
         onSelectRow: function(id){
             selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
             row_id = id
-            $.ajax({
-                type:'get',
-                url:'/patients/is_executable?id='+selectedIds+'&menu_id=<%=@menu_id%>',
-                success:function(data){
-                    if (data['is_manage']) {
-                        $('#edit_patient').removeClass('disabled')
-                        $('#edit_patient').addClass('active')
-                        $('#delete_patient').removeClass('disabled')
-                        $('#delete_patient').addClass('active')
-                    }
-                    if (data['is_edit']) {
-                        $('#edit_patient').removeClass('disabled')
-                        $('#edit_patient').addClass('active')
-                    }
-                    if (data['is_delete']) {
-                        $('#delete_patient').removeClass('disabled')
-                        $('#delete_patient').addClass('active')
-                    }
-                    var selected_ids = ''+selectedIds
-                    if (selected_ids.split(',').length>0 && data['is_activated']) {
-                        $('#send_email_patient').removeClass('disabled')
-                        $('#send_email_patient').addClass('active')
-                        $('#send_phone_patient').removeClass('disabled')
-                        $('#send_phone_patient').addClass('active')
-                    }
-                    if(selected_ids.split(',')[0]==''){
-                        $('#edit_patient').removeClass('active')
-                        $('#edit_patient').addClass('disabled')
-                        $('#delete_patient').removeClass('active')
-                        $('#delete_patient').addClass('disabled')
-                        $('#send_email_patient').removeClass('active')
-                        $('#send_email_patient').addClass('disabled')
-                        $('#send_phone_patient').removeClass('active')
-                        $('#send_phone_patient').addClass('disabled')
-                    }
-                    if (selected_ids.split(',').length>1){
-                        $('#edit_patient').removeClass('active')
-                        $('#edit_patient').addClass('disabled')
-                    }
-                }
-            })
+            var selected_ids = ''+selectedIds
+            if (selected_ids.split(',').length>0) {
+                $('#edit_patient').removeClass('disabled')
+                $('#edit_patient').addClass('active')
+                $('#delete_patient').removeClass('disabled')
+                $('#delete_patient').addClass('active')
+                $('#send_email_patient').removeClass('disabled')
+                $('#send_email_patient').addClass('active')
+                $('#send_phone_patient').removeClass('disabled')
+                $('#send_phone_patient').addClass('active')
+            }
+            if(selected_ids.split(',')[0]==''){
+                $('#edit_patient').removeClass('active')
+                $('#edit_patient').addClass('disabled')
+                $('#delete_patient').removeClass('active')
+                $('#delete_patient').addClass('disabled')
+                $('#send_email_patient').removeClass('active')
+                $('#send_email_patient').addClass('disabled')
+                $('#send_phone_patient').removeClass('active')
+                $('#send_phone_patient').addClass('disabled')
+            }
+            if (selected_ids.split(',').length>1){
+                $('#edit_patient').removeClass('active')
+                $('#edit_patient').addClass('disabled')
+            }
+//            $.ajax({
+//                type:'get',
+//                url:'/patients/is_executable?id='+selectedIds+'&menu_id=<%=@menu_id%>',
+//                success:function(data){
+//                    if (data['is_manage']) {
+//                        $('#edit_patient').removeClass('disabled')
+//                        $('#edit_patient').addClass('active')
+//                        $('#delete_patient').removeClass('disabled')
+//                        $('#delete_patient').addClass('active')
+//                    }
+//                    if (data['is_edit']) {
+//                        $('#edit_patient').removeClass('disabled')
+//                        $('#edit_patient').addClass('active')
+//                    }
+//                    if (data['is_delete']) {
+//                        $('#delete_patient').removeClass('disabled')
+//                        $('#delete_patient').addClass('active')
+//                    }
+//                    var selected_ids = ''+selectedIds
+//                    if (selected_ids.split(',').length>0 && data['is_activated']) {
+//                        $('#send_email_patient').removeClass('disabled')
+//                        $('#send_email_patient').addClass('active')
+//                        $('#send_phone_patient').removeClass('disabled')
+//                        $('#send_phone_patient').addClass('active')
+//                    }
+//                    if(selected_ids.split(',')[0]==''){
+//                        $('#edit_patient').removeClass('active')
+//                        $('#edit_patient').addClass('disabled')
+//                        $('#delete_patient').removeClass('active')
+//                        $('#delete_patient').addClass('disabled')
+//                        $('#send_email_patient').removeClass('active')
+//                        $('#send_email_patient').addClass('disabled')
+//                        $('#send_phone_patient').removeClass('active')
+//                        $('#send_phone_patient').addClass('disabled')
+//                    }
+//                    if (selected_ids.split(',').length>1){
+//                        $('#edit_patient').removeClass('active')
+//                        $('#edit_patient').addClass('disabled')
+//                    }
+//                }
+//            })
         },
         gridComplete: function(){
             if(selectedIds){

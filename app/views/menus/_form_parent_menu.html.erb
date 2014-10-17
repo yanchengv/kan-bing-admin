@@ -1,0 +1,6 @@
+<select name="parent_name" id="menu_parent_name">
+  <option></option>
+  <% @menus.each do |hos| %>
+      <option value="<%= hos.id %>" id="parent_<%=hos.id %>"><%= hos.name %></option>
+  <% end %>
+</select>

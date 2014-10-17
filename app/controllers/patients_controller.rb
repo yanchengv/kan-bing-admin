@@ -405,7 +405,7 @@ class PatientsController < ApplicationController
     pat_ids_arr=pat_ids.split(',')
     flag=false
     if pat_ids_arr.length > 0
-      @patients = Patient.where(id:pat_ids_arr)
+      @patients = Patient.where(id:pat_ids_arr,is_activated:0)
       if !@patients.empty?
         @patients.each do |pat|
           code=""
@@ -442,7 +442,7 @@ class PatientsController < ApplicationController
     pat_ids_arr=pat_ids.split(',')
     flag=false
     if pat_ids_arr.length > 0
-      @patients = Patient.where(id:pat_ids_arr)
+      @patients = Patient.where(id:pat_ids_arr,is_activated:0)
       if !@patients.empty?
         @patients.each do |pat|
           code=""

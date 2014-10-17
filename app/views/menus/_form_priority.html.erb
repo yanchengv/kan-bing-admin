@@ -1,0 +1,6 @@
+<select multiple name="priorities" id="menu_priorities">
+  <%#= options_from_collection_for_select(@priorities, 'id', 'name',@menu.priority_ids) %>
+  <% @priorities.each do |hos| %>
+      <option value="<%= hos.id %>" id="priority_<%= hos.id %>"><%= hos.name %></option>
+  <% end %>
+</select>

@@ -42,8 +42,23 @@ Rails.application.routes.draw do
     collection do
       get 'show',to:'menus#show_menus'
       get 'menus_to_user',to:'menus#menus_to_user'
-      get 'show_all_menus',to:'menus#show_all_menus'
+      match 'show_all_menus',to:'menus#show_all_menus', via: [:get, :post]
       get 'permissions_list',to:'menus#permissions_list'
+      post 'drag', to:'menus#drag'
+      get 'show_index', to:'menus#show_index'
+      post 'oper_action', to: 'menus#oper_action'
+      post 'remove_nodes', to: 'menus#remove_nodes'
+      get 'form_name',to:'menus#form_name'
+      get 'form_parent_menu', to:'menus#form_parent_menu'
+      get 'form_priority',to:'menus#form_priority'
+      get 'get_department', to:'menus#get_department'
+    end
+  end
+
+  resources :role2s do
+    collection do
+      get 'show_index', to:'role2s#show_index'
+      post 'oper_action', to:'role2s#oper_action'
     end
   end
 
@@ -147,6 +162,7 @@ Rails.application.routes.draw do
       get 'send_email', to:'doctors#send_email'
       get 'send_phone', to:'doctors#send_phone'
       get 'search_department', to:'doctors#search_department'
+      get 'is_permission', to:'doctors#is_permission'
     end
   end
 
