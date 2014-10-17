@@ -23,7 +23,7 @@ class HospitalsController < ApplicationController
     count = @hospitals.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @hospitals = @hospitals.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-    render :json => {:hospitals => @hospitals.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+    render :json => {:hospitals => @hospitals.as_json(:include => [{:province => {:only => [:id, :name]}}, {:city => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
   def oper_action

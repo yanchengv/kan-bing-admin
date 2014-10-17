@@ -52,7 +52,7 @@
             { name: 'name', index: 'name', align: "center", editable: true},
             { name: 'short_name', index: 'short_name', align: "center", editable: true},
             { name: 'province_name', index: 'province_name', align: "center", editable: false},
-            { name: 'province_id', index: 'province_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select', formatter: 'select',
+            { name: 'province_id', index: 'province_id', align: "center", jsonmap:'province.name',editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
                 editoptions: {
                     dataInit: function (element) {
                         $(element).select2();
@@ -92,7 +92,7 @@
                     ]
                 }
             },
-            { name: 'city_id', index: 'city_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select', formatter: 'select',
+            { name: 'city_id', index: 'city_id', align: "center", jsonmap:'city.name',  editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
                 editoptions: {
                     dataInit: function (element) {
                         $(element).select2();

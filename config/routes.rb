@@ -75,7 +75,24 @@ Rails.application.routes.draw do
     end
 
   end
-
+  resources :dictionaries do
+    collection do
+      get 'index_show', to: 'dictionaries#show_index'
+      post 'oper_action', to: 'dictionaries#oper_action'
+    end
+  end
+  resources :dictionary_types do
+    collection do
+      get 'index_show', to: 'dictionary_types#show_index'
+      post 'oper_action', to: 'dictionary_types#oper_action'
+    end
+  end
+  resources :national_informations do
+    collection do
+      get 'index_show', to: 'national_informations#show_index'
+      post 'oper_action', to: 'national_informations#oper_action'
+    end
+  end
   resources :provinces do
     collection do
       get 'test_index', to:'provinces#test_index'

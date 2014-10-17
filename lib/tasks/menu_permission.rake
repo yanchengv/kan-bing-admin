@@ -7,7 +7,12 @@ end
 def meun_data
   Menu.delete_all
   @menu1=Menu.create(
-      name: '基础信息'
+      name: '基础信息',
+      parent_id: @menu6.id,
+      table_name: 'dictionaries',
+      model_class: 'Dictionary',
+      uri: '/dictionaries'
+
   )
   @menu3=Menu.create(
       name: '医生管理',
@@ -104,9 +109,49 @@ def meun_data
       uri: '/provinces'
   )
   @menu17=Menu.create(
-      name: '用户管理'
+      name: '人员管理'
   )
-
+  @menu18=Menu.create(
+      name: '用户管理',
+      parent_id: @menu17.id,
+      table_name: 'users',
+      model_class: 'User',
+      uri: '/users'
+  )
+  @menu19=Menu.create(
+      name: '用户关系'
+  )
+  @menu20=Menu.create(
+      name: '医友关系',
+      parent_id: @menu19.id,
+      table_name: 'doctor_friendships',
+      model_class: 'DoctorFriendships',
+      uri: '/doctor_friendships'
+  )
+  @menu21=Menu.create(
+      name: '医患关系',
+      parent_id: @menu19.id,
+      table_name: 'treatment_relationships',
+      model_class: 'TreatmentRelationships',
+      uri: '/treatment_relationships'
+  )
+  @menu23=Menu.create(
+      name: '移动端管理'
+  )
+  @menu22=Menu.create(
+      name: 'apk版本管理',
+      parent_id: @menu23.id,
+      table_name: 'apk_versions',
+      model_class: 'ApkVersions',
+      uri: '/apk_versions'
+  )
+  @menu24=Menu.create(
+      name: '国家信息',
+      parent_id: @menu6.id,
+      table_name: 'national_informations',
+      model_class: 'NationalInformation',
+      uri: '/national_informations'
+  )
   Admin2Menu.delete_all
   @menu_admin_1=Admin2Menu.create(
       admin2_id: @admin1.id,
@@ -240,6 +285,46 @@ def meun_data
       admin2_id: @admin1.id,
       menu_id: @menu5.id,
       is_manage:true
+  )
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu17.id,
+      is_manage: true
+  )
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu18.id,
+      is_manage: true
+  )
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu19.id,
+      is_manage: true
+  )
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu20.id,
+      is_manage: true
+  )
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu21.id,
+      is_manage: true
+  )
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu22.id,
+      is_manage: true
+  )
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu23.id,
+      is_manage: true
+  )
+  MenuPermission.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu24.id,
+      is_manage: true
   )
 
 end
