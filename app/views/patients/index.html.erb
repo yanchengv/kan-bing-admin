@@ -79,32 +79,32 @@
 //        ondblClickRow: function(id){ alert("You double click row with id: "+id);},
         onSelectRow: function(id){
             selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
-            row_id = id
-            var selected_ids = ''+selectedIds
-            if (selected_ids.split(',').length>0) {
-                $('#edit_patient').removeClass('disabled')
-                $('#edit_patient').addClass('active')
-                $('#delete_patient').removeClass('disabled')
-                $('#delete_patient').addClass('active')
-                $('#send_email_patient').removeClass('disabled')
-                $('#send_email_patient').addClass('active')
-                $('#send_phone_patient').removeClass('disabled')
-                $('#send_phone_patient').addClass('active')
-            }
-            if(selected_ids.split(',')[0]==''){
-                $('#edit_patient').removeClass('active')
-                $('#edit_patient').addClass('disabled')
-                $('#delete_patient').removeClass('active')
-                $('#delete_patient').addClass('disabled')
-                $('#send_email_patient').removeClass('active')
-                $('#send_email_patient').addClass('disabled')
-                $('#send_phone_patient').removeClass('active')
-                $('#send_phone_patient').addClass('disabled')
-            }
-            if (selected_ids.split(',').length>1){
-                $('#edit_patient').removeClass('active')
-                $('#edit_patient').addClass('disabled')
-            }
+//            row_id = id
+//            var selected_ids = ''+selectedIds
+//            if (selected_ids.split(',').length>0) {
+//                $('#edit_patient').removeClass('disabled')
+//                $('#edit_patient').addClass('active')
+//                $('#delete_patient').removeClass('disabled')
+//                $('#delete_patient').addClass('active')
+//                $('#send_email_patient').removeClass('disabled')
+//                $('#send_email_patient').addClass('active')
+//                $('#send_phone_patient').removeClass('disabled')
+//                $('#send_phone_patient').addClass('active')
+//            }
+//            if(selected_ids.split(',')[0]==''){
+//                $('#edit_patient').removeClass('active')
+//                $('#edit_patient').addClass('disabled')
+//                $('#delete_patient').removeClass('active')
+//                $('#delete_patient').addClass('disabled')
+//                $('#send_email_patient').removeClass('active')
+//                $('#send_email_patient').addClass('disabled')
+//                $('#send_phone_patient').removeClass('active')
+//                $('#send_phone_patient').addClass('disabled')
+//            }
+//            if (selected_ids.split(',').length>1){
+//                $('#edit_patient').removeClass('active')
+//                $('#edit_patient').addClass('disabled')
+//            }
 //            $.ajax({
 //                type:'get',
 //                url:'/patients/is_executable?id='+selectedIds+'&menu_id=<%=@menu_id%>',
@@ -163,7 +163,7 @@
         multiselect: true,
         caption: "患者列表"
     });
-    jQuery("#list10").jqGrid('navGrid','#pager10',{edit:false,add:false,del:false});
+//    jQuery("#list10").jqGrid('navGrid','#pager10',{edit:false,add:false,del:false});
     $( "#create_patient" ).button().on( "click", function() {
         $.ajax({
             type:'get',

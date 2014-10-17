@@ -86,32 +86,32 @@ var lastSel = 0
 //                lastSel = id;												// save current row ID so that when focus is gone it can be restored
 //            }
             selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
-            row_id = id
-            var selected_ids = ''+selectedIds
-            if (selected_ids.split(',').length>0) {
-                $('#edit_doctor').removeClass('disabled')
-                $('#edit_doctor').addClass('active')
-                $('#delete_doctor').removeClass('disabled')
-                $('#delete_doctor').addClass('active')
-                $('#send_email_doctor').removeClass('disabled')
-                $('#send_email_doctor').addClass('active')
-                $('#send_phone_doctor').removeClass('disabled')
-                $('#send_phone_doctor').addClass('active')
-            }
-            if(selected_ids.split(',')[0]==''){
-                $('#edit_doctor').removeClass('active')
-                $('#edit_doctor').addClass('disabled')
-                $('#delete_doctor').removeClass('active')
-                $('#delete_doctor').addClass('disabled')
-                $('#send_email_doctor').removeClass('active')
-                $('#send_email_doctor').addClass('disabled')
-                $('#send_phone_doctor').removeClass('active')
-                $('#send_phone_doctor').addClass('disabled')
-            }
-            if (selected_ids.split(',').length>1){
-                $('#edit_doctor').removeClass('active')
-                $('#edit_doctor').addClass('disabled')
-            }
+//            row_id = id
+//            var selected_ids = ''+selectedIds
+//            if (selected_ids.split(',').length>0) {
+//                $('#edit_doctor').removeClass('disabled')
+//                $('#edit_doctor').addClass('active')
+//                $('#delete_doctor').removeClass('disabled')
+//                $('#delete_doctor').addClass('active')
+//                $('#send_email_doctor').removeClass('disabled')
+//                $('#send_email_doctor').addClass('active')
+//                $('#send_phone_doctor').removeClass('disabled')
+//                $('#send_phone_doctor').addClass('active')
+//            }
+//            if(selected_ids.split(',')[0]==''){
+//                $('#edit_doctor').removeClass('active')
+//                $('#edit_doctor').addClass('disabled')
+//                $('#delete_doctor').removeClass('active')
+//                $('#delete_doctor').addClass('disabled')
+//                $('#send_email_doctor').removeClass('active')
+//                $('#send_email_doctor').addClass('disabled')
+//                $('#send_phone_doctor').removeClass('active')
+//                $('#send_phone_doctor').addClass('disabled')
+//            }
+//            if (selected_ids.split(',').length>1){
+//                $('#edit_doctor').removeClass('active')
+//                $('#edit_doctor').addClass('disabled')
+//            }
 //            $.ajax({
 //                type:'get',
 //                url:'/doctors/is_executable?id='+selectedIds+'&menu_id=<%#=@menu_id%>',
@@ -170,103 +170,6 @@ var lastSel = 0
         multiselect: true,
         caption: "医生列表"
     });
-    jQuery("#list12").jqGrid('navGrid','#pager12',{edit:false,add:false,del:false});
-    var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
-    $(function() {
-        var dialog, form,
-                emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-                name = $( "#name" ),
-                email = $( "#email" ),
-                password = $( "#password" ),
-                allFields = $( [] ).add( name ).add( email ).add( password ),
-                tips = $( ".validateTips" );
-
-        function updateTips( t ) {
-            tips
-                    .text( t )
-                    .addClass( "ui-state-highlight" );
-            setTimeout(function() {
-                tips.removeClass( "ui-state-highlight", 1500 );
-            }, 500 );
-        }
-
-        function checkLength( o, n, min, max ) {
-            if ( o.val().length > max || o.val().length < min ) {
-                o.addClass( "ui-state-error" );
-                updateTips( "Length of " + n + " must be between " +
-                        min + " and " + max + "." );
-                return false;
-            } else {
-                return true;
-            }
-        }
-        function checkBlank( o, n) {
-            if ( o.val().length < 1) {
-                o.addClass( "ui-state-error" );
-                updateTips( n + " 不可为空." );
-                return false;
-            } else {
-                return true;
-            }
-        }
-        function checkRegexp( o, regexp, n ) {
-            if ( !( regexp.test( o.val() ) ) ) {
-                o.addClass( "ui-state-error" );
-                updateTips( n );
-                return false;
-            } else {
-                return true;
-            }
-        }
-
-        function addUser() {
-            var valid = true;
-//            allFields.removeClass( "ui-state-error" );
-//
-            valid = valid && checkBlank( name, "出生日期");
-//            valid = valid && checkLength( email, "email", 6, 80 );
-//            valid = valid && checkLength( password, "password", 5, 16 );
-//
-//            valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Username may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
-//            valid = valid && checkRegexp( email, emailRegex, "eg. ui@jquery.com" );
-//            valid = valid && checkRegexp( password, /^([0-9a-zA-Z])+$/, "Password field only allow : a-z 0-9" );
-//
-            if ( valid ) {
-//                $( "#users tbody" ).append( "<tr>" +
-//                        "<td>" + name.val() + "</td>" +
-//                        "<td>" + email.val() + "</td>" +
-//                        "<td>" + password.val() + "</td>" +
-//                        "</tr>" );
-                  $('#new_or_edit_doctor').click()
-                dialog.dialog( "close" );
-            }
-//            return valid;
-
-
-        }
-
-        dialog = $( "#dialog-form" ).dialog({
-            autoOpen: false,
-            height: 800,
-            width: 700,
-            modal: true,
-            buttons: {
-                "确定": addUser,
-                "取消": function() {
-                    dialog.dialog( "close" );
-                }
-            },
-            close: function() {
-                form[ 0 ].reset();
-                allFields.removeClass( "ui-state-error" );
-            }
-        });
-
-        form = dialog.find( "form" ).on( "submit", function( event ) {
-            event.preventDefault();
-            addUser();
-        });
-    });
     $( "#create_doctor" ).button().on( "click", function() {
                 $.ajax({
                     type:'get',
@@ -279,14 +182,19 @@ var lastSel = 0
                 $('#create_or_edit_form').modal('show')
             });
     $( "#edit_doctor").button().on( "click", function() {
-                $.ajax({
-                    type:'get',
-                    url:'/doctors/'+selectedIds+'/edit?menu_id=<%=@menu_id%>',
-                    success:function(data){
-                        $('#create_or_edit_form').html(data)
-                    }
-                })
-        $('#create_or_edit_form').modal('show')
+        if (selectedIds.length==1){
+            $.ajax({
+                type:'get',
+                url:'/doctors/'+selectedIds+'/edit?menu_id=<%=@menu_id%>',
+                success:function(data){
+                    $('#create_or_edit_form').html(data)
+                }
+            })
+            $('#create_or_edit_form').modal('show')
+        }else{
+            alert('必须选择一条记录!')
+        }
+
             });
     $( "#delete_doctor").button().on( "click", function() {
         if(confirm("确定要删除吗？") ) {
@@ -391,6 +299,46 @@ var lastSel = 0
     }
     function search_dep(){
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors?menu_name=<%=@menu_name%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        $.ajax({
+                    type: "get",
+                    url: '/doctors/is_permission?hospital_id=' + $('#doctor_hos_id').val() + '&department_id=' + $('#doctor_dep').val(),
+                    data: 'text',
+                    success: function (data) {
+                        if (data['add']){
+                            $('#create_doctor').removeClass('disabled')
+                            $('#create_doctor').addClass('active')
+                        }else{
+                            $('#create_doctor').removeClass('active')
+                            $('#create_doctor').addClass('disabled')
+                        }
+                        if (data['delete']){
+                            $('#delete_doctor').removeClass('disabled')
+                            $('#delete_doctor').addClass('active')
+                        }else{
+                            $('#delete_doctor').removeClass('active')
+                            $('#delete_doctor').addClass('disabled')
+                        }
+                        if (data['update']){
+                            $('#edit_doctor').removeClass('disabled')
+                            $('#edit_doctor').addClass('active')
+                        }else{
+                            $('#edit_doctor').removeClass('active')
+                            $('#edit_doctor').addClass('disabled')
+                        }
+                        if (data['show']){
+                            $('#send_email_doctor').removeClass('disabled')
+                            $('#send_email_doctor').addClass('active')
+                            $('#send_phone_doctor').removeClass('disabled')
+                            $('#send_phone_doctor').addClass('active')
+                        }else{
+                            $('#send_email_doctor').removeClass('active')
+                            $('#send_email_doctor').addClass('disabled')
+                            $('#send_phone_doctor').removeClass('active')
+                            $('#send_phone_doctor').addClass('disabled')
+                        }
+                    }
+                }
+        );
     }
     function search_activated(){
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors?menu_name=<%=@menu_name%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")

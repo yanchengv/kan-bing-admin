@@ -1,5 +1,5 @@
 class Role2sController < ApplicationController
-  before_filter :signed_in_user,:access_control
+  before_filter :signed_in_user#,:access_control
   before_action :set_role2, only: [:show, :edit, :update, :destroy]
 
   # GET /role2s
