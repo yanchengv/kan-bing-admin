@@ -1,3 +1,4 @@
+<div style="margin-left: 20px;margin-right: 20px;">
 <div id="btn" style="margin:10px;">
   <a title="province" class="btn btn-default" role="button" href="javascript:click_btn('province')">省管理</a>
   <a title="city" class="btn btn-default" role="button" href="javascript:click_btn('city')">市管理</a>
@@ -23,6 +24,7 @@
 <div id="page_county"></div><br/>
 </div>
 </div>
+</div>
 <script>
     $(document).ready(function () {
         jQuery("#list_province").jqGrid({
@@ -31,12 +33,14 @@
             mtype: 'GET',
             colNames:['ID','省','简称', '英文拼写'],
             colModel: [
-                { name: 'id', index: 'id', width: 40, align: "left", key: 'id'},
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden: true},
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true},
                 { name: 'short_name', index: 'short_name', width: 100, align: "center", editable: true},
                 { name: 'spell_name', index: 'spell_name', width: 100, align: "center", editable: true}
             ],
             rowList: [10, 20, 30],
+            rownumbers: true,
+            page: 1,
             sortname: 'id',
             viewrecords: true,
             autowidth: true,
@@ -60,7 +64,7 @@
             },
             editurl:'provinces/oper_action',
             pager: jQuery('#page_province'),
-            multiselect: true,
+        //    multiselect: true,
             multiboxonly:true,
             rowNum: 10,
             altclass: 'altRowsColour',
@@ -81,10 +85,9 @@
                 });
             },
             onSelectRow: function(id){
-                selectedIds  = jQuery("#list_province").jqGrid("getGridParam","selarrrow");
-                jQuery("#list_city").jqGrid('setGridParam',{url:"/cities/test_index?province_id="+selectedIds});
-                jQuery("#list_city").jqGrid('setCaption',"市列表")
-                        .trigger('reloadGrid');
+                var grid = jQuery("#list_city");
+                grid.jqGrid('setGridParam',{url:"/cities/test_index?province_id="+ id}).trigger('reloadGrid');
+                grid.setColProp("province_id", { editoptions: { defaultValue: id, readonly: 'readonly'} });
             }
         }).navGrid('#page_province', {
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
@@ -159,7 +162,7 @@
             mtype: 'GET',
             colNames:['ID','市名称','省ID'],
             colModel: [
-                { name: 'id', index: 'id',width: 40, align: "left", key: 'id'},
+                { name: 'id', index: 'id',width: 40, align: "left", key: 'id', hidden: true},
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true},
                 { name: 'province_id', index: 'province_id', width: 100, align: "center",editable: true}
             ],
@@ -168,6 +171,8 @@
             viewrecords: true,
             autowidth: true,
             sortorder: "desc",
+            rownumbers: true,
+            page: 1,
             jsonReader: {
                 root: "cities",
                 total: "totalpages",
@@ -187,7 +192,7 @@
             },
             editurl:'cities/oper_action',
             pager: jQuery('#page_city'),
-            multiselect: true,
+           // multiselect: true,
             rowNum: 10,
             altclass: 'altRowsColour',
             width: '500',
@@ -198,14 +203,9 @@
                 return(true);
             },
             onSelectRow: function(id){
-                selectedIds  = jQuery("#list_city").jqGrid("getGridParam","selarrrow");
-                if(selectedIds.length>1){
-                    alert("请选中一个在进行操作");
-                    return;
-                }
-                jQuery("#list_county").jqGrid('setGridParam',{url:"/counties/test_index?city_id="+selectedIds});
-                jQuery("#list_county").jqGrid('setCaption',"县列表")
-                        .trigger('reloadGrid');
+                var grid = jQuery("#list_county");
+                grid.jqGrid('setGridParam',{url:"/counties/test_index?city_id="+id}).trigger('reloadGrid');
+                grid.setColProp("city_id", { editoptions: { defaultValue: id, readonly: 'readonly'} });
             }
         }).navGrid('#page_city', {
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
@@ -226,16 +226,17 @@
             mtype: 'GET',
             colNames:['ID','县名称','市ID','省ID'],
             colModel: [
-                { name: 'id', index: 'id', width: 40, align: "left", key: 'id'},
+                { name: 'id', index: 'id', width: 40, align: "left", hidden: true},
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true},
-                { name: 'city_id', index: 'city_id', width: 100, align: "center", editable: true},
-                { name: 'province_id', index: 'province_id', width: 100, align: "center", editable: true}
+                { name: 'city_id', index: 'city_id', width: 100, align: "center", editable: true, editrules:{required: true}},
+                { name: 'province_id', index: 'province_id', width: 100, align: "center"}
             ],
             rowList: [10, 20, 30],
             sortname: 'id',
             viewrecords: true,
             autowidth: true,
             sortorder: "desc",
+            rownumbers: true,
             jsonReader: {
                 root: "counties",
                 total: "totalpages",
@@ -250,21 +251,15 @@
                 totalrows: "totalrows",
                 editoper: "edit",
                 addoper: "add",
-                deloper: "del",
-                subgridid: "id"
+                deloper: "del"
             },
             editurl:'counties/oper_action',
             pager: jQuery('#page_county'),
-            multiselect: true,
+          //  multiselect: true,
             rowNum: 10,
+            page: 1,
             altclass: 'altRowsColour',
-            width: '500',
-            caption: "县管理",
-            beforeSelectRow: function(rowid, e)
-            {
-                jQuery("#list_county").jqGrid('resetSelection');
-                return(true);
-            }
+            caption: "县管理"
         }).navGrid('#page_county', {
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
                     deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,

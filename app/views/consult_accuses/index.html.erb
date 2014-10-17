@@ -15,10 +15,12 @@
         height: 'auto',
         colNames: ['咨询ID', '咨询内容', '创建时间'],
         colModel: [
-            {name: 'id', index: 'id', width: 100, align: "center"},
+            {name: 'id', index: 'id', width: 100, align: "center", hidden:true},
             {name: 'consult_content', index: 'consult_content', width: 100, align: "center"},
             {name: 'created_at', index: 'created_at', formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, width: 100, align: "center"}
         ],
+        rownumbers: true,
+        page: 1,
         rowNum: 8,
         rowList: [8, 10, 20, 30],
         pager: '#page_ques',
@@ -86,10 +88,12 @@
         height: 'auto',
         colNames: ['回复ID', '回复内容', '创建时间'],
         colModel: [
-            {name: 'id', index: 'id', width: 100, align: "center"},
+            {name: 'id', index: 'id', width: 100, align: "center", hidden:true},
             {name: 'respond_content', index: 'respond_content', width: 100, align: "center"},
             {name: 'created_at', index: 'created_at', formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, width: 100, align: "center"}
         ],
+        rownumbers: true,
+        page: 1,
         rowNum: 8,
         rowList: [8, 10, 20, 30],
         pager: '#page_result',

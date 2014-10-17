@@ -72,7 +72,7 @@
             mtype: 'GET',
             colNames: ['ID', '用户名', '昵称', '真实姓名', '密码', '确认密码', '证件号', '手机号', '邮箱', '患者ID', '医生ID', '状态值', '状态', '操作'],
             colModel: [
-                { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden: true },
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true, custom_func: check_name}},
                 { name: 'nick_name', index: 'nick_name', width: 100, align: "center", editable: true },
                 { name: 'real_name', index: 'real_name', width: 100, align: "center", editable: true },
@@ -111,6 +111,8 @@
             viewrecords: true,
             sortorder: "desc",
             autowidth: true,
+            rownumbers: true,
+            page: 1,
             jsonReader: {
                 root: "users",
                 total: "totalpages",
@@ -270,6 +272,8 @@
             viewrecords: true,
             sortorder: "desc",
             autowidth: true,
+            rownumbers: true,
+            page: 1,
             jsonReader: {
                 root: "doctors",
                 total: "totalpages",
@@ -328,6 +332,8 @@
             viewrecords: true,
             sortorder: "desc",
             autowidth: true,
+            rownumbers: true,
+            page: 1,
             jsonReader: {
                 root: "patients",
                 total: "totalpages",

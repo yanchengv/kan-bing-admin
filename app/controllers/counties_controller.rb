@@ -44,6 +44,7 @@ class CountiesController < ApplicationController
 
   def create
     @county = County.new(county_params)
+    @county.id = County.maximum(:id) + 1
     if @county.save
       render :json => {:success => true}
     else

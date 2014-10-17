@@ -8,6 +8,15 @@ class NationalInformationsController < ApplicationController
 
   def show_index
     sql = 'true'
+    if params[:str] == 'national'
+      if !params[:parent_id].nil? && params[:parent_id] != '0' && params[:parent_id] != 'null'
+        sql << " and parent_id = #{params[:parent_id]}"
+      end
+      sql << ' and parent_id is not null'
+    end
+    if params[:str] == 'country'
+      sql << ' and parent_id is null'
+    end
     @national_informations = NationalInformation.where(sql)
     count = @national_informations.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1

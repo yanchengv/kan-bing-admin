@@ -1,9 +1,9 @@
 <div style="width: 100%">
-  <div style="width: 48%;margin-left: 20px;float: left;">
+  <div style="margin-left: 20px;margin-right: 20px;">
     <table id="dictionary_type_list"></table>
     <div id="page_type"></div>
   </div>
-  <div style="width: 48%;margin-left: 20px;float: left;">
+  <div style="margin-left: 20px;margin-right: 20px;margin-top: 10px;">
     <table id="dictionary_list"></table>
     <div id="page_dictionary"></div>
   </div>
@@ -26,6 +26,8 @@
         viewrecords: true,
         sortorder: "desc",
         autowidth: true,
+        rownumbers: true,
+        page: 1,
         jsonReader: {
             root: "dictionary_types",
             total: "totalpages",
@@ -91,6 +93,8 @@
         viewrecords: true,
         sortorder: "desc",
         autowidth: true,
+        rownumbers: true,
+        page: 1,
         jsonReader: {
             root: "dictionaries",
             total: "totalpages",
