@@ -876,6 +876,6 @@ class DoctorsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def doctor_params
-      params.require(:doctor).permit(:name, :credential_type, :credential_type_number, :gender, :birthday, :birthplace, :province_id, :city_id, :hospital_id, :department_id,:province_name, :city_name, :hospital_name, :department_name, :address, :nationality, :citizenship, :photo, :marriage, :mobile_phone, :home_phone, :home_address, :contact, :contact_phone, :home_postcode, :email, :introduction, :professional_title, :position, :hire_date, :certificate_number, :expertise, :degree, :graduated_from, :graduated_at, :research_paper, :wechat, :rewards, :is_checked, :is_activated, :verify_code,:is_public)
+      params.require(:doctor).permit(:name, :credential_type, :spell_code,:credential_type_number, :gender, :birthday, :birthplace, :province_id, :city_id, :hospital_id, :department_id,:province_name, :city_name, :hospital_name, :department_name, :address, :nationality, :citizenship, :photo, :marriage, :mobile_phone, :home_phone, :home_address, :contact, :contact_phone, :home_postcode, :email, :introduction, :professional_title, :position, :hire_date, :certificate_number, :expertise, :degree, :graduated_from, :graduated_at, :research_paper, :wechat, :rewards, :is_checked, :is_activated, :verify_code,:is_public, :patient_id )
     end
 end
