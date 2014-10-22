@@ -19,6 +19,7 @@
  *= require ui.jqgrid
  *= require jquery.datetimepicker
   *= require zTreeStyle
+  *= require ui-dialog
  *= require_self
 
  */

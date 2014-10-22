@@ -1,27 +1,42 @@
+<%#= stylesheet_link_tag    'ui-dialog' %>
+<%#= javascript_include_tag 'dialog-min' %>
 <style>
     div.left{float: left;width: 250px !important;}
     div.right{float: left;width: 200px !important;}
     ul.ztree {margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width:220px;height:360px;overflow-y:scroll;overflow-x:auto;}
+    .select2-container{
+        width:170px;
+
+    }
+    ul li span.button.add { margin-left: 2px; margin-right: -1px; background-position: -144px 0; vertical-align: top; *vertical-align: middle; }
 </style>
 
 <SCRIPT type="text/javascript">
     <!--
+    var log, className = "dark";
     var setting = {
         check: {
             enable: true,
                 chkStyle: "checkbox",
                 chkboxType: { "Y": "ps", "N": "ps" }
         },
+        view:{
+            addHoverDom:addHoverDom,
+            removeHoverDom:removeHoverDom,
+            selectedMulti:false
+        },
         edit: {
             enable: true,
-            showRemoveBtn: false,
-            showRenameBtn: false,
+            showRemoveBtn: setRemoveBtn,
+            showRenameBtn: showRenameBtn,
+            removeTitle: "删除节点",
+            renameTitle: "编辑节点",
             drag:{
                 prev:false,
-                inner:false,
+                inner:per_inner,
                 next:false,
                 isCopy:true,
-                isMove:false
+                isMove:true
             }
         },
         data: {
@@ -30,6 +45,12 @@
             }
         },
         callback: {
+            /*编辑与删除回调*/
+            beforeEditName: beforeEditName,
+            beforeRemove: beforeRemove,
+            beforeRename: beforeRename,
+            onRemove: onRemove,
+            onRename: onRename,
             onClick:onClick,
 //            onCheck:onCheck,
             beforeDrag: beforeDrag,
@@ -47,15 +68,20 @@
             chkStyle: "checkbox",
             chkboxType: { "Y": "ps", "N": "ps" }
         },
+        view:{
+            addHoverDom:addHoverDom2,
+            removeHoverDom:removeHoverDom,
+            selectedMulti:false
+        },
         edit: {
             enable: true,
             showRemoveBtn: setRemoveBtn,
-            showRenameBtn: false,
+            showRenameBtn: showRenameBtn2,
             drag:{
                 prev:false,
                 inner:inner,
                 next:false,
-                isCopy:true,
+                isCopy:false,
                 isMove:false
             }
         },
@@ -73,10 +99,197 @@
         callback: {
 //            beforeDrag: beforeDrag,
 //            beforeDrop: beforeDrop,
-            beforeRemove:beforeRemove,
-            onRemove:onRemove
+            beforeEditName: beforeEditName,
+            beforeRemove: beforeRemove,
+//            beforeRename: beforeRename,
+            onRemove:onRemove2,
+            onRename:onRename2
         }
     };
+    function showRenameBtn(treeId, treeNode){
+        var treeObj = $.fn.zTree.getZTreeObj(treeId);
+        if ((''+treeNode.id).indexOf("_") > 0 || treeNode.level==0) {
+            return false
+        }else{
+            return true
+        }
+    }
+    function showRenameBtn2(treeId, treeNode){
+        if (treeNode.level==1) {
+            return true
+        }else{
+            return false
+        }
+    }
+    var newCount = 1;
+    function addHoverDom(treeId,treeNode){
+        if ((''+treeNode.id).indexOf("_") > 0) {
+        }else{
+        var sObj = $("#" + treeNode.tId + "_span");
+        if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+        var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                + "' title='添加子节点' onfocus='this.blur();'></span>";
+        sObj.after(addStr);
+        }
+        var btn = $("#addBtn_"+treeNode.tId);
+        if (btn) btn.bind("click", function(){
+            var zTree=$.fn.zTree.getZTreeObj(treeId)
+//            $('#create_or_edit_form').modal('show')
+            //在这里向后台发送请求保存一个新建的叶子节点，父id为treeNode.id,让后将下面的100+newCount换成返回的id
+//            zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, name:"新建节点" + (newCount++)});
+//            alert(treeNode.id)
+            create_child_menus(treeId,treeNode)
+//            if (treeNode.level==0){
+//                create_child_menus(treeId,treeNode)
+//            }else{
+//                var d0 = dialog({
+//                    title:'新建子节点',
+//                    content:'选择子节点类型',
+//                    cancelValue: '取消',
+//                    cancel: function () {},
+//                    button: [
+//                        {   value:'添加子菜单',
+//                            callback: function () {
+//                                create_child_menus(treeId,treeNode)
+//                                return;
+//                            },
+//                            autofocus: true
+//                        },
+////                        {   value: '添加操作',
+////                            callback: function () {
+////                                create_child_operation(treeId,treeNode)
+////                            },
+////
+////
+////                            autofocus: true
+////                        }
+//                    ]
+//                }).show();
+//            }
+
+            return false;
+        });
+    }
+    function addHoverDom2(treeId,treeNode){
+        if (treeNode.level == 0) {
+            var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                    + "' title='添加子节点' onfocus='this.blur();'></span>";
+            sObj.after(addStr);
+        }
+        var btn = $("#addBtn_"+treeNode.tId);
+        if (btn) btn.bind("click", function() {
+            var zTree = $.fn.zTree.getZTreeObj(treeId)
+            var d2 = dialog({
+                title:'新建子节点',
+                content:'<%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label :角色名 %><%= f.text_field :name,id:'role2_name',name:'name',class:"form-control"%><%= f.label :英文代称 %><%= f.text_field :code,id:'role2_code',name:'code',class:"form-control"%><%= f.label :说明 %><%= f.text_field :instruction,id:'role2_instruction',name:'instruction',class:"form-control"%></div><% end %>',
+                okValue: '确定',
+                ok: function () {
+                    $.ajax({
+                        type: 'post',
+                        url: '/role2s',
+                        data: {name:$('#role2_name').val(),code:$('#role2_code').val(),instruction:$('#role2_instruction').val()},
+                        success: function (data, response) {
+                            if (data['success']) {
+                                zTree.addNodes(treeNode, data['data']);
+                                d2.close().remove()
+                            }else{
+                                alert(data['error'])
+                            }
+                        },
+                        error: function () {
+                        }
+                    })
+                    return false;
+                },
+                cancelValue: '取消',
+                cancel: function () {}
+            }).show();
+        })
+    }
+    function create_child_menus(treeId,treeNode){
+        var zTree=$.fn.zTree.getZTreeObj(treeId)
+        var dl = dialog({
+            title:'新建子节点',
+            id: 'testID',
+            content: '<%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label :名称 %><div id="menus_name"><%= render partial: 'menus/form_name' %></div></div><%= f.label :操作 %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div><%= f.label :URI %><%= f.text_field :uri,id:'menu_uri',name:'uri',value:"/",class:"form-control"%></div><% end %>',
+            okValue: '确定',
+            ok: function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/menus',
+                    data: {parent_id:treeNode.id,name:$('#menu_name').val(),hospital_id:$('#menu_hospital_id').val(),department_id:$('#menu_department_id').val(),parent_name:treeNode.id,uri:$('#menu_uri').val(),priority:$('#menu_priorities').val()},
+                    success: function (data, response) {
+                        if (data['success']) {
+                            var child = treeNode.children
+                            for (var j = child.length - 1; j >= 0; j--) {
+                                if (('' + child[j].id).indexOf("_") > 0) {
+                                    zTree.removeNode(child[j]);
+                                }
+                            }
+                            zTree.addNodes(treeNode, data['data']);
+                            dl.close().remove()
+                        }else{
+                            alert(data['data'])
+                        }
+                    },
+                    error: function () {
+                    }
+                })
+                return false;
+            },
+//            button:[
+//                {
+//                    value: '确定',
+//                    callback: function () {
+//
+//
+//                    },
+//                    disabled: true,
+//                    autofocus: true
+//                },
+//            ],
+
+            cancelValue: '取消',
+            cancel: function () {}
+        }).width(320).show();
+    }
+    function create_child_operation(treeId,treeNode){
+        var zTree=$.fn.zTree.getZTreeObj(treeId)
+        dialog({
+            title:'新建子节点',
+            id: 'testID',
+            content: '名称:<input class="form-control" type="text" value="'+treeNode.name+'" readonly/><%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label :操作 %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div></div><% end %>',
+            okValue: '确定',
+            ok: function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/menu_permissions/create_by_menu',
+                    data: {menu_id:treeNode.id,priority:$('#menu_priorities').val()},
+                    success: function (data, response) {
+                        console.log(data)
+                        var data = data['priorities']
+                        for(var i=0;i<data.length;i++){
+                            var s = zTree.getNodesByParam("id", data[i].id,treeNode);
+                            if (s.length==0) {
+                                zTree.addNodes(treeNode, data[i]);
+                            }
+                        }
+                    },
+                    error: function () {
+
+                    }
+                })
+//                return false;
+            },
+            cancelValue: '取消',
+            cancel: function () {}
+        }).width(320).show();
+    }
+    function removeHoverDom(treeId,treeNode){
+        $("#addBtn_"+treeNode.tId).unbind().remove();
+    }
 
     function onClick(event, treeId, treeNode) {
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
@@ -111,13 +324,19 @@
         alert(treeNodes[0].id);
     };
 
-    function inner(treeId,treeNodes,targetNode){     //本树间不可拖拽,且目标结点必须是根结点
-        if(treeId!='perTree' && targetNode.level==1){
+    function inner(treeId,treeNodes,targetNode){     //目标结点必须是根结点以外的
+        if(targetNode.level>0){
             return true
         }else{
             return false
         }
 
+    }
+    function per_inner(treeId,treeNodes,targetNode){
+        if ((''+(treeNodes[0].id)).indexOf("_")>0 || (''+(targetNode.id)).indexOf("_")>0) {
+            return false;
+        }
+        return true;
     }
     function setRemoveBtn(treeId, treeNode) {  //判断是否为根结点,根结点不可删除
         if (treeNode.level == 0)
@@ -133,112 +352,127 @@
         }
         var treeObj=$.fn.zTree.getZTreeObj("perTree"),
                 nodes2=treeObj.getCheckedNodes(true);
-        if (nodes2.length==0){
-            alert('请勾选后拖拽!')
-            return false;
-        }
+//        if (nodes2.length==0){
+//            alert('请勾选后拖拽!')
+//            return false;
+//        }
         return true;
     }
 
     function beforeDrop(treeId, treeNodes, targetNode, moveType) {
         var drag_id
         drag_id=treeNodes[0]['id'] //获取被拖拽的id
-        var right_treeObj = $.fn.zTree.getZTreeObj(treeId);
-        var nodes = right_treeObj.getNodesByParam("id", drag_id,targetNode);    //查找用户是否已经存在此菜单节点
-        var treeObj=$.fn.zTree.getZTreeObj("perTree"),
-                nodes2=treeObj.getCheckedNodes(true);
-        if (nodes.length==0) {
-//            alert('bb')
-//            var tree_node = treeNodes[0]
-//            var parent_nodes=[]
-//            parent_nodes.push(treeNodes[0])
-//            while (tree_node.getParentNode()!=null){
-//                tree_node = tree_node.getParentNode()
-//                parent_nodes.push(tree_node)
-//            }
-//            for(var i=parent_nodes.length-1;i>=0;i--) {
-//                alert(parent_nodes[i].name)
-//                var right_nodes = right_treeObj.getNodesByParam("id", parent_nodes[i]['id'], targetNode);
-//                if (right_nodes.length==0){
-//                    right_treeObj.addNodes(targetNode, parent_nodes[i]);
-////                    return false
-//                }
-//            }
-
-            //用户不存在此菜单节点，可以进行拖拽
-//        if (treeNodes[0].level > 0) {
-//            var parent_id = treeNodes[0].pId
-//            var left_treeObj = $.fn.zTree.getZTreeObj('perTree');
-//            var left_nodes = left_treeObj.getNodesByParam("id", parent_id, null);  //left总菜单中查找
-//            var right_nodes = right_treeObj.getNodesByParam("id", parent_id, targetNode);   //right admin菜单中查找
-//            if (right_nodes.length==0){
-//                var nodes=[
-//                    {id:left_nodes[0].id,name:left_nodes[0].name,pId:null},
-//                    {id:treeNodes[0].id,name:treeNodes[0].name,pId:left_nodes[0].id}
-//                ]
-            if (true) {
-            var right_parent_nodes = right_treeObj.getNodesByParam("id", treeNodes[0].pId, targetNode);
-            var param_nodes = []
-            var tree_nodes=[]
-            var flag=true
-            for (var i = 0; i < nodes2.length; i++) {
-                if (nodes2[i].level>0) {
-                    var node_i = {id: nodes2[i].id, name: nodes2[i].name, pId: nodes2[i].pId, menu_permission_id: nodes2[i].menu_permission_id}
-                    var is_right_nodes = right_treeObj.getNodesByParam("id", nodes2[i].id, targetNode);
-                    if (is_right_nodes.length == 0) {
-                        tree_nodes.push(node_i)
-                    } else {
-                        flag = false
-                    }
-                    param_nodes.push(node_i)
+        var treeObj = $.fn.zTree.getZTreeObj(treeId);
+        var nodes = treeObj.getNodesByParam("id", drag_id,targetNode);    //查找用户是否已经存在此菜单节点
+        if( treeId == 'roleTree'){
+            var right_treeObj = $.fn.zTree.getZTreeObj(treeId);
+            var treeObj=$.fn.zTree.getZTreeObj("perTree"),
+                    nodes2=treeObj.getCheckedNodes(true);
+            var target_node = targetNode
+            var target_Node = null
+            while (target_node.getParentNode()!=null){
+                if (target_node.level==1){
+                    target_Node = target_node
+                }
+                target_node = target_node.getParentNode()
+            }
+            var tree_nodes = []
+            var tree_node = treeNodes[0]
+            while (tree_node.getParentNode()!=null){
+                tree_node = tree_node.getParentNode()
+                if (tree_node.level>0){
+                    tree_nodes.push(tree_node)
                 }
             }
-            if (flag){
-                right_treeObj.addNodes(targetNode, tree_nodes);
-            }else{
-                var first_nodes = right_treeObj.getNodesByParam("id", tree_nodes[0].pId, targetNode);
-                right_treeObj.addNodes(first_nodes[0], tree_nodes);
+            var child_nodes = []
+            for (var i=tree_nodes.length-1;i>=0;i--){
+                child_nodes.push(tree_nodes[i])
             }
-
-//                if (right_parent_nodes.length == 0) {
-//                    right_treeObj.addNodes(targetNode, param_nodes);
-//                    return false;
-//                } else {
-//                    right_treeObj.addNodes(targetNode, treeNodes);
-//                    return false;
-//                }
-                var nodes3=right_treeObj.getNodesByParam("id", treeNodes[0].id, targetNode);
-                if (nodes3.length > 0) {
-                    $.ajax({
-                        type: 'post',
-                        url: '/menus/drag',
-                        data: {data: param_nodes, targetNode: targetNode, nodes: treeNodes},
-                        success: function (data, response) {
-                        },
-                        error: function () {
-
+            var trees = []
+            nodes2=child_nodes.concat(getChildren(trees,treeNodes[0]))
+//            for (var obj in child_nodes){
+//                alert(child_nodes[obj].name)
+//            }
+//            alert(target_Node.name)
+            var nodes = right_treeObj.getNodesByParam("id", drag_id,target_Node);
+            if (nodes.length==0) {
+                if (true) {
+                    var right_parent_nodes = right_treeObj.getNodesByParam("id", treeNodes[0].pId, target_Node);
+                    var param_nodes = []
+                    var tree_nodes=[]
+                    var flag=true
+                    for (var i = 0; i < nodes2.length; i++) {
+                        if (nodes2[i].level>0) {
+                            var node_i = {id: nodes2[i].id, name: nodes2[i].name, pId: nodes2[i].pId, menu_permission_id: nodes2[i].menu_permission_id}
+                            var is_right_nodes = right_treeObj.getNodesByParam("id", nodes2[i].id, target_Node);
+                            if (is_right_nodes.length == 0) {
+                                tree_nodes.push(node_i)
+                            } else {
+                                flag = false
+                            }
+                            param_nodes.push(node_i)
                         }
-                    })
+                    }
+                    if (flag){
+                        alert('a')
+                        right_treeObj.addNodes(target_Node, tree_nodes);
+                    }else{
+                        alert('b')
+                        var first_nodes = right_treeObj.getNodesByParam("id", tree_nodes[0].pId, target_Node);
+                        right_treeObj.addNodes(first_nodes[0], tree_nodes);
+                    }
+
+                    var nodes3=right_treeObj.getNodesByParam("id", treeNodes[0].id, targetNode);
+                    if (nodes3.length > 0) {
+                        $.ajax({
+                            type: 'post',
+                            url: '/menus/drag',
+                            data: {data: param_nodes, targetNode: targetNode, nodes: treeNodes},
+                            success: function (data, response) {
+                            },
+                            error: function () {
+
+                            }
+                        })
+                    }
+                    return false;
                 }
-                return false;
-            }
 
 
-            return targetNode ? targetNode.drop !== false : true;
+                return targetNode ? targetNode.drop !== false : true;
             } else {
-            alert('存在')
+                alert('存在')
                 return false;
             }
-//        } else{
-//            return targetNode ? targetNode.drop !== false : true;
-//        }
+        }else{
+            if ((''+(treeNodes[0].id)).indexOf("_")>0) {
+                return false;
+            }
+            var is_exists = false
+            var tar_child = targetNode.children
+            for(var obj in tar_child){
+                if (tar_child[obj].id == (treeNodes[0].id)) {
+                  is_exists = true
+                }
+            }
+            if (!is_exists) {
+                $.ajax({
+                    type: 'post',
+                    url: '/menus/drag2',
+                    data: {targetNode: targetNode.id, nodes: treeNodes[0].id},
+                    success: function (data, response) {
+                    },
+                    error: function () {
 
+                    }
+                })
+                return targetNode ? targetNode.drop !== false : true;
+            }else{
+                alert('存在')
+                return false;
+            }
+        }
 
-//        }else{
-//            alert(nodes[0].name+"已存在");
-//            return false;
-//
-//        }
     };
 
     function onDrop(event, treeId, treeNodes, targetNode, moveType){
@@ -257,19 +491,11 @@
             $.ajax({
                 type: 'post',
                 url: '/menus/drag',
-                data: {data: param_nodes,targetNode:targetNode,nodes:treeNodes},
+//                data: {data: param_nodes,targetNode:targetNode,nodes:treeNodes},
                 success: function (data, response) {
 //                    right_treeObj.reAsyncChildNodes
 //                    right_treeObj.refresh();
-                    $.fn.zTree.init($("#roleTree"), roleSetting, roleNodes);
-//                    var all_nodes = right_treeObj.getNodes()
-//                    for (var i=0; i<all_nodes.length;i++){
-//                        if (all_nodes[i].level==0){
-//                            all_nodes[i].open=true
-//                            right_treeObj.updateNode(all_nodes[i])
-//                        }
-//
-//                    }
+//                    $.fn.zTree.init($("#roleTree"), roleSetting, roleNodes);
                 },
                 error: function () {
 
@@ -278,11 +504,120 @@
         }
     } ;
 
+    function update_menus(treeId,treeNode){
+        var zTree=$.fn.zTree.getZTreeObj(treeId)
+        var dg = dialog({
+            title:'新建子节点',
+            id: 'testID',
+            content: '名称:<input class="form-control" id="edit_menus_name" type="text" value="'+treeNode.name+'"/><%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label :操作 %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div></div><% end %>',
+            okValue: '确定',
+            ok: function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/menu_permissions/create_by_menu',
+                    data: {name:$('#edit_menus_name').val(),menu_id:treeNode.id,priority:$('#menu_priorities').val()},
+                    success: function (data, response) {
+                        if (data['success']) {
+                            console.log(data)
+                            treeNode.name = data["menu"]["name"]
+                            zTree.updateNode(treeNode);
+                            var child = treeNode.children
+                            for (var j = child.length - 1; j >= 0; j--) {
+                                if (('' + child[j].id).indexOf("_") > 0) {
+                                    zTree.removeNode(child[j]);
+                                }
+                            }
+                            var data = data["priorities"]
+                            for(var i=0;i<data.length;i++){
+                                var s = zTree.getNodesByParam("id", data[i].id,treeNode);
+                                if (s.length==0) {
+                                    zTree.addNodes(treeNode, data[i]);
+                                }
+                            }
+                            dg.close().remove()
+                        }else{
+                            alert(data['error'])
+                        }
+
+                    },
+                    error: function () {
+
+                    }
+                })
+                return false;
+            },
+            cancelValue: '取消',
+            cancel: function () {}
+        }).width(320).show();
+    }
+
+    function beforeEditName(treeId, treeNode) {
+//        className = (className === "dark" ? "" : "dark");
+//        var zTree = $.fn.zTree.getZTreeObj(treeId);
+//        zTree.selectNode(treeNode);
+//        return confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？");
+        update_menus(treeId,treeNode)
+        beforeRename(treeId, treeNode,$('#edit_menus_name').val() , false)
+        return false
+    }
+
+    function beforeRename(treeId, treeNode, newName, isCancel) {
+        className = (className === "dark" ? "" : "dark");
+        if (newName.length == 0) {
+            alert("节点名称不能为空.");
+            var zTree = $.fn.zTree.getZTreeObj(treeId);
+            setTimeout(function () { zTree.editName(treeNode) }, 10);
+            return false;
+        }
+        return true;
+    }
+
+    function onRename(e, treeId, treeNode, isCancel) {
+        var zTree = $.fn.zTree.getZTreeObj(treeId);
+        $.ajax({
+            url: '/menus/update_name', //url  action是方法的名称
+            data: { id: treeNode.id, name: treeNode.name },
+            type: 'PUT',
+            success: function (data) {
+               alert('"'+data.name+'"保存成功!')
+            }
+        });
+        return false;
+
+    }
+    function onRename2(e, treeId, treeNode, isCancel) {
+        var zTree = $.fn.zTree.getZTreeObj(treeId);
+        $.ajax({
+            url: '/role2s/update_name', //url  action是方法的名称
+            data: { id: treeNode.id, name: treeNode.name },
+            type: 'PUT',
+            success: function (data) {
+                alert('"'+data.name+'"保存成功!')
+            }
+        });
+        return false;
+
+    }
+
     //    删除之前的确定操作
     function beforeRemove(treeId, treeNode){
         alert(treeNode.isParent ? "确定删除父节点？":"确定删除此节点？")
     };
-    function onRemove(event, treeId, treeNode){
+    function onRemove(event, treeId, treeNode) {
+//        alert(treeNode)
+//        var nodes=new Array();
+        var tree_node = {id:treeNode.id,name:treeNode.name,menu_permission_id:treeNode.menu_permission_id}
+//        nodes.push(tree_node)
+        $.ajax({
+            type:'delete',
+            url:'/menus/remove_nodes2',
+            data: {data: tree_node},
+            success: function (data, response) {
+
+            }
+        })
+    }
+    function onRemove2(event, treeId, treeNode){
         var right_treeObj = $.fn.zTree.getZTreeObj("roleTree");
         var target_node,tree_node = treeNode
         while (tree_node!=null){
@@ -291,41 +626,45 @@
             }
             tree_node = tree_node.getParentNode()
         }
-        //注释部分:当父结点为空时,同时删除父结点
-//        if (treeNode.getParentNode().level!=0&&treeNode.getParentNode().level!=1&&treeNode.getParentNode().children.length==0){
-//            right_treeObj.removeNode(treeNode.getParentNode());
-//            right_treeObj.removeNode(treeNode);
-//        }else{
-////            alert(treeNode.getParentNode().children.length)
-//        }
-        var nodeIds=new Array();
-        if (treeNode.isParent){
-            var right_treeObj = $.fn.zTree.getZTreeObj("roleTree");
-            var childNodes = right_treeObj.removeChildNodes(treeNode);
-            var menu_permission_ids = treeNode.menu_permission_id
-            for (var j = 0; j < menu_permission_ids.length; j++){
-                nodeIds.push(menu_permission_ids[j]);
-            }
-//            nodeIds.push(treeNode.menu_permission_id.join(","))
-            for(var i = 0; i < childNodes.length; i++){
-
-                var menu_permission_ids = childNodes[i].menu_permission_id;
-                for (var j = 0; j < menu_permission_ids.length; j++){
-                    nodeIds.push(menu_permission_ids[j]);
-                }
-
-            }
+        target_node = {id:target_node.id,name:target_node.name}
+        //注释部分:当父结点的子结点为空时,同时删除父结点
+        if (treeNode.getParentNode().level!=0&&treeNode.getParentNode().level!=1&&treeNode.getParentNode().children.length==0){
+            right_treeObj.removeNode(treeNode.getParentNode());
+            right_treeObj.removeNode(treeNode);
         }else{
-            var menu_permission_ids = treeNode.menu_permission_id
-            for (var j = 0; j < menu_permission_ids.length; j++){
-                nodeIds.push(menu_permission_ids[j]);
-            }
-//            nodeIds.push(treeNode.menu_permission_id)
-        };
+//            alert(treeNode.getParentNode().children.length)
+        }
+//        var nodeIds=new Array();
+//        if (treeNode.isParent){
+//            var right_treeObj = $.fn.zTree.getZTreeObj("roleTree");
+//            var childNodes = right_treeObj.removeChildNodes(treeNode);
+//            var all_childNodes = []
+//            var all_childNodes  = getChildren(all_childNodes,treeNode)
+////            var menu_permission_ids = treeNode.menu_permission_id
+////            for (var j = 0; j < menu_permission_ids.length; j++){
+////                nodeIds.push(menu_permission_ids[j]);
+////            }
+////            nodeIds.push(treeNode.menu_permission_id.join(","))
+//            for(var i = 0; i < all_childNodes.length; i++){
+//                alert(all_childNodes[i].name)
+//                var menu_permission_ids = all_childNodes[i].menu_permission_id;
+//                for (var j = 0; j < menu_permission_ids.length; j++){
+//                    nodeIds.push(menu_permission_ids[j]);
+//                }
+//
+//            }
+//        }else{
+//            var menu_permission_ids = treeNode.menu_permission_id
+//            for (var j = 0; j < menu_permission_ids.length; j++){
+//                nodeIds.push(menu_permission_ids[j]);
+//            }
+////            nodeIds.push(treeNode.menu_permission_id)
+//        };
+        var tree_node = {id:treeNode.id,name:treeNode.name,pId:treeNode.pId,menu_permission_id:treeNode.menu_permission_id}
         $.ajax({
             type:'post',
             url:'/menus/remove_nodes',
-            data: {data: nodeIds,targetNode:target_node},
+            data: {data: tree_node,targetNode:target_node},
             success: function (data, response) {
 
             }
@@ -418,4 +757,31 @@
 <div class="right">
   系统角色：
   <ul id="roleTree" class="ztree"></ul>
+</div>
+
+<div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title"><b>创建或编辑</b></h4>
+      </div>
+      <div class="modal-body">
+        <%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %>
+            <%= f.label :名称 %>
+            <div id="menus_parent_menu"><%#= render partial: 'menus/form_name' %></div>
+            <%= f.label :父菜单 %>
+            <div id="menus_parent_menu"><%#= render partial: 'menus/form_parent_menu' %></div>
+            <%= f.label :操作 %>
+            <div id="menus_priority"><%#= render partial: 'menus/form_priority' %></div>
+            <%= f.label :URI %>
+            <%= f.text_field :uri,name:'uri' ,class:"form-control"%>
+      </div>
+      <div class="modal-footer">
+          <%= f.submit '确定',id:'new_or_edit_submit',class:"btn btn-primary",onclick:'create_or_update()'%>
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+        <% end %>
+    </div>
+  </div>
 </div>

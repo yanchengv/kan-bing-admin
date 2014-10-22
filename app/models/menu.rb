@@ -2,7 +2,7 @@ class Menu < ActiveRecord::Base
   has_many :admin2_menus,dependent: :destroy
   has_many :menu_permissions,dependent: :destroy
   belongs_to :parent_menu,foreign_key: :parent_id,class_name:"Menu"
-  has_many :child_menus, foreign_key: :parent_id,class_name:"Menu"
+  has_many :child_menus, foreign_key: :parent_id,class_name:"Menu" ,dependent: :destroy
   has_many :priorities, :through => :menu_permissions, :source  => :priority
 
   def all_menus

@@ -115,9 +115,9 @@ class MenusController < ApplicationController
       p 'role'
       p role.name
       if role.get_zTree == []
-        @role = {id:role.id,name:role.name,open:true}
+        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,menu_permission_id:'',open:true}
       else
-        @role = {id:role.id,name:role.name,children:role.get_zTree,open:true}
+        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,menu_permission_id:'',children:role.get_zTree,open:true}
       end
       @all_roles.push(@role)
     end
@@ -133,7 +133,8 @@ class MenusController < ApplicationController
     puts 'baek'
     p params[:targetNode]
     p params[:nodes]
-    role_id = params[:targetNode]['id']
+    p_role_id = params[:targetNode]['id']
+    role_id = p_role_id[p_role_id.index('-')+1,p_role_id.length]
     p role_id
     all_nodes = params[:data]
     all_nodes.each do |node|
@@ -150,15 +151,83 @@ class MenusController < ApplicationController
     render :json => @all_roles.as_json
   end
 
-  def remove_nodes
+  def drag2
     p params[:targetNode]
-    menu_permission_id =  params[:data]
-    p menu_permission_id
-    role_id = params[:targetNode]['id']
-    @role_menu_permissions = Role2sMenuPermission.where(role2_id:role_id,menu_permission_id: menu_permission_id)
-    if !@role_menu_permissions.empty?
-      @role_menu_permissions.each do |role_menu_permission|
-        role_menu_permission.destroy
+    p params[:nodes]
+    @menu = Menu.where(id:params[:nodes]).first
+    if !@menu.nil?
+      @menu.update(parent_id:params[:targetNode])
+    end
+    render :json => {success:true}
+  end
+
+  def remove_nodes
+    menu_id =  params[:data]['id']
+    menu_permission_ids = []
+    p_role_id = params[:targetNode]['id']
+    role_id = p_role_id[p_role_id.index('-')+1,p_role_id.length]
+    str = "_"
+    if  menu_id.include? 'role-'
+      role2_id = menu_id[menu_id.index('-')+1,menu_id.length]
+      @role = Role2.where(id:role2_id).first
+      if !@role.nil?
+        @role.destroy
+      end
+    else
+      if menu_id.include? str
+        p "b"
+        menu_permission_ids = params[:data]["menu_permission_id"]
+      else
+        p 'a'
+        @menu = Menu.find_by(id:menu_id)
+        menu_per_ids = []
+        if !@menu.nil?
+          if !@menu.child_menus.empty?
+            @menu.all_child(Menu.all).each do |menu|
+              if !menu.menu_permissions.empty?
+                menu.menu_permissions.each do |menu_per|
+                  menu_per_ids.push(menu_per.id)
+                end
+              end
+            end
+          end
+          if !@menu.menu_permissions.empty?
+            @menu.menu_permissions.each do |menu_per1|
+              menu_per_ids.push(menu_per1.id)
+            end
+          end
+        end
+        menu_permission_ids = menu_per_ids
+      end
+      @role_menu_permissions = Role2sMenuPermission.where(role2_id:role_id,menu_permission_id: menu_permission_ids)
+      if !@role_menu_permissions.empty?
+        @role_menu_permissions.each do |role_menu_permission|
+          role_menu_permission.destroy
+        end
+      end
+    end
+
+
+    render :json => {success:true}
+  end
+
+  def remove_nodes2
+    p params[:data]
+    param_id = params[:data]['id']
+    p params[:data]['name']
+    str = "_"
+    if param_id.include? str
+      @menu_per = MenuPermission.find_by(id:params[:data]['menu_permission_id'])
+      @menu_per.update(priority_id:nil)
+    else
+      @menu = Menu.find_by(id:param_id)
+      if !@menu.nil?
+        # if !@menu.child_menus.empty?
+        #   @menu.child_menus.each do |menu|
+        #     menu.destroy
+        #   end
+        # end
+        @menu.destroy
       end
     end
     render :json => {success:true}
@@ -208,19 +277,69 @@ class MenusController < ApplicationController
   # POST /menus.json
   def create
     name=params[:name]
-    hospital_id = params[:hospital_id]
-    department_id = params[:department_id]
-    parent_menu = Menu.where(id:params[:parent_name].to_i).first
-    if !parent_menu.nil?
-      parent_id = parent_menu.id
+    parent_id = params[:parent_id]
+    @parent_menus = Menu.where(name:name,parent_id:parent_id)
+    if name != ''
+      if @parent_menus.empty?
+        hospital_id = params[:hospital_id]
+        department_id = params[:department_id]
+        parent_menu = Menu.where(id:params[:parent_name].to_i).first
+        if !parent_menu.nil?
+          parent_id = parent_menu.id
+        end
+        uri = params[:uri]
+        priority_ids = []
+        if !params[:priorities].nil?
+          priority_ids  = params[:priorities].split(',')
+        end
+        if !params[:priority].nil?
+          priority_ids =  params[:priority]
+        end
+        @menu = Menu.create(name:name,parent_id:parent_id,uri:uri)
+        if priority_ids != '' && priority_ids != []
+          priority_ids.each do |priority_id|
+            MenuPermission.create(menu_id:@menu.id,hospital_id:hospital_id,department_id:department_id,priority_id:priority_id)
+          end
+        else
+          MenuPermission.create(menu_id:@menu.id,hospital_id:hospital_id,department_id:department_id)
+        end
+        menu_permissions = @menu.menu_permissions
+        @menus = []
+        @p_menus = []
+        @priorities = []
+        menu_permissions.each do |menu_permission|
+          @menu = menu_permission.menu
+          if !@menu.nil?
+            priority = menu_permission.priority
+            @priority = {menu_id:@menu.id,priority:priority,menu_permission_id:menu_permission.id}.as_json
+            @menu={id:@menu.id,name:@menu.name,pId:@menu.parent_id,menu_permission_id:menu_permission.id,uri:@menu.uri}.as_json
+            @p_menus.push(@menu)
+            @priorities.push(@priority)
+          end
+        end
+        @p_menus.each do |menu|
+          child = []
+          menu_permission_id = []
+          @priorities.each do |pri|
+            if pri['menu_id'] == menu['id']
+              if !pri['priority'].nil?
+                child.push({id:menu['id'].to_s+'_'+pri['priority']['id'].to_s,name:pri['priority']['name'],menu_permission_id:[pri['menu_permission_id']]})
+              end
+              menu_permission_id.push(pri['menu_permission_id'])
+            end
+          end
+          @menu = {id:menu['id'],name:menu['name'],pId:menu['pId'],menu_permission_id:menu_permission_id,uri:menu['uri'],children:child}.as_json
+          @menus.push(@menu)
+        end
+        @menus=@menus.uniq
+        render :json => {success:true,data:@menus}
+      else
+        render :json => {success:false,data:'菜单名称与同级已有菜单重复!'}
+      end
+    else
+      render :json => {success:false,data:'菜单名称不能为空!'}
     end
-    uri = params[:uri]
-    priority_ids  = params[:priorities].split(',')
-    @menu = Menu.create(name:name,parent_id:parent_id,uri:uri)
-    priority_ids.each do |priority_id|
-      MenuPermission.create(menu_id:@menu.id,hospital_id:hospital_id,department_id:department_id,priority_id:priority_id)
-    end
-    render :json => {success:true}
+
     # respond_to do |format|
     #   if @menu.save
     #     format.html { redirect_to @menu, notice: 'Menu was successfully created.' }
@@ -274,6 +393,14 @@ class MenusController < ApplicationController
     #     format.json { render json: @menu.errors, status: :unprocessable_entity }
     #   end
     # end
+  end
+
+  def update_name
+    @menu = Menu.find_by(id:params[:id])
+    if !@menu.nil?
+      @menu.update(name:params[:name])
+    end
+    render json: @menu
   end
 
   # DELETE /menus/1
