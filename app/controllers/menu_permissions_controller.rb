@@ -37,6 +37,49 @@ class MenuPermissionsController < ApplicationController
     end
   end
 
+  def create_by_menu
+    @menu = Menu.find_by(id:params[:menu_id])
+    if !@menu.nil?
+      @menu2 = Menu.where(name:params[:name],parent_id: @menu.parent_id).first
+    end
+    p @menu2
+    if params[:name] == ''
+      render json: {success:false,error:'菜单名不可空!'}
+    elsif !@menu2.nil? && @menu2.id.to_i != params[:menu_id].to_i
+      render json: {success:false,error:'菜单名重复!'}
+    else
+      @priorities = []
+      if !@menu.nil?
+        @menu.update(name:params[:name])
+        if params[:priority] != ''
+          priority_ids = params[:priority]
+          if !@menu.menu_permissions.empty?
+            @menu_per = @menu.menu_permissions.first
+            @menu.menu_permissions.each do |menu_per|
+              # if !menu_per.priority_id.nil? && menu_per.priority_id != ''
+              #   priority_ids.push(menu_per.priority_id.to_s)
+              # end
+              menu_per.destroy
+            end
+          end
+          if !@menu_per.nil?
+            hos_id = @menu_per.hospital_id
+            dep_id = @menu_per.department_id
+          end
+          p priority_ids
+          p priority_ids.uniq
+          priority_ids.each do |priority_id|
+            @menu_permission = MenuPermission.create(menu_id:@menu.id,hospital_id:hos_id,department_id:dep_id,priority_id:priority_id)
+            @priority = Priority.find_by(id:priority_id)
+            priority = {id:@menu.id.to_s+'_'+priority_id,name:@priority.name,menu_permission_id:[@menu_permission.id]}
+            @priorities.push(priority)
+          end
+        end
+      end
+      render json: {success:true,priorities:@priorities,menu:@menu}
+    end
+  end
+
   # PATCH/PUT /menu_permissions/1
   # PATCH/PUT /menu_permissions/1.json
   def update

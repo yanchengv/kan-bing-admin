@@ -1,6 +1,1 @@
-<select multiple name="priorities" id="menu_priorities">
-  <%#= options_from_collection_for_select(@priorities, 'id', 'name',@menu.priority_ids) %>
-  <% @priorities.each do |hos| %>
-      <option value="<%= hos.id %>" id="priority_<%= hos.id %>"><%= hos.name %></option>
-  <% end %>
-</select>
+<style>.select2-choices{width:290px;}</style><select multiple name="priorities" id="menu_priorities"><%#= options_from_collection_for_select(@priorities, 'id', 'name',@menu.priority_ids) %><% @priorities = Priority.all %><% @priorities.each do |hos| %><option value="<%= hos.id %>" id="priority_<%= hos.id %>"><%= hos.name %></option><% end %></select><script>$(function() {$("#menu_priorities").select2();})</script>

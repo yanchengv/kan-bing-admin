@@ -55,11 +55,19 @@ class Role2sController < ApplicationController
   # POST /role2s
   # POST /role2s.json
   def create
-    @role2 = Role2.new(role2_params)
-    if @role2.save
-      render :json => {success:true}
+    @role2s = Role2.where(name:params[:name])
+    if params[:name] == ''
+      render :json => {success:false,error:'角色名不可为空!'}
+    elsif !@role2s.empty?
+      render :json => {success:false,error:'角色名不可重复!'}
     else
-      render :json => {success:false,error:'保存失败!'}
+      @role2 = Role2.new(role2_params)
+      if @role2.save
+        @role2 = {id:'role-'+@role2.id.to_s,name:@role2.name,pId:0,menu_permission_id:'',open:true}
+        render :json => {success:true,data:@role2}
+      else
+        render :json => {success:false,error:'保存失败!'}
+      end
     end
     # respond_to do |format|
     #   if @role2.save
@@ -90,6 +98,16 @@ class Role2sController < ApplicationController
     #     format.json { render json: @role2.errors, status: :unprocessable_entity }
     #   end
     # end
+  end
+
+  def update_name
+    p_role_id = params[:id]
+    role_id = p_role_id[p_role_id.index('-')+1,p_role_id.length]
+    @role2 = Role2.find_by(id:role_id)
+    if !@role2.nil?
+      @role2.update(name:params[:name])
+    end
+    render json: @role2
   end
 
   # DELETE /role2s/1

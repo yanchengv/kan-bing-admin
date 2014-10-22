@@ -99,7 +99,7 @@
         <%= f.label :国籍 %><br>
         <select id="patient_citizenship" name="patient[citizenship]" >
           <option value="">---请选择---</option>
-          <% @citizenships = Dictionary.where(dictionary_type_id:9) %>
+          <% @citizenships = Dictionary.where(dictionary_type_id:12) %>
           <% if !@citizenships.empty? %>
               <% @citizenships.each do |citizenship| %>
                   <option id="<%= citizenship.name %>" value="<%= citizenship.name %>"><%= citizenship.name %></option>
@@ -112,7 +112,7 @@
         <%= f.label :民族 %><br>
         <select id="patient_nationality" name="patient[nationality]" >
           <option value="">---请选择---</option>
-          <% @nationality = Dictionary.where(dictionary_type_id:8) %>
+          <% @nationality = Dictionary.where(dictionary_type_id:13) %>
           <% if !@nationality.empty? %>
               <% @nationality.each do |national| %>
                 <option id="<%= national.name %>" value="<%= national.name %>"><%= national.name %></option>
