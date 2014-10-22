@@ -28,6 +28,8 @@
             { id:1, pId:0, name:"主菜单 1", open:true},
             { id:11, pId:1, name:"子菜单 1-1"},
             { id:111, pId:11, name:"叶子节点 1-1-1"},
+            { id:1111, pId:111, name:"叶子节点 1-1-1-1"},
+            { id:11111, pId:1111, name:"叶子节点 1-1-1-1-1"},
             { id:112, pId:11, name:"叶子节点 1-1-2"},
             { id:113, pId:11, name:"叶子节点 1-1-3"},
             { id:114, pId:11, name:"叶子节点 1-1-4"},
@@ -117,18 +119,18 @@
         //-->
     </SCRIPT>
     <style type="text/css">
-        .ztree{width:200px;background:#403e3d;padding:0px;}
+        .ztree{width:100%;background:#403e3d;padding:0px;}
         .ztree * {
             padding: 0;
             margin: 0;
             font-size: 14px;
             font-family:"Microsof YaHei", Verdana, Arial !important;
         }
-       a{ font-family: Verdana, Arial !important;}
+        a{ font-family: Verdana, Arial !important;}
         .ztree li a{color:#a8a8a8;}
         .ztree li a.level0 {
             text-decoration:none;
-            width:200px;
+            width:100%;
             height: 39px;
             line-height:39px;
             text-align:left;
@@ -196,10 +198,10 @@
             outline: 0;
         }
         .ztree li span.button.center_open {
-            background-position: 100px -26px;
+            background-position: -56px -26px;
         }
         .ztree li span.button.center_docu {
-            background-position: 100px -26px;
+            background-position:-56px -26px;
         }
 
         .ztree li span.button.switch {
@@ -243,8 +245,8 @@
 
     </style>
     <h1>sds</h1>
-<div class="zTreeDemoBackground left" style="height:100%;">
-  <ul id="treeDemo" class="ztree"></ul>
-</div>
+    <div class="zTreeDemoBackground left" style="height:100%;">
+      <ul id="treeDemo" class="ztree"></ul>
+    </div>
 
 <%end%>
