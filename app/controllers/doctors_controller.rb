@@ -164,26 +164,37 @@ class DoctorsController < ApplicationController
       @hospitals = Hospital.where(id:hospital_ids)
       p 'result'
       p department_ids
-      if department_ids != []
-        @departments = Department.where(id:department_ids,hospital_id:hospital_ids[0])
-      else
-        @departments = Department.where(hospital_id:hospital_ids[0])
+      if hospital_ids == []
+        @hospitals = Hospital.all
+        if !@hospitals.empty?
+          @hospitals.each do |hos|
+            hospital_ids.push(hos.id)
+          end
+        end
       end
     end
     @hos = Hospital.find_by(id:hospital_ids[0])
-      hos_id = hospital_ids[0]
+    hos_id = hospital_ids[0]
     if !params[:hos_id].nil?
       hos_id = params[:hos_id]
     end
     dep_ids = []
-    @deps = Department.where(id:department_ids)
-    @deps.each do |dep|
-      if dep.hospital_id.to_i==hos_id.to_i
-        dep_ids.push(dep.id)
+    @deps = nil
+    if department_ids != []
+      @deps = Department.where(id:department_ids,hospital_id:hos_id)
+    else
+      @deps = Department.where(hospital_id:hos_id)
+    end
+    # @deps = Department.where(id:department_ids)
+    if !@deps.empty?
+      @deps.each do |dep|
+        if dep.hospital_id.to_i==hos_id.to_i
+          dep_ids.push(dep.id)
+        end
       end
     end
     dep_id = dep_ids
-    if !params[:dep_id].nil?
+    if !params[:dep_id].nil? && params[:dep_id] != ''
       dep_id = params[:dep_id]
     end
       is_activated = params[:is_activated]
@@ -759,10 +770,32 @@ class DoctorsController < ApplicationController
     delete_flag=false
     update_flag=false
     show_flag=false
+    all_flag=true
     hos_id = params[:hospital_id]
     dep_id = params[:department_id]
     @menu_permissions = MenuPermission.joins(role2s_menu_permissions:[{role2: [{admin2s_role2s: :admin2}]}]).where(admin2s:{id:current_user.id})
     if !@menu_permissions.empty?
+      @menu_permissions.each do |menu_permission|
+        @menu = Menu.where(name:'人员管理').first
+        @menu1 = menu_permission.menu
+        if @menu1.name=='医生管理' && @menu1.parent_id == @menu.id
+          if menu_permission.priority_id == 1
+            add_flag = true
+          end
+          if menu_permission.priority_id == 2
+            delete_flag = true
+          end
+          if menu_permission.priority_id == 3
+            update_flag = true
+          end
+          if menu_permission.priority_id == 4
+            show_flag = true
+          end
+          all_flag = false
+        end
+      end
+      p all_flag
+      if all_flag
       @menus=[]
       @menu_permissions.each do |menu_permission|
         @menus.push(menu_permission.menu)
@@ -862,6 +895,7 @@ class DoctorsController < ApplicationController
             end
           end
         end
+      end
       end
     end
     p add_flag,delete_flag,update_flag,show_flag

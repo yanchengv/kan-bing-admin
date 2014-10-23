@@ -143,7 +143,7 @@ class MenusController < ApplicationController
       p node[1]['menu_permission_id']
       params[:nodes].each do |a|
         p_id = a[1]['id']
-        if (p_id.index('_')>0)
+        if (!p_id.index('_').nil?)
           p '>>>>'
           if node[1]['id'] == a[1]['pId']
           else

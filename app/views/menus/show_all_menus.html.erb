@@ -631,11 +631,13 @@
         }
         target_node = {id:target_node.id,name:target_node.name}
         //注释部分:当父结点的子结点为空时,同时删除父结点
-        if (treeNode.getParentNode().level!=0&&treeNode.getParentNode().level!=1&&treeNode.getParentNode().children.length==0){
-            right_treeObj.removeNode(treeNode.getParentNode());
-            right_treeObj.removeNode(treeNode);
-        }else{
-//            alert(treeNode.getParentNode().children.length)
+        var t_node = treeNode
+        while(t_node.getParentNode().level>1){
+            var p_node = t_node.getParentNode()
+            if (t_node.getParentNode().children.length==0){
+                right_treeObj.removeNode(t_node.getParentNode());
+            }
+            t_node = p_node
         }
 //        var nodeIds=new Array();
 //        if (treeNode.isParent){

@@ -23,6 +23,11 @@
 </select>
   科室：<span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" onchange="search_dep()" >
   <option value="">---请选择---</option>
+  <% if !@deps.nil? && !@deps.empty? %>
+      <% @deps.each do |hos| %>
+          <option id='serch_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+      <% end %>
+  <% end %>
 </select></span>
   是否激活:<select id="is_activated" onchange="search_activated()">
       <option value="">全部</option>
@@ -347,8 +352,10 @@ $(function() {
     $("#doctor_hos_id").select2();
     $("#doctor_dep").select2();
     $("#is_activated").select2();
+    <% if !@hos.nil? %>
     $('#s2id_doctor_hos_id').children('.select2-choice').children('.select2-chosen').html('<%=@hos.name%>');
     document.getElementById("serch_hos_<%=@hos.id%>").setAttribute('selected','selected')
+    <% end %>
     $.ajax({
                 type: "get",
                 url: '/doctors/is_permission?menu_name=<%=@menu_name%>&hospital_id=' + $('#doctor_hos_id').val(),
