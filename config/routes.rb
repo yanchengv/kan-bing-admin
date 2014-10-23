@@ -59,6 +59,7 @@ Rails.application.routes.draw do
       put 'update_name', to:'menus#update_name'
       delete 'remove_nodes2', to: 'menus#remove_nodes2'
       post 'drag2', to:'menus#drag2'
+      get 'left_menu',to:'menus#left_menu'
     end
   end
 

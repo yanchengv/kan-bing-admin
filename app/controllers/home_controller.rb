@@ -2,7 +2,8 @@ class HomeController < ApplicationController
   def index
     if signed_in?
       @menus=current_user.admin2_menus
-      p     @header_menus
+      admin_id=current_user.id
+      @left_menus=Menu.new.left_menu admin_id
       #  @menus= [
       # {name: '父节点1',id:'1', children: [
       #     {name: '子节点1',id:2},

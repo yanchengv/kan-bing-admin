@@ -430,6 +430,11 @@ class MenusController < ApplicationController
     render partial: 'menus/form_priority'
   end
 
+  # 左侧导航
+  def left_menu
+    admin_id=params[:admin_id]
+    Menu.new.left_menu admin_id
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_menu
