@@ -137,16 +137,16 @@
         //-->
     </SCRIPT>
     <style type="text/css">
-        .ztree{width:100%;background:#403e3d;padding:0px;}
-        .ztree * {
+        #left_menu .ztree{width:100%;background:#403e3d;padding:0px;}
+        #left_menu .ztree * {
             padding: 0;
             margin: 0;
             font-size: 14px;
             font-family:"Microsof YaHei", Verdana, Arial !important;
         }
-        a{ font-family: Verdana, Arial !important;}
-        .ztree li a{color:#a8a8a8;}
-        .ztree li a.level0 {
+        #left_menu a{ font-family: Verdana, Arial !important;}
+        #left_menu .ztree li a{color:#a8a8a8;}
+        #left_menu .ztree li a.level0 {
             text-decoration:none;
             width:100%;
             height: 39px;
@@ -157,15 +157,15 @@
             padding-left:10px;
             padding-right:10px;
         }
-        .ztree li a.level0.cur {
+        #left_menu .ztree li a.level0.cur {
             background-color: #3a3633;
         }
-        .ztree li a.level0.cur span{
+        #left_menu .ztree li a.level0.cur span{
             color:#ffffff !important;
             font-weight:bold;
 
         }
-        .ztree li a.level0 span {
+        #left_menu .ztree li a.level0 span {
             display: block;
             color: #a8a8a8;
             line-height:39px;
@@ -173,16 +173,16 @@
             word-spacing: 2px;
             font-family:"Microsoft YaHei", Verdana, Arial, Helvetica, AppleGothic, sans-serif;
         }
-        .ztree li a.level0 span.button {
+        #left_menu .ztree li a.level0 span.button {
             float:right;
             margin-left: 10px;
             visibility: visible;
             display:none;
         }
-        .ztree li span.button.switch.level0 {
+        #left_menu .ztree li span.button.switch.level0 {
             float:right;
         }
-        .ztree li a.curSelectedNode {
+        #left_menu .ztree li a.curSelectedNode {
             padding-top: 0px;
             background-color:transparent !important;
             color: #fff !important;
@@ -191,7 +191,7 @@
             opacity: 0.8;
             font-weight:bold;
         }
-        .ztree li span.button {
+        #left_menu .ztree li span.button {
             line-height: 0;
             margin: 0;
             width: 16px;
@@ -206,7 +206,7 @@
             background-attachment: scroll;
             background-image: url("<%=asset_path 'img/zTreeStandard2.png'%>");
         }
-        .ztree li {
+        #left_menu .ztree li {
             padding: 0;
             margin: 0;
             list-style: none;
@@ -215,55 +215,55 @@
             white-space: nowrap;
             outline: 0;
         }
-        .ztree li span.button.center_open {
+        #left_menu .ztree li span.button.center_open {
             background-position: -56px -26px;
         }
-        .ztree li span.button.center_docu {
+        #left_menu .ztree li span.button.center_docu {
             background-position:-56px -26px;
         }
 
-        .ztree li span.button.switch {
+        #left_menu .ztree li span.button.switch {
             width: 18px;
             height: 34px;
         }
-        .ztree li span.button.center_close {
+        #left_menu .ztree li span.button.center_close {
             background-position: -74px -26px;
         }
-        .ztree li span.button.bottom_close {
+        #left_menu .ztree li span.button.bottom_close {
             background-position: -74px -58px;
         }
-        .ztree li span.button.bottom_docu {
+        #left_menu .ztree li span.button.bottom_docu {
             background-position: -56px -58px;
         }
-        .ztree li span.button.bottom_open {
+        #left_menu .ztree li span.button.bottom_open {
             background-position: -92px -58px;
         }
-        .ztree li .level0.button.roots_open {
+        #left_menu .ztree li .level0.button.roots_open {
             background-position: -92px -80px;
         }
-        .ztree li .level0.button.roots_close {
+        #left_menu .ztree li .level0.button.roots_close {
             background-position: -74px -80px;
         }
-        .ztree li .level0.button.center_open {
+        #left_menu .ztree li .level0.button.center_open {
             background-position: -92px -80px;
         }
-        .ztree li .level0.button.center_close {
+        #left_menu .ztree li .level0.button.center_close {
             background-position: -74px -80px;
         }
-        .ztree li .level0.button.bottom_close {
+        #left_menu .ztree li .level0.button.bottom_close {
             background-position: -74px -80px;
         }
-        .ztree li .level0.button.bottom_open {
+        #left_menu .ztree li .level0.button.bottom_open {
             background-position: -92px -80px;
         }
-        .ztree li ul.line {
+        #left_menu .ztree li ul.line {
             background: url(<%=asset_path 'img/line_conn.gif'%>) 0 -9px repeat-y;
         }
 
 
     </style>
     <h1>sds</h1>
-    <div class="zTreeDemoBackground left" style="height:100%;">
+    <div class="zTreeDemoBackground left" style="height:100%;" id="left_menu">
       <ul id="treeDemo" class="ztree"></ul>
     </div>
 <%end%>
