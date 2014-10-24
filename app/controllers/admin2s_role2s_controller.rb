@@ -14,7 +14,7 @@ class Admin2sRole2sController < ApplicationController
         roles = []
         if !admin.role2s.empty?
           admin.role2s.each do |role|
-            @role = {id:'role-'+role.id.to_s,name:role.name,pId:admin.id}
+            @role = {id:'role-'+role.id.to_s,name:role.name,pId:admin.id,children:role.get_zTree}
             roles.push(@role)
           end
         end

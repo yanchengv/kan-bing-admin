@@ -81,7 +81,7 @@
                 prev:false,
                 inner:inner,
                 next:false,
-                isCopy:false,
+                isCopy:true,
                 isMove:false
             }
         },
@@ -97,15 +97,48 @@
             }
         },
         callback: {
-//            beforeDrag: beforeDrag,
-//            beforeDrop: beforeDrop,
+            beforeDrag: beforeDrag2,
+            beforeDrop: beforeDrop2,
             beforeEditName: beforeEditName2,
             beforeRemove: beforeRemove,
-//            beforeRename: beforeRename,
+            beforeRename: beforeRename,
             onRemove:onRemove2,
             onRename:onRename2
         }
     };
+
+    var admin2Setting = {
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: { "Y": "ps", "N": "ps" }
+        },
+        view:{
+            selectedMulti:false
+        },
+        edit: {
+            enable: true,
+            showRemoveBtn: setRemoveBtn3,
+            showRenameBtn: false,
+            drag:{
+                prev:false,
+                inner:inner,
+                next:false,
+                isCopy:false,
+                isMove:false
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            beforeRemove: beforeRemove,
+            onRemove:onRemove3
+        }
+    };
+
     function showRenameBtn(treeId, treeNode){
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
         if ((''+treeNode.id).indexOf("_") > 0 || treeNode.level==0) {
@@ -350,6 +383,9 @@
                 return false;
             }
         }
+        if (treeNodes[0].level==0) {
+            return false
+        }
         var treeObj=$.fn.zTree.getZTreeObj("perTree"),
                 nodes2=treeObj.getCheckedNodes(true);
 //        if (nodes2.length==0){
@@ -444,7 +480,7 @@
                 alert('存在')
                 return false;
             }
-        }else{
+        }else if (treeId == 'perTree'){
             if ((''+(treeNodes[0].id)).indexOf("_")>0) {
                 return false;
             }
@@ -471,6 +507,8 @@
                 alert('存在')
                 return false;
             }
+        }else{
+            return false;
         }
 
     };
@@ -503,6 +541,61 @@
             })
         }
     } ;
+
+    function beforeDrag2(treeId, treeNodes){
+        for (var i=0,l=treeNodes.length; i<l; i++) {
+            if (treeNodes[i].drag === false) {
+                return false;
+            }
+        }
+        if (treeNodes[0].level!=1){
+            return false
+        }
+        return true;
+    }
+
+    function beforeDrop2(treeId, treeNodes, targetNode, moveType) {
+       if (treeId == 'admin2Tree'){
+        var drag_id
+        drag_id=treeNodes[0]['id'] //获取被拖拽的id
+        var treeObj = $.fn.zTree.getZTreeObj(treeId);
+        var target_node = targetNode
+        var target_Node = null
+        while (target_node.getParentNode()!=null){
+            if (target_node.level==1){
+                target_Node = target_node
+            }
+            target_node = target_node.getParentNode()
+        }
+        var nodes = treeObj.getNodesByParam("id", drag_id,target_Node);    //查找用户是否已经存在此菜单节点
+        if (nodes.length==0) {
+            if (true){
+                var treeObj = $.fn.zTree.getZTreeObj(treeId);
+                treeObj.addNodes(target_Node, treeNodes);
+                var nodes2 = treeObj.getNodesByParam("id", drag_id, target_Node);
+                if (nodes2.length > 0) {
+                    $.ajax({
+                        type: 'post',
+                        url: '/admin2s_role2s',
+                        data: {sourceNode: treeNodes[0], targetNode: target_Node},
+                        success: function (data, response) {
+                        },
+                        error: function () {
+
+                        }
+                    })
+                }
+                return false;
+            }
+            return targetNode ? targetNode.drop !== false : true;
+        }else{
+            alert('存在!')
+            return false;
+        }
+       }else{
+           return false;
+       }
+    };
 
     function update_menus(treeId,treeNode){
         var zTree=$.fn.zTree.getZTreeObj(treeId)
@@ -679,8 +772,24 @@
             }
         })
     }
+    function setRemoveBtn3(treeId, treeNode){
+        if (treeNode.level>1){
+            return true;
+        }
+        return false;
+    }
 
+    function onRemove3(event, treeId, treeNode) {
+        var tree_node = {id:treeNode.id,name:treeNode.name}
+        $.ajax({
+            type:'delete',
+            url:'/admin2s_role2s/remove_nodes',
+            data: {sourceNode: tree_node,targetNode:treeNode.getParentNode()},
+            success: function (data, response) {
 
+            }
+        })
+    }
 
 
     //    var perNodes =[
@@ -748,9 +857,11 @@
 
     var perNodes=<%= raw @total_menus.to_json %>
     var roleNodes=<%= raw @all_roles.to_json %>
+    var admin2Nodes=<%= raw @admin2s_role2.to_json %>
     $(document).ready(function(){
         $.fn.zTree.init($("#perTree"), perSetting, perNodes);
         $.fn.zTree.init($("#roleTree"), roleSetting, roleNodes);
+        $.fn.zTree.init($("#admin2Tree"), admin2Setting, admin2Nodes);
     });
     //-->
 </SCRIPT>
@@ -766,6 +877,12 @@
 <div class="right">
   系统角色：
   <ul id="roleTree" class="ztree"></ul>
+</div>
+<div class="pull-left" style="height:360px;line-height:360px;font-size:24px;margin-right:15px;margin-left: 40px;"><span class="glyphicon glyphicon-resize-horizontal"></span></div>
+
+<div class="right" style="margin-left: 25px;">
+  系统管理员：
+  <ul id="admin2Tree" class="ztree"></ul>
 </div>
 
 <div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

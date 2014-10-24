@@ -126,6 +126,24 @@ class MenusController < ApplicationController
     @all_roles = {name:'角色列表',children:@all_roles,open:true}
     p @all_roles.as_json
 
+    @admin2s = Admin2.all
+    @role2s = Role2.all
+    admin_roles = []
+    if !@admin2s.empty?
+      @admin2s.each do |admin|
+        roles = []
+        if !admin.role2s.empty?
+          admin.role2s.each do |role|
+            @role = {id:'role-'+role.id.to_s,name:role.name,pId:admin.id,children:role.get_zTree}
+            roles.push(@role)
+          end
+        end
+        @admin = {id:admin.id,name:admin.name,children:roles}
+        admin_roles.push(@admin)
+      end
+    end
+    @admin2s_role2 = {name:'系统管理员',children:admin_roles,open:true}
+
     render partial: 'menus/show_all_menus'
   end
 
@@ -136,12 +154,8 @@ class MenusController < ApplicationController
     p params[:nodes]
     p_role_id = params[:targetNode]['id']
     role_id = p_role_id[p_role_id.index('-')+1,p_role_id.length]
-    p role_id
     all_nodes = params[:data]
     all_nodes.each do |node|
-      p node[1]['name']
-      p node[1]['id']
-      p node[1]['menu_permission_id']
       params[:nodes].each do |a|
         p_id = a[1]['id']
         if (!p_id.index('_').nil?)
@@ -216,8 +230,6 @@ class MenusController < ApplicationController
         @menu_permission_ids = menu_per_ids
         p @menu_permission_ids
       end
-      p 'dddddddddd'
-      p @menu_permission_ids
       @menu_p = @menu
       role_tree = @role2.get_zTree.as_json
       p role_tree
@@ -238,8 +250,6 @@ class MenusController < ApplicationController
       menus.each do |menu|
         @menu_permission_ids = get_menu_per(menus,menu,menu_id,@menu_permission_ids)
       end
-      p 'cccccccbssre'
-      p @menu_permission_ids
       @role_menu_permissions = Role2sMenuPermission.where(role2_id:role_id,menu_permission_id: @menu_permission_ids)
       if !@role_menu_permissions.empty?
         @role_menu_permissions.each do |role_menu_permission|
@@ -271,8 +281,6 @@ class MenusController < ApplicationController
       if pId_menus.length==1
         menus.each do |menu3|
           if menu3[:id] == pId_menus[0][:pId]
-            p 'dddddoooooooodd'
-            p menu3[:name]
             result.concat(menu3[:menu_permission_id])
             get_menu_per(menus,menu3,pId_menus[0][:pId],result)
           end
