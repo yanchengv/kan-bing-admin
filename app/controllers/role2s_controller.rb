@@ -113,8 +113,8 @@ class Role2sController < ApplicationController
   # DELETE /role2s/1
   # DELETE /role2s/1.json
   def destroy
-    @role2 = Role2.find(params[:id])
-    if @role2.destroy
+    @role2 = Role2.find_by(id:params[:id])
+    if !@role2.nil? && @role2.destroy
       render :json => {success:true}
     else
       render :json => {success:false,error:'删除失败!'}

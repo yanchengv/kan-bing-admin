@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  resources :admin2s_role2s do
+    collection do
+      delete 'remove_nodes', to:'admin2s_role2s#remove_nodes'
+    end
+  end
+
   resources :menu_permissions do
     collection do
       post 'create_by_menu', to:'menu_permissions#create_by_menu'
@@ -66,7 +72,7 @@ Rails.application.routes.draw do
       post 'drag', to:'menus#drag'
       get 'show_index', to:'menus#show_index'
       post 'oper_action', to: 'menus#oper_action'
-      post 'remove_nodes', to: 'menus#remove_nodes'
+      delete 'remove_nodes', to: 'menus#remove_nodes'
       get 'form_name',to:'menus#form_name'
       get 'form_parent_menu', to:'menus#form_parent_menu'
       get 'form_priority',to:'menus#form_priority'

@@ -1,1 +1,0 @@
-json.extract! @objJSON, :total,:rows,:page,:records

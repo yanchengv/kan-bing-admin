@@ -1,0 +1,283 @@
+<style>
+    div.left{float: left;width: 250px !important;}
+    div.right{float: left;width: 200px !important;}
+    ul.ztree {margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width:220px;height:360px;overflow-y:scroll;overflow-x:auto;}
+    ul li span.button.add { margin-left: 2px; margin-right: -1px; background-position: -144px 0; vertical-align: top; *vertical-align: middle; }
+</style>
+<script>
+    var log, className = "dark";
+    var role2Setting = {
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: { "Y": "ps", "N": "ps" }
+        },
+        view:{
+            addHoverDom:addHoverDom,
+            removeHoverDom:removeHoverDom,
+            selectedMulti:false
+        },
+        edit: {
+            enable: true,
+            showRemoveBtn: setRemoveBtn1,
+            showRenameBtn: setRenameBtn1,
+            removeTitle: "删除节点",
+            renameTitle: "编辑节点",
+            drag:{
+                prev:false,
+                inner:false,
+                next:false,
+                isCopy:true,
+                isMove:false
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            /*编辑与删除回调*/
+            beforeEditName: beforeEditName,
+            beforeRemove: beforeRemove,
+            beforeRename: beforeRename,
+            onRename: onRename,
+            onRemove:onRemove1,
+            beforeDrag: beforeDrag,
+            beforeDrop: beforeDrop,
+            beforeRemove:beforeRemove
+        }
+    };
+
+    var admin2Setting = {
+        check: {
+            enable: true,
+            chkStyle: "checkbox",
+            chkboxType: { "Y": "ps", "N": "ps" }
+        },
+        view:{
+            selectedMulti:false
+        },
+        edit: {
+            enable: true,
+            showRemoveBtn: setRemoveBtn,
+            showRenameBtn: false,
+            drag:{
+                prev:false,
+                inner:inner,
+                next:false,
+                isCopy:false,
+                isMove:false
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            beforeRemove: beforeRemove,
+            onRemove:onRemove
+        }
+    };
+
+    function inner(treeId,treeNodes,targetNode){     //目标结点必须是根结点以外的
+        if(targetNode.level>0){
+            return true
+        }else{
+            return false
+        }
+
+    }
+
+    function beforeDrag(treeId, treeNodes){
+        for (var i=0,l=treeNodes.length; i<l; i++) {
+            if (treeNodes[i].drag === false) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function beforeDrop(treeId, treeNodes, targetNode, moveType) {
+        var drag_id
+        drag_id=treeNodes[0]['id'] //获取被拖拽的id
+        var treeObj = $.fn.zTree.getZTreeObj(treeId);
+        var target_node = targetNode
+        var target_Node = null
+        while (target_node.getParentNode()!=null){
+            if (target_node.level==1){
+                target_Node = target_node
+            }
+            target_node = target_node.getParentNode()
+        }
+        var nodes = treeObj.getNodesByParam("id", drag_id,target_Node);    //查找用户是否已经存在此菜单节点
+        if (nodes.length==0) {
+            if (true){
+                var treeObj = $.fn.zTree.getZTreeObj(treeId);
+                treeObj.addNodes(target_Node, treeNodes);
+                var nodes2 = treeObj.getNodesByParam("id", drag_id, target_Node);
+                if (nodes2.length > 0) {
+                    $.ajax({
+                        type: 'post',
+                        url: '/admin2s_role2s',
+                        data: {sourceNode: treeNodes[0], targetNode: target_Node},
+                        success: function (data, response) {
+                        },
+                        error: function () {
+
+                        }
+                    })
+                }
+                return false;
+            }
+            return targetNode ? targetNode.drop !== false : true;
+        }else{
+            alert('存在!')
+            return false;
+        }
+    };
+
+    function addHoverDom(treeId,treeNode){
+        if (treeNode.level == 0) {
+            var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                    + "' title='添加子节点' onfocus='this.blur();'></span>";
+            sObj.after(addStr);
+        }
+        var btn = $("#addBtn_"+treeNode.tId);
+        if (btn) btn.bind("click", function() {
+            var zTree = $.fn.zTree.getZTreeObj(treeId)
+            var d2 = dialog({
+                title:'新建子节点',
+                content:'<%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label :角色名 %><%= f.text_field :name,id:'role2_name',name:'name',class:"form-control"%><%= f.label :英文代称 %><%= f.text_field :code,id:'role2_code',name:'code',class:"form-control"%><%= f.label :说明 %><%= f.text_field :instruction,id:'role2_instruction',name:'instruction',class:"form-control"%></div><% end %>',
+                okValue: '确定',
+                ok: function () {
+                    $.ajax({
+                        type: 'post',
+                        url: '/role2s',
+                        data: {name:$('#role2_name').val(),code:$('#role2_code').val(),instruction:$('#role2_instruction').val()},
+                        success: function (data, response) {
+                            if (data['success']) {
+                                zTree.addNodes(treeNode, data['data']);
+                                d2.close().remove()
+                            }else{
+                                alert(data['error'])
+                            }
+                        },
+                        error: function () {
+                        }
+                    })
+                    return false;
+                },
+                cancelValue: '取消',
+                cancel: function () {}
+            }).show();
+        })
+    }
+
+    function removeHoverDom(treeId,treeNode){
+        $("#addBtn_"+treeNode.tId).unbind().remove();
+    }
+
+    function beforeEditName(treeId, treeNode) {
+        className = (className === "dark" ? "" : "dark");
+        var zTree = $.fn.zTree.getZTreeObj(treeId);
+        zTree.selectNode(treeNode);
+        return confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？");
+    }
+
+    function beforeRename(treeId, treeNode, newName, isCancel) {
+        className = (className === "dark" ? "" : "dark");
+        if (newName.length == 0) {
+            alert("节点名称不能为空.");
+            var zTree = $.fn.zTree.getZTreeObj(treeId);
+            setTimeout(function () { zTree.editName(treeNode) }, 10);
+            return false;
+        }
+        return true;
+    }
+
+    function onRename(e, treeId, treeNode, isCancel) {
+        $.ajax({
+            url: '/role2s/update_name', //url  action是方法的名称
+            data: { id: treeNode.id, name: treeNode.name },
+            type: 'PUT',
+            success: function (data) {
+                alert('"'+data.name+'"保存成功!')
+            }
+        });
+        return false;
+
+    }
+
+    function setRenameBtn1(treeId, treeNode){
+        if (treeNode.level>0){
+            return true;
+        }
+        return false;
+    }
+
+    function setRemoveBtn1(treeId, treeNode){
+        if (treeNode.level>0){
+            return true;
+        }
+        return false;
+    }
+
+    function setRemoveBtn(treeId, treeNode){
+       if (treeNode.level>1){
+           return true;
+       }
+       return false;
+    }
+
+    function beforeRemove(treeId, treeNode){
+        var msg = treeNode.isParent ? "确定删除父节点？":"确定删除此节点？"
+        if (confirm(msg)==true){
+            return true
+        }
+        return false
+    };
+    function onRemove1(event, treeId, treeNode){
+        var id = (treeNode.id).substring((treeNode.id).indexOf("-")+1,(treeNode.id).length)
+        $.ajax({
+            type:'delete',
+            url:'/role2s/'+id,
+            data: {id:treeNode.id},
+            success: function (data, response) {
+
+            }
+        })
+    }
+    function onRemove(event, treeId, treeNode) {
+        var tree_node = {id:treeNode.id,name:treeNode.name}
+        $.ajax({
+            type:'delete',
+            url:'/admin2s_role2s/remove_nodes',
+            data: {sourceNode: tree_node,targetNode:treeNode.getParentNode()},
+            success: function (data, response) {
+
+            }
+        })
+    }
+
+
+    var role2Nodes=<%= raw @role2s.to_json %>
+    var admin2Nodes=<%= raw @admin2s_role2.to_json %>
+            $(document).ready(function(){
+                $.fn.zTree.init($("#role2Tree"), role2Setting, role2Nodes);
+                $.fn.zTree.init($("#admin2Tree"), admin2Setting, admin2Nodes);
+            });
+</script>
+<div class="zTreeDemoBackground left">
+  系统角色：
+  <ul id="role2Tree" class="ztree"></ul>
+</div>
+
+<div class="pull-left" style="height:360px;line-height:360px;font-size:24px;margin-right:15px;"><span class="glyphicon glyphicon-resize-horizontal"></span></div>
+<div class="right">
+  系统管理员：
+  <ul id="admin2Tree" class="ztree"></ul>
+</div>
