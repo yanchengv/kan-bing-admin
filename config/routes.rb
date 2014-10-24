@@ -44,7 +44,7 @@ Rails.application.routes.draw do
   end
   resources :menus do
     collection do
-      get 'show',to:'menus#show_menus'
+      get 'show',to:'menus#role_manage'
       get 'menus_to_user',to:'menus#menus_to_user'
       match 'show_all_menus',to:'menus#show_all_menus', via: [:get, :post]
       get 'permissions_list',to:'menus#permissions_list'
@@ -172,6 +172,7 @@ Rails.application.routes.draw do
       get 'send_phone', to:'doctors#send_phone'
       get 'search_department', to:'doctors#search_department'
       get 'is_permission', to:'doctors#is_permission'
+      get 'show_index', to:'doctors#show_index'
     end
   end
 
@@ -184,6 +185,7 @@ Rails.application.routes.draw do
       get 'send_email', to:'patients#send_email'
       get 'send_phone', to:'patients#send_phone'
       get 'search_department', to:'patients#search_department'
+      get 'show_index', to:'patients#show_index'
     end
   end
 

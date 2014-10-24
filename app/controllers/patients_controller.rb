@@ -101,6 +101,10 @@ class PatientsController < ApplicationController
   # end
 
   def index
+    render partial: 'patients/patient_manage'
+  end
+
+  def show_index
       # @patients = Patient.all
     hos_id = params[:hos_id]
     dep_id = params[:dep_id]
@@ -174,7 +178,7 @@ class PatientsController < ApplicationController
         end
       end
       @objJSON = {total:@total,rows:@rows,page:page,records:records}
-      @objJSON.as_json
+      render :json => @objJSON.as_json
   end
   # GET /patients/1
   # GET /patients/1.json

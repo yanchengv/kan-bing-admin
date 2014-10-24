@@ -6,6 +6,8 @@ class HospitalsController < ApplicationController
   def index
     @provinces = Province.all
     @cities = City.all
+
+    render partial: 'hospitals/hospital_manage'
   end
 
   def show_index

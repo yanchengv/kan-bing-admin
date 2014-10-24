@@ -1,0 +1,173 @@
+<div style="width: 100%">
+  <div style="margin-left: 20px;margin-right: 20px;">
+    <table id="dictionary_type_list"></table>
+    <div id="page_type"></div>
+  </div>
+  <div style="margin-left: 20px;margin-right: 20px;margin-top: 10px;">
+    <table id="dictionary_list"></table>
+    <div id="page_dictionary"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    jQuery("#dictionary_type_list").jqGrid({
+        url: 'dictionary_types/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '名称', '编码',  '描述'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'name', index: 'name', align: "center", editable: true},
+            { name: 'code', index: 'code', align: "center", editable: true},
+            { name: 'description', index: 'description', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}}
+        ],
+        rowList: [10, 20, 30],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        rownumbers: true,
+        page: 1,
+        jsonReader: {
+            root: "dictionary_types",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        onSelectRow: function (rowid) {
+            jQuery("#dictionary_list").jqGrid('setGridParam', {url: "dictionaries/index_show?dictionary_type_id=" + rowid }).trigger("reloadGrid");
+            var id = jQuery("#dictionary_type_list").jqGrid('getGridParam', 'selrow');
+            var grid = $("#dictionary_list");
+            grid.setColProp("dictionary_type_id", { editoptions: { defaultValue: id} });
+            var name = $('#dictionary_type_list').jqGrid('getRowData', rowid).name
+            grid.setColProp("dictionary_type_name", { editoptions: { defaultValue: name} });
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: 'dictionary_types/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_type'),
+        // multiselect: true,
+        rowNum: 20,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "字典类型管理"
+    });
+    jQuery("#dictionary_type_list").jqGrid('navGrid', '#page_type', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+    );
+    //字典管理
+    jQuery("#dictionary_list").jqGrid({
+        url: 'dictionaries/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: ['ID', '名称', '编码', '类型ID', '类型', '描述'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id',hidden:true},
+            { name: 'name', index: 'name', align: "center", editable: true},
+            { name: 'code', index: 'code', align: "center", editable: true},
+            { name: 'dictionary_type_id', index: 'dictionary_type_id',hidden: true, editable: true, editrules: {custom: true, custom_func: check_type, require: true}},
+            { name: 'dictionary_type_name', index: 'dictionary_type_name',editable: true, hidden: true, editrules: {edithidden: true}, editoptions: { readonly: 'readonly'}},
+            { name: 'description', index: 'description', align: "center", editable: true, edittype: 'textarea', editoptions:{rows: 5, style: "width:200px"}}
+        ],
+        rowList: [10, 20, 30],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        rownumbers: true,
+        page: 1,
+        jsonReader: {
+            root: "dictionaries",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del", // 当在delete模式中提交数据时，操作的名称
+            subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+        },
+        editurl: 'dictionaries/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_dictionary'),
+        //   multiselect: true,
+        rowNum:20,
+        altclass: 'altRowsColour',
+        height: 'auto',
+        caption: "字典管理"
+    });
+    jQuery("#dictionary_list").jqGrid('navGrid', '#page_dictionary', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true,
+                beforeShowForm: function () {
+                    var id = jQuery("#dictionary_type_list").jqGrid('getGridParam', 'selrow');
+                    if(!id){
+                        alert('请先选择类型！');
+                    }
+                }
+            }//add
+    );
+    //验证类型是否为空
+    function check_type() {
+        if (arguments[0].length == 0) {
+            return [false, "您没有选择类型！"];
+        } else {
+            return [true, ""];
+        }
+    }
+    //    //搜索医院
+    //    $('#search_hos_btn').click(function () {
+    //        var pro_id = $('#province_search_id').val();
+    //        var city_id = $('#city_search_id').val();
+    //        var hos_name = $('#dictionary_type_name').val();
+    //        jQuery("#dictionary_type_list").jqGrid('setGridParam', {url: "dictionary_types/index_show?province_id=" + pro_id +'&city_id=' + city_id + '&name=' + hos_name }).trigger("reloadGrid")
+    //    });
+    //    //清空搜索医院的查询条件
+    //    $('#clear_hos_btn').click(function () {
+    //        $("#province_search_id").select2("val", "0");
+    //        $('#city_search_id').select2("val", "0");
+    //        $('#dictionary_type_name').val('');
+    //    });
+    //    //搜索科室
+    //    $('#search_dept_btn').click(function () {
+    //        var name = $('#dept_name_search').val();
+    //        var hos_id = jQuery("#dictionary_type_list").jqGrid('getGridParam', 'selrow');
+    //        jQuery("#dictionary_list").jqGrid('setGridParam', {url: "dictionaries/index_show?name=" + name + '&dictionary_type_id=' + hos_id }).trigger("reloadGrid")
+    //    });
+    //    //清空搜索科室
+    //    $('#clear_dept_btn').click(function () {
+    //        $('#dept_name_search').val('');
+    //    });
+</script>

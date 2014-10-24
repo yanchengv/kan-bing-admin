@@ -59,7 +59,7 @@ class MenusController < ApplicationController
     end
   end
 
-  def show_menus
+  def role_manage
     id=params[:id]
     id ? @admin_id=id : @admin_id=false
     menus=[]
@@ -75,7 +75,7 @@ class MenusController < ApplicationController
 
     end
     @menus = Menu.select('id','parent_id as pId','name','table_name','model_class').all
-    render template: 'menus/show'
+    render partial:  'menus/role_manage'
   end
 
   def show_all_menus
@@ -125,7 +125,7 @@ class MenusController < ApplicationController
     @all_roles = {name:'角色列表',children:@all_roles,open:true}
     p @all_roles.as_json
 
-    render template: 'menus/show_all_menus'
+    render partial: 'menus/show_all_menus'
   end
 
   def drag

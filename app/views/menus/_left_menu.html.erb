@@ -3,9 +3,24 @@
     <SCRIPT type="text/javascript">
         <!--
         var curMenu = null, zTree_Menu = null;
+        function leftMeunsOnClick(event, treeId, treeNode) {
+            if (treeNode.uri!=''){
+                $.ajax({
+                    url:treeNode.uri,
+                    type:'get',
+                    success:function (response,data){
+                        $('#rightContent').html(response)
+                    },
+                    error:function(response){
+                        $('#rightContent').html('response')
+                    }
+                })
+            }
+
+
+        };
         var setting = {
             view: {
-
                 showLine: true,
                 showIcon: false,
                 selectedMulti: false,
@@ -17,136 +32,94 @@
                 simpleData: {
                     enable: true
                 }
+            },
+            callback: {
+                onClick: leftMeunsOnClick
             }
-//            callback: {
-//                onNodeCreated: this.onNodeCreated,
-//                beforeClick: this.beforeClick,
-//                onClick: this.onClick
-//            }
+
         };
-
-//        var zNodes =[
-//            { id:1, pId:0, name:"主菜单 1", open:true},
-//            { id:11, pId:1, name:"子菜单 1-1"},
-//            { id:111, pId:11, name:"叶子节点 1-1-1"},
-//            { id:1111, pId:111, name:"叶子节点 1-1-1-1"},
-//            { id:11111, pId:1111, name:"叶子节点 1-1-1-1-1"},
-//            { id:112, pId:11, name:"叶子节点 1-1-2"},
-//            { id:113, pId:11, name:"叶子节点 1-1-3"},
-//            { id:114, pId:11, name:"叶子节点 1-1-4"},
-//            { id:12, pId:1, name:"子菜单 1-2"},
-//            { id:121, pId:12, name:"叶子节点 1-2-1"},
-//            { id:122, pId:12, name:"叶子节点 1-2-2"},
-//            { id:123, pId:12, name:"叶子节点 1-2-3"},
-//            { id:124, pId:12, name:"叶子节点 1-2-4"},
-//            { id:2, pId:0, name:"主菜单 2"},
-//            { id:21, pId:2, name:"子菜单 2-1"},
-//            { id:211, pId:21, name:"叶子节点 2-1-1"},
-//            { id:212, pId:21, name:"叶子节点 2-1-2"},
-//            { id:213, pId:21, name:"叶子节点 2-1-3"},
-//            { id:214, pId:21, name:"叶子节点 2-1-4"},
-//            { id:22, pId:2, name:"子菜单 2-2"},
-//            { id:221, pId:22, name:"叶子节点 2-2-1"},
-//            { id:222, pId:22, name:"叶子节点 2-2-2"},
-//            { id:223, pId:22, name:"叶子节点 2-2-3"},
-//            { id:224, pId:22, name:"叶子节点 2-2-4"},
-//            { id:3, pId:0, name:"主菜单 3"},
-//            { id:31, pId:3, name:"子菜单 3-1"},
-//            { id:311, pId:31, name:"叶子节点 3-1-1"},
-//            { id:312, pId:31, name:"叶子节点 3-1-2"},
-//            { id:313, pId:31, name:"叶子节点 3-1-3"},
-//            { id:314, pId:31, name:"叶子节点 3-1-4"},
-//            { id:32, pId:3, name:"子菜单 3-2"},
-//            { id:321, pId:32, name:"叶子节点 3-2-1"},
-//            { id:322, pId:32, name:"叶子节点 3-2-2"},
-//            { id:323, pId:32, name:"叶子节点 3-2-3"},
-//            { id:324, pId:32, name:"叶子节点 3-2-4"},
-//            { id:4, pId:0, name:"主菜单 3"},
-//            { id:41, pId:4, name:"子菜单 3-1"},
-//            { id:411, pId:41, name:"叶子节点 3-1-1"},
-//            { id:412, pId:41, name:"叶子节点 3-1-2"},
-//            { id:413, pId:41, name:"叶子节点 3-1-3"},
-//            { id:414, pId:41, name:"叶子节点 3-1-4"}
-//        ];
-//        var zNodes=[
-//            {"id":1,"pId":6,"name":"基础信息","uri":"/dictionaries"},
-//            {"id":3,"pId":17,"name":"医生管理","uri":"/doctors"},
-//            {"id":4,"pId":17,"name":"患者管理","uri":"/patients"},
-//            {"id":5,"pId":17,"name":"管理员管理","uri":"/admin2s"},
-//            {"id":6,"pId":null,"name":"字典管理","uri":""},
-//            {"id":7,"pId":6,"name":"医院管理","uri":"/hospitals"},
-//            {"id":13,"pId":null,"name":"权限管理","uri":"/"},
-//            {"id":14,"pId":13,"name":"模块管理","uri":"/menus/show_all_menus"},
-//            {"id":15,"pId":13,"name":"角色管理","uri":"/menus/show"},
-//            {"id":16,"pId":6,"name":"地域信息管理","uri":"/provinces"},
-//            {"id":17,"pId":null,"name":"人员管理","uri":null},
-//            {"id":18,"pId":17,"name":"用户管理","uri":"/users"},
-//            {"id":19,"pId":null,"name":"用户关系","uri":null},
-//            {"id":20,"pId":19,"name":"医友关系","uri":"/doctor_friendships"},
-//            {"id":21,"pId":19,"name":"医患关系","uri":"/treatment_relationships"}
-//                ]
-               var zNodes=<%= raw  @left_menus.to_json %>
-
-//            function beforeClick(treeId, node) {
-//            if (node.isParent) {
-//                if (node.level === 0) {
-//                    var pNode = curMenu;
-//                    while (pNode && pNode.level !==0) {
-//                        pNode = pNode.getParentNode();
-//                    }
-//                    if (pNode !== node) {
-//                        var a = $("#" + pNode.tId + "_a");
-//                        a.removeClass("cur");
-//                        zTree_Menu.expandNode(pNode, false);
-//                    }
-//                    a = $("#" + node.tId + "_a");
-//                    a.addClass("cur");
-//
-//                    var isOpen = false;
-//                    for (var i=0,l=node.children.length; i<l; i++) {
-//                        if(node.children[i].open) {
-//                            isOpen = true;
-//                            break;
-//                        }
-//                    }
-//                    if (isOpen) {
-//                        zTree_Menu.expandNode(node, true);
-//                        curMenu = node;
-//                    } else {
-//                        zTree_Menu.expandNode(node.children[0].isParent?node.children[0]:node, true);
-//                        curMenu = node.children[0];
-//                    }
-//                } else {
-//                    zTree_Menu.expandNode(node);
-//                }
-//            }
-//            return !node.isParent;
-//        }
-//        function onClick(e, treeId, node) {
-//            alert("Do what you want to do!");
-//        }
-
-        $(document).ready(function(){
-            $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-            zTree_Menu = $.fn.zTree.getZTreeObj("treeDemo");
-            curMenu = zTree_Menu.getNodes()[0].children[0].children[0];
-            zTree_Menu.selectNode(curMenu);
-            var a = $("#" + zTree_Menu.getNodes()[0].tId + "_a");
-            a.addClass("cur");
-        });
+        //        var zNodes =[
+        //            { id:1, pId:0, name:"主菜单 1", open:true},
+        //            { id:11, pId:1, name:"子菜单 1-1"},
+        //            { id:111, pId:11, name:"叶子节点 1-1-1"},
+        //            { id:1111, pId:111, name:"叶子节点 1-1-1-1"},
+        //            { id:11111, pId:1111, name:"叶子节点 1-1-1-1-1"},
+        //            { id:112, pId:11, name:"叶子节点 1-1-2"},
+        //            { id:113, pId:11, name:"叶子节点 1-1-3"},
+        //            { id:114, pId:11, name:"叶子节点 1-1-4"},
+        //            { id:12, pId:1, name:"子菜单 1-2"},
+        //            { id:121, pId:12, name:"叶子节点 1-2-1"},
+        //            { id:122, pId:12, name:"叶子节点 1-2-2"},
+        //            { id:123, pId:12, name:"叶子节点 1-2-3"},
+        //            { id:124, pId:12, name:"叶子节点 1-2-4"},
+        //            { id:2, pId:0, name:"主菜单 2"},
+        //            { id:21, pId:2, name:"子菜单 2-1"},
+        //            { id:211, pId:21, name:"叶子节点 2-1-1"},
+        //            { id:212, pId:21, name:"叶子节点 2-1-2"},
+        //            { id:213, pId:21, name:"叶子节点 2-1-3"},
+        //            { id:214, pId:21, name:"叶子节点 2-1-4"},
+        //            { id:22, pId:2, name:"子菜单 2-2"},
+        //            { id:221, pId:22, name:"叶子节点 2-2-1"},
+        //            { id:222, pId:22, name:"叶子节点 2-2-2"},
+        //            { id:223, pId:22, name:"叶子节点 2-2-3"},
+        //            { id:224, pId:22, name:"叶子节点 2-2-4"},
+        //            { id:3, pId:0, name:"主菜单 3"},
+        //            { id:31, pId:3, name:"子菜单 3-1"},
+        //            { id:311, pId:31, name:"叶子节点 3-1-1"},
+        //            { id:312, pId:31, name:"叶子节点 3-1-2"},
+        //            { id:313, pId:31, name:"叶子节点 3-1-3"},
+        //            { id:314, pId:31, name:"叶子节点 3-1-4"},
+        //            { id:32, pId:3, name:"子菜单 3-2"},
+        //            { id:321, pId:32, name:"叶子节点 3-2-1"},
+        //            { id:322, pId:32, name:"叶子节点 3-2-2"},
+        //            { id:323, pId:32, name:"叶子节点 3-2-3"},
+        //            { id:324, pId:32, name:"叶子节点 3-2-4"},
+        //            { id:4, pId:0, name:"主菜单 3"},
+        //            { id:41, pId:4, name:"子菜单 3-1"},
+        //            { id:411, pId:41, name:"叶子节点 3-1-1"},
+        //            { id:412, pId:41, name:"叶子节点 3-1-2"},
+        //            { id:413, pId:41, name:"叶子节点 3-1-3"},
+        //            { id:414, pId:41, name:"叶子节点 3-1-4"}
+        //        ];
+        //        var zNodes=[
+        //            {"id":1,"pId":6,"name":"基础信息","uri":"/dictionaries"},
+        //            {"id":3,"pId":17,"name":"医生管理","uri":"/doctors"},
+        //            {"id":4,"pId":17,"name":"患者管理","uri":"/patients"},
+        //            {"id":5,"pId":17,"name":"管理员管理","uri":"/admin2s"},
+        //            {"id":6,"pId":null,"name":"字典管理","uri":""},
+        //            {"id":7,"pId":6,"name":"医院管理","uri":"/hospitals"},
+        //            {"id":13,"pId":null,"name":"权限管理","uri":"/"},
+        //            {"id":14,"pId":13,"name":"模块管理","uri":"/menus/show_all_menus"},
+        //            {"id":15,"pId":13,"name":"角色管理","uri":"/menus/show"},
+        //            {"id":16,"pId":6,"name":"地域信息管理","uri":"/provinces"},
+        //            {"id":17,"pId":null,"name":"人员管理","uri":null},
+        //            {"id":18,"pId":17,"name":"用户管理","uri":"/users"},
+        //            {"id":19,"pId":null,"name":"用户关系","uri":null},
+        //            {"id":20,"pId":19,"name":"医友关系","uri":"/doctor_friendships"},
+        //            {"id":21,"pId":19,"name":"医患关系","uri":"/treatment_relationships"}
+        //                ]
+        var zNodes=<%= raw  @left_menus.to_json %>
+                $(document).ready(function(){
+                    $.fn.zTree.init($("#leftMenus"), setting, zNodes);
+                    zTree_Menu = $.fn.zTree.getZTreeObj("leftMenus");
+                    curMenu = zTree_Menu.getNodes()[0].children[0].children[0];
+                    zTree_Menu.selectNode(curMenu);
+                    var a = $("#" + zTree_Menu.getNodes()[0].tId + "_a");
+                    a.addClass("cur");
+                });
         //-->
     </SCRIPT>
     <style type="text/css">
-        #left_menu .ztree{width:100%;background:#403e3d;padding:0px;}
-        #left_menu .ztree * {
+        .ztree{width:20%;background:#403e3d;padding:0px;}
+        .ztree * {
             padding: 0;
             margin: 0;
             font-size: 14px;
             font-family:"Microsof YaHei", Verdana, Arial !important;
         }
-        #left_menu a{ font-family: Verdana, Arial !important;}
-        #left_menu .ztree li a{color:#a8a8a8;}
-        #left_menu .ztree li a.level0 {
+        a{ font-family: Verdana, Arial !important;}
+        .ztree li a{color:#a8a8a8;}
+        .ztree li a.level0 {
             text-decoration:none;
             width:100%;
             height: 39px;
@@ -157,15 +130,15 @@
             padding-left:10px;
             padding-right:10px;
         }
-        #left_menu .ztree li a.level0.cur {
+        .ztree li a.level0.cur {
             background-color: #3a3633;
         }
-        #left_menu .ztree li a.level0.cur span{
+        .ztree li a.level0.cur span{
             color:#ffffff !important;
             font-weight:bold;
 
         }
-        #left_menu .ztree li a.level0 span {
+        .ztree li a.level0 span {
             display: block;
             color: #a8a8a8;
             line-height:39px;
@@ -173,16 +146,16 @@
             word-spacing: 2px;
             font-family:"Microsoft YaHei", Verdana, Arial, Helvetica, AppleGothic, sans-serif;
         }
-        #left_menu .ztree li a.level0 span.button {
+        .ztree li a.level0 span.button {
             float:right;
             margin-left: 10px;
             visibility: visible;
             display:none;
         }
-        #left_menu .ztree li span.button.switch.level0 {
+        .ztree li span.button.switch.level0 {
             float:right;
         }
-        #left_menu .ztree li a.curSelectedNode {
+        .ztree li a.curSelectedNode {
             padding-top: 0px;
             background-color:transparent !important;
             color: #fff !important;
@@ -191,7 +164,7 @@
             opacity: 0.8;
             font-weight:bold;
         }
-        #left_menu .ztree li span.button {
+        .ztree li span.button {
             line-height: 0;
             margin: 0;
             width: 16px;
@@ -206,7 +179,7 @@
             background-attachment: scroll;
             background-image: url("<%=asset_path 'img/zTreeStandard2.png'%>");
         }
-        #left_menu .ztree li {
+        .ztree li {
             padding: 0;
             margin: 0;
             list-style: none;
@@ -215,55 +188,58 @@
             white-space: nowrap;
             outline: 0;
         }
-        #left_menu .ztree li span.button.center_open {
+        .ztree li span.button.center_open {
             background-position: -56px -26px;
         }
-        #left_menu .ztree li span.button.center_docu {
+        .ztree li span.button.center_docu {
             background-position:-56px -26px;
         }
 
-        #left_menu .ztree li span.button.switch {
+        .ztree li span.button.switch {
             width: 18px;
             height: 34px;
         }
-        #left_menu .ztree li span.button.center_close {
+        .ztree li span.button.center_close {
             background-position: -74px -26px;
         }
-        #left_menu .ztree li span.button.bottom_close {
+        .ztree li span.button.bottom_close {
             background-position: -74px -58px;
         }
-        #left_menu .ztree li span.button.bottom_docu {
+        .ztree li span.button.bottom_docu {
             background-position: -56px -58px;
         }
-        #left_menu .ztree li span.button.bottom_open {
+        .ztree li span.button.bottom_open {
             background-position: -92px -58px;
         }
-        #left_menu .ztree li .level0.button.roots_open {
+        .ztree li .level0.button.roots_open {
             background-position: -92px -80px;
         }
-        #left_menu .ztree li .level0.button.roots_close {
+        .ztree li .level0.button.roots_close {
             background-position: -74px -80px;
         }
-        #left_menu .ztree li .level0.button.center_open {
+        .ztree li .level0.button.center_open {
             background-position: -92px -80px;
         }
-        #left_menu .ztree li .level0.button.center_close {
+        .ztree li .level0.button.center_close {
             background-position: -74px -80px;
         }
-        #left_menu .ztree li .level0.button.bottom_close {
+        .ztree li .level0.button.bottom_close {
             background-position: -74px -80px;
         }
-        #left_menu .ztree li .level0.button.bottom_open {
+        .ztree li .level0.button.bottom_open {
             background-position: -92px -80px;
         }
-        #left_menu .ztree li ul.line {
+        .ztree li ul.line {
             background: url(<%=asset_path 'img/line_conn.gif'%>) 0 -9px repeat-y;
         }
 
 
     </style>
     <h1>sds</h1>
-    <div class="zTreeDemoBackground left" style="height:100%;" id="left_menu">
-      <ul id="treeDemo" class="ztree"></ul>
+    <div class="zleftMenusBackground left" style="height:100%;float:left;width:20%;">
+      <ul id="leftMenus" class="ztree" style="width:100%"></ul>
+    </div>
+    <div id="rightContent" style="float:right;width:80%">
+      欢迎登录
     </div>
 <%end%>

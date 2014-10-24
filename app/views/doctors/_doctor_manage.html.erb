@@ -13,7 +13,7 @@
   医院：<select  id="doctor_hos_id" name="doctor_hos_id" onchange="search_for_dep()" >
   <!--<option value="">---请选择---</option>-->
   <%# if @hospitals.nil? %>
-      <%# @hospitals = Hospital.all %>
+  <%# @hospitals = Hospital.all %>
   <%# end %>
   <% if !@hospitals.nil? && !@hospitals.empty? %>
       <% @hospitals.each do |hos| %>
@@ -30,10 +30,10 @@
   <% end %>
 </select></span>
   是否激活:<select id="is_activated" onchange="search_activated()">
-      <option value="">全部</option>
-      <option value="1">已经激活</option>
-      <option value="0">未激活</option>
-  </select>
+  <option value="">全部</option>
+  <option value="1">已经激活</option>
+  <option value="0">未激活</option>
+</select>
 </div>
 <div style="margin:10px;" id="permission_buttons">
   <a id="create_doctor" class="btn btn-default btn-sm disabled" role="button">添加医生</a>
@@ -46,7 +46,7 @@
 <div id="pager12"></div>
 
 <script>
-var lastSel = 0
+    var lastSel = 0
     var row_id;
     var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
     jQuery("#list12").jqGrid({
@@ -176,16 +176,16 @@ var lastSel = 0
         caption: "医生列表"
     });
     $( "#create_doctor" ).button().on( "click", function() {
-                $.ajax({
-                    type:'get',
-                    url:'/doctors/new?&menu_id=<%=@menu_id%>',
-                    success:function(data){
-                        $('#create_or_edit_form').html(data)
+        $.ajax({
+            type:'get',
+            url:'/doctors/new?&menu_id=<%=@menu_id%>',
+            success:function(data){
+                $('#create_or_edit_form').html(data)
 
-                    }
-                })
-                $('#create_or_edit_form').modal('show')
-            });
+            }
+        })
+        $('#create_or_edit_form').modal('show')
+    });
     $( "#edit_doctor").button().on( "click", function() {
         if (selectedIds.length==1){
             $.ajax({
@@ -200,7 +200,7 @@ var lastSel = 0
             alert('必须选择一条记录!')
         }
 
-            });
+    });
     $( "#delete_doctor").button().on( "click", function() {
         if(confirm("确定要删除吗？") ) {
             $.ajax({
@@ -221,33 +221,33 @@ var lastSel = 0
 //        $('#refresh_list12').click()
     });
     $( "#send_email_doctor").button().on( "click", function() {
-                $.ajax({
-                    type:'get',
-                    url:'/doctors/send_email?doc_ids='+selectedIds+'&menu_id=<%=@menu_id%>',
-                    success:function(data){
-                        if (data['success']){
-                            alert('发送成功!')
-                        }else {
-                            alert('发送失败!如果是多个,可能部分发送成功!')
-                        }
-                    }
-                })
+        $.ajax({
+            type:'get',
+            url:'/doctors/send_email?doc_ids='+selectedIds+'&menu_id=<%=@menu_id%>',
+            success:function(data){
+                if (data['success']){
+                    alert('发送成功!')
+                }else {
+                    alert('发送失败!如果是多个,可能部分发送成功!')
+                }
+            }
+        })
         var url= "/doctors/show_index?menu_id=<%=@menu_id%>"
         jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     });
     $( "#send_phone_doctor").button().on( "click", function() {
-                $.ajax({
-                    type:'get',
-                    url:'/doctors/send_phone?doc_ids='+selectedIds+'&menu_name=<%=@menu_name%>',
-                    success:function(data){
-                        if (data['success']){
-                            alert('发送成功!')
-                        }else {
-                            alert('发送失败!如果是多个,可能部分发送成功!')
-                        }
+        $.ajax({
+            type:'get',
+            url:'/doctors/send_phone?doc_ids='+selectedIds+'&menu_name=<%=@menu_name%>',
+            success:function(data){
+                if (data['success']){
+                    alert('发送成功!')
+                }else {
+                    alert('发送失败!如果是多个,可能部分发送成功!')
+                }
 
-                    }
-                })
+            }
+        })
         var url= "/doctors/show_index?menu_name=<%=@menu_name%>"
         jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     });
@@ -258,7 +258,7 @@ var lastSel = 0
             type: 'get',
             url: '/doctors/search_department?hos_id='+hos_id,
             success: function (data) {
-               $('#search_dep_id').html(data)
+                $('#search_dep_id').html(data)
             }
         })
         $.ajax({
@@ -348,55 +348,55 @@ var lastSel = 0
     function search_activated(){
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_name=<%=@menu_name%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
-$(function() {
-    $("#doctor_hos_id").select2();
-    $("#doctor_dep").select2();
-    $("#is_activated").select2();
-    <% if !@hos.nil? %>
-    $('#s2id_doctor_hos_id').children('.select2-choice').children('.select2-chosen').html('<%=@hos.name%>');
-    document.getElementById("serch_hos_<%=@hos.id%>").setAttribute('selected','selected')
-    <% end %>
-    $.ajax({
-                type: "get",
-                url: '/doctors/is_permission?menu_name=<%=@menu_name%>&hospital_id=' + $('#doctor_hos_id').val(),
-                data: 'text',
-                success: function (data) {
-                    if (data['add']){
-                        $('#create_doctor').removeClass('disabled')
-                        $('#create_doctor').addClass('active')
-                    }else{
-                        $('#create_doctor').removeClass('active')
-                        $('#create_doctor').addClass('disabled')
-                    }
-                    if (data['delete']){
-                        $('#delete_doctor').removeClass('disabled')
-                        $('#delete_doctor').addClass('active')
-                    }else{
-                        $('#delete_doctor').removeClass('active')
-                        $('#delete_doctor').addClass('disabled')
-                    }
-                    if (data['update']){
-                        $('#edit_doctor').removeClass('disabled')
-                        $('#edit_doctor').addClass('active')
-                    }else{
-                        $('#edit_doctor').removeClass('active')
-                        $('#edit_doctor').addClass('disabled')
-                    }
-                    if (data['show']){
-                        $('#send_email_doctor').removeClass('disabled')
-                        $('#send_email_doctor').addClass('active')
-                        $('#send_phone_doctor').removeClass('disabled')
-                        $('#send_phone_doctor').addClass('active')
-                    }else{
-                        $('#send_email_doctor').removeClass('active')
-                        $('#send_email_doctor').addClass('disabled')
-                        $('#send_phone_doctor').removeClass('active')
-                        $('#send_phone_doctor').addClass('disabled')
+    $(function() {
+        $("#doctor_hos_id").select2();
+        $("#doctor_dep").select2();
+        $("#is_activated").select2();
+        <% if !@hos.nil? %>
+        $('#s2id_doctor_hos_id').children('.select2-choice').children('.select2-chosen').html('<%=@hos.name%>');
+        document.getElementById("serch_hos_<%=@hos.id%>").setAttribute('selected','selected')
+        <% end %>
+        $.ajax({
+                    type: "get",
+                    url: '/doctors/is_permission?menu_name=<%=@menu_name%>&hospital_id=' + $('#doctor_hos_id').val(),
+                    data: 'text',
+                    success: function (data) {
+                        if (data['add']){
+                            $('#create_doctor').removeClass('disabled')
+                            $('#create_doctor').addClass('active')
+                        }else{
+                            $('#create_doctor').removeClass('active')
+                            $('#create_doctor').addClass('disabled')
+                        }
+                        if (data['delete']){
+                            $('#delete_doctor').removeClass('disabled')
+                            $('#delete_doctor').addClass('active')
+                        }else{
+                            $('#delete_doctor').removeClass('active')
+                            $('#delete_doctor').addClass('disabled')
+                        }
+                        if (data['update']){
+                            $('#edit_doctor').removeClass('disabled')
+                            $('#edit_doctor').addClass('active')
+                        }else{
+                            $('#edit_doctor').removeClass('active')
+                            $('#edit_doctor').addClass('disabled')
+                        }
+                        if (data['show']){
+                            $('#send_email_doctor').removeClass('disabled')
+                            $('#send_email_doctor').addClass('active')
+                            $('#send_phone_doctor').removeClass('disabled')
+                            $('#send_phone_doctor').addClass('active')
+                        }else{
+                            $('#send_email_doctor').removeClass('active')
+                            $('#send_email_doctor').addClass('disabled')
+                            $('#send_phone_doctor').removeClass('active')
+                            $('#send_phone_doctor').addClass('disabled')
+                        }
                     }
                 }
-            }
-    );
-})
+        );
+    })
 </script>
 <div id="dialog-form" title="Create or edit user">
   <%#= render 'form' %>

@@ -1,0 +1,35 @@
+<br/>
+<h1>Listing Counties</h1>
+<div style="margin:10px;">
+  <a id="create_doctor" class="btn btn-primary btn-sm active" role="button">添加县</a>
+  <a id="edit_doctor" href="" class="btn btn-default btn-sm disabled" role="button">编辑县</a>
+  <a id="delete_doctor" href="" class="btn btn-default btn-sm disabled" role="button">删除县</a>
+  <a id="send_email_doctor" href="" class="btn btn-default btn-sm disabled" role="button">发送邮箱激活码</a>
+  <a id="send_phone_doctor" href="" class="btn btn-default btn-sm disabled" role="button">发送手机激活码</a>
+</div>
+<table id="list12"></table>
+<div id="pager12"></div>
+
+<script>
+    jQuery("#list12").jqGrid({
+        url:'/counties',
+        datatype: "json",
+        colNames:['ID','县','市ID','省ID'],
+        colModel:[
+            {name:'ID',index:'id', width:240},
+            {name:'name',index:'name', width:255},
+            {name:'city_id',index:'city_id', width:300},
+            {name:'province_id',index:'province_id', width:300}
+        ],
+        pager: jQuery('#pager12'),
+        rowNum:10,
+        rowList:[10,20,30],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        caption:"省市列表"
+    });
+</script>
+<div id="dialog-form" title="Create or edit user">
+  <%#= render 'form' %>
+</div>

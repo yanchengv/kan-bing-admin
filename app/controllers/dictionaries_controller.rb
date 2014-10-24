@@ -4,6 +4,7 @@ class DictionariesController < ApplicationController
   # GET /dictionaries
   # GET /dictionaries.json
   def index
+    render partial: 'dictionaries/basic_dictionary'
   end
 
   def show_index

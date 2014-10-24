@@ -1,0 +1,138 @@
+<div style="width: 100%">
+  <div style="margin-left: 20px;margin-right: 20px;">
+    <div style="margin-bottom: 10px;">医生名：<input type="text" id="doc_name">
+      <a id="search_ships_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_ships_btn" class="btn btn-default btn-sm" role="button">清空</a>
+    </div>
+
+    <table id="list_doctors_ships"></table>
+    <div id="page_docs"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    //搜索
+    $('#search_ships_btn').click(function () {
+        var name = $('#doc_name').val();
+        jQuery("#list_doctors_ships").jqGrid('setGridParam', {url: "doctor_friendships/index_show?name=" + name}).trigger("reloadGrid")
+    });
+    //清空
+    $('#clear_ships_btn').click(function () {
+        $('#doc_name').val('');
+    });
+    jQuery("#list_doctors_ships").jqGrid({
+        url: 'doctor_friendships/index_show',
+        datatype: "json",
+        autowidth:true,
+        height: 'auto',
+        colNames: ['ID', '医生1ID', '医生1', '医生2ID', '医生2'],
+        colModel: [
+            {name: 'id', index: 'id', editable: true, hidden: true, align: "center"},
+            {name: 'doctor1_id', index: 'doctor1_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).select2();
+                    },
+                    style: "width:166px",
+                    value: function () {
+                        var positions;
+                        $.ajax({
+                            url: "doctor_friendships/get_doctors",
+                            async: false,
+                            success: function (data) {
+                                positions = data.doctors;
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert(textStatus);
+                            }
+                        });
+                        return positions;
+                    }}},
+            {name: 'doctor1_name', index: 'doctor1_name', align: "center", jsonmap: 'doctor1.name'},
+            {name: 'doctor2_id', index: 'doctor2_id', editable: true, hidden: true, jsonmap: 'doctor2.id', editrules: {edithidden: true}, align: "center", edittype: 'select',
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).select2();
+                    },
+                    style: "width:166px",
+                    value: function () {
+                        var positions;
+                        $.ajax({
+                            url: "doctor_friendships/get_doctors",
+                            async: false,
+                            success: function (data) {
+                                positions = data.doctors;
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert(textStatus);
+                            }
+                        });
+                        return positions;
+                    }}
+            },
+            {name: 'doctor2_name', index: 'doctor2_name', jsonmap: 'doctor2.name', align: "center" }
+        ],
+        rowNum: 20,
+        rowList: [8, 10, 20, 30],
+        rownumbers: true,
+        page: 1,
+        pager: '#page_docs',
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        multiselect: true,
+        caption: "医友关系管理",
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del", // 当在delete模式中提交数据时，操作的名称
+            subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+        },
+        editurl: 'doctor_friendships/oper_action',
+        jsonReader: {
+            root: "doctor_friendships",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        }
+    });
+    jQuery("#list_doctors_ships").jqGrid('navGrid', '#page_docs', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+    ).navButtonAdd('#page_docs', { title: '批量删除', caption: '批量删除', onClickButton: function () {
+                batch_delete()
+            }, position: "last"});
+    //批量删除
+    function batch_delete() {
+        var ids = $('#list_doctors_ships').jqGrid('getGridParam', 'selarrrow');
+        if (ids.length == 0) {
+            alert('请选择删除项！');
+        } else {
+            $.ajax({
+                        type: 'post',
+                        url: '/doctor_friendships/batch_delete',
+                        data: {ids: ids},
+                        success: function (data) {
+                            if (data.success == true) {
+                                jQuery("#list_doctors_ships").jqGrid('setGridParam', {url: "doctor_friendships/index_show"}).trigger("reloadGrid");
+                            } else {
+                                alert('操作失败！');
+                            }
+                        }
+                    }
+            );
+        }
+    }
+</script>

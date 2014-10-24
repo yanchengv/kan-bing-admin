@@ -402,7 +402,7 @@
             success:function(data){
                 if (data['success']){
                     $('#create_or_edit_form').modal('hide')
-                    var url= "/doctors?menu_id=<%=@menu_id%>"
+                    var url= "/doctors/show_index?menu_id=<%=@menu_id%>"
                     jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }else{
                     alert('失败!')
@@ -419,7 +419,7 @@
                 alert(data['success'])
                 if (data['success']){
                     $('#create_or_edit_form').modal('hide')
-                    var url= "/doctors?menu_id=<%=@menu_id%>"
+                    var url= "/doctors/show_index?menu_id=<%=@menu_id%>"
                     jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }else{
                     alert('失败!')
