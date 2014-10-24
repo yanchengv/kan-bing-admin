@@ -19,6 +19,21 @@ Rails.application.routes.draw do
       get 'get_ranks', to:'hospitals#hospital_rank'
     end
   end
+  resources :edu_videos do
+    collection do
+      get 'index_show', to: 'edu_videos#show_index'
+      post 'oper_action', to: 'edu_videos#oper_action'
+      post 'upload_image', to: 'edu_videos#upload_image'
+      get 'get_doctors', to: 'edu_videos#get_doctors'
+      get 'get_video_types', to:'edu_videos#get_video_types'
+    end
+  end
+  resources :video_types do
+    collection do
+      get 'index_show', to: 'video_types#show_index'
+      post 'oper_action', to: 'video_types#oper_action'
+    end
+  end
   resources :apk_versions do
     collection do
       get 'index_show', to: 'apk_versions#show_index'

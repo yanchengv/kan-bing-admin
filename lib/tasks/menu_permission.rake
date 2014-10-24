@@ -152,6 +152,23 @@ def meun_data
       model_class: 'NationalInformation',
       uri: '/national_informations'
   )
+  @menu27=Menu.create(
+      name: '视频管理'
+  )
+  @menu28=Menu.create(
+      name: '视频类型管理',
+      parent_id: @menu27.id,
+      table_name: 'video_types',
+      model_class: 'VideoType',
+      uri: '/video_types'
+  )
+  @menu29=Menu.create(
+      name: '教育视频管理',
+      parent_id: @menu27.id,
+      table_name: 'edu_videos',
+      model_class: 'EduVideo',
+      uri: '/edu_videos'
+  )
   Admin2Menu.delete_all
   @menu_admin_1=Admin2Menu.create(
       admin2_id: @admin1.id,
@@ -209,6 +226,18 @@ def meun_data
   @menu_admin_14=Admin2Menu.create(
       admin2_id: @admin1.id,
       menu_id: @menu16.id
+  )
+  @menu_admin_15=Admin2Menu.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu27.id
+  )
+  @menu_admin_16=Admin2Menu.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu28.id
+  )
+  @menu_admin_17=Admin2Menu.create(
+      admin2_id: @admin1.id,
+      menu_id: @menu29.id
   )
   MenuPermission.delete_all
   @menu_permission1 = MenuPermission.create(
