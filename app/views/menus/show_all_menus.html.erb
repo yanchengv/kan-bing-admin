@@ -48,7 +48,7 @@
             /*编辑与删除回调*/
             beforeEditName: beforeEditName,
             beforeRemove: beforeRemove,
-            beforeRename: beforeRename,
+//            beforeRename: beforeRename,
             onRemove: onRemove,
             onRename: onRename,
             onClick:onClick,
@@ -99,7 +99,7 @@
         callback: {
 //            beforeDrag: beforeDrag,
 //            beforeDrop: beforeDrop,
-            beforeEditName: beforeEditName,
+            beforeEditName: beforeEditName2,
             beforeRemove: beforeRemove,
 //            beforeRename: beforeRename,
             onRemove:onRemove2,
@@ -414,10 +414,10 @@
                         }
                     }
                     if (flag){
-                        alert('a')
+//                        alert('a')
                         right_treeObj.addNodes(target_Node, tree_nodes);
                     }else{
-                        alert('b')
+//                        alert('b')
                         var first_nodes = right_treeObj.getNodesByParam("id", tree_nodes[0].pId, target_Node);
                         right_treeObj.addNodes(first_nodes[0], tree_nodes);
                     }
@@ -552,13 +552,35 @@
     }
 
     function beforeEditName(treeId, treeNode) {
-//        className = (className === "dark" ? "" : "dark");
-//        var zTree = $.fn.zTree.getZTreeObj(treeId);
-//        zTree.selectNode(treeNode);
-//        return confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？");
-        update_menus(treeId,treeNode)
-        beforeRename(treeId, treeNode,$('#edit_menus_name').val() , false)
-        return false
+        if (treeNode.isParent) {
+            var flag = true
+            for (var obj in treeNode.children) {
+                if ((''+treeNode.children[obj].id).indexOf("_") > 0){
+                    flag = false
+                }
+            }
+            if (flag){
+                className = (className === "dark" ? "" : "dark");
+                var zTree = $.fn.zTree.getZTreeObj(treeId);
+                zTree.selectNode(treeNode);
+                return confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？");
+            }else{
+                update_menus(treeId,treeNode)
+                beforeRename(treeId, treeNode,$('#edit_menus_name').val() , false)
+                return false
+            }
+        } else{
+            update_menus(treeId,treeNode)
+            beforeRename(treeId, treeNode,$('#edit_menus_name').val() , false)
+            return false
+        }
+    }
+
+    function beforeEditName2(treeId, treeNode) {
+        className = (className === "dark" ? "" : "dark");
+        var zTree = $.fn.zTree.getZTreeObj(treeId);
+        zTree.selectNode(treeNode);
+        return confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？");
     }
 
     function beforeRename(treeId, treeNode, newName, isCancel) {
@@ -601,7 +623,11 @@
 
     //    删除之前的确定操作
     function beforeRemove(treeId, treeNode){
-        alert(treeNode.isParent ? "确定删除父节点？":"确定删除此节点？")
+        var msg = treeNode.isParent ? "确定删除父节点？":"确定删除此节点？"
+        if (confirm(msg)==true){
+            return true
+        }
+        return false
     };
     function onRemove(event, treeId, treeNode) {
 //        alert(treeNode)
@@ -619,7 +645,7 @@
     }
     function onRemove2(event, treeId, treeNode){
         var right_treeObj = $.fn.zTree.getZTreeObj("roleTree");
-        var parent_menu,target_node,tree_node = treeNode
+        var parent_menu=null,target_node,tree_node = treeNode
         while (tree_node!=null){
             if (tree_node.level==1){
                 target_node = tree_node
@@ -639,36 +665,13 @@
             }
             t_node = p_node
         }
-//        var nodeIds=new Array();
-//        if (treeNode.isParent){
-//            var right_treeObj = $.fn.zTree.getZTreeObj("roleTree");
-//            var childNodes = right_treeObj.removeChildNodes(treeNode);
-//            var all_childNodes = []
-//            var all_childNodes  = getChildren(all_childNodes,treeNode)
-////            var menu_permission_ids = treeNode.menu_permission_id
-////            for (var j = 0; j < menu_permission_ids.length; j++){
-////                nodeIds.push(menu_permission_ids[j]);
-////            }
-////            nodeIds.push(treeNode.menu_permission_id.join(","))
-//            for(var i = 0; i < all_childNodes.length; i++){
-//                alert(all_childNodes[i].name)
-//                var menu_permission_ids = all_childNodes[i].menu_permission_id;
-//                for (var j = 0; j < menu_permission_ids.length; j++){
-//                    nodeIds.push(menu_permission_ids[j]);
-//                }
-//
-//            }
-//        }else{
-//            var menu_permission_ids = treeNode.menu_permission_id
-//            for (var j = 0; j < menu_permission_ids.length; j++){
-//                nodeIds.push(menu_permission_ids[j]);
-//            }
-////            nodeIds.push(treeNode.menu_permission_id)
-//        };
         var tree_node = {id:treeNode.id,name:treeNode.name,pId:treeNode.pId,menu_permission_id:treeNode.menu_permission_id}
-        parent_menu = {id:parent_menu.id,name:parent_menu.name}
+        if (parent_menu!=null){
+            parent_menu = {id:parent_menu.id,name:parent_menu.name}
+        }
+
         $.ajax({
-            type:'post',
+            type:'delete',
             url:'/menus/remove_nodes',
             data: {data: tree_node,targetNode:target_node,parent_menu:parent_menu},
             success: function (data, response) {

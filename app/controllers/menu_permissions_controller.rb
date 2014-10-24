@@ -1,4 +1,5 @@
 class MenuPermissionsController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_menu_permission, only: [:show, :edit, :update, :destroy]
 
   # GET /menu_permissions

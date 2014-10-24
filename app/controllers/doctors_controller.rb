@@ -778,7 +778,7 @@ class DoctorsController < ApplicationController
       @menu_permissions.each do |menu_permission|
         @menu = Menu.where(name:'人员管理').first
         @menu1 = menu_permission.menu
-        if @menu1.name=='医生管理' && @menu1.parent_id == @menu.id
+        if !@menu.nil? && @menu1.name=='医生管理' && @menu1.parent_id == @menu.id
           if menu_permission.priority_id == 1
             add_flag = true
           end
