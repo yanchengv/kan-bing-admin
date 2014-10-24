@@ -10,6 +10,7 @@ class EduVideosController < ApplicationController
   # GET /edu_videos
   # GET /edu_videos.json
   def index
+    render partial: 'edu_videos/edu_video_manage'
   end
 
   def show_index

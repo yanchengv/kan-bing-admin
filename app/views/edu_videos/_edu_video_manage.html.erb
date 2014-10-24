@@ -1,0 +1,130 @@
+<div style="width: 100%">
+  <div style="margin-left: 20px;margin-right: 20px;">
+    <div style="margin-bottom: 10px;">视频类型：<select id="video_search_id" style="width: 139px;">
+      <option value="0">---全部---</option>
+    </select>&nbsp;&nbsp;视频名称：<input type="text" id="video_name">&nbsp;&nbsp;<a id="search_video_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_type_btn" class="btn btn-default btn-sm" role="button">清空</a>
+    </div>
+    <table id="edu_video_list"></table>
+    <div id="page_video"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+    jQuery("#edu_video_list").jqGrid({
+        url: 'edu_videos/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '视频名称', '概要', '缩略图地址', '缩略图', '视频地址', '视频', '医生ID', '医生', '时间', '类型ID', '视频类型'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'name', index: 'name', align: "center", editable: true},
+            { name: 'content', index: 'content', align: "center", editable: true},
+            { name: 'image_url', index: 'image_url', align: "center", editable: true},
+            { name: 'video_url', index: 'video_url', align: "center", editable: true},
+            { name: 'doctor_id', index: 'doctor_id', align: "center", editable: true, jsonmap: 'doctor.id', hidden: true, editrules: {edithidden: true}, edittype: 'select',
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).select2();
+                    },
+                    style: "width:166px",
+                    value: function () {
+                        var positions;
+                        $.ajax({
+                            url: "edu_videos/get_doctors",
+                            async: false,
+                            success: function (data) {
+                                positions = data.doctors;
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert(textStatus);
+                            }
+                        });
+                        return positions;
+                    }
+                }},
+            { name: 'doctor_name', index: 'doctor_name', align: "center", editable: false, jsonmap: 'doctor.name'},
+            { name: 'video_time', index: 'video_time', align: "center", editable: true},
+            { name: 'video_type_id', index: 'video_type_id', align: "center", editable: true, jsonmap: 'city.id', hidden: true, editrules: {edithidden: true}, edittype: 'select',
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).select2();
+                    },
+                    style: "width:166px",
+                    value: function () {
+                        var positions;
+                        $.ajax({
+                            url: "edu_videos/get_video_types",
+                            async: false,
+                            success: function (data) {
+                                positions = data.video_types;
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert(textStatus);
+                            }
+                        });
+                        return positions;
+                    }
+                }},
+            { name: 'video_type', index: 'video_type', align: "center", editable: false, jsonmap: 'video_type.type_name'}
+
+        ],
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        rownumbers: true,
+        page:1,
+        jsonReader: {
+            root: "edu_videos",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: 'edu_videos/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_video'),
+       // multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "教育视频管理"
+    });
+    jQuery("#edu_video_list").jqGrid('navGrid', '#page_video', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+             );
+//    //搜索医院
+//    $('#search_hos_btn').click(function () {
+//        var pro_id = $('#province_search_id').val();
+//        var city_id = $('#city_search_id').val();
+//        var hos_name = $('#edu_video_name').val();
+//        jQuery("#edu_video_list").jqGrid('setGridParam', {url: "edu_videos/index_show?province_id=" + pro_id +'&city_id=' + city_id + '&name=' + hos_name }).trigger("reloadGrid")
+//    });
+//    //清空搜索医院的查询条件
+//    $('#clear_hos_btn').click(function () {
+//        $("#province_search_id").select2("val", "0");
+//        $('#city_search_id').select2("val", "0");
+//        $('#edu_video_name').val('');
+//    });
+</script>
