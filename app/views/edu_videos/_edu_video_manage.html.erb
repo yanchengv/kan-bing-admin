@@ -2,7 +2,11 @@
   <div style="margin-left: 20px;margin-right: 20px;">
     <div style="margin-bottom: 10px;">视频类型：<select id="video_search_id" style="width: 139px;">
       <option value="0">---全部---</option>
-    </select>&nbsp;&nbsp;视频名称：<input type="text" id="video_name">&nbsp;&nbsp;<a id="search_video_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_type_btn" class="btn btn-default btn-sm" role="button">清空</a>
+      <% @video_types.each do |type|%>
+          <option value="<%= type.id%>"><%= type.type_name %></option>
+      <% end %>
+    </select>&nbsp;&nbsp;视频名称：<input type="text" id="video_name">&nbsp;&nbsp;<a id="search_video_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;
+      <a id="clear_type_btn" class="btn btn-default btn-sm" role="button">清空</a>
     </div>
     <table id="edu_video_list"></table>
     <div id="page_video"></div>
@@ -10,7 +14,9 @@
 </div>
 
 <script type="text/javascript">
-
+    $(function () {
+        $("#video_search_id").select2();
+    });
     jQuery("#edu_video_list").jqGrid({
         url: 'edu_videos/index_show',
         datatype: "json",
@@ -114,17 +120,15 @@
                 closeAfterAdd: true
             }//add
              );
-//    //搜索医院
-//    $('#search_hos_btn').click(function () {
-//        var pro_id = $('#province_search_id').val();
-//        var city_id = $('#city_search_id').val();
-//        var hos_name = $('#edu_video_name').val();
-//        jQuery("#edu_video_list").jqGrid('setGridParam', {url: "edu_videos/index_show?province_id=" + pro_id +'&city_id=' + city_id + '&name=' + hos_name }).trigger("reloadGrid")
-//    });
-//    //清空搜索医院的查询条件
-//    $('#clear_hos_btn').click(function () {
-//        $("#province_search_id").select2("val", "0");
-//        $('#city_search_id').select2("val", "0");
-//        $('#edu_video_name').val('');
-//    });
+    //搜索视频
+    $('#search_video_btn').click(function () {
+        var video_search_id = $('#video_search_id').val();
+        var video_name = $('#video_name').val();
+        jQuery("#edu_video_list").jqGrid('setGridParam', {url: "edu_videos/index_show?type=" + video_search_id +'&name=' + video_name }).trigger("reloadGrid")
+    });
+    //清空搜索医院的查询条件
+    $('#video_search_id').click(function () {
+        $("#province_search_id").select2("val", "0");
+        $('#video_name').val('');
+    });
 </script>

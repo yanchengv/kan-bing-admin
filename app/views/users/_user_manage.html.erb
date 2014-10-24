@@ -1,5 +1,5 @@
 <div style="width: 100%">
-  <div style="width: 18%;float:left;margin-left: 20px;">
+  <div style="margin-left: 20px;">
     <div id="btn" style="margin:10px;">
       <a title="doctor" class="btn btn-primary" role="button" href="javascript:click_btn('doctor')">医生</a>
       <a title="patient" class="btn btn-default" role="button" href="javascript:click_btn('patient')">患者</a>
@@ -13,7 +13,7 @@
       <div id="pat_page"></div>
     </div>
   </div>
-  <div style="width: 78%;float:left;margin-left: 20px;">
+  <div style="margin-left: 20px;">
     <div style="margin:10px;">
       用户：<input type="text" id="search_name"> 邮箱：<input type="text" id="search_email">
       手机：<input type="text" id="search_tel"> 身份证：<input type="text" id="search_IDs">
@@ -264,7 +264,7 @@
                 { name: 'email', index: 'email', align: "center", hidden: true},
                 { name: 'credential_type_number', index: 'credential_type_number', align: "center", hidden: true}
             ],
-            rowList: [10, 20, 30],
+            rowList: [10, 15, 20],
             sortname: 'id',
             viewrecords: true,
             sortorder: "desc",
@@ -288,7 +288,7 @@
             },
             closeAfterAdd: true,
             pager: jQuery('#doc_page'),
-            rowNum: 20,
+            rowNum: 10,
             altclass: 'altRowsColour',
             height: 'auto',
             caption: "非用户医生",
@@ -308,7 +308,7 @@
                 grid.setColProp("mobile_phone", { editoptions: { defaultValue: tel} });
                 grid.setColProp("verification_code", { editoptions: { defaultValue: ids} });
             }
-        })
+        });
     //患者
         jQuery("#pat_list").jqGrid({
             url: 'users/get_patients',
@@ -322,7 +322,7 @@
                 { name: 'email', index: 'email', align: "center", hidden: true},
                 { name: 'credential_type_number', index: 'credential_type_number', align: "center", hidden: true}
             ],
-            rowList: [10, 20, 30],
+            rowList: [10, 15, 20],
             sortname: 'id',
             viewrecords: true,
             sortorder: "desc",
@@ -346,7 +346,7 @@
             },
             closeAfterAdd: true,
             pager: jQuery('#pat_page'),
-            rowNum: 20,
+            rowNum: 10,
             altclass: 'altRowsColour',
             height: 'auto',
             caption: "非用户患者",

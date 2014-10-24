@@ -10,14 +10,19 @@ class EduVideosController < ApplicationController
   # GET /edu_videos
   # GET /edu_videos.json
   def index
+    @video_types = VideoType.all
+
     render partial: 'edu_videos/edu_video_manage'
   end
 
   def show_index
     sql = 'true'
-    #if !params[:name].nil? && params[:name] != '' && params[:name] != 'null'
-    #  sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%' or short_name like '%#{params[:name]}%')"
-    #end
+    if !params[:type].nil? && params[:type] != '0' && params[:type] != 'null'
+      sql << " and video_type_id = #{params[:type]}"
+    end
+    if !params[:name].nil? && params[:name] != '' && params[:name] != 'null'
+      sql << " and name like '%#{params[:name]}%'"
+    end
     @edu_videos = EduVideo.where(sql)
     count = @edu_videos.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
