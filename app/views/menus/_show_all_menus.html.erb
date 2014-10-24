@@ -14,7 +14,7 @@
 <SCRIPT type="text/javascript">
     <!--
     var log, className = "dark";
-    var setting = {
+    var perSetting = {
         check: {
             enable: true,
                 chkStyle: "checkbox",
@@ -422,12 +422,12 @@
                         right_treeObj.addNodes(first_nodes[0], tree_nodes);
                     }
 
-                    var nodes3=right_treeObj.getNodesByParam("id", treeNodes[0].id, targetNode);
+                    var nodes3=right_treeObj.getNodesByParam("id", treeNodes[0].id, target_Node);
                     if (nodes3.length > 0) {
                         $.ajax({
                             type: 'post',
                             url: '/menus/drag',
-                            data: {data: param_nodes, targetNode: targetNode, nodes: treeNodes},
+                            data: {data: param_nodes, targetNode: target_Node, nodes: treeNodes},
                             success: function (data, response) {
                             },
                             error: function () {
@@ -619,20 +619,25 @@
     }
     function onRemove2(event, treeId, treeNode){
         var right_treeObj = $.fn.zTree.getZTreeObj("roleTree");
-        var target_node,tree_node = treeNode
+        var parent_menu,target_node,tree_node = treeNode
         while (tree_node!=null){
             if (tree_node.level==1){
                 target_node = tree_node
+            }
+            if (tree_node.level==2){
+                parent_menu = tree_node
             }
             tree_node = tree_node.getParentNode()
         }
         target_node = {id:target_node.id,name:target_node.name}
         //注释部分:当父结点的子结点为空时,同时删除父结点
-        if (treeNode.getParentNode().level!=0&&treeNode.getParentNode().level!=1&&treeNode.getParentNode().children.length==0){
-            right_treeObj.removeNode(treeNode.getParentNode());
-            right_treeObj.removeNode(treeNode);
-        }else{
-//            alert(treeNode.getParentNode().children.length)
+        var t_node = treeNode
+        while(t_node.getParentNode().level>1){
+            var p_node = t_node.getParentNode()
+            if (t_node.getParentNode().children.length==0){
+                right_treeObj.removeNode(t_node.getParentNode());
+            }
+            t_node = p_node
         }
 //        var nodeIds=new Array();
 //        if (treeNode.isParent){
@@ -661,10 +666,11 @@
 ////            nodeIds.push(treeNode.menu_permission_id)
 //        };
         var tree_node = {id:treeNode.id,name:treeNode.name,pId:treeNode.pId,menu_permission_id:treeNode.menu_permission_id}
+        parent_menu = {id:parent_menu.id,name:parent_menu.name}
         $.ajax({
             type:'post',
             url:'/menus/remove_nodes',
-            data: {data: tree_node,targetNode:target_node},
+            data: {data: tree_node,targetNode:target_node,parent_menu:parent_menu},
             success: function (data, response) {
 
             }
@@ -740,7 +746,7 @@
     var perNodes=<%= raw @total_menus.to_json %>
     var roleNodes=<%= raw @all_roles.to_json %>
     $(document).ready(function(){
-        $.fn.zTree.init($("#perTree"), setting, perNodes);
+        $.fn.zTree.init($("#perTree"), perSetting, perNodes);
         $.fn.zTree.init($("#roleTree"), roleSetting, roleNodes);
     });
     //-->

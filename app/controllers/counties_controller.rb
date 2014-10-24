@@ -1,6 +1,7 @@
 class CountiesController < ApplicationController
   before_action :set_county, only: [:show, :edit, :update, :destroy]
   def index
+    render partial: 'counties/county_manage'
   end
   def test_index
     ids = params[:city_id]

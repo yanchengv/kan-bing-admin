@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
+   render partial: 'users/user_manage'
   end
 
   def show_index

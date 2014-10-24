@@ -5,6 +5,7 @@ class TreatmentRelationshipsController < ApplicationController
     # GET /treatment_relationships
     # GET /treatment_relationships.json
     def index
+      render partial: 'treatment_relationships/patient_friendship'
     end
 
     def show_index

@@ -1,0 +1,80 @@
+
+<header class="navbar navbar-fixed-top navbar-inverse">
+  <div class="row">
+    <div class="logo col-md-2 col-sm-4 col-xs-5"><a href="/">后台管理系统</a></div>
+    <div class="navbar-inner col-md-9 col-sm-7 col-xs-6">
+      <ul id="menu">
+        <% if signed_in? %>
+            <% @t_menus = current_user.t_menus %>
+            <% if !@t_menus.empty? %>
+                <% @t_menus.each do |menu| %>
+                    <% if menu['parent_id'].nil? %>
+                        <li><%#= link_to menu.name, '/'+menu.table_name.to_s+'?menu_id='+menu.id.to_s %>
+                          <%= link_to menu.name, menu.uri.to_s+'?menu_name='+menu.name %>
+                          <ul>
+                            <% if menu.name=='医院管理' %>
+                                <% @all_child_menus = menu.all_child(@t_menus) %>
+                                <% if @all_child_menus != [] %>
+                                    <% doc_flag=false %>
+                                    <% pat_flag=false %>
+                                    <% menu.all_child(@t_menus).each do |menu2| %>
+                                        <% if menu2.name== '医生管理' %>
+                                            <% doc_flag=true %>
+                                        <% end %>
+                                        <% if menu2.name== '患者管理' %>
+                                            <% pat_flag=true %>
+                                        <% end %>
+                                    <% end %>
+                                    <% if doc_flag %>
+                                        <li>
+                                          <%= link_to '医生管理', '/doctors?menu_name=医生管理' %>
+                                        </li>
+                                    <% end %>
+                                    <% if pat_flag %>
+                                        <li>
+                                          <%= link_to '患者管理', '/patients?menu_name=患者管理' %>
+                                        </li>
+                                    <% end %>
+                                <% end %>
+                            <% else %>
+                                <% @t_menus.each do |child_menu| %>
+                                    <% if child_menu.parent_id==menu.id %>
+                                        <li><%#= link_to child_menu.name, '/'+child_menu.table_name.to_s+'?menu_id='+child_menu.id.to_s %>
+                                          <%= link_to child_menu.name, child_menu.uri.to_s+'?menu_name='+child_menu.name %>
+                                        </li>
+                                    <% end %>
+                                <% end %>
+                            <% end %>
+                          </ul>
+                        </li>
+                    <% end %>
+                <% end %>
+            <% end %>
+            <!--<li><%#= link_to "Home", root_path %></li>-->
+            <!--<li><%#= link_to "Admins", '' %></li>-->
+            <li><%#= link_to "用户管理", '' %>
+              <!--<ul>-->
+              <!--<li>医生管理</li>-->
+              <!--<li>患者管理</li>-->
+              <!--<li>user管理</li>-->
+              <!--</ul>-->
+              <!--</li>-->
+            <li id="fat-menu" class="pull-right">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Account <b class="caret"></b>
+              </a>
+              <ul>
+                <li><%= link_to "setting", '/admin2s/setting' %></li>
+                <li>
+                  <%= link_to "退出", '/sessions/sign_out', method: "delete" %>
+                </li>
+              </ul>
+            </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</header>
+<script>
+    $( "#menu" ).menu();
+</script>

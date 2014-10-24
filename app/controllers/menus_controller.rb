@@ -59,7 +59,7 @@ class MenusController < ApplicationController
     end
   end
 
-  def show_menus
+  def role_manage
     id=params[:id]
     id ? @admin_id=id : @admin_id=false
     menus=[]
@@ -75,7 +75,7 @@ class MenusController < ApplicationController
 
     end
     @menus = Menu.select('id','parent_id as pId','name','table_name','model_class').all
-    render template: 'menus/show'
+    render partial:  'menus/role_manage'
   end
 
   def show_all_menus
@@ -107,7 +107,7 @@ class MenusController < ApplicationController
         end
       end
     end
-    @total_menus = {name:'菜单及权限',children:@all_tree,open:true}
+    @total_menus = {name:'菜单及权限列表',children:@all_tree,open:true}
     p @total_menus
     @all_role= Role2.all
     @all_roles=[]
@@ -122,10 +122,10 @@ class MenusController < ApplicationController
       @all_roles.push(@role)
     end
     p 'a'
-    @all_roles = {name:'角色管理',children:@all_roles,open:true}
+    @all_roles = {name:'角色列表',children:@all_roles,open:true}
     p @all_roles.as_json
 
-    render template: 'menus/show_all_menus'
+    render partial: 'menus/show_all_menus'
   end
 
   def drag
@@ -141,10 +141,26 @@ class MenusController < ApplicationController
       p node[1]['name']
       p node[1]['id']
       p node[1]['menu_permission_id']
-      node[1]['menu_permission_id'].each do |menu_permission_id|
-        @select_role_menu_pers = Role2sMenuPermission.where(role2_id:role_id,menu_permission_id:menu_permission_id)
-        if @select_role_menu_pers.empty?
-          @role_menu_per = Role2sMenuPermission.create(role2_id:role_id,menu_permission_id:menu_permission_id)
+      params[:nodes].each do |a|
+        p_id = a[1]['id']
+        if (!p_id.index('_').nil?)
+          p '>>>>'
+          if node[1]['id'] == a[1]['pId']
+          else
+            node[1]['menu_permission_id'].each do |menu_permission_id|
+              @select_role_menu_pers = Role2sMenuPermission.where(role2_id:role_id,menu_permission_id:menu_permission_id)
+              if @select_role_menu_pers.empty?
+                @role_menu_per = Role2sMenuPermission.create(role2_id:role_id,menu_permission_id:menu_permission_id)
+              end
+            end
+          end
+        else
+          node[1]['menu_permission_id'].each do |menu_permission_id|
+            @select_role_menu_pers = Role2sMenuPermission.where(role2_id:role_id,menu_permission_id:menu_permission_id)
+            if @select_role_menu_pers.empty?
+              @role_menu_per = Role2sMenuPermission.create(role2_id:role_id,menu_permission_id:menu_permission_id)
+            end
+          end
         end
       end
     end
@@ -163,10 +179,8 @@ class MenusController < ApplicationController
 
   def remove_nodes
     menu_id =  params[:data]['id']
-    menu_permission_ids = []
     p_role_id = params[:targetNode]['id']
     role_id = p_role_id[p_role_id.index('-')+1,p_role_id.length]
-    str = "_"
     if  menu_id.include? 'role-'
       role2_id = menu_id[menu_id.index('-')+1,menu_id.length]
       @role = Role2.where(id:role2_id).first
@@ -174,12 +188,13 @@ class MenusController < ApplicationController
         @role.destroy
       end
     else
+      @role2 = Role2.where(id:role_id).first
+      @menu = Menu.find_by(id:menu_id)
+      @menu_permission_ids = []
+      str = "_"
       if menu_id.include? str
-        p "b"
-        menu_permission_ids = params[:data]["menu_permission_id"]
+        @menu_permission_ids = params[:data]["menu_permission_id"]
       else
-        p 'a'
-        @menu = Menu.find_by(id:menu_id)
         menu_per_ids = []
         if !@menu.nil?
           if !@menu.child_menus.empty?
@@ -197,9 +212,34 @@ class MenusController < ApplicationController
             end
           end
         end
-        menu_permission_ids = menu_per_ids
+        @menu_permission_ids = menu_per_ids
+        p @menu_permission_ids
       end
-      @role_menu_permissions = Role2sMenuPermission.where(role2_id:role_id,menu_permission_id: menu_permission_ids)
+      p 'dddddddddd'
+      p @menu_permission_ids
+      @menu_p = @menu
+      role_tree = @role2.get_zTree.as_json
+      p role_tree
+      p params[:parent_menu]
+      p params[:parent_menu]['id']
+      curr_tree = nil
+      role_tree.each do |tree|
+        if tree['id'] == params[:parent_menu]['id'].to_i
+          curr_tree = tree
+          p curr_tree
+        end
+      end
+      menus = []
+      menu = {id:curr_tree['id'],name:curr_tree['name'],pId:curr_tree['pId'],menu_permission_id:curr_tree['menu_permission_id']}
+      menus.push(menu)
+      menus = loop_get_tree(menus,curr_tree.as_json)
+      p menus
+      menus.each do |menu|
+        @menu_permission_ids = get_menu_per(menus,menu,menu_id,@menu_permission_ids)
+      end
+      p 'cccccccbssre'
+      p @menu_permission_ids
+      @role_menu_permissions = Role2sMenuPermission.where(role2_id:role_id,menu_permission_id: @menu_permission_ids)
       if !@role_menu_permissions.empty?
         @role_menu_permissions.each do |role_menu_permission|
           role_menu_permission.destroy
@@ -209,6 +249,47 @@ class MenusController < ApplicationController
 
 
     render :json => {success:true}
+    end
+
+  def get_menu_per(menus,menu,menu_id,result)
+      p menu
+      p 'a'
+      p menu[:pId]
+      p menu[:name]
+      p menu_id.to_i
+      pId_menus = []
+      if menu[:id].to_i == menu_id.to_i && !menu[:pId].nil?
+        p 'b'
+        p menu[:name]
+        menus.each do |menu2|
+          if menu2[:pId] ==  menu[:pId]
+            pId_menus.push(menu2)
+          end
+        end
+      end
+      if pId_menus.length==1
+        menus.each do |menu3|
+          if menu3[:id] == pId_menus[0][:pId]
+            p 'dddddoooooooodd'
+            p menu3[:name]
+            result.concat(menu3[:menu_permission_id])
+            get_menu_per(menus,menu3,pId_menus[0][:pId],result)
+          end
+        end
+
+      end
+    return result
+    end   #在remove_nodes中调用
+
+  def loop_get_tree(menus,node)     #在remove_nodes中调用
+    if !node['children'].nil? && node['children'] != []
+      node['children'].each do |child_node|
+        child_tree = {id:child_node['id'],name:child_node['name'],pId:child_node['pId'],menu_permission_id:child_node['menu_permission_id']}
+        menus.push(child_tree)
+        loop_get_tree(menus,child_node)
+      end
+    end
+    return menus
   end
 
   def remove_nodes2
@@ -430,6 +511,11 @@ class MenusController < ApplicationController
     render partial: 'menus/form_priority'
   end
 
+  # 左侧导航
+  def left_menu
+    admin_id=params[:admin_id]
+    Menu.new.left_menu admin_id
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_menu

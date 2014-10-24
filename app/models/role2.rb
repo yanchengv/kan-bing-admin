@@ -137,7 +137,8 @@ class Role2 < ActiveRecord::Base
       @priorities.each do |pri|
         if pri['menu_id'] == menu['id']
           if !pri['priority'].nil?
-            child.push({id:menu['id'].to_s+'_'+pri['priority']['id'].to_s,name:pri['priority']['name'],menu_permission_id:[pri['menu_permission_id']]})
+            priority = {:id => menu['id'].to_s+'_'+pri['priority']['id'].to_s,:pId => menu['id'],:name => pri['priority']['name'],:menu_permission_id => [pri['menu_permission_id']]}.as_json
+            child.push(priority)
           end
           menu_permission_id.push(pri['menu_permission_id'])
         end

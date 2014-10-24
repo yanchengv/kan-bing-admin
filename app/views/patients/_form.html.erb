@@ -377,7 +377,7 @@
             success:function(data){
                 if (data['success']){
                     $('#create_or_edit_form2').modal('hide')
-                    var url= "/patients?menu_id=<%=@menu_id%>"
+                    var url= "/patients/show_index?menu_id=<%=@menu_id%>"
                     jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }else{
                     alert('失败!')
@@ -394,7 +394,7 @@
                 alert(data['success'])
                 if (data['success']){
                     $('#create_or_edit_form2').modal('hide')
-                    var url= "/patients?menu_id=<%=@menu_id%>"
+                    var url= "/patients/show_index?menu_id=<%=@menu_id%>"
                     jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }else{
                     alert('失败!')

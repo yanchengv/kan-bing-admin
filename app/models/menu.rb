@@ -46,5 +46,8 @@ class Menu < ActiveRecord::Base
     p the_menus
     return the_menus
   end
-
+  # 左侧导航
+  def  left_menu admin_id
+    @menus=Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri from role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp,menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{admin_id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id  GROUP BY menus.id;")
+  end
 end
