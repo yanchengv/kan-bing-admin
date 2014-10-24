@@ -31,6 +31,7 @@ class Admin2sRole2sController < ApplicationController
     end
     @role2s = {name:'系统角色',children:role2s,open:true}
     @admin2s_role2 = {name:'系统管理员',children:admin_roles,open:true}
+    render partial: 'admin2s_role2s/index'
   end
 
   # GET /admin2s_role2s/1
