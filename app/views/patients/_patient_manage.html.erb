@@ -11,10 +11,8 @@
 <div id="search_div" style="margin:10px;">
   医院：<select  id="patient_hos" onchange="search_hos()" >
   <option value="">---请选择---</option>
-  <% if @hospitals.nil? %>
-      <% @hospitals = Hospital.all %>
-  <% end %>
-  <% if !@hospitals.empty? %>
+
+  <% if !@hospitals.empty? && !@hospitals.nil?  %>
       <% @hospitals.each do |hos| %>
           <option id='hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
       <% end %>

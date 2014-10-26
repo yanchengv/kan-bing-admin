@@ -157,7 +157,7 @@ class DoctorsController < ApplicationController
       end
       #@hospitals = Hospital.where(id:hospital_ids)
        menu_name='医院人员'
-       @hospitals=Hospital.new.manage_hospitals menu_name
+       @hospitals=Doctor.new.manage_doctors menu_name
       # if hospital_ids == []
       #
       #   @hospitals = Hospital.all

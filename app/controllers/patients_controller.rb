@@ -102,6 +102,8 @@ class PatientsController < ApplicationController
   # end
 
   def index
+    menu_name='医院人员'
+    @hospitals=Patient.new.manage_patients menu_name
     render partial: 'patients/patient_manage'
   end
 
