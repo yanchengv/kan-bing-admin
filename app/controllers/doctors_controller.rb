@@ -155,28 +155,31 @@ class DoctorsController < ApplicationController
           end
         end
       end
-      @hospitals = Hospital.where(id:hospital_ids)
-      if hospital_ids == []
-        @hospitals = Hospital.all
-        if !@hospitals.empty?
-          @hospitals.each do |hos|
-            hospital_ids.push(hos.id)
-          end
-        end
-      end
+      #@hospitals = Hospital.where(id:hospital_ids)
+       menu_name='医院人员'
+       @hospitals=Hospital.new.manage_hospitals menu_name
+      # if hospital_ids == []
+      #
+      #   @hospitals = Hospital.all
+      #   if !@hospitals.empty?
+      #     @hospitals.each do |hos|
+      #       hospital_ids.push(hos.id)
+      #     end
+      #   end
+      # end
     end
-    @hos = Hospital.find_by(id:hospital_ids[0])
-    hos_id = hospital_ids[0]
-    if !params[:hos_id].nil?
-      hos_id = params[:hos_id]
-    end
-    dep_ids = []
-    @deps = nil
-    if department_ids != []
-      @deps = Department.where(id:department_ids,hospital_id:hos_id)
-    else
-      @deps = Department.where(hospital_id:hos_id)
-    end
+    # @hos = Hospital.find_by(id:hospital_ids[0])
+    # hos_id = hospital_ids[0]
+    # if !params[:hos_id].nil?
+    #   hos_id = params[:hos_id]
+    # end
+    # dep_ids = []
+    # @deps = nil
+    # if department_ids != []
+    #   @deps = Department.where(id:department_ids,hospital_id:hos_id)
+    # else
+    #   @deps = Department.where(hospital_id:hos_id)
+    # end
     render partial: 'doctors/doctor_manage'
   end
 
