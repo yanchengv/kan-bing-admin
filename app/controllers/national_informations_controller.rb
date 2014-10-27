@@ -107,6 +107,14 @@ class NationalInformationsController < ApplicationController
     render template: 'national_informations/setting'
   end
 
+  def get_nationality
+    if !params[:nation_id].nil? && params[:nation_id] != ''
+      nation_id = NationalInformation.find_by(name:params[:nation_id])
+      @nationality =  NationalInformation.where(parent_id: nation_id)
+    end
+    render partial: 'doctors/get_nationality'
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_national_information

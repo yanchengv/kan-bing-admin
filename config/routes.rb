@@ -139,6 +139,7 @@ Rails.application.routes.draw do
     collection do
       get 'index_show', to: 'national_informations#show_index'
       post 'oper_action', to: 'national_informations#oper_action'
+      get 'get_nationality', to:'national_informations#get_nationality'
     end
   end
   resources :provinces do
@@ -209,6 +210,7 @@ Rails.application.routes.draw do
       get 'send_email', to:'patients#send_email'
       get 'send_phone', to:'patients#send_phone'
       get 'search_department', to:'patients#search_department'
+      get 'is_permission', to:'patients#is_permission'
       get 'show_index', to:'patients#show_index'
     end
   end

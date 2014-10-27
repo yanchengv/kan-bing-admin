@@ -1,7 +1,7 @@
 #encoding:utf-8
 namespace :db do
   task seed: :environment do
-    make_dictionary
+    # make_dictionary
   end
 end
 

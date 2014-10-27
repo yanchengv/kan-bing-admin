@@ -3,7 +3,7 @@
 <% end %>
 
   <select  id="patient_hospital_id" name="patient[hospital_id]" onchange="search()" >
-  <option value="">---请选择---</option>
+  <!--<option value="">---请选择---</option>-->
 <% if !@hospital.empty? %>
 
      <% @hospital.each do |hos| %>

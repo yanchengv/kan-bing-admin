@@ -102,13 +102,42 @@ class PatientsController < ApplicationController
   # end
 
   def index
+=begin
     menu_name='医院人员'
     @hospitals=Patient.new.manage_patients menu_name
+    if !@hospitals.first.nil?
+      @hos = Hospital.find_by(id:@hospitals.first.id)
+    end
+=end
+    menu_name='患者管理'
+    @hospitals=Patient.new.manage_patients(menu_name,current_user.id)
+    @hos = Hospital.find_by(id:params[:hos_id])
+    @hos_id = params[:hos_id]
+    @menu_id = params[:menu_id]
+    @menu = Menu.where(id:@menu_id).first
+    @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.parent_id} and mp.menu_id=menus.id and d.id=mp.department_id GROUP BY d.id;")
+    if @departments.empty?
+      @departments = Department.where(hospital_id:params[:hos_id])
+    end
+    @dep = Department.find_by(id:params[:dep_id])
     render partial: 'patients/patient_manage'
   end
 
   def show_index
       # @patients = Patient.all
+=begin
+    menu_name='医院人员'
+    @hospitals=Patient.new.manage_patients menu_name
+    if !@hospitals.first.nil?
+      @hos = Hospital.find_by(id:@hospitals.first.id)
+    end
+    if !@hospitals.first.nil?
+      hos_id = @hospitals.first.id
+    end
+    if !params[:hos_id].nil?
+      hos_id = params[:hos_id]
+    end
+=end
     hos_id = params[:hos_id]
     dep_id = params[:dep_id]
     is_activated = params[:is_activated]
@@ -120,8 +149,8 @@ class PatientsController < ApplicationController
         @patients_all = Patient.where(hospital_id:hos_id,department_id:dep_id)
       elsif !hos_id.nil? && hos_id != ''
         @patients_all = Patient.where(hospital_id:hos_id)
-      else
-        @patients_all = Patient.all
+      # else
+      #   @patients_all = Patient.all
       end
       if is_activated=='0'
         @patients_all =  @patients_all.where(is_activated:0)
@@ -190,15 +219,19 @@ class PatientsController < ApplicationController
 
   # GET /patients/new
   def new
-    @menu_id = params[:menu_id]
+    # @menu_id = params[:menu_id]
     @patient = Patient.new
+    @hospital = Hospital.where(id:params[:hos_id])
+    @department = Department.where(hospital_id:params[:hos_id])
     render partial: 'patients/form'
   end
 
   # GET /patients/1/edit
   def edit
-    @menu_id = params[:menu_id]
+    # @menu_id = params[:menu_id]
     @patient = Patient.where(id:params[:id]).first
+    @hospital = Hospital.where(id:params[:hos_id])
+    @department = Department.where(hospital_id:params[:hos_id])
     render partial: 'patients/form'
   end
 
@@ -480,8 +513,46 @@ class PatientsController < ApplicationController
   end
 
   def search_department
-    @departments = Department.where(hospital_id:params[:hos_id])
+    @menu_id = params[:menu_id]
+    @menu = Menu.where(id:@menu_id).first
+    @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.parent_id} and mp.menu_id=menus.id and d.id=mp.department_id GROUP BY d.id;")
+    if @departments.empty?
+      @departments = Department.where(hospital_id:params[:hos_id])
+    end
     render partial: 'patients/search_department'
+  end
+
+  def is_permission
+    add_flag=false
+    delete_flag=false
+    update_flag=false
+    show_flag=false
+    all_flag=true
+    hos_id = params[:hospital_id]
+    dep_id = params[:department_id]
+    @menu = Menu.where(name:'患者管理').first
+    if dep_id==''
+      @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m where mp.menu_id=m.id and m.parent_id=#{@menu.id} and mp.hospital_id=#{hos_id}")
+    else
+      @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m where mp.menu_id=m.id and m.parent_id=#{@menu.id} and mp.hospital_id=#{hos_id} and mp.department_id=#{dep_id}")
+    end
+    if !@menu_permissions.empty?
+      @menu_permissions.each do |menu_permission|
+        if menu_permission.priority_id == 1
+          add_flag = true
+        end
+        if menu_permission.priority_id == 2
+          delete_flag = true
+        end
+        if menu_permission.priority_id == 3
+          update_flag = true
+        end
+        if menu_permission.priority_id == 4
+          show_flag = true
+        end
+      end
+    end
+    render json: {add:add_flag,delete:delete_flag,update:update_flag,show:show_flag}
   end
 
   private

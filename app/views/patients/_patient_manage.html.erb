@@ -9,17 +9,20 @@
     }
 </style>
 <div id="search_div" style="margin:10px;">
-  医院：<select  id="patient_hos" onchange="search_hos()" >
-  <option value="">---请选择---</option>
-
+  医院：<select  id="patient_hos_id" onchange="pat_search_hos()" >
   <% if !@hospitals.empty? && !@hospitals.nil?  %>
       <% @hospitals.each do |hos| %>
-          <option id='hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+          <option id='search_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
       <% end %>
   <% end %>
 </select>
-  科室：<span id="search_dep_id"><select id="patient_dep" onchange="search_dep()" >
+  科室：<span id="search_dep_id"><select id="patient_dep" onchange="pat_search_dep()" >
   <option value="">---请选择---</option>
+  <% if !@departments.nil? && !@departments.empty? %>
+      <% @departments.each do |hos| %>
+          <option id='serach_dep_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+      <% end %>
+  <% end %>
 </select></span>
   是否激活:<select id="is_activated" onchange="search_activated()">
   <option value="">全部</option>
@@ -28,11 +31,11 @@
 </select>
 </div>
 <div style="margin:10px;">
-  <a id="create_patient" class="btn btn-primary btn-sm active" role="button">添加患者</a>
-  <a id="edit_patient" class="btn btn-default btn-sm active" role="button">编辑患者</a>
-  <a id="delete_patient" class="btn btn-default btn-sm active" role="button">删除患者</a>
-  <a id="send_email_patient" class="btn btn-default btn-sm active" role="button">发送邮箱激活码</a>
-  <a id="send_phone_patient" class="btn btn-default btn-sm active" role="button">发送手机激活码</a>
+  <a id="create_patient" class="btn btn-default btn-sm disabled" role="button">添加患者</a>
+  <a id="edit_patient" class="btn btn-default btn-sm disabled" role="button">编辑患者</a>
+  <a id="delete_patient" class="btn btn-default btn-sm disabled" role="button">删除患者</a>
+  <a id="send_email_patient" class="btn btn-default btn-sm disabled" role="button">发送邮箱激活码</a>
+  <a id="send_phone_patient" class="btn btn-default btn-sm disabled" role="button">发送手机激活码</a>
 </div>
 <table id="list10"></table>
 <div id="pager10"></div>
@@ -41,7 +44,7 @@
     var row_id;
     var selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
     jQuery("#list10").jqGrid({
-        url: "/patients/show_index?menu_id=<%=@menu_id%>",
+        url: "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=<%=@hos_id %>",
         datatype: "json",
         height: "auto",
         colNames:['姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','最后就诊时间'],
@@ -145,27 +148,28 @@
 //                }
 //            })
         },
-        gridComplete: function(){
-            if(selectedIds){
-                var selected_ids = ''+selectedIds
-                if (selected_ids.split(',')[0]!=''){
-                    for(var i=0; i<selected_ids.split(',').length;i++){
-                        $(this).jqGrid("setSelection",selected_ids.split(',')[i]);
-                    }
-                }
-            }
-        },
+//        gridComplete: function(){
+//            if(selectedIds){
+//                var selected_ids = ''+selectedIds
+//                if (selected_ids.split(',')[0]!=''){
+//                    for(var i=0; i<selected_ids.split(',').length;i++){
+//                        $(this).jqGrid("setSelection",selected_ids.split(',')[i]);
+//                    }
+//                }
+//            }
+//        },
         viewrecords: true,
 //        sortorder: "desc",
 //        editurl:"",
         multiselect: true,
         caption: "患者列表"
     });
+    var selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
     //    jQuery("#list10").jqGrid('navGrid','#pager10',{edit:false,add:false,del:false});
     $( "#create_patient" ).button().on( "click", function() {
         $.ajax({
             type:'get',
-            url:'/patients/new?&menu_id=<%=@menu_id%>',
+            url:'/patients/new?menu_id=<%=@menu_id%>&hos_id=' + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val(),
             success:function(data){
                 $('#create_or_edit_form2').html(data)
 
@@ -174,20 +178,24 @@
         $('#create_or_edit_form2').modal('show')
     });
     $( "#edit_patient").button().on( "click", function() {
+        if (selectedIds.length==1){
         $.ajax({
             type:'get',
-            url:'/patients/'+selectedIds+'/edit?menu_id=<%=@menu_id%>',
+            url:'/patients/'+selectedIds+'/edit?menu_id=<%=@menu_id%>&hos_id=' + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val(),
             success:function(data){
                 $('#create_or_edit_form2').html(data)
             }
         })
         $('#create_or_edit_form2').modal('show')
+        }else{
+            alert('必须且只能选择一条记录!')
+        }
     });
     $( "#delete_patient").button().on( "click", function() {
         if(confirm("确定要删除吗？") ) {
             $.ajax({
                 type: 'delete',
-                url: '/patients/' + selectedIds + '?menu_id=<%=@menu_id%>',
+                url: '/patients/' + selectedIds,
                 success: function (data) {
                     if (data['success']) {
                         alert('删除成功!')
@@ -198,14 +206,14 @@
             })
         }
 //        $('#create_or_edit_form2').modal('show')
-        var url= "/patients/show_index?menu_id=<%=@menu_id%>"
+        var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
 //        $('#refresh_list10').click()
     });
     $( "#send_email_patient").button().on( "click", function() {
         $.ajax({
             type:'get',
-            url:'/patients/send_email?pat_ids='+selectedIds+'&menu_id=<%=@menu_id%>',
+            url:'/patients/send_email?pat_ids='+selectedIds,
             success:function(data){
                 if (data['success']){
                     alert('发送成功!')
@@ -214,13 +222,13 @@
                 }
             }
         })
-        var url= "/patients/show_index?menu_id=<%=@menu_id%>"
+        var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     });
     $( "#send_phone_patient").button().on( "click", function() {
         $.ajax({
             type:'get',
-            url:'/patients/send_phone?pat_ids='+selectedIds+'&menu_id=<%=@menu_id%>',
+            url:'/patients/send_phone?pat_ids='+selectedIds,
             success:function(data){
                 if (data['success']){
                     alert('发送成功!')
@@ -230,30 +238,118 @@
 
             }
         })
-        var url= "/patients/show_index?menu_id=<%=@menu_id%>"
+        var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     });
-    function search_hos(){
-        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?hos_id=" + $('#patient_hos').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
-        var hos_id = $('#patient_hos').val()
+    function pat_search_hos(){
+        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        var hos_id = $('#patient_hos_id').val()
         $.ajax({
             type: 'get',
-            url: '/patients/search_department?hos_id='+hos_id,
+            url: '/patients/search_department?menu_id=<%=@menu_id%>&hos_id='+hos_id,
             success: function (data) {
                 $('#search_dep_id').html(data)
             }
+        });
+        $.ajax({
+            type: "get",
+            url: '/patients/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#patient_hos_id').val() + "&department_id=" + $('#patient_dep').val(),
+            data: 'text',
+            success: function (data) {
+                if (data['add']){
+                    $('#create_patient').removeClass('disabled')
+                    $('#create_patient').addClass('active')
+                }else{
+                    $('#create_patient').removeClass('active')
+                    $('#create_patient').addClass('disabled')
+                }
+                if (data['delete']){
+                    $('#delete_patient').removeClass('disabled')
+                    $('#delete_patient').addClass('active')
+                }else{
+                    $('#delete_patient').removeClass('active')
+                    $('#delete_patient').addClass('disabled')
+                }
+                if (data['update']){
+                    $('#edit_patient').removeClass('disabled')
+                    $('#edit_patient').addClass('active')
+                }else{
+                    $('#edit_patient').removeClass('active')
+                    $('#edit_patient').addClass('disabled')
+                }
+                if (data['show']){
+                    $('#send_email_patient').removeClass('disabled')
+                    $('#send_email_patient').addClass('active')
+                    $('#send_phone_patient').removeClass('disabled')
+                    $('#send_phone_patient').addClass('active')
+                }else{
+                    $('#send_email_patient').removeClass('active')
+                    $('#send_email_patient').addClass('disabled')
+                    $('#send_phone_patient').removeClass('active')
+                    $('#send_phone_patient').addClass('disabled')
+                }
+            }
         })
     }
-    function search_dep(){
-        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?hos_id=" + $('#patient_hos').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+    function pat_search_dep(){
+        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
     function search_activated(){
-        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?hos_id=" + $('#patient_hos').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
     $(function() {
-        $("#patient_hos").select2();
+        $("#patient_hos_id").select2();
         $("#patient_dep").select2();
         $("#is_activated").select2();
+        <% if !@hos.nil? %>
+        $('#s2id_patient_hos_id').children('.select2-choice').children('.select2-chosen').html('<%=@hos.name%>');
+        document.getElementById("search_hos_<%=@hos.id%>").setAttribute('selected','selected')
+        <% end %>
+        <% if !@dep.nil? %>
+        $('#s2id_patient_dep').children('.select2-choice').children('.select2-chosen').html('<%=@dep.name%>');
+        document.getElementById("search_dep_<%=@dep.id%>").setAttribute('selected','selected')
+        <% end %>
+
+        $.ajax({
+                    type: "get",
+                    url: '/patients/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#patient_hos_id').val() + '&department_id=' + $('#patient_dep').val(),
+                    data: 'text',
+                    success: function (data) {
+                        if (data['add']){
+                            $('#create_patient').removeClass('disabled')
+                            $('#create_patient').addClass('active')
+                        }else{
+                            $('#create_patient').removeClass('active')
+                            $('#create_patient').addClass('disabled')
+                        }
+                        if (data['delete']){
+                            $('#delete_patient').removeClass('disabled')
+                            $('#delete_patient').addClass('active')
+                        }else{
+                            $('#delete_patient').removeClass('active')
+                            $('#delete_patient').addClass('disabled')
+                        }
+                        if (data['update']){
+                            $('#edit_patient').removeClass('disabled')
+                            $('#edit_patient').addClass('active')
+                        }else{
+                            $('#edit_patient').removeClass('active')
+                            $('#edit_patient').addClass('disabled')
+                        }
+                        if (data['show']){
+                            $('#send_email_patient').removeClass('disabled')
+                            $('#send_email_patient').addClass('active')
+                            $('#send_phone_patient').removeClass('disabled')
+                            $('#send_phone_patient').addClass('active')
+                        }else{
+                            $('#send_email_patient').removeClass('active')
+                            $('#send_email_patient').addClass('disabled')
+                            $('#send_phone_patient').removeClass('active')
+                            $('#send_phone_patient').addClass('disabled')
+                        }
+                    }
+                }
+        );
     })
 </script>
 <div class="modal fade" id="create_or_edit_form2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

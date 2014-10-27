@@ -6,7 +6,7 @@
         function leftMeunsOnClick(event, treeId, treeNode) {
             if (treeNode.uri!=''){
                 $.ajax({
-                    url:treeNode.uri,
+                    url:treeNode.uri+'?hos_id='+treeNode.hospital_id+'&dep_id='+treeNode.department_id+'&menu_id='+treeNode.id,
                     type:'get',
                     beforeSend:function(response){
                              $("#rightContent").html('loding...')

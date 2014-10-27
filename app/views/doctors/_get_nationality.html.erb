@@ -1,0 +1,7 @@
+<option value="">---请选择---</option>
+<%# @nationality = NationalInformation.where(parent_id:2) %>
+<% if !@nationality.nil? && !@nationality.empty? %>
+    <% @nationality.each do |national| %>
+        <option id="<%= national.name %>" value="<%= national.name %>"><%= national.name %></option>
+    <% end %>
+<% end %>
