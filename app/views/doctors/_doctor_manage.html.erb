@@ -10,7 +10,7 @@
 </style>
 <!--<h1>Listing doctors</h1>-->
 <div id="search_div" style="margin:10px;">
-  医院：<select  id="doctor_hos_id" name="doctor_hos_id" onchange="search_for_dep()" >
+  医院：<select  id="doctor_hos_id" name="doctor_hos_id" onchange="doc_search_hos()" >
   <!--<option value="">---请选择---</option>-->
   <%# if @hospitals.nil? %>
   <%# @hospitals = Hospital.all %>
@@ -21,11 +21,13 @@
       <% end %>
   <% end %>
 </select>
-  科室：<span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" onchange="search_dep()" >
-  <option value="">---请选择---</option>
-  <% if !@deps.nil? && !@deps.empty? %>
-      <% @deps.each do |hos| %>
-          <option id='serch_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+  科室：<span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" onchange="doc_search_dep()" >
+  <% if params[:dep_id] == '' %>
+    <option value="">---请选择---</option>
+  <% end %>
+  <% if !@departments.nil? && !@departments.empty? %>
+      <% @departments.each do |hos| %>
+          <option id='serch_dep_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
       <% end %>
   <% end %>
 </select></span>
@@ -50,7 +52,7 @@
     var row_id;
     var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
     jQuery("#list12").jqGrid({
-        url: "/doctors/show_index?menu_name=<%=@menu_name%>",
+        url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=<%=@hos_id%>&dep_id=<%=@dep_id%>",
         datatype: "json",
         height: "auto",
         colNames:['ID','姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','职称'],
@@ -159,26 +161,27 @@
 //                }
 //            })
         },
-        gridComplete: function(){
-            if(selectedIds){
-                var selected_ids = ''+selectedIds
-                if (selected_ids.split(',')[0]!=''){
-                    for(var i=0; i<selected_ids.split(',').length;i++){
-                        $(this).jqGrid("setSelection",selected_ids.split(',')[i]);
-                    }
-                }
-            }
-        },
+//        gridComplete: function(){
+//            if(selectedIds){
+//                var selected_ids = ''+selectedIds
+//                if (selected_ids.split(',')[0]!=''){
+//                    for(var i=0; i<selected_ids.split(',').length;i++){
+//                        $(this).jqGrid("setSelection",selected_ids.split(',')[i]);
+//                    }
+//                }
+//            }
+//        },
         viewrecords: true,
 //        sortorder: "desc",
         editurl:'/doctors/',
         multiselect: true,
         caption: "医生列表"
     });
+    var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
     $( "#create_doctor" ).button().on( "click", function() {
         $.ajax({
             type:'get',
-            url:'/doctors/new?&menu_id=<%=@menu_id%>',
+            url:'/doctors/new?menu_id=<%=@menu_id%>&hos_id=' + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val(),
             success:function(data){
                 $('#create_or_edit_form').html(data)
 
@@ -190,14 +193,14 @@
         if (selectedIds.length==1){
             $.ajax({
                 type:'get',
-                url:'/doctors/'+selectedIds+'/edit?menu_id=<%=@menu_id%>',
+                url:'/doctors/'+selectedIds+'/menu_id=<%=@menu_id%>&edit?hos_id=' + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val(),
                 success:function(data){
                     $('#create_or_edit_form').html(data)
                 }
             })
             $('#create_or_edit_form').modal('show')
         }else{
-            alert('必须选择一条记录!')
+            alert('必须且只能选择一条记录!')
         }
 
     });
@@ -205,7 +208,7 @@
         if(confirm("确定要删除吗？") ) {
             $.ajax({
                 type: 'delete',
-                url: '/doctors/' + selectedIds + '?menu_id=<%=@menu_id%>',
+                url: '/doctors/' + selectedIds + '',
                 success: function (data) {
                     if (data['success']) {
                         alert('删除成功!')
@@ -216,14 +219,14 @@
             })
         }
 //        $('#create_or_edit_form').modal('show')
-        var url= "/doctors/show_index?menu_id=<%=@menu_id%>"
+        var url= "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
         jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
 //        $('#refresh_list12').click()
     });
     $( "#send_email_doctor").button().on( "click", function() {
         $.ajax({
             type:'get',
-            url:'/doctors/send_email?doc_ids='+selectedIds+'&menu_id=<%=@menu_id%>',
+            url:'/doctors/send_email?doc_ids='+selectedIds+'',
             success:function(data){
                 if (data['success']){
                     alert('发送成功!')
@@ -232,13 +235,13 @@
                 }
             }
         })
-        var url= "/doctors/show_index?menu_id=<%=@menu_id%>"
+        var url= "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
         jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     });
     $( "#send_phone_doctor").button().on( "click", function() {
         $.ajax({
             type:'get',
-            url:'/doctors/send_phone?doc_ids='+selectedIds+'&menu_name=<%=@menu_name%>',
+            url:'/doctors/send_phone?doc_ids='+selectedIds,
             success:function(data){
                 if (data['success']){
                     alert('发送成功!')
@@ -248,22 +251,21 @@
 
             }
         })
-        var url= "/doctors/show_index?menu_name=<%=@menu_name%>"
+        var url= "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
         jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     });
-    function search_for_dep(){
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+    function doc_search_hos(){
         var hos_id = $('#doctor_hos_id').val()
         $.ajax({
             type: 'get',
-            url: '/doctors/search_department?hos_id='+hos_id,
+            url: '/doctors/search_department?menu_id=<%=@menu_id%>&hos_id='+hos_id,
             success: function (data) {
                 $('#search_dep_id').html(data)
             }
         })
         $.ajax({
                     type: "get",
-                    url: '/doctors/is_permission?hospital_id=' + $('#doctor_hos_id').val(),
+                    url: '/doctors/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#doctor_hos_id').val() + '&department_id=',
                     data: 'text',
                     success: function (data) {
                         if (data['add']){
@@ -301,12 +303,13 @@
                     }
                 }
         );
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
-    function search_dep(){
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_name=<%=@menu_name%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+    function doc_search_dep(){
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
         $.ajax({
                     type: "get",
-                    url: '/doctors/is_permission?hospital_id=' + $('#doctor_hos_id').val() + '&department_id=' + $('#doctor_dep').val(),
+                    url: '/doctors/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#doctor_hos_id').val() + '&department_id=' + $('#doctor_dep').val(),
                     data: 'text',
                     success: function (data) {
                         if (data['add']){
@@ -346,7 +349,7 @@
         );
     }
     function search_activated(){
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_name=<%=@menu_name%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
     $(function() {
         $("#doctor_hos_id").select2();
@@ -356,9 +359,13 @@
         $('#s2id_doctor_hos_id').children('.select2-choice').children('.select2-chosen').html('<%=@hos.name%>');
         document.getElementById("serch_hos_<%=@hos.id%>").setAttribute('selected','selected')
         <% end %>
+        <% if !@dep.nil? %>
+        $('#s2id_doctor_dep').children('.select2-choice').children('.select2-chosen').html('<%=@dep.name%>');
+        document.getElementById("serch_dep_<%=@dep.id%>").setAttribute('selected','selected')
+        <% end %>
         $.ajax({
                     type: "get",
-                    url: '/doctors/is_permission?menu_name=<%=@menu_name%>&hospital_id=' + $('#doctor_hos_id').val(),
+                    url: '/doctors/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#doctor_hos_id').val() + '&department_id=' + $('#doctor_dep').val(),
                     data: 'text',
                     success: function (data) {
                         if (data['add']){

@@ -107,6 +107,19 @@ class DoctorsController < ApplicationController
   #   p @objJSON.as_json
   # end
   def index
+    menu_name='医生管理'
+    @hospitals=Doctor.new.manage_doctors(menu_name, current_user.id)
+    @hos = Hospital.find_by(id:params[:hos_id])
+    @hos_id = params[:hos_id]
+    @dep_id = params[:dep_id]
+    @menu_id = params[:menu_id]
+    @menu = Menu.where(id:@menu_id).first
+    @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.parent_id} and mp.menu_id=menus.id and d.id=mp.department_id GROUP BY d.id;")
+    if @departments.empty?
+      @departments = Department.where(hospital_id:params[:hos_id])
+    end
+    @dep = Department.find_by(id:params[:dep_id])
+=begin
     hospital_ids = []
     department_ids = []
     @menu_permissions = MenuPermission.joins(role2s_menu_permissions:[{role2: [{admin2s_role2s: :admin2}]}]).where(admin2s:{id:current_user.id})
@@ -169,9 +182,8 @@ class DoctorsController < ApplicationController
       # end
     end
     # @hos = Hospital.find_by(id:hospital_ids[0])
-    # hos_id = hospital_ids[0]
-    # if !params[:hos_id].nil?
-    #   hos_id = params[:hos_id]
+    # if !@hospitals.first.nil?
+    #   @hos = Hospital.find_by(id:@hospitals.first.id)
     # end
     # dep_ids = []
     # @deps = nil
@@ -180,6 +192,7 @@ class DoctorsController < ApplicationController
     # else
     #   @deps = Department.where(hospital_id:hos_id)
     # end
+=end
     render partial: 'doctors/doctor_manage'
   end
 
@@ -189,6 +202,7 @@ class DoctorsController < ApplicationController
      # Admin2.joins(admin2s_role2s:  [{ role2: [{role2s_menu_permissions: [{menu_permission: :priority},{menu_permission: :menu}]}] }]).where(id:current_user.id)
     # p Role2sMenuPermission.joins(:menu_permission).where(menu_permissions:{hospital_id:1})
     # p MenuPermission.joins(:priority,:menu).where(menu:{name:'医生管理'})
+=begin
     hospital_ids = []
     department_ids = []
     @menu_permissions = MenuPermission.joins(role2s_menu_permissions:[{role2: [{admin2s_role2s: :admin2}]}]).where(admin2s:{id:current_user.id})
@@ -237,37 +251,51 @@ class DoctorsController < ApplicationController
           end
         end
       end
-      @hospitals = Hospital.where(id:hospital_ids)
-      if hospital_ids == []
-        @hospitals = Hospital.all
-        if !@hospitals.empty?
-          @hospitals.each do |hos|
-            hospital_ids.push(hos.id)
-          end
-        end
+      #@hospitals = Hospital.where(id:hospital_ids)
+      menu_name='医院人员'
+      @hospitals=Doctor.new.manage_doctors menu_name
+      # if hospital_ids == []
+      #
+      #   @hospitals = Hospital.all
+      #   if !@hospitals.empty?
+      #     @hospitals.each do |hos|
+      #       hospital_ids.push(hos.id)
+      #     end
+      #   end
+      # end
+    end
+    if !@hospitals.empty?
+      @hospitals.each do |hos|
+        @menu_per = MenuPermission.where(hospital_id:hos.id)
+        @menu = @menu_per.menu
       end
     end
-    @hos = Hospital.find_by(id:hospital_ids[0])
-    hos_id = hospital_ids[0]
+    if !@hospitals.first.nil?
+      hos_id = @hospitals.first.id
+    end
     if !params[:hos_id].nil?
       hos_id = params[:hos_id]
     end
-    dep_ids = []
-    @deps = nil
-    if department_ids != []
-      @deps = Department.where(id:department_ids,hospital_id:hos_id)
-    else
-      @deps = Department.where(hospital_id:hos_id)
+    # dep_ids = []
+    # @deps = nil
+    # if department_ids != []
+    #   @deps = Department.where(id:department_ids,hospital_id:hos_id)
+    # else
+    #   @deps = Department.where(hospital_id:hos_id)
+    # end
+    # # @deps = Department.where(id:department_ids)
+    # if !@deps.empty?
+    #   @deps.each do |dep|
+    #     if dep.hospital_id.to_i==hos_id.to_i
+    #       dep_ids.push(dep.id)
+    #     end
+    #   end
+    # end
+    # dep_id = dep_ids
+=end
+    if !params[:hos_id].nil? && params[:hos_id] != ''
+      hos_id = params[:hos_id]
     end
-    # @deps = Department.where(id:department_ids)
-    if !@deps.empty?
-      @deps.each do |dep|
-        if dep.hospital_id.to_i==hos_id.to_i
-          dep_ids.push(dep.id)
-        end
-      end
-    end
-    dep_id = dep_ids
     if !params[:dep_id].nil? && params[:dep_id] != ''
       dep_id = params[:dep_id]
     end
@@ -280,8 +308,8 @@ class DoctorsController < ApplicationController
         @doctors_all = Doctor.where(hospital_id:hos_id,department_id:dep_id)
       elsif !hos_id.nil? && hos_id != ''
         @doctors_all = Doctor.where(hospital_id:hos_id)
-      else
-        @doctors_all = Doctor.all
+      # else
+      #   @doctors_all = Doctor.all
       end
       if is_activated=='0'
         @doctors_all =  @doctors_all.where(is_activated:0)
@@ -353,6 +381,7 @@ class DoctorsController < ApplicationController
 
   # GET /doctors/new
   def new
+=begin
     @menu_id = params[:menu_id]
     @doctor = Doctor.new
     menu_permission = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
@@ -378,11 +407,16 @@ class DoctorsController < ApplicationController
     else
       @department = Department.all
     end
+=end
+    @doctor = Doctor.new
+    @hospital = Hospital.where(id:params[:hos_id])
+    @department = Department.where(hospital_id:params[:hos_id])
     render partial: 'doctors/form'
   end
 
   # GET /doctors/1/edit
   def edit
+=begin
     @menu_id = params[:menu_id]
     @doctor = Doctor.where(id:params[:id]).first
     menu_permission = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
@@ -408,6 +442,10 @@ class DoctorsController < ApplicationController
     else
       @department = Department.all
     end
+=end
+    @doctor = Doctor.where(id:params[:id]).first
+    @hospital = Hospital.where(id:params[:hos_id])
+    @department = Department.where(hospital_id:params[:hos_id])
     render partial: 'doctors/form'
   end
 
@@ -786,6 +824,13 @@ class DoctorsController < ApplicationController
   end
 
   def search_department
+    @menu_id = params[:menu_id]
+    @menu = Menu.where(id:@menu_id).first
+    @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.parent_id} and mp.menu_id=menus.id and d.id=mp.department_id GROUP BY d.id;")
+    if !@departments.empty?
+      @departments = Department.where(hospital_id:params[:hos_id])
+    end
+=begin
     @menu_permissions = MenuPermission.joins(role2s_menu_permissions:[{role2: [{admin2s_role2s: :admin2}]}]).where(admin2s:{id:current_user.id})
     if !@menu_permissions.empty?
       # hospital_ids = []
@@ -837,6 +882,7 @@ class DoctorsController < ApplicationController
         @departments = Department.where(id:department_ids,hospital_id:params[:hos_id])
       end
     end
+=end
     render partial: 'doctors/search_department'
   end
 
@@ -848,6 +894,38 @@ class DoctorsController < ApplicationController
     all_flag=true
     hos_id = params[:hospital_id]
     dep_id = params[:department_id]
+    @menu = Menu.where(name:'医生管理').first
+    @child_menus = @menu.all_child(Menu.all)
+    if @child_menus != []
+      @child_menus.each do |child_menu|
+        if dep_id==''
+          @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m where mp.menu_id=m.id and m.id=#{child_menu.id} and mp.hospital_id=#{hos_id}")
+        else
+          @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m where mp.menu_id=m.id and m.id=#{child_menu.id} and mp.hospital_id=#{hos_id} and mp.department_id=#{dep_id}")
+        end
+        if @menu_permissions != []
+          break
+        end
+      end
+    end
+    p @menu_permissions
+    if !@menu_permissions.empty?
+      @menu_permissions.each do |menu_permission|
+        if menu_permission['priority_id'] == 1
+          add_flag = true
+        end
+        if menu_permission['priority_id'] == 2
+          delete_flag = true
+        end
+        if menu_permission['priority_id'] == 3
+          update_flag = true
+        end
+        if menu_permission['priority_id'] == 4
+          show_flag = true
+        end
+      end
+    end
+=begin
     @menu_permissions = MenuPermission.joins(role2s_menu_permissions:[{role2: [{admin2s_role2s: :admin2}]}]).where(admin2s:{id:current_user.id})
     if !@menu_permissions.empty?
       @menu_permissions.each do |menu_permission|
@@ -973,6 +1051,7 @@ class DoctorsController < ApplicationController
       end
       end
     end
+=end
     p add_flag,delete_flag,update_flag,show_flag
     render json: {add:add_flag,delete:delete_flag,update:update_flag,show:show_flag}
   end

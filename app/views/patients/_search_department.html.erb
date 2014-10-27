@@ -1,8 +1,8 @@
-<select id="patient_dep" onchange="search_dep()" ><option value="">---请选择---</option>
+<select id="patient_dep" onchange="pat_search_dep()" ><option value="">---请选择---</option>
 <% if !@departments.nil? %>
     <% if !@departments.empty? %>
         <% @departments.each do |dep| %>
-            <option id="dep_<%= dep.id %>" value="<%= dep.id %>"><%= dep.name %></option>
+            <option id="search_dep_<%= dep.id %>" value="<%= dep.id %>"><%= dep.name %></option>
         <% end %>
     <% end %>
 <% end %>

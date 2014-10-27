@@ -5,7 +5,7 @@ class Doctor < ActiveRecord::Base
   after_save :save_patient
   has_one :user, :dependent => :destroy
   belongs_to :patient, :dependent => :destroy, :foreign_key => :patient_id
-  belongs_to :province
+  belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city
   belongs_to :hospital
   belongs_to :department
@@ -74,8 +74,8 @@ class Doctor < ActiveRecord::Base
 
   end
 
-  def manage_doctors  menu_name
+  def manage_doctors  (menu_name,admin_id)
     @menu=Menu.where(name:menu_name).first
-    @hospitals=Hospital.find_by_sql("select h.id,h.name from hospitals h,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=1 and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.id} and mp.menu_id=menus.id and h.id=mp.hospital_id GROUP BY h.id;")
+    @hospitals=Hospital.find_by_sql("select h.id,h.name from hospitals h,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{admin_id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.id} and mp.menu_id=menus.id and h.id=mp.hospital_id GROUP BY h.id;")
   end
 end

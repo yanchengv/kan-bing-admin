@@ -74,16 +74,16 @@
         <%#= f.date_select :last_treat_time %>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6 field">
-        <%= f.label :选择省 %><br>
-        <div id="pat_province"><%= render partial: 'patients/province_partial' %></div>
-      </div>
-      <div class="col-md-6 field">
-        <%= f.label :选择市 %><br>
-        <div id="pat_city"><%= render partial: 'patients/city_partial' %></div>
-      </div>
-    </div>
+    <!--<div class="row">-->
+      <!--<div class="col-md-6 field">-->
+         <!--<%#= f.label :选择省 %><br>-->
+        <!--<div id="pat_province"><%#= render partial: 'patients/province_partial' %></div>-->
+      <!--</div>-->
+      <!--<div class="col-md-6 field">-->
+        <!--<%#= f.label :选择市 %><br> -->
+        <!--<div id="pat_city"><%#= render partial: 'patients/city_partial' %></div>-->
+      <!--</div>-->
+    <!--</div>-->
     <div class="row">
       <div class="col-md-6 field">
         <%= f.label :选择医院 %><br>
@@ -97,9 +97,9 @@
     <div class="row">
       <div class="col-md-6 field">
         <%= f.label :国籍 %><br>
-        <select id="patient_citizenship" name="patient[citizenship]" >
+        <select id="patient_citizenship" name="patient[citizenship]" onchange="get_nationality()">
           <option value="">---请选择---</option>
-          <% @citizenships = Dictionary.where(dictionary_type_id:12) %>
+          <% @citizenships = NationalInformation.where(parent_id:nil) %>
           <% if !@citizenships.empty? %>
               <% @citizenships.each do |citizenship| %>
                   <option id="<%= citizenship.name %>" value="<%= citizenship.name %>"><%= citizenship.name %></option>
@@ -111,13 +111,6 @@
       <div class="col-md-6 field">
         <%= f.label :民族 %><br>
         <select id="patient_nationality" name="patient[nationality]" >
-          <option value="">---请选择---</option>
-          <% @nationality = Dictionary.where(dictionary_type_id:13) %>
-          <% if !@nationality.empty? %>
-              <% @nationality.each do |national| %>
-                <option id="<%= national.name %>" value="<%= national.name %>"><%= national.name %></option>
-              <% end %>
-          <% end %>
         </select>
         <%#= f.text_field :nationality,class:"form-control" %>
       </div>
@@ -365,6 +358,15 @@
             $('#pat_birthday').val(birthdayValue)
         }
     }
+    function get_nationality(){
+        $.ajax({
+            type:'get',
+            url:'/national_informations/get_nationality?nation_id='+$('#patient_citizenship').val(),
+            success:function(data){
+                $('#patient_nationality').html(data)
+            }
+        })
+    }
     function create_or_update(){
 //        var result = $('#new_or_edit_patient').click()
 //        console.log(result.responseJSON)
@@ -372,12 +374,12 @@
         <% if !params[:id].nil? %>
         $.ajax({
             type:'put',
-            url:'/patients/<%= params[:id] %>?menu_id=<%=@menu_id%>',
+            url:'/patients/<%= params[:id] %>',
             data:data,
             success:function(data){
                 if (data['success']){
                     $('#create_or_edit_form2').modal('hide')
-                    var url= "/patients/show_index?menu_id=<%=@menu_id%>"
+                    var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val()
                     jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }else{
                     alert('失败!')
@@ -388,13 +390,13 @@
         <% else %>
         $.ajax({
             type:'post',
-            url:'/patients?menu_id=<%=@menu_id%>',
+            url:'/patients',
             data:data,
             success:function(data){
                 alert(data['success'])
                 if (data['success']){
                     $('#create_or_edit_form2').modal('hide')
-                    var url= "/patients/show_index?menu_id=<%=@menu_id%>"
+                    var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val()
                     jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }else{
                     alert('失败!')
@@ -456,5 +458,12 @@
             document.getElementById('<%=pat.citizenship%>').setAttribute('selected', 'selected')
         }
         <% end %>
+        $.ajax({
+            type:'get',
+            url:'/national_informations/get_nationality?nation_id='+$('#patient_citizenship').val(),
+            success:function(data){
+                $('#patient_nationality').html(data)
+            }
+        })
     })
 </script>
