@@ -19,12 +19,13 @@
 //= require web_admin
 //= require select2
 //= require jquery.datetimepicker
+//= require jquery.fileupload
 //= require grid.locale-cn
-//= require jquery.jqGrid
 //= require_tree ./templates
 //= require_tree ./models
 //= require_tree ./collections
 //= require_tree ./views
+//= require jquery.jqGrid
 //= require_tree ./routers
 //= require jquery-ui
 //= require jquery.ztree.all-3.5.min

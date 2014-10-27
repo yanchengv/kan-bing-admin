@@ -58,6 +58,7 @@ class EduVideosController < ApplicationController
 
   #上传图片
   def upload_image
+    puts '=============ssssssssssss'
     random=SecureRandom.random_number(9999999999)
     image_tmp_path='public/'+random.to_s+'.jpg'
     image_tmp=params[:edu_video][:image]
@@ -79,6 +80,38 @@ class EduVideosController < ApplicationController
     end
   end
 
+  def upload
+    para={}
+    para[:name]=params[:edu_video][:name]
+    para[:content]=params[:edu_video][:content]
+    para[:video_url]=params[:edu_video][:video_url]
+    para[:doctor_id]=params[:video][:doctor_id]
+    if !params[:video][:doctor_id].nil?
+      @doc = Doctor.find_by_id(params[:video][:doctor_id])
+      if !@doc.nil?
+        para[:doctor_name]=@doc.name
+      end
+    end
+    para[:video_time]=params[:edu_video][:video_time]
+    para[:image_url]= params[:edu_video][:image_url]
+    para[:video_type_id]=params[:edu_video][:video_type]
+    @video=EduVideo.new(para)
+    p @video.video_url
+    if @video.save
+      render :json => {flag: true}
+    else
+      render :json => {flag: false}
+    end
+  end
+
+  def new_video
+    if !current_user.nil?
+      @doctors = Doctor.all
+      @types=VideoType.all
+      @video=EduVideo.new
+    end
+    render :partial => 'edu_videos/create'
+  end
   # POST /edu_videos
   # POST /edu_videos.json
   def create

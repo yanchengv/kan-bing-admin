@@ -8,6 +8,7 @@
     </select>&nbsp;&nbsp;视频名称：<input type="text" id="video_name">&nbsp;&nbsp;<a id="search_video_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;
       <a id="clear_type_btn" class="btn btn-default btn-sm" role="button">清空</a>
     </div>
+    <% link_to '上传视频', '/edu_videos/new_video'%>
     <table id="edu_video_list"></table>
     <div id="page_video"></div>
   </div>
@@ -21,13 +22,15 @@
         url: 'edu_videos/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: [ 'ID', '视频名称', '概要', '缩略图地址', '视频地址', '医生ID', '医生', '时间', '类型ID', '视频类型'],
+        colNames: [ 'ID', '视频名称', '概要', '缩略图', '', '视频', '', '医生ID', '医生', '时间', '类型ID', '视频类型'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
             { name: 'name', index: 'name', align: "center", editable: true},
             { name: 'content', index: 'content', align: "center", editable: true},
-            { name: 'image_url', index: 'image_url', align: "center", editable: true},
-            { name: 'video_url', index: 'video_url', align: "center", editable: true},
+            { name: 'image_url', index: 'image_url', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
+            { name: 'image', index: 'image', align: "center", editable: true, enctype: "multipart/form-data", edittype:'file'},
+            { name: 'video_url', index: 'video_url', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
+            { name: 'video', index: 'video', align: "center", editable: true, enctype: "multipart/form-data", edittype: 'file'},
             { name: 'doctor_id', index: 'doctor_id', align: "center", editable: true, jsonmap: 'doctor.id', hidden: true, editrules: {edithidden: true}, edittype: 'select',
                 editoptions: {
                     dataInit: function (element) {
@@ -50,7 +53,13 @@
                     }
                 }},
             { name: 'doctor_name', index: 'doctor_name', align: "center", editable: false, jsonmap: 'doctor.name'},
-            { name: 'video_time', index: 'video_time', align: "center", editable: true},
+            { name: 'video_time', index: 'video_time', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
+                $(element).datetimepicker({
+                    lang: 'ch',
+                    timepicker: false,
+                    format: 'Y-m-d'
+                })
+            } }},
             { name: 'video_type_id', index: 'video_type_id', align: "center", editable: true, jsonmap: 'city.id', hidden: true, editrules: {edithidden: true}, edittype: 'select',
                 editoptions: {
                     dataInit: function (element) {
@@ -110,7 +119,7 @@
         caption: "教育视频管理"
     });
     jQuery("#edu_video_list").jqGrid('navGrid', '#page_video', {
-                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                cloneToTop: true, add:false, edittext: "编辑", edittitle: "编辑",
                 deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
@@ -119,7 +128,9 @@
             {
                 closeAfterAdd: true
             }//add
-             );
+             ).navButtonAdd('#page_video', { title: '上传视频', caption: '上传视频', onClickButton: function () {
+                upload_video();
+            }, position: "first"});
     //搜索视频
     $('#search_video_btn').click(function () {
         var video_search_id = $('#video_search_id').val();
@@ -131,4 +142,79 @@
         $("#province_search_id").select2("val", "0");
         $('#video_name').val('');
     });
+    function upload_video(){
+        window.location.href='edu_videos/new_video';
+    }
+//    $('#image').fileupload({
+//        autoUpload: true,
+//        url: 'edu_videos/upload_image',
+//        dataType: 'json',
+//        //forceIframeTransport: true,
+//        maxChunkSize: 100000000, //100Mb
+//        fail: function (e, data) {
+//            console.log(data.errorThrown);
+//            alert('上传失败！');
+//        },
+//
+//        done: function (e, data) {
+//            if (data.result.flag) {
+//                $('#image_url').val(data.result.url);
+//            }
+//        }
+//    });
+//    $(function () {
+//        alert('image');
+//
+////        $('#videoupload').fileupload({
+////            url: url2,
+////            dataType: 'json',
+////            //forceIframeTransport: true,
+////            maxChunkSize: 100000000000, //100Gb
+////            add: function (e, data) {
+////                $("#uploadinfo").remove();
+////                $('#progress .bar').css(
+////                        'width',
+////                        '0%'
+////                );
+////                //data.files[0].name
+////
+////                data.context = $('<button/>').text('确定')
+////                        .appendTo(document.body)
+////                        .click(function () {
+////                            data.context = $('<p id="uploadinfo"></p>').text('正在上传...').replaceAll($(this));
+////                            var d = new Date();
+////                            data.submit();
+////                            stime = d.getTime();
+////                        });
+////                ChunkCount = 0;
+////                $('#pausebtn').click(function () {
+////                    data.abort();
+////                });
+////                $('#resumebtn').click(function () {
+////
+////                    data.uploadedBytes = 100000 * ChunkCount;
+////                    data.data = null;
+////                    data.submit();
+////
+////                });
+////            },
+////            fail: function (e, data) {
+////                alert('上传失败！')
+////                console.log(data.errorThrown);
+////            },
+////            done: function (e, data) {
+////                data.context = $("#uploadinfo").text('上传完成.')
+////                document.getElementById("myForm").reset()
+////            },
+////            progressall: function (e, data) {
+////                var progress = parseInt(data.loaded / data.total * 100, 10);
+////                $('#progress2 .bar').css(
+////                        'width',
+////                        progress + '%'
+////                );
+////            }
+////
+////        });
+//
+//    });
 </script>

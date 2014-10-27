@@ -11,7 +11,6 @@ class Admin2sController < ApplicationController
 
   def test_index
 
-    p 888888
     sql = 'true'
     if params[:name] && params[:name] != ''
       sql << " and name like '%#{params[:name]}%'"

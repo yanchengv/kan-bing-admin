@@ -13,7 +13,6 @@ class VideoUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    p 111122
     #p  model.instance_values
     #"uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
     #"/dfs/#{uuid[0,3]}/#{uuid[4,2]}/#{uuid[7,2]}"
