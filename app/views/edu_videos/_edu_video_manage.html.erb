@@ -22,15 +22,13 @@
         url: 'edu_videos/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: [ 'ID', '视频名称', '概要', '缩略图', '', '视频', '', '医生ID', '医生', '时间', '类型ID', '视频类型'],
+        colNames: [ 'ID', '视频名称', '概要', '缩略图地址',  '视频地址', '医生ID', '医生', '时间', '类型ID', '视频类型'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
             { name: 'name', index: 'name', align: "center", editable: true},
             { name: 'content', index: 'content', align: "center", editable: true},
             { name: 'image_url', index: 'image_url', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
-            { name: 'image', index: 'image', align: "center", editable: true, enctype: "multipart/form-data", edittype:'file'},
             { name: 'video_url', index: 'video_url', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
-            { name: 'video', index: 'video', align: "center", editable: true, enctype: "multipart/form-data", edittype: 'file'},
             { name: 'doctor_id', index: 'doctor_id', align: "center", editable: true, jsonmap: 'doctor.id', hidden: true, editrules: {edithidden: true}, edittype: 'select',
                 editoptions: {
                     dataInit: function (element) {
@@ -143,7 +141,14 @@
         $('#video_name').val('');
     });
     function upload_video(){
-        window.location.href='edu_videos/new_video';
+//        window.location.href='edu_videos/new_video';
+        $.ajax({
+            url:'edu_videos/new_video',
+            type:'get',
+            success:function(data){
+                $("#rightContent").html(data);
+            }
+        })
     }
 //    $('#image').fileupload({
 //        autoUpload: true,

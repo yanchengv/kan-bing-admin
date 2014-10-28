@@ -45,6 +45,10 @@ gem "httparty", "~> 0.12.0"
 gem 'curb'
 gem "mini_magick", "~> 3.7.0"
 gem 'carrierwave'
+gem 'uuidtools'
+gem 'aliyun-oss-ex', '~> 0.7.0.1402831795'
+gem 'rest-client'
+gem 'carrierwave-aliyun'
 
 # Use unicorn as the app server
 # gem 'unicorn'

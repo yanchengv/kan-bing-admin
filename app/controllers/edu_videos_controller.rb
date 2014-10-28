@@ -58,26 +58,36 @@ class EduVideosController < ApplicationController
 
   #上传图片
   def upload_image
-    puts '=============ssssssssssss'
-    random=SecureRandom.random_number(9999999999)
-    image_tmp_path='public/'+random.to_s+'.jpg'
-    image_tmp=params[:edu_video][:image]
-    image = MiniMagick::Image.open(image_tmp.path)
-    image.resize '224x150!'
-    image.write image_tmp_path
-    c = Curl::Easy.new(Settings.files)
-    c.multipart_form_post = true
-    c.http_post(Curl::PostField.file('theFile', image_tmp_path))
-    response=JSON.parse(c.body_str)
-    @data=''
-    if response['files']&&response['files'][0]['name']
-      FileUtils.remove_file image_tmp_path
-      uuid=response['files'][0]['name']
-      render :json => {flag: true, url: uuid}
 
+    file=params[:edu_video][:image]
+    tmpfile = getFileName(file.original_filename.to_s)
+    uuid = upload_video_img_bucket(file)
+    url = "http://webadmin-video.oss-cn-beijing.aliyuncs.com/" << uuid
+    if true
+      render :json => {flag: true, url: url}
     else
       render :json => {flag: false, url: ''}
     end
+
+    #random=SecureRandom.random_number(9999999999)
+    #image_tmp_path='public/'+random.to_s+'.jpg'
+    #image_tmp=params[:edu_video][:image]
+    #image = MiniMagick::Image.open(image_tmp.path)
+    #image.resize '224x150!'
+    #image.write image_tmp_path
+    #c = Curl::Easy.new(Settings.files)
+    #c.multipart_form_post = true
+    #c.http_post(Curl::PostField.file('theFile', image_tmp_path))
+    #response=JSON.parse(c.body_str)
+    #@data=''
+    #if response['files']&&response['files'][0]['name']
+    #  FileUtils.remove_file image_tmp_path
+    #  uuid=response['files'][0]['name']
+    #  render :json => {flag: true, url: uuid}
+    #
+    #else
+    #  render :json => {flag: false, url: ''}
+    #end
   end
 
   def upload
@@ -96,7 +106,6 @@ class EduVideosController < ApplicationController
     para[:image_url]= params[:edu_video][:image_url]
     para[:video_type_id]=params[:edu_video][:video_type]
     @video=EduVideo.new(para)
-    p @video.video_url
     if @video.save
       render :json => {flag: true}
     else

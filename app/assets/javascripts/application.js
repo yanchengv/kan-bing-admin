@@ -19,7 +19,6 @@
 //= require web_admin
 //= require select2
 //= require jquery.datetimepicker
-//= require jquery.fileupload
 //= require grid.locale-cn
 //= require_tree ./templates
 //= require_tree ./models
@@ -31,3 +30,4 @@
 //= require jquery.ztree.all-3.5.min
 //= require dialog-min.js
 //= require_tree .
+//= require jquery.fileupload
