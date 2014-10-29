@@ -1,12 +1,8 @@
-<% if @hospital.nil? %>
-    <% @hospital = Hospital.all %>
-<% end %>
-
   <select  id="patient_hospital_id" name="patient[hospital_id]" onchange="search()" >
   <!--<option value="">---请选择---</option>-->
-<% if !@hospital.empty? %>
+<% if !@hospitals.nil? && !@hospitals.empty? %>
 
-     <% @hospital.each do |hos| %>
+     <% @hospitals.each do |hos| %>
         <option id='hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
      <% end %>
 <% end %>
@@ -24,6 +20,7 @@
         document.getElementById('hos_<%= hos_id %>').setAttribute('selected','selected')
         <% end %>
         <% end %>
+        search()
     })
     function search() {
         var hos = $("#patient_hospital_id").val();
@@ -32,7 +29,7 @@
     function change_department2(hos_id){
         $.ajax({
                     type: "get",
-                    url: '/patients/get_department?hospital_id=' + hos_id,
+                    url: '/patients/get_department?menu_id=<%=@menu_id%>&hospital_id=' + hos_id,
                     data: 'text',
                     success: function (data) {
                         $("#pat_department").html(data);

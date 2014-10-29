@@ -17,7 +17,7 @@
   <% end %>
 </select>
   科室：<span id="search_dep_id"><select id="patient_dep" onchange="pat_search_dep()" >
-  <option value="">---请选择---</option>
+  <option value="all">---请选择---</option>
   <% if !@departments.nil? && !@departments.empty? %>
       <% @departments.each do |hos| %>
           <option id='serach_dep_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
@@ -30,6 +30,13 @@
   <option value="0">未激活</option>
 </select>
 </div>
+<form name="form1" method="post" action="" style="margin:10px;" >
+  <input type="checkbox" name="checkbox" value="3" id="is_edit">可编辑
+
+  <input type="checkbox" name="checkbox" value="2" id="is_del">可删除
+
+</form>
+
 <div style="margin:10px;">
   <a id="create_patient" class="btn btn-default btn-sm disabled" role="button">添加患者</a>
   <a id="edit_patient" class="btn btn-default btn-sm disabled" role="button">编辑患者</a>
@@ -41,6 +48,46 @@
 <div id="pager10"></div>
 
 <script>
+    $(function(){
+        $("input:checkbox").bind('change',function(){
+            if($(this).attr("checked"))
+            {
+                $(this).removeAttr("checked");
+            }
+            else
+            {
+                $(this).attr("checked",'true');   //你说的给文本框赋值可以在这里写
+            }
+            var str=""
+            $("[name='checkbox'][checked]").each(function(){
+                str+=$(this).val()+" "
+            })
+            var priority_ids = $.trim(str).split(" ")
+            $('#delete_patient').addClass('disabled')
+            $('#delete_patient').removeClass('active')
+            $('#edit_patient').addClass('disabled')
+            $('#edit_patient').removeClass('active')
+            for( var obj in priority_ids){
+                if(priority_ids[obj]==2){
+                    $('#delete_patient').removeClass('disabled')
+                    $('#delete_patient').addClass('active')
+                }
+                if(priority_ids[obj]==3){
+                    $('#edit_patient').removeClass('disabled')
+                    $('#edit_patient').addClass('active')
+                }
+            }
+            var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id="+ $('#patient_hos_id').val()+"&priority_ids="+priority_ids
+            jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+//            $.ajax({
+//                type:'get',
+//                url:'/doctors/get_doc_by_priority?menu_id=<%#=@menu_id%>&hos_id=<%#=@hos_id%>&priority_ids='+priority_ids,
+//                success:function(data){
+//
+//                }
+//            })
+        });
+    });
     var row_id;
     var selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
     jQuery("#list10").jqGrid({
@@ -80,73 +127,6 @@
 //        ondblClickRow: function(id){ alert("You double click row with id: "+id);},
         onSelectRow: function(id){
             selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
-//            row_id = id
-//            var selected_ids = ''+selectedIds
-//            if (selected_ids.split(',').length>0) {
-//                $('#edit_patient').removeClass('disabled')
-//                $('#edit_patient').addClass('active')
-//                $('#delete_patient').removeClass('disabled')
-//                $('#delete_patient').addClass('active')
-//                $('#send_email_patient').removeClass('disabled')
-//                $('#send_email_patient').addClass('active')
-//                $('#send_phone_patient').removeClass('disabled')
-//                $('#send_phone_patient').addClass('active')
-//            }
-//            if(selected_ids.split(',')[0]==''){
-//                $('#edit_patient').removeClass('active')
-//                $('#edit_patient').addClass('disabled')
-//                $('#delete_patient').removeClass('active')
-//                $('#delete_patient').addClass('disabled')
-//                $('#send_email_patient').removeClass('active')
-//                $('#send_email_patient').addClass('disabled')
-//                $('#send_phone_patient').removeClass('active')
-//                $('#send_phone_patient').addClass('disabled')
-//            }
-//            if (selected_ids.split(',').length>1){
-//                $('#edit_patient').removeClass('active')
-//                $('#edit_patient').addClass('disabled')
-//            }
-//            $.ajax({
-//                type:'get',
-//                url:'/patients/is_executable?id='+selectedIds+'&menu_id=<%=@menu_id%>',
-//                success:function(data){
-//                    if (data['is_manage']) {
-//                        $('#edit_patient').removeClass('disabled')
-//                        $('#edit_patient').addClass('active')
-//                        $('#delete_patient').removeClass('disabled')
-//                        $('#delete_patient').addClass('active')
-//                    }
-//                    if (data['is_edit']) {
-//                        $('#edit_patient').removeClass('disabled')
-//                        $('#edit_patient').addClass('active')
-//                    }
-//                    if (data['is_delete']) {
-//                        $('#delete_patient').removeClass('disabled')
-//                        $('#delete_patient').addClass('active')
-//                    }
-//                    var selected_ids = ''+selectedIds
-//                    if (selected_ids.split(',').length>0 && data['is_activated']) {
-//                        $('#send_email_patient').removeClass('disabled')
-//                        $('#send_email_patient').addClass('active')
-//                        $('#send_phone_patient').removeClass('disabled')
-//                        $('#send_phone_patient').addClass('active')
-//                    }
-//                    if(selected_ids.split(',')[0]==''){
-//                        $('#edit_patient').removeClass('active')
-//                        $('#edit_patient').addClass('disabled')
-//                        $('#delete_patient').removeClass('active')
-//                        $('#delete_patient').addClass('disabled')
-//                        $('#send_email_patient').removeClass('active')
-//                        $('#send_email_patient').addClass('disabled')
-//                        $('#send_phone_patient').removeClass('active')
-//                        $('#send_phone_patient').addClass('disabled')
-//                    }
-//                    if (selected_ids.split(',').length>1){
-//                        $('#edit_patient').removeClass('active')
-//                        $('#edit_patient').addClass('disabled')
-//                    }
-//                }
-//            })
         },
 //        gridComplete: function(){
 //            if(selectedIds){
@@ -242,7 +222,10 @@
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     });
     function pat_search_hos(){
-        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        $('#is_edit').removeAttr("checked");
+        $('#is_del').removeAttr("checked");
+        $('#is_edit').removeAttr("disabled");
+        $('#is_del').removeAttr("disabled");
         var hos_id = $('#patient_hos_id').val()
         $.ajax({
             type: 'get',
@@ -253,7 +236,7 @@
         });
         $.ajax({
             type: "get",
-            url: '/patients/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#patient_hos_id').val() + "&department_id=" + $('#patient_dep').val(),
+            url: '/doctors/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#patient_hos_id').val() + "&department_id=",
             data: 'text',
             success: function (data) {
                 if (data['add']){
@@ -290,12 +273,100 @@
                 }
             }
         })
+        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() +  "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
     function pat_search_dep(){
+        $('#is_edit').removeAttr("checked");
+        $('#is_del').removeAttr("checked");
+        if ($('#patient_dep').val()==''){
+//            $('#is_edit').removeAttr("checked");
+//            $('#is_del').removeAttr("checked");
+            $('#is_edit').removeAttr("disabled");
+            $('#is_del').removeAttr("disabled");
+        }else{
+//            $('#is_edit').attr("checked",'true');
+//            $('#is_del').attr("checked",'true');
+            $('#is_edit').attr("disabled",'true');
+            $('#is_del').attr("disabled",'true');
+        }
         jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        $.ajax({
+                    type: "get",
+                    url: '/doctors/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#patient_hos_id').val() + '&department_id=' + $('#patient_dep').val(),
+                    data: 'text',
+                    success: function (data) {
+                        if (data['add']){
+                            $('#create_patient').removeClass('disabled')
+                            $('#create_patient').addClass('active')
+                        }else{
+                            $('#create_patient').removeClass('active')
+                            $('#create_patient').addClass('disabled')
+                        }
+                        if (data['delete']){
+//                            $('#is_del').attr("checked",'true');
+                            $('#delete_patient').removeClass('disabled')
+                            $('#delete_patient').addClass('active')
+                        }else{
+//                            $('#is_del').removeAttr("checked");
+                            $('#delete_patient').removeClass('active')
+                            $('#delete_patient').addClass('disabled')
+                        }
+                        if (data['update']){
+//                            $('#is_edit').attr("checked",'true');
+                            $('#edit_patient').removeClass('disabled')
+                            $('#edit_patient').addClass('active')
+                        }else{
+//                            $('#is_edit').removeAttr("checked");
+                            $('#edit_patient').removeClass('active')
+                            $('#edit_patient').addClass('disabled')
+                        }
+                        if (data['show']){
+                            $('#send_email_patient').removeClass('disabled')
+                            $('#send_email_patient').addClass('active')
+                            $('#send_phone_patient').removeClass('disabled')
+                            $('#send_phone_patient').addClass('active')
+                        }else{
+                            $('#send_email_patient').removeClass('active')
+                            $('#send_email_patient').addClass('disabled')
+                            $('#send_phone_patient').removeClass('active')
+                            $('#send_phone_patient').addClass('disabled')
+                        }
+                    }
+                }
+        );
     }
     function search_activated(){
-        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        var str=""
+        $("[name='checkbox'][checked]").each(function(){
+            str+=$(this).val()+" "
+        })
+        var priority_ids = $.trim(str).split(" ")
+        $('#delete_patient').addClass('disabled')
+        $('#delete_patient').removeClass('active')
+        $('#edit_patient').addClass('disabled')
+        $('#edit_patient').removeClass('active')
+        for( var obj in priority_ids){
+            if(priority_ids[obj]==2){
+                $('#delete_patient').removeClass('disabled')
+                $('#delete_patient').addClass('active')
+            }
+            if(priority_ids[obj]==3){
+                $('#edit_patient').removeClass('disabled')
+                $('#edit_patient').addClass('active')
+            }
+        }
+        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val()+"&priority_ids="+priority_ids }).trigger("reloadGrid")
+        if ($('#is_activated').val()==1){
+            $('#send_email_patient').removeClass('active')
+            $('#send_email_patient').addClass('disabled')
+            $('#send_phone_patient').removeClass('active')
+            $('#send_phone_patient').addClass('disabled')
+        }else{
+            $('#send_email_patient').removeClass('disabled')
+            $('#send_email_patient').addClass('active')
+            $('#send_phone_patient').removeClass('disabled')
+            $('#send_phone_patient').addClass('active')
+        }
     }
     $(function() {
         $("#patient_hos_id").select2();
@@ -312,7 +383,7 @@
 
         $.ajax({
                     type: "get",
-                    url: '/patients/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#patient_hos_id').val() + '&department_id=' + $('#patient_dep').val(),
+                    url: '/doctors/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#patient_hos_id').val() + '&department_id=' + $('#patient_dep').val(),
                     data: 'text',
                     success: function (data) {
                         if (data['add']){

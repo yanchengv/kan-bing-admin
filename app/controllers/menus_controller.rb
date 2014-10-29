@@ -8,7 +8,7 @@ class MenusController < ApplicationController
 
 
   def index
-
+    render partial: 'menus/menu_manage'
   end
 
   def show_index
@@ -97,6 +97,18 @@ class MenusController < ApplicationController
     #     # end
     #   end
     # end
+    admin_priority = current_user.admin_priority params[:menu_id]
+    p admin_priority
+    @add_flag=admin_priority[:add_flag]
+    @delete_flag=admin_priority[:delete_flag]
+    @update_flag=admin_priority[:update_flag]
+    @show_flag=admin_priority[:show_flag]
+    p @add_flag,@delete_flag,@update_flag,@show_flag
+    @add_flag=true
+    @delete_flag=true
+    @update_flag=true
+    @show_flag=true
+    p @add_flag,@delete_flag,@update_flag,@show_flag
     menu_permissions = MenuPermission.all
     @role = Role2.new
     all_tree = @role.menu_ztree2(menu_permissions)
@@ -385,7 +397,12 @@ class MenusController < ApplicationController
         if !params[:priority].nil?
           priority_ids =  params[:priority]
         end
-        @menu = Menu.create(name:name,parent_id:parent_id,uri:uri)
+        @par_menu = Menu.find_by(id:parent_id)
+        if !@par_menu.parent_menu.nil? && (@par_menu.parent_menu.name=='医生管理' || @par_menu.parent_menu.name=='患者管理')
+          @menu = Menu.create(name:name,parent_id:parent_id,uri:uri,is_show:1)
+        else
+          @menu = Menu.create(name:name,parent_id:parent_id,uri:uri)
+        end
         if priority_ids != '' && priority_ids != []
           priority_ids.each do |priority_id|
             MenuPermission.create(menu_id:@menu.id,hospital_id:hospital_id,department_id:department_id,priority_id:priority_id)

@@ -28,6 +28,31 @@ class Admin2 < ActiveRecord::Base
     SecureRandom.urlsafe_base64
   end
 
+  def admin_priority menu_id
+    add_flag=false
+    delete_flag=false
+    update_flag=false
+    show_flag=false
+    @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,role2s_menu_permissions rmp,admin2s_role2s ar,admin2s a where rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=a.id and a.id=#{self.id} and mp.menu_id=#{menu_id}")
+    if !@menu_permissions.empty?
+      @menu_permissions.each do |menu_permission|
+        if menu_permission.priority_id == 1
+          add_flag = true
+        end
+        if menu_permission.priority_id == 2
+          delete_flag = true
+        end
+        if menu_permission.priority_id == 3
+          update_flag = true
+        end
+        if menu_permission.priority_id == 4
+          show_flag = true
+        end
+      end
+    end
+    return {add_flag:add_flag,delete_flag:delete_flag,update_flag:update_flag,show_flag:show_flag}
+  end
+
   def Admin2.encrypt(token)
     Digest::SHA1.hexdigest(token.to_s)
   end
