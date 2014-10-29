@@ -198,6 +198,7 @@ Rails.application.routes.draw do
       get 'search_department', to:'doctors#search_department'
       get 'is_permission', to:'doctors#is_permission'
       get 'show_index', to:'doctors#show_index'
+      get 'get_doc_by_priority', to:'doctors#get_doc_by_priority'
     end
   end
 

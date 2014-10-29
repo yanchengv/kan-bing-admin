@@ -140,22 +140,29 @@
     };
 
     function showRenameBtn(treeId, treeNode){
+        <% if @update_flag %>
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
         if ((''+treeNode.id).indexOf("_") > 0 || treeNode.level==0) {
             return false
         }else{
             return true
         }
+        <% end %>
+        return false
     }
     function showRenameBtn2(treeId, treeNode){
+        <% if @update_flag %>
         if (treeNode.level==1) {
             return true
         }else{
             return false
         }
+        <%  end %>
+        return false
     }
     var newCount = 1;
     function addHoverDom(treeId,treeNode){
+      <%if @add_flag %>
         if ((''+treeNode.id).indexOf("_") > 0) {
         }else{
         var sObj = $("#" + treeNode.tId + "_span");
@@ -202,8 +209,10 @@
 
             return false;
         });
+     <% end %>
     }
     function addHoverDom2(treeId,treeNode){
+        <%if @add_flag %>
         if (treeNode.level == 0) {
             var sObj = $("#" + treeNode.tId + "_span");
             if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
@@ -240,6 +249,7 @@
                 cancel: function () {}
             }).show();
         })
+        <% end %>
     }
     function create_child_menus(treeId,treeNode){
         var zTree=$.fn.zTree.getZTreeObj(treeId)
@@ -372,12 +382,17 @@
         return true;
     }
     function setRemoveBtn(treeId, treeNode) {  //判断是否为根结点,根结点不可删除
+        <%if @delete_flag %>
         if (treeNode.level == 0)
             return false;
         else
             return true;
+        <% else %>
+            return false;
+        <% end %>
     }
     function beforeDrag(treeId, treeNodes){
+        <%if @update_flag %>
         for (var i=0,l=treeNodes.length; i<l; i++) {
             if (treeNodes[i].drag === false) {
                 return false;
@@ -393,6 +408,8 @@
 //            return false;
 //        }
         return true;
+        <% end %>
+        return false
     }
 
     function beforeDrop(treeId, treeNodes, targetNode, moveType) {
@@ -543,6 +560,7 @@
     } ;
 
     function beforeDrag2(treeId, treeNodes){
+        <%if @update_flag %>
         for (var i=0,l=treeNodes.length; i<l; i++) {
             if (treeNodes[i].drag === false) {
                 return false;
@@ -552,6 +570,8 @@
             return false
         }
         return true;
+        <% end %>
+        return false;
     }
 
     function beforeDrop2(treeId, treeNodes, targetNode, moveType) {
@@ -773,10 +793,13 @@
         })
     }
     function setRemoveBtn3(treeId, treeNode){
+        <%if @delete_flag %>
         if (treeNode.level>1){
             return true;
         }
+        <% end %>
         return false;
+
     }
 
     function onRemove3(event, treeId, treeNode) {

@@ -23,7 +23,7 @@
 </select>
   科室：<span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" onchange="doc_search_dep()" >
   <% if params[:dep_id] == '' %>
-    <option value="">---请选择---</option>
+    <option value="all">---请选择---</option>
   <% end %>
   <% if !@departments.nil? && !@departments.empty? %>
       <% @departments.each do |hos| %>
@@ -37,6 +37,13 @@
   <option value="0">未激活</option>
 </select>
 </div>
+<form name="form1" method="post" action="" style="margin:10px;" >
+  <input type="checkbox" name="checkbox" value="3" id="is_edit">可编辑
+
+  <input type="checkbox" name="checkbox" value="2" id="is_del">可删除
+
+</form>
+
 <div style="margin:10px;" id="permission_buttons">
   <a id="create_doctor" class="btn btn-default btn-sm disabled" role="button">添加医生</a>
   <a id="edit_doctor" class="btn btn-default btn-sm disabled" role="button">编辑医生</a>
@@ -48,11 +55,51 @@
 <div id="pager12"></div>
 
 <script>
+    $(function(){
+        $("input:checkbox").bind('change',function(){
+            if($(this).attr("checked"))
+            {
+                $(this).removeAttr("checked");
+            }
+            else
+            {
+                $(this).attr("checked",'true');   //你说的给文本框赋值可以在这里写
+            }
+            var str=""
+            $("[name='checkbox'][checked]").each(function(){
+                str+=$(this).val()+" "
+            })
+            var priority_ids = $.trim(str).split(" ")
+            $('#delete_doctor').addClass('disabled')
+            $('#delete_doctor').removeClass('active')
+            $('#edit_doctor').addClass('disabled')
+            $('#edit_doctor').removeClass('active')
+            for( var obj in priority_ids){
+                if(priority_ids[obj]==2){
+                    $('#delete_doctor').removeClass('disabled')
+                    $('#delete_doctor').addClass('active')
+                }
+                if(priority_ids[obj]==3){
+                    $('#edit_doctor').removeClass('disabled')
+                    $('#edit_doctor').addClass('active')
+                }
+            }
+            var url= "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id="+ $('#doctor_hos_id').val()+"&priority_ids="+priority_ids
+            jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+//            $.ajax({
+//                type:'get',
+//                url:'/doctors/get_doc_by_priority?menu_id=<%#=@menu_id%>&hos_id=<%#=@hos_id%>&priority_ids='+priority_ids,
+//                success:function(data){
+//
+//                }
+//            })
+        });
+    });
     var lastSel = 0
     var row_id;
     var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
     jQuery("#list12").jqGrid({
-        url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=<%=@hos_id%>&dep_id=<%=@dep_id%>",
+        url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=<%=@hos_id%>",
         datatype: "json",
         height: "auto",
         colNames:['ID','姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','职称'],
@@ -255,6 +302,10 @@
         jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     });
     function doc_search_hos(){
+        $('#is_edit').removeAttr("checked");
+        $('#is_del').removeAttr("checked");
+        $('#is_edit').removeAttr("disabled");
+        $('#is_del').removeAttr("disabled");
         var hos_id = $('#doctor_hos_id').val()
         $.ajax({
             type: 'get',
@@ -303,9 +354,22 @@
                     }
                 }
         );
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
     function doc_search_dep(){
+        $('#is_edit').removeAttr("checked");
+        $('#is_del').removeAttr("checked");
+        if ($('#doctor_dep').val()==''){
+//            $('#is_edit').removeAttr("checked");
+//            $('#is_del').removeAttr("checked");
+            $('#is_edit').removeAttr("disabled");
+            $('#is_del').removeAttr("disabled");
+        }else{
+//            $('#is_edit').attr("checked",'true');
+//            $('#is_del').attr("checked",'true');
+            $('#is_edit').attr("disabled",'true');
+            $('#is_del').attr("disabled",'true');
+        }
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
         $.ajax({
                     type: "get",
@@ -320,16 +384,20 @@
                             $('#create_doctor').addClass('disabled')
                         }
                         if (data['delete']){
+//                            $('#is_del').attr("checked",'true');
                             $('#delete_doctor').removeClass('disabled')
                             $('#delete_doctor').addClass('active')
                         }else{
+//                            $('#is_del').removeAttr("checked");
                             $('#delete_doctor').removeClass('active')
                             $('#delete_doctor').addClass('disabled')
                         }
                         if (data['update']){
+//                            $('#is_edit').attr("checked",'true');
                             $('#edit_doctor').removeClass('disabled')
                             $('#edit_doctor').addClass('active')
                         }else{
+//                            $('#is_edit').removeAttr("checked");
                             $('#edit_doctor').removeClass('active')
                             $('#edit_doctor').addClass('disabled')
                         }
@@ -349,7 +417,33 @@
         );
     }
     function search_activated(){
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        var str=""
+        $("[name='checkbox'][checked]").each(function(){
+            str+=$(this).val()+" "
+        })
+        var priority_ids = $.trim(str).split(" ")
+        for( var obj in priority_ids){
+            if(priority_ids[obj]==2){
+                $('#delete_doctor').removeClass('disabled')
+                $('#delete_doctor').addClass('active')
+            }
+            if(priority_ids[obj]==3){
+                $('#edit_doctor').removeClass('disabled')
+                $('#edit_doctor').addClass('active')
+            }
+        }
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() + "&priority_ids=" + priority_ids }).trigger("reloadGrid")
+        if ($('#is_activated').val()==1){
+            $('#send_email_doctor').removeClass('active')
+            $('#send_email_doctor').addClass('disabled')
+            $('#send_phone_doctor').removeClass('active')
+            $('#send_phone_doctor').addClass('disabled')
+        }else{
+            $('#send_email_doctor').removeClass('disabled')
+            $('#send_email_doctor').addClass('active')
+            $('#send_phone_doctor').removeClass('disabled')
+            $('#send_phone_doctor').addClass('active')
+        }
     }
     $(function() {
         $("#doctor_hos_id").select2();

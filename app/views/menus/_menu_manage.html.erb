@@ -1,0 +1,149 @@
+<div style="margin:10px;">
+  <a id="create_menu" class="btn btn-primary btn-sm active" role="button">添加</a>
+  <a id="edit_menu" class="btn btn-default btn-sm disabled" role="button">编辑</a>
+  <a id="delete_menu" class="btn btn-default btn-sm disabled" role="button">删除</a>
+</div>
+<table id="list"></table>
+<div id="pager"></div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        <% @all_menu = Menu.all %>
+        <% @priorities = Priority.all %>
+        jQuery("#list").jqGrid({
+            url: '/menus/show_index',
+            datatype: "json",
+            mtype: 'GET',
+            colNames: ['ID', '菜单名称','父菜单','操作','URI'],
+            colModel: [
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
+//                { name: 'parent_name', index: 'parent_name', width: 100, align: "center", editable: true,edittype:"select",editoptions:{maxlength:20,value:"<% if !@all_menu.empty? %> <% @all_menu.each do |menu|%><%= menu.id %>:<%= menu.name %>;<% end %><% end %>"}},
+//                { name: 'priorities', index: 'priorities', width: 100, align: "center", editable: true,edittype:"select",editoptions:{multiple:"multiple",size:"2",maxlength:20,value:"<% if !@priorities.empty? %> <% @priorities.each do |priority|%><%= priority.id %>:<%= priority.name %>;<% end %><% end %>"}},
+                { name: 'parent_name', index: 'parent_name', width: 100, align: "center", editable: true,edittype:"select",editoptions:{dataUrl:'/menus/form_parent_menu'}},
+                { name: 'priorities', index: 'priorities', width: 100, align: "center", editable: true,edittype:"select",editoptions:{multiple:"multiple",dataUrl:'/menus/form_priority'}},
+                { name: 'uri', index: 'uri', width: 100, align: "center", editable: true}
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc",
+            autowidth: true,
+            jsonReader: {
+                root: "menus",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page", // 表示请求页码的参数名称
+                rows: "rows", // 表示请求行数的参数名称
+                id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                //   npage: null,
+                totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+                addoper: "add", // 当在add模式中提交数据时，操作的名称
+                deloper: "del", // 当在delete模式中提交数据时，操作的名称
+                subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+            },
+            editurl:'/menus/oper_action',
+            closeAfterAdd:true,
+            pager: jQuery('#pager'),
+            multiselect: true,
+            rowNum: 20,
+            altclass: 'altRowsColour',
+            width: '500',
+            height: 'auto',
+            caption: "菜单管理",
+            onSelectRow: function(id){
+//            {
+//                jQuery('#list12').restoreRow(lastSel);	// restore last grid row
+//                jQuery('#list12').editRow(id,true);		// show form elements for the row selected to enable updates
+//                lastSel = id;												// save current row ID so that when focus is gone it can be restored
+//            }
+                var selectedIds  = jQuery("#list").jqGrid("getGridParam","selarrrow");
+                var selected_ids = ''+selectedIds
+                if (selected_ids.split(',').length>0) {
+                    $('#edit_menu').removeClass('disabled')
+                    $('#edit_menu').addClass('active')
+                    $('#delete_menu').removeClass('disabled')
+                    $('#delete_menu').addClass('active')
+                }
+                if(selected_ids.split(',')[0]==''){
+                    $('#edit_menu').removeClass('active')
+                    $('#edit_menu').addClass('disabled')
+                    $('#delete_menu').removeClass('active')
+                    $('#delete_menu').addClass('disabled')
+                }
+                if (selected_ids.split(',').length>1){
+                    $('#edit_menu').removeClass('active')
+                    $('#edit_menu').addClass('disabled')
+                }
+            }
+        }).navGrid('#pager', {
+                    cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
+                    deltext:"删除",deltitle:"删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
+                {
+                    closeAfterEdit: true
+                },//edit
+                {
+                    closeAfterAdd:true
+                }//add
+        )
+
+    });
+
+    $( "#create_menu" ).button().on( "click", function() {
+        $.ajax({
+            type:'get',
+            url:'/menus/new?&menu_id=<%=@menu_id%>',
+            success:function(data){
+                $('#create_or_edit_form').html(data)
+
+            }
+        })
+        $('#create_or_edit_form').modal('show')
+    });
+    $( "#edit_menu").button().on( "click", function() {
+        var selectedIds  = jQuery("#list").jqGrid("getGridParam","selarrrow");
+        $.ajax({
+            type:'get',
+            url:'/menus/'+selectedIds+'/edit?menu_id=<%=@menu_id%>',
+            success:function(data){
+                $('#create_or_edit_form').html(data)
+            }
+        })
+        $('#create_or_edit_form').modal('show')
+    });
+    $( "#delete_menu").button().on( "click", function() {
+        var selectedIds  = jQuery("#list").jqGrid("getGridParam","selarrrow");
+        if (confirm("确定要删除吗？")) {
+            $.ajax({
+                type: 'delete',
+                url: '/menus/' + selectedIds + '?menu_id=<%=@menu_id%>',
+                success: function (data) {
+                    if (data['success']) {
+                        var url= "/menus/show_index?menu_id=<%=@menu_id%>"
+                        jQuery("#list").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+                        alert('删除成功!')
+                    } else {
+                        alert('删除失败!')
+                    }
+                }
+            })
+        }
+    })
+    //验证姓名
+    function check_name() {
+        console.log(arguments);
+        var reg = /^[a-zA-Z\u4e00-\u9fa5]+$/;
+        if (!reg.test(arguments[0])) {
+            return [false, "不能为空，只能为汉字或字母！"];
+        } else {
+            return [true, ""];
+        }
+    }
+</script>
+<div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+</div>
