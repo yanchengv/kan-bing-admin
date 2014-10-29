@@ -193,7 +193,7 @@
         if (selectedIds.length==1){
             $.ajax({
                 type:'get',
-                url:'/doctors/'+selectedIds+'/menu_id=<%=@menu_id%>&edit?hos_id=' + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val(),
+                url:'/doctors/'+selectedIds+'/edit?menu_id=<%=@menu_id%>&hos_id=' + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val(),
                 success:function(data){
                     $('#create_or_edit_form').html(data)
                 }
