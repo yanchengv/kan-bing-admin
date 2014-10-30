@@ -4,6 +4,7 @@ class ApkVersionsController < ApplicationController
   # GET /apk_versions
   # GET /apk_versions.json
   def index
+    render :partial => 'apk_versions/apk_versions_manage'
   end
 
   def show_index
