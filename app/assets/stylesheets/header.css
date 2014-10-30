@@ -6,7 +6,7 @@
 }
 
 #menu li a {
-    color: #d9dfe7;
+    color: #fff;
     font-family: "Microsoft YaHei", Arial;
     height: 50px;
     display: inline-block;
@@ -31,7 +31,8 @@
 }
 
 .navbar-inverse {
-    background-color: #2f343a;
+    background-color:#292827;
+    border-color:#343332 !important;
 }
 
 #menu .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
@@ -50,10 +51,10 @@
     background: transparent;
 }
 
-.logo {
+.logo,.logo a {
     margin-left: 20px;
     font-size: 24px;
-    color: #ffffff;
+    color: #fff;
     line-height: 50px;
     font-family: "Microsoft YaHei", Arial;
 }

@@ -9,7 +9,7 @@
                     url:treeNode.uri+'?hos_id='+treeNode.hospital_id+'&dep_id='+treeNode.department_id+'&menu_id='+treeNode.id,
                     type:'get',
                     beforeSend:function(response){
-                             $("#rightContent").html('loding...')
+                             $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#d9edf0;line-height:100px;font-weight:bold;">loading...</div>')
                     },
                     success:function (response,data){
                         $('#rightContent').html(response)
@@ -115,13 +115,25 @@
                     a.addClass("cur");
                 });
         //-->
+
     </SCRIPT>
     <style type="text/css">
-        #homeLeftMenus .ztree{width:20%;background:#403e3d;padding:0px;}
+        #homeLeftMenus .ztree{
+            width:20%;
+            background: #3a3633;
+            background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
+            background: -moz-linear-gradient(left,#3a3633 93%,#2a2725 100%);
+            background: -webkit-gradient(linear,left top,right top,color-stop(93%,#3a3633),color-stop(100%,#2a2725));
+            background: -webkit-linear-gradient(left,#3a3633 93%,#2a2725 100%);
+            background: -o-linear-gradient(left,#3a3633 93%,#2a2725 100%);
+            background: -ms-linear-gradient(left,#3a3633 93%,#2a2725 100%);
+            background: linear-gradient(to right,#3a3633 93%,#2a2725 100%);
+            padding:0px;
+        }
         #homeLeftMenus .ztree * {
             padding: 0;
             margin: 0;
-            font-size: 14px;
+            font-size: 16px;
             font-family:"Microsof YaHei", Verdana, Arial !important;
         }
         a{ font-family: Verdana, Arial !important;}
@@ -133,10 +145,20 @@
             line-height:39px;
             text-align:left;
             display:block;
-            background-color: #3a3633;
+            background: #3a3633;
+            background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
+            background: -moz-linear-gradient(left,#3a3633 93%,#2a2725 100%);
+            background: -webkit-gradient(linear,left top,right top,color-stop(93%,#3a3633),color-stop(100%,#2a2725));
+            background: -webkit-linear-gradient(left,#3a3633 93%,#2a2725 100%);
+            background: -o-linear-gradient(left,#3a3633 93%,#2a2725 100%);
+            background: -ms-linear-gradient(left,#3a3633 93%,#2a2725 100%);
+            background: linear-gradient(to right,#3a3633 93%,#2a2725 100%);
             padding-left:10px;
             padding-right:10px;
         }
+        #homeLeftMenus .ztree .level0{background:#403e3d;}
+
+        #homeLeftMenus .ztree .level1:hover a{color:#fff;text-decoration:none;}
         #homeLeftMenus .ztree li a.level0.cur {
             background-color: #3a3633;
         }
@@ -149,7 +171,7 @@
             display: block;
             color: #a8a8a8;
             line-height:39px;
-            font-size:14px;
+            font-size:16px;
             word-spacing: 2px;
             font-family:"Microsoft YaHei", Verdana, Arial, Helvetica, AppleGothic, sans-serif;
         }
@@ -208,7 +230,7 @@
 
         #homeLeftMenus .ztree li span.button.switch {
             width: 18px;
-            height: 34px;
+            height: 38px;
         }
         #homeLeftMenus .ztree li span.button.center_close {
             background-position: -74px -26px;
@@ -246,11 +268,17 @@
 
 
     </style>
-    <h1>sds</h1>
-    <div class="zleftMenusBackground left" style="height:100%;float:left;width:20%;" id="homeLeftMenus">
-      <ul id="leftMenus" class="ztree" style="width:100%"></ul>
+    <script>
+        window.onload = function(){
+            var h=window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+            document.getElementById("homeLeftMenus").style.height = (h-57)+"px";
+        }
+    </script>
+    <div class="zleftMenusBackground left" style="height:100%;float:left;width:15% !important;margin-top:-25px !important;overflow:hidden;" id="homeLeftMenus">
+      <ul id="leftMenus" class="ztree" style="width:100%;height:100%;overflow:hidden;margin-top:0px !important;"></ul>
     </div>
-    <div id="rightContent" style="float:right;width:80%">
+    <div id="rightContent" style="float:right;width:85%;padding:10px;position:relative;">
       欢迎登录
     </div>
 <%end%>

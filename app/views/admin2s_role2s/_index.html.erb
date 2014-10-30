@@ -150,7 +150,7 @@
             var zTree = $.fn.zTree.getZTreeObj(treeId)
             var d2 = dialog({
                 title:'新建子节点',
-                content:'<%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label :角色名 %><%= f.text_field :name,id:'role2_name',name:'name',class:"form-control"%><%= f.label :英文代称 %><%= f.text_field :code,id:'role2_code',name:'code',class:"form-control"%><%= f.label :说明 %><%= f.text_field :instruction,id:'role2_instruction',name:'instruction',class:"form-control"%></div><% end %>',
+                content:'<%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label "角色名" %><%= f.text_field :name,id:'role2_name',name:'name',class:"form-control"%><%= f.label "英文代称" %><%= f.text_field :code,id:'role2_code',name:'code',class:"form-control"%><%= f.label "说明" %><%= f.text_field :instruction,id:'role2_instruction',name:'instruction',class:"form-control"%></div><% end %>',
                 okValue: '确定',
                 ok: function () {
                     $.ajax({
@@ -275,7 +275,7 @@
   <ul id="role2Tree" class="ztree"></ul>
 </div>
 
-<div class="pull-left" style="height:360px;line-height:360px;font-size:24px;margin-right:15px;"><span class="glyphicon glyphicon-resize-horizontal"></span></div>
+<div class="pull-left" style="height:360px;line-height:360px;font-size:24px;margin-right:15px;"><span class="glyphicon glyphicon-arrow-right"></span></div>
 <div class="right">
   系统管理员：
   <ul id="admin2Tree" class="ztree"></ul>

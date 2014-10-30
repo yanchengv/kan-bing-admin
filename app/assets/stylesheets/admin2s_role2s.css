@@ -1,0 +1,14 @@
+.title {
+    color: #fff;
+    background: #4c4f53;
+    height: 34px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 34px;
+    padding: 0 10px;
+}
+.box{
+    border:1px solid #dcdcdc;
+    background:#fff;
+    padding:0px;
+}
