@@ -85,20 +85,20 @@
         colNames:['ID','姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','职称'],
         colModel:[
 //            {name:'act',index:'act', width:75,sortable:false},
-            {name:'id',index:'id', width:120, sorttype:"int"},
-            {name:'name',index:'name', width:55, editable: true },
-            {name:'credential_type',index:'credential_type', width:100, editable: true ,edittype:"select",editoptions:{value:"身份证:身份证;其他:其他"}},
-            {name:'credential_type_number',index:'credential_type_number', width:180, editable: true },
-            {name:'gender',index:'gender', width:40, editable: true },
-            {name:'birthday',index:'birthday', width:90, editable: true },
-            {name:'birthplace',index:'birthplace', width:80, editable: true },
-            {name:'province_name',index:'province_name', width:100, editable: true },
-            {name:'city_name',index:'city_name', width:100, editable: true },
-            {name:'hospital_id',index:'hospital_id', width:100, editable: true },
-            {name:'department_id',index:'department_id', width:100, editable: true },
-            {name:'mobile_phone',index:'mobile_phone', width:100, align:"right", editable: true },
-            {name:'email',index:'email', width:130, align:"right", editable: true },
-            {name:'professional_title',index:'professional_title', width:80,align:"right",editable: true }
+            {name:'id',index:'id', width:120, sorttype:"int",search:false },
+            {name:'name',index:'name', width:55, editable: true ,searchoptions: { sopt: ['eq']}},
+            {name:'credential_type',index:'credential_type', width:100, editable: true ,edittype:"select",editoptions:{value:"身份证:身份证;其他:其他"},search:false },
+            {name:'credential_type_number',index:'credential_type_number', width:180, editable: true ,searchoptions: { sopt: ['eq']}},
+            {name:'gender',index:'gender', width:40, editable: true ,search:false },
+            {name:'birthday',index:'birthday', width:90, editable: true ,search:false },
+            {name:'birthplace',index:'birthplace', width:80, editable: true ,search:false },
+            {name:'province_name',index:'province_name', width:100, editable: true,search:false  },
+            {name:'city_name',index:'city_name', width:100, editable: true ,search:false },
+            {name:'hospital_id',index:'hospital_id', width:100, editable: true,search:false  },
+            {name:'department_id',index:'department_id', width:100, editable: true,search:false  },
+            {name:'mobile_phone',index:'mobile_phone', width:100, align:"right", editable: true,searchoptions: { sopt: ['eq']} },
+            {name:'email',index:'email', width:130, align:"right", editable: true ,searchoptions: { sopt: ['eq']}},
+            {name:'professional_title',index:'professional_title', width:80,align:"right",editable: true,search:false }
 //            {name:'introduction',index:'introduction', width:260, sortable:false}
         ],
         pager: jQuery('#pager12'),
@@ -123,7 +123,7 @@
 
     var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
 //    自定义按钮
-    $("#list12").jqGrid('navGrid','#pager12',{edit:false,add:false,del:false,search:false});
+    $("#list12").jqGrid('navGrid','#pager12',{edit:false,add:false,del:false,search:false,searchtext:"查找"});
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '添加', caption: '添加',id:'addDoctor', onClickButton: addDoctor});
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailDoctor', onClickButton: sendEmailDoctor});
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhoneDoctor', onClickButton: sendPhoneDoctor});
@@ -177,34 +177,42 @@
 
 // 发送邮箱验证码
     function sendEmailDoctor(){
-        $.ajax({
-            type:'get',
-            url:'/doctors/send_email?doc_ids='+selectedIds+'',
-            success:function(data){
-                if (data['success']){
-                    alert('发送成功!')
-                }else {
-                    alert('发送失败!如果是多个,可能部分发送成功!')
+        if (selectedIds.length>0){
+            $.ajax({
+                type:'get',
+                url:'/doctors/send_email?doc_ids='+selectedIds+'',
+                success:function(data){
+                    if (data['success']){
+                        alert('发送成功!')
+                    }else {
+                        alert('发送失败!如果是多个,可能部分发送成功!')
+                    }
                 }
-            }
-        })
+            })
+        }else{
+            alert('请至少选择一条记录!')
+        }
         var url= "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
         jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     };
 //    发送手机验证码
     function sendPhoneDoctor(){
-        $.ajax({
-            type:'get',
-            url:'/doctors/send_phone?doc_ids='+selectedIds,
-            success:function(data){
-                if (data['success']){
-                    alert('发送成功!')
-                }else {
-                    alert('发送失败!如果是多个,可能部分发送成功!')
-                }
+        if (selectedIds.length>0){
+            $.ajax({
+                type:'get',
+                url:'/doctors/send_phone?doc_ids='+selectedIds,
+                success:function(data){
+                    if (data['success']){
+                        alert('发送成功!')
+                    }else {
+                        alert('发送失败!如果是多个,可能部分发送成功!')
+                    }
 
-            }
-        })
+                }
+            })
+        }else{
+            alert('请至少选择一条记录!')
+        }
         var url= "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
         jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     };
@@ -251,7 +259,7 @@
 
                         }else{
                             $('#sendEmailDoctor').remove();
-                            $('#sendPhoneDoctor').add();
+                            $('#sendPhoneDoctor').remove();
                         }
                     }
                 }
@@ -322,11 +330,15 @@
         }
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() + "&priority_ids=" + priority_ids }).trigger("reloadGrid")
         if ($('#is_activated').val()==1){
+            $('#sendEmailDoctor').remove();
+            $('#sendPhoneDoctor').remove();
 //            $('#send_email_doctor').removeClass('active')
 //            $('#send_email_doctor').addClass('disabled')
 //            $('#send_phone_doctor').removeClass('active')
 //            $('#send_phone_doctor').addClass('disabled')
         }else{
+            $("#list12").navButtonAdd('#pager12', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailDoctor', onClickButton: sendEmailDoctor});
+            $("#list12").navButtonAdd('#pager12', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhoneDoctor', onClickButton: sendPhoneDoctor});
 //            $('#send_email_doctor').removeClass('disabled')
 //            $('#send_email_doctor').addClass('active')
 //            $('#send_phone_doctor').removeClass('disabled')
