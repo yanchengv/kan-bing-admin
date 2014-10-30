@@ -370,6 +370,12 @@ class DoctorsController < ApplicationController
       # else
       #   @doctors_all = Doctor.all
       end
+    field = params[:searchField]
+    p params[:searchOper]
+    value = params[:searchString]
+    if !field.nil? && field!='' && !value.nil?
+      @doctors_all =  @doctors_all.where("#{field} like ?", "%#{value}%")
+    end
       if is_activated=='0'
         @doctors_all =  @doctors_all.where(is_activated:0)
       end
