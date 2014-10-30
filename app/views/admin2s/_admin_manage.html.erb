@@ -60,7 +60,8 @@
             caption: "管理员管理"
         }).navGrid('#pager', {
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
-                    deltext:"删除",deltitle:"删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
+                    deltext:"删除",deltitle:"删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                    refreshtext: "刷新", refreshtitle: "刷新"},
                 {
                     closeAfterEdit: true
                 },//edit
@@ -96,9 +97,9 @@
     //验证姓名
     function check_name() {
         console.log(arguments);
-        var reg = /^[a-zA-Z\u4e00-\u9fa5]+$/;
+        var reg = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
         if (!reg.test(arguments[0])) {
-            return [false, "不能为空，只能为汉字或字母！"];
+            return [false, "只能为汉字、字母、数字、下划线,下划线不能作为开头和结尾！"];
         } else {
             return [true, ""];
         }
