@@ -8,7 +8,7 @@ class MenusController < ApplicationController
 
 
   def index
-
+    render partial: 'menus/menu_manage'
   end
 
   def show_index
@@ -97,6 +97,18 @@ class MenusController < ApplicationController
     #     # end
     #   end
     # end
+    admin_priority = current_user.admin_priority params[:menu_id]
+    p admin_priority
+    @add_flag=admin_priority[:add_flag]
+    @delete_flag=admin_priority[:delete_flag]
+    @update_flag=admin_priority[:update_flag]
+    @show_flag=admin_priority[:show_flag]
+    p @add_flag,@delete_flag,@update_flag,@show_flag
+    @add_flag=true
+    @delete_flag=true
+    @update_flag=true
+    @show_flag=true
+    p @add_flag,@delete_flag,@update_flag,@show_flag
     menu_permissions = MenuPermission.all
     @role = Role2.new
     all_tree = @role.menu_ztree2(menu_permissions)
@@ -230,26 +242,26 @@ class MenusController < ApplicationController
         @menu_permission_ids = menu_per_ids
         p @menu_permission_ids
       end
-      @menu_p = @menu
-      role_tree = @role2.get_zTree.as_json
-      p role_tree
-      p params[:parent_menu]
-      p params[:parent_menu]['id']
-      curr_tree = nil
-      role_tree.each do |tree|
-        if tree['id'] == params[:parent_menu]['id'].to_i
-          curr_tree = tree
-          p curr_tree
-        end
-      end
-      menus = []
-      menu = {id:curr_tree['id'],name:curr_tree['name'],pId:curr_tree['pId'],menu_permission_id:curr_tree['menu_permission_id']}
-      menus.push(menu)
-      menus = loop_get_tree(menus,curr_tree.as_json)
-      p menus
-      menus.each do |menu|
-        @menu_permission_ids = get_menu_per(menus,menu,menu_id,@menu_permission_ids)
-      end
+      # @menu_p = @menu
+      # role_tree = @role2.get_zTree.as_json
+      # p role_tree
+      # p params[:parent_menu]
+      # p params[:parent_menu]['id']
+      # curr_tree = nil
+      # role_tree.each do |tree|
+      #   if tree['id'] == params[:parent_menu]['id'].to_i
+      #     curr_tree = tree
+      #     p curr_tree
+      #   end
+      # end
+      # menus = []
+      # menu = {id:curr_tree['id'],name:curr_tree['name'],pId:curr_tree['pId'],menu_permission_id:curr_tree['menu_permission_id']}
+      # menus.push(menu)
+      # menus = loop_get_tree(menus,curr_tree.as_json)
+      # p menus
+      # menus.each do |menu|
+      #   @menu_permission_ids = get_menu_per(menus,menu,menu_id,@menu_permission_ids)
+      # end
       @role_menu_permissions = Role2sMenuPermission.where(role2_id:role_id,menu_permission_id: @menu_permission_ids)
       if !@role_menu_permissions.empty?
         @role_menu_permissions.each do |role_menu_permission|
@@ -262,7 +274,7 @@ class MenusController < ApplicationController
     render :json => {success:true}
     end
 
-  def get_menu_per(menus,menu,menu_id,result)
+  def get_menu_per(menus,menu,menu_id,result)  #循环遍历菜单树,找出当前结点中所有父结点中只有一个子结点的menu_permission_id
       p menu
       p 'a'
       p menu[:pId]
@@ -290,7 +302,7 @@ class MenusController < ApplicationController
     return result
     end   #在remove_nodes中调用
 
-  def loop_get_tree(menus,node)     #在remove_nodes中调用
+  def loop_get_tree(menus,node)     #在remove_nodes中调用  　获得当前删除结点所在整个菜单树
     if !node['children'].nil? && node['children'] != []
       node['children'].each do |child_node|
         child_tree = {id:child_node['id'],name:child_node['name'],pId:child_node['pId'],menu_permission_id:child_node['menu_permission_id']}
@@ -385,7 +397,12 @@ class MenusController < ApplicationController
         if !params[:priority].nil?
           priority_ids =  params[:priority]
         end
-        @menu = Menu.create(name:name,parent_id:parent_id,uri:uri)
+        @par_menu = Menu.find_by(id:parent_id)
+        if !@par_menu.parent_menu.nil? && (@par_menu.parent_menu.name=='医生管理' || @par_menu.parent_menu.name=='患者管理')
+          @menu = Menu.create(name:name,parent_id:parent_id,uri:uri,is_show:1)
+        else
+          @menu = Menu.create(name:name,parent_id:parent_id,uri:uri)
+        end
         if priority_ids != '' && priority_ids != []
           priority_ids.each do |priority_id|
             MenuPermission.create(menu_id:@menu.id,hospital_id:hospital_id,department_id:department_id,priority_id:priority_id)

@@ -1,10 +1,10 @@
 <select id="doctor_department_id" name="doctor[department_id]" >
-<option value="">---请选择---</option>
-  <% if @department.nil? %>
-      <% @department = Department.all %>
-  <% end %>
-      <% if !@department.empty? %>
-      <% @department.each do |dep| %>
+<!--<option value="">---请选择---</option>-->
+  <%# if @departments.nil? %>
+      <%# @departments = Department.all %>
+  <%# end %>
+      <% if !@departments.nil? && !@departments.empty? %>
+      <% @departments.each do |dep| %>
           <option id="dep_<%= dep.id %>" value="<%= dep.id %>"><%= dep.name %></option>
       <% end %>
       <% end %>

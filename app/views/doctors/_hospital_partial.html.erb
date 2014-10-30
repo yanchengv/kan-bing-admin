@@ -1,16 +1,15 @@
-<% if @hospital.nil? %>
-    <% @hospital = Hospital.all %>
+<% if @hospitals.nil? %>
+    <% @hospitals = Hospital.all %>
 <% end %>
 
   <select  id="doctor_hospital_id" name="doctor[hospital_id]" onchange="search()" >
   <!--<option value="">---请选择---</option>-->
-<% if !@hospital.empty? %>
+<% if !@hospitals.empty? %>
 
-     <% @hospital.each do |hos| %>
+     <% @hospitals.each do |hos| %>
         <option id='hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
      <% end %>
 <% end %>
-    <%#= f.select :hospital,options_from_collection_for_select(Hospital.all,'id','name'), :placeholder => "搜索",:style => "display:none;" %>
    </select>
 
 <script>
@@ -24,15 +23,16 @@
         document.getElementById('hos_<%= hos_id %>').setAttribute('selected','selected')
         <% end %>
         <% end %>
+        search()
     })
-    function search(str) {
+    function search() {
         var hos = $("#doctor_hospital_id").val();
         change_department(hos, 'department_id') ;
     }
     function change_department(hos_id, select_id){
         $.ajax({
                     type: "get",
-                    url: '/doctors/get_department?hospital_id=' + hos_id,
+                    url: '/doctors/get_department?menu_id=<%=@menu_id%>&hospital_id=' + hos_id,
                     data: 'text',
                     success: function (data) {
                         $("#doc_department").html(data);

@@ -114,11 +114,12 @@ class DoctorsController < ApplicationController
     @dep_id = params[:dep_id]
     @menu_id = params[:menu_id]
     @menu = Menu.where(id:@menu_id).first
-    @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.parent_id} and mp.menu_id=menus.id and d.id=mp.department_id GROUP BY d.id;")
+    # @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.parent_id} and mp.menu_id=menus.id and d.id=mp.department_id GROUP BY d.id;")
+    @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu_id} and mp.menu_id=menus.id and d.id=mp.department_id GROUP BY d.id;")
     if @departments.empty?
       @departments = Department.where(hospital_id:params[:hos_id])
     end
-    @dep = Department.find_by(id:params[:dep_id])
+    # @dep = Department.find_by(id:params[:dep_id])
 =begin
     hospital_ids = []
     department_ids = []
@@ -293,24 +294,88 @@ class DoctorsController < ApplicationController
     # end
     # dep_id = dep_ids
 =end
+    @menu_id = params[:menu_id]
+    @menu = Menu.find_by(id:@menu_id).parent_menu
+    @child_menus = @menu.child_menus
+    menu_ids = []
+    if !@child_menus.empty?
+      @child_menus.each do |child_menu|
+        menu_ids.push(child_menu.id)
+      end
+    end
+    # @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.parent_id} and mp.menu_id=menus.id and d.id=mp.department_id GROUP BY d.id;")
+    @departments=Department.find_by_sql("select d.id from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id in (#{menu_ids.to_s[1..-2]})and mp.menu_id=menus.id and d.id=mp.department_id and d.hospital_id=#{params[:hos_id]} GROUP BY d.id;")
+    p @departments
+    if @departments.empty? || @departments == []
+      dep_id = ''
+    end
+    priority_ids = params[:priority_ids]
+    if !priority_ids.nil?
+      # @menu = Menu.find_by(id:params[:menu_id])
+      # @menu = Menu.find_by_sql("select m.id,m.name from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{@menu.parent_id} and mp.hospital_id=#{params[:hos_id]}").first
+      @departments=Department.find_by_sql("select d.id from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id in (#{menu_ids.to_s[1..-2]}) and mp.menu_id=menus.id and d.id=mp.department_id and d.hospital_id=#{params[:hos_id]} GROUP BY d.id;")
+      priority_ids = priority_ids.split(',')
+      p priority_ids
+      if priority_ids != []
+        priority_ids.each do |priority_id|
+          if @departments != []
+            @dep = Department.find_by_sql("select d.id,d.name from departments d,menus m, menu_permissions mp, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and mp.department_id=d.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id in (#{menu_ids.to_s[1..-2]}) and mp.hospital_id=#{params[:hos_id]} and mp.priority_id=#{priority_id}")
+            if !@last_dep.nil?
+              @dep = (@last_dep&@dep)
+            end
+            @last_dep = @dep
+          else
+            @hos = MenuPermission.find_by_sql("select mp.menu_id,mp.hospital_id,mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{@menu.id} and mp.hospital_id=#{params[:hos_id]} and mp.priority_id=#{priority_id}")
+            if !@last_dep.nil?
+              if @hos == [] || @last_dep == []
+                @last_dep = []
+              else
+                @last_dep = ''
+              end
+            else
+              if @hos == []
+                @last_dep = []
+              else
+                @last_dep = ''
+              end
+            end
+          end
+        end
+      end
+      p @last_dep
+      if !@last_dep.nil?
+        dep_id = @last_dep
+      end
+    end
+    p 'aa'
     if !params[:hos_id].nil? && params[:hos_id] != ''
       hos_id = params[:hos_id]
     end
     if !params[:dep_id].nil? && params[:dep_id] != ''
-      dep_id = params[:dep_id]
+      if params[:dep_id] == 'all'
+        dep_id = ''
+      else
+        dep_id = params[:dep_id]
+      end
     end
       is_activated = params[:is_activated]
       noOfRows = params[:rows]
       page = params[:page]
       @menu_name = params[:menu_name]
       @doctors_all = nil
-      if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != '' && dep_id != []
+      if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
         @doctors_all = Doctor.where(hospital_id:hos_id,department_id:dep_id)
       elsif !hos_id.nil? && hos_id != ''
         @doctors_all = Doctor.where(hospital_id:hos_id)
       # else
       #   @doctors_all = Doctor.all
       end
+    field = params[:searchField]
+    p params[:searchOper]
+    value = params[:searchString]
+    if !field.nil? && field!='' && !value.nil?
+      @doctors_all =  @doctors_all.where("#{field} like ?", "%#{value}%")
+    end
       if is_activated=='0'
         @doctors_all =  @doctors_all.where(is_activated:0)
       end
@@ -408,9 +473,38 @@ class DoctorsController < ApplicationController
       @department = Department.all
     end
 =end
+    menu_name = '医生管理'
+    @menu=Menu.where(name:menu_name).first
+    @hos_menus = Menu.find_by_sql("select m.id,m.name,mp.hospital_id as hos_id,mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{@menu.id}")
+    hos_ids = []
+    if !@hos_menus.empty?
+      @hos_menus.each do |hos_menu|
+        @dep_menu_pers = MenuPermission.find_by_sql("select mp.menu_id,mp.hospital_id,mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{hos_menu.id}")
+        if !@dep_menu_pers.empty?
+          flag=false
+          @dep_menu_pers.each do |menu_per|
+            if menu_per.priority_id==1
+              flag=true
+            end
+          end
+          if flag
+            hos_ids.push(hos_menu.hos_id)
+          end
+        else
+          if hos_menu.priority_id == 1
+            hos_ids.push(hos_menu.hos_id)
+          end
+        end
+      end
+    end
+    @hospitals=Hospital.where(id:hos_ids)
+    # @hospitals=Hospital.find_by_sql("select h.id,h.name from hospitals h,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.id} and mp.menu_id=menus.id and h.id=mp.hospital_id and mp.priority_id=1 GROUP BY h.id;")
+    @menu_id = params[:menu_id]
+    # @menu = Menu.where(id:@menu_id).first
+    # @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu_id} and mp.menu_id=menus.id and d.id=mp.department_id and d.hospital_id=#{params[:hos_id]} GROUP BY d.id;")
     @doctor = Doctor.new
-    @hospital = Hospital.where(id:params[:hos_id])
-    @department = Department.where(hospital_id:params[:hos_id])
+    # @hospitals = Hospital.where(id:params[:hos_id])
+    # @department = Department.where(hospital_id:params[:hos_id])
     render partial: 'doctors/form'
   end
 
@@ -443,9 +537,54 @@ class DoctorsController < ApplicationController
       @department = Department.all
     end
 =end
+    menu_name = '医生管理'
+    @menu=Menu.where(name:menu_name).first
+    @hos_menus = Menu.find_by_sql("select m.id,m.name,mp.hospital_id as hos_id,mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{@menu.id}")
+    hos_ids = []
+    if !@hos_menus.empty?
+      @hos_menus.each do |hos_menu|
+        @dep_menu_pers = MenuPermission.find_by_sql("select mp.menu_id,mp.hospital_id,mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{hos_menu.id}")
+        if !@dep_menu_pers.empty?
+          flag=false
+          @dep_menu_pers.each do |menu_per|
+            if menu_per.priority_id==3
+              flag=true
+            end
+          end
+          if flag
+            hos_ids.push(hos_menu.hos_id)
+          end
+        else
+          if hos_menu.priority_id == 3
+            hos_ids.push(hos_menu.hos_id)
+          end
+        end
+      end
+    end
+    @hospitals=Hospital.where(id:hos_ids)
+    # @hospitals=Hospital.find_by_sql("select h.id,h.name from hospitals h,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.id} and mp.menu_id=menus.id and h.id=mp.hospital_id and mp.priority_id=1 GROUP BY h.id;")
+    @menu_id = params[:menu_id]
     @doctor = Doctor.where(id:params[:id]).first
-    @hospital = Hospital.where(id:params[:hos_id])
-    @department = Department.where(hospital_id:params[:hos_id])
+    @menu1 = Menu.where(name:'医生管理').first
+    @child_menus = @menu1.child_menus
+    menu_ids = []
+    if !@child_menus.empty?
+      @child_menus.each do |child_menu|
+        menu_ids.push(child_menu.id)
+      end
+    end
+    @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id in (#{menu_ids.to_s[1..-2]}) and mp.menu_id=menus.id and d.id=mp.department_id and d.hospital_id=#{@doctor.hospital_id} and mp.priority_id=1 GROUP BY d.id;")
+    if @departments.empty?
+      @departments = Department.where(hospital_id:@doctor.hospital_id)
+    end
+    @hospitals = Hospital.where(id:@doctor.hospital_id)
+    if !@doctor.department_id.nil? && @doctor.department_id != ''
+      @departments = Department.where(id:@doctor.department_id)
+    else
+      @department = Department.where(hospital_id:@doctor.hospital_id)
+    end
+    # @hospital = Hospital.where(id:params[:hos_id])
+    # @department = Department.where(hospital_id:params[:hos_id])
     render partial: 'doctors/form'
   end
 
@@ -505,6 +644,7 @@ class DoctorsController < ApplicationController
   end
 
   def get_department
+=begin
     @department = Department.all
     @hospital_id = nil
     if !params[:province_id].nil? && params[:province_id]!='' && params[:province_id]!='undefined'
@@ -529,6 +669,21 @@ class DoctorsController < ApplicationController
     # @doctor = Doctor.new
     # @doctor.set_part
     # render json:{success:true,data:@department}
+=end
+    @menu_id = params[:menu_id]
+    @menu = Menu.find_by(id:@menu_id).parent_menu
+    @child_menus = @menu.child_menus
+    menu_ids = []
+    if !@child_menus.empty?
+      @child_menus.each do |child_menu|
+        menu_ids.push(child_menu.id)
+      end
+    end
+    @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id in (#{menu_ids.to_s[1..-2]}) and mp.menu_id=menus.id and d.id=mp.department_id and d.hospital_id=#{params[:hospital_id]} and mp.priority_id=1 GROUP BY d.id;")
+    p  @departments
+    if @departments.empty? || @departments == []
+      @departments = Department.where(hospital_id:params[:hospital_id])
+    end
     if params[:model_class] == 'patient'
       render partial: 'patients/department_partial'
     else
@@ -825,9 +980,17 @@ class DoctorsController < ApplicationController
 
   def search_department
     @menu_id = params[:menu_id]
-    @menu = Menu.where(id:@menu_id).first
-    @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.parent_id} and mp.menu_id=menus.id and d.id=mp.department_id GROUP BY d.id;")
-    if !@departments.empty?
+    @menu = Menu.find_by(id:@menu_id).parent_menu
+    @child_menus = @menu.child_menus
+    menu_ids = []
+    if !@child_menus.empty?
+      @child_menus.each do |child_menu|
+        menu_ids.push(child_menu.id)
+      end
+    end
+    @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id in (#{menu_ids.to_s[1..-2]}) and mp.menu_id=menus.id and d.id=mp.department_id and d.hospital_id=#{params[:hos_id]} GROUP BY d.id;")
+    # @departments=Department.find_by_sql("select d.id,d.name from departments d,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{current_user.id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.parent_id} and mp.menu_id=menus.id and d.id=mp.department_id GROUP BY d.id;")
+    if @departments.empty? || @departments == []
       @departments = Department.where(hospital_id:params[:hos_id])
     end
 =begin
@@ -894,14 +1057,29 @@ class DoctorsController < ApplicationController
     all_flag=true
     hos_id = params[:hospital_id]
     dep_id = params[:department_id]
-    @menu = Menu.where(name:'医生管理').first
+    @menu_id = params[:menu_id]
+    @menu = Menu.find_by(id:@menu_id).parent_menu
     @child_menus = @menu.all_child(Menu.all)
     if @child_menus != []
       @child_menus.each do |child_menu|
-        if dep_id==''
-          @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m where mp.menu_id=m.id and m.id=#{child_menu.id} and mp.hospital_id=#{hos_id}")
+        @hos_menu = Menu.find_by_sql("select m.id,m.name from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{@menu.id} and mp.hospital_id=#{params[:hospital_id]}").first
+        @dep_menu = Menu.find_by_sql("select m.id,m.name from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{@hos_menu.id}")
+        if dep_id=='' || dep_id== 'all'
+          p @hos_menu
+          # if @dep_menu != []
+            add_flag = true
+            delete_flag = false
+            update_flag = false
+            show_flag = true
+          # else
+          #   @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.id=#{child_menu.id} and mp.hospital_id=#{hos_id}")
+          # end
         else
-          @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m where mp.menu_id=m.id and m.id=#{child_menu.id} and mp.hospital_id=#{hos_id} and mp.department_id=#{dep_id}")
+          if @dep_menu != []
+            @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.id=#{child_menu.id} and mp.hospital_id=#{hos_id} and mp.department_id=#{dep_id}")
+          else
+            @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.id=#{child_menu.id} and mp.hospital_id=#{hos_id}")
+          end
         end
         if @menu_permissions != []
           break
@@ -909,7 +1087,7 @@ class DoctorsController < ApplicationController
       end
     end
     p @menu_permissions
-    if !@menu_permissions.empty?
+    if !@menu_permissions.nil? && !@menu_permissions.empty?
       @menu_permissions.each do |menu_permission|
         if menu_permission['priority_id'] == 1
           add_flag = true
@@ -1054,6 +1232,25 @@ class DoctorsController < ApplicationController
 =end
     p add_flag,delete_flag,update_flag,show_flag
     render json: {add:add_flag,delete:delete_flag,update:update_flag,show:show_flag}
+  end
+
+  def get_doc_by_priority
+    p params[:priority_ids]
+    priority_ids = params[:priority_ids]
+    @menu = Menu.find_by(id:params[:menu_id])
+    priority_ids = priority_ids.split(',')
+    if priority_ids != []
+      priority_ids.each do |priority_id|
+        if !@menu.child_menus.empty?
+            @dep = Department.find_by_sql("select d.id,d.name from departments d,menus m, menu_permissions mp, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and mp.department_id=d.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{@menu.id} and mp.hospital_id=#{params[:hos_id]} and mp.priority_id=#{priority_id}")
+            if !@last_dep.nil?
+              @dep = (@last_dep&@dep)
+            end
+            @last_dep = @dep
+        end
+      end
+    end
+    p @last_dep
   end
 
   private

@@ -21,6 +21,7 @@
   *= require zTreeStyle
   *= require ui-dialog
  *= require_self
+   *= require admin2s_role2s
 
  */
 .ui-jqdialog-content .DataTD {
