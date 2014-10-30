@@ -4,7 +4,7 @@ class Doctor < ActiveRecord::Base
   before_update :update_default_value
   after_save :save_patient
   has_one :user, :dependent => :destroy
-  belongs_to :patient, :dependent => :destroy, :foreign_key => :patient_id
+  # belongs_to :patient, :dependent => :destroy, :foreign_key => :patient_id
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city
   belongs_to :hospital
