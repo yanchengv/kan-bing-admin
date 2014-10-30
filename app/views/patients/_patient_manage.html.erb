@@ -174,34 +174,42 @@
 
 //    发送邮箱激活码
     function sendEmailPatient(){
-        $.ajax({
-            type:'get',
-            url:'/patients/send_email?pat_ids='+selectedIds,
-            success:function(data){
-                if (data['success']){
-                    alert('发送成功!')
-                }else {
-                    alert('发送失败!如果是多个,可能部分发送成功!')
+        if (selectedIds.length>0) {
+            $.ajax({
+                type: 'get',
+                url: '/patients/send_email?pat_ids=' + selectedIds,
+                success: function (data) {
+                    if (data['success']) {
+                        alert('发送成功!')
+                    } else {
+                        alert('发送失败!如果是多个,可能部分发送成功!')
+                    }
                 }
-            }
-        })
+            })
+        }else{
+            alert('请至少选择一条记录!')
+        }
         var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     }
 //    发送手机激活码
     function sendPhonePatient(){
-        $.ajax({
-            type:'get',
-            url:'/patients/send_phone?pat_ids='+selectedIds,
-            success:function(data){
-                if (data['success']){
-                    alert('发送成功!')
-                }else {
-                    alert('发送失败!如果是多个,可能部分发送成功!')
-                }
+        if (selectedIds.length>0) {
+            $.ajax({
+                type:'get',
+                url:'/patients/send_phone?pat_ids='+selectedIds,
+                success:function(data){
+                    if (data['success']){
+                        alert('发送成功!')
+                    }else {
+                        alert('发送失败!如果是多个,可能部分发送成功!')
+                    }
 
-            }
-        })
+                }
+            })
+        }else{
+            alert('请至少选择一条记录!')
+        }
         var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     }
@@ -344,15 +352,19 @@
         }
         jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val()+"&priority_ids="+priority_ids }).trigger("reloadGrid")
         if ($('#is_activated').val()==1){
-            $('#send_email_patient').removeClass('active')
-            $('#send_email_patient').addClass('disabled')
-            $('#send_phone_patient').removeClass('active')
-            $('#send_phone_patient').addClass('disabled')
+            $('#sendEmailPatient').remove();
+            $('#sendPhonePatient').remove();
+//            $('#send_email_patient').removeClass('active')
+//            $('#send_email_patient').addClass('disabled')
+//            $('#send_phone_patient').removeClass('active')
+//            $('#send_phone_patient').addClass('disabled')
         }else{
-            $('#send_email_patient').removeClass('disabled')
-            $('#send_email_patient').addClass('active')
-            $('#send_phone_patient').removeClass('disabled')
-            $('#send_phone_patient').addClass('active')
+            $("#list10").navButtonAdd('#pager10', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailPatient', onClickButton: sendEmailPatient})
+            $("#list10").navButtonAdd('#pager10', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhonePatient', onClickButton: sendPhonePatient})
+//            $('#send_email_patient').removeClass('disabled')
+//            $('#send_email_patient').addClass('active')
+//            $('#send_phone_patient').removeClass('disabled')
+//            $('#send_phone_patient').addClass('active')
         }
     }
     $(function() {
