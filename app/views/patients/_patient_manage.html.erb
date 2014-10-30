@@ -37,13 +37,6 @@
 
 </form>
 
-<div style="margin:10px;">
-  <a id="create_patient" class="btn btn-default btn-sm disabled" role="button">添加患者</a>
-  <a id="edit_patient" class="btn btn-default btn-sm disabled" role="button">编辑患者</a>
-  <a id="delete_patient" class="btn btn-default btn-sm disabled" role="button">删除患者</a>
-  <a id="send_email_patient" class="btn btn-default btn-sm disabled" role="button">发送邮箱激活码</a>
-  <a id="send_phone_patient" class="btn btn-default btn-sm disabled" role="button">发送手机激活码</a>
-</div>
 <table id="list10"></table>
 <div id="pager10"></div>
 
@@ -63,29 +56,24 @@
                 str+=$(this).val()+" "
             })
             var priority_ids = $.trim(str).split(" ")
-            $('#delete_patient').addClass('disabled')
-            $('#delete_patient').removeClass('active')
-            $('#edit_patient').addClass('disabled')
-            $('#edit_patient').removeClass('active')
+//         不选中多选框后删除对应按钮
+            $('#edit').remove();
+            $('#delete').remove();
             for( var obj in priority_ids){
                 if(priority_ids[obj]==2){
-                    $('#delete_patient').removeClass('disabled')
-                    $('#delete_patient').addClass('active')
+//                    激活删除
+                    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '删除', caption: '删除',id:'delete', onClickButton: deletePatient})
+
                 }
                 if(priority_ids[obj]==3){
-                    $('#edit_patient').removeClass('disabled')
-                    $('#edit_patient').addClass('active')
+//                    激活修改
+                    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '编辑', caption: '编辑',id:'edit', onClickButton: editPatient})
+
                 }
             }
             var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id="+ $('#patient_hos_id').val()+"&priority_ids="+priority_ids
             jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
-//            $.ajax({
-//                type:'get',
-//                url:'/doctors/get_doc_by_priority?menu_id=<%#=@menu_id%>&hos_id=<%#=@hos_id%>&priority_ids='+priority_ids,
-//                success:function(data){
-//
-//                }
-//            })
+
         });
     });
     var row_id;
@@ -110,7 +98,7 @@
             {name:'department_id',index:'department_id', width:100},
             {name:'mobile_phone',index:'mobile_phone', width:100, align:"right",sorttype:"float"},
             {name:'email',index:'email', width:130, align:"right",sorttype:"float"},
-            {name:'last_treat_time',index:'last_treat_time', width:80,align:"right",sorttype:"float"},
+            {name:'last_treat_time',index:'last_treat_time', width:80,align:"right",sorttype:"float"}
 //            {name:'introduction',index:'introduction', width:260, sortable:false}
         ],
         pager: jQuery('#pager10'),
@@ -123,30 +111,22 @@
         rowList:[10,20,30,40],
         altRows: true,
         ignoreCase: true,
-//        onSortCol: function(name,index){ alert("Column Name: "+name+" Column Index: "+index);},
-//        ondblClickRow: function(id){ alert("You double click row with id: "+id);},
         onSelectRow: function(id){
             selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
         },
-//        gridComplete: function(){
-//            if(selectedIds){
-//                var selected_ids = ''+selectedIds
-//                if (selected_ids.split(',')[0]!=''){
-//                    for(var i=0; i<selected_ids.split(',').length;i++){
-//                        $(this).jqGrid("setSelection",selected_ids.split(',')[i]);
-//                    }
-//                }
-//            }
-//        },
+
         viewrecords: true,
-//        sortorder: "desc",
-//        editurl:"",
         multiselect: true,
         caption: "患者列表"
     });
     var selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
-    //    jQuery("#list10").jqGrid('navGrid','#pager10',{edit:false,add:false,del:false});
-    $( "#create_patient" ).button().on( "click", function() {
+    jQuery("#list10").jqGrid('navGrid','#pager10',{edit:false,add:false,del:false,search:false});
+    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '添加', caption: '添加',id:'addPatient', onClickButton: createPatient})
+    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailPatient', onClickButton: sendEmailPatient})
+    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhonePatient', onClickButton: sendPhonePatient})
+
+//    添加患者
+    function createPatient(){
         $.ajax({
             type:'get',
             url:'/patients/new?menu_id=<%=@menu_id%>&hos_id=' + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val(),
@@ -156,22 +136,25 @@
             }
         })
         $('#create_or_edit_form2').modal('show')
-    });
-    $( "#edit_patient").button().on( "click", function() {
+    }
+
+//    编辑患者
+    function editPatient(){
         if (selectedIds.length==1){
-        $.ajax({
-            type:'get',
-            url:'/patients/'+selectedIds+'/edit?menu_id=<%=@menu_id%>&hos_id=' + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val(),
-            success:function(data){
-                $('#create_or_edit_form2').html(data)
-            }
-        })
-        $('#create_or_edit_form2').modal('show')
+            $.ajax({
+                type:'get',
+                url:'/patients/'+selectedIds+'/edit?menu_id=<%=@menu_id%>&hos_id=' + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val(),
+                success:function(data){
+                    $('#create_or_edit_form2').html(data)
+                }
+            })
+            $('#create_or_edit_form2').modal('show')
         }else{
             alert('必须且只能选择一条记录!')
         }
-    });
-    $( "#delete_patient").button().on( "click", function() {
+    }
+// 删除患者
+    function deletePatient(){
         if(confirm("确定要删除吗？") ) {
             $.ajax({
                 type: 'delete',
@@ -185,12 +168,12 @@
                 }
             })
         }
-//        $('#create_or_edit_form2').modal('show')
         var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
-//        $('#refresh_list10').click()
-    });
-    $( "#send_email_patient").button().on( "click", function() {
+    }
+
+//    发送邮箱激活码
+    function sendEmailPatient(){
         $.ajax({
             type:'get',
             url:'/patients/send_email?pat_ids='+selectedIds,
@@ -204,8 +187,9 @@
         })
         var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
-    });
-    $( "#send_phone_patient").button().on( "click", function() {
+    }
+//    发送手机激活码
+    function sendPhonePatient(){
         $.ajax({
             type:'get',
             url:'/patients/send_phone?pat_ids='+selectedIds,
@@ -220,7 +204,8 @@
         })
         var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
-    });
+    }
+
     function pat_search_hos(){
         $('#is_edit').removeAttr("checked");
         $('#is_del').removeAttr("checked");
@@ -240,36 +225,50 @@
             data: 'text',
             success: function (data) {
                 if (data['add']){
-                    $('#create_patient').removeClass('disabled')
-                    $('#create_patient').addClass('active')
+//                    $('#create_patient').removeClass('disabled')
+//                    $('#create_patient').addClass('active')
+                    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '添加', caption: '添加',id:'addPatient', onClickButton: createPatient})
+
                 }else{
-                    $('#create_patient').removeClass('active')
-                    $('#create_patient').addClass('disabled')
+//                    $('#create_patient').removeClass('active')
+//                    $('#create_patient').addClass('disabled')
+                    $('#addPatient').remove();
                 }
                 if (data['delete']){
-                    $('#delete_patient').removeClass('disabled')
-                    $('#delete_patient').addClass('active')
+//                    $('#delete_patient').removeClass('disabled')
+//                    $('#delete_patient').addClass('active')
+                      $("#list10").navButtonAdd('#pager10', {position: 'last', title: '删除', caption: '删除',id:'delete', onClickButton: deletePatient})
+
                 }else{
-                    $('#delete_patient').removeClass('active')
-                    $('#delete_patient').addClass('disabled')
+//                    $('#delete_patient').removeClass('active')
+//                    $('#delete_patient').addClass('disabled')
+                     $('#delete').remove();
                 }
                 if (data['update']){
-                    $('#edit_patient').removeClass('disabled')
-                    $('#edit_patient').addClass('active')
+//                    $('#edit_patient').removeClass('disabled')
+//                    $('#edit_patient').addClass('active')
+                      $("#list10").navButtonAdd('#pager10', {position: 'last', title: '编辑', caption: '编辑',id:'edit', onClickButton: editPatient})
+
                 }else{
-                    $('#edit_patient').removeClass('active')
-                    $('#edit_patient').addClass('disabled')
+//                    $('#edit_patient').removeClass('active')
+//                    $('#edit_patient').addClass('disabled')
+                      $('#edit').remove();
                 }
                 if (data['show']){
-                    $('#send_email_patient').removeClass('disabled')
-                    $('#send_email_patient').addClass('active')
-                    $('#send_phone_patient').removeClass('disabled')
-                    $('#send_phone_patient').addClass('active')
+//                    $('#send_email_patient').removeClass('disabled')
+//                    $('#send_email_patient').addClass('active')
+//                    $('#send_phone_patient').removeClass('disabled')
+//                    $('#send_phone_patient').addClass('active')
+                    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailPatient', onClickButton: sendEmailPatient})
+                    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhonePatient', onClickButton: sendPhonePatient})
+
                 }else{
-                    $('#send_email_patient').removeClass('active')
-                    $('#send_email_patient').addClass('disabled')
-                    $('#send_phone_patient').removeClass('active')
-                    $('#send_phone_patient').addClass('disabled')
+//                    $('#send_email_patient').removeClass('active')
+//                    $('#send_email_patient').addClass('disabled')
+//                    $('#send_phone_patient').removeClass('active')
+//                    $('#send_phone_patient').addClass('disabled')
+                    $('#sendEmailPatient').remove();
+                    $('#sendPhonePatient').remove();
                 }
             }
         })
@@ -278,14 +277,10 @@
     function pat_search_dep(){
         $('#is_edit').removeAttr("checked");
         $('#is_del').removeAttr("checked");
-        if ($('#patient_dep').val()==''){
-//            $('#is_edit').removeAttr("checked");
-//            $('#is_del').removeAttr("checked");
+        if ($('#patient_dep').val()=='' || $('#patient_dep').val()=='all'){
             $('#is_edit').removeAttr("disabled");
             $('#is_del').removeAttr("disabled");
         }else{
-//            $('#is_edit').attr("checked",'true');
-//            $('#is_del').attr("checked",'true');
             $('#is_edit').attr("disabled",'true');
             $('#is_del').attr("disabled",'true');
         }
@@ -296,40 +291,32 @@
                     data: 'text',
                     success: function (data) {
                         if (data['add']){
-                            $('#create_patient').removeClass('disabled')
-                            $('#create_patient').addClass('active')
+                              $("#list10").navButtonAdd('#pager10', {position: 'last', title: '添加', caption: '添加',id:'addPatient', onClickButton: createPatient})
+
+
                         }else{
-                            $('#create_patient').removeClass('active')
-                            $('#create_patient').addClass('disabled')
+                            $('#addPatient').remove();
                         }
                         if (data['delete']){
-//                            $('#is_del').attr("checked",'true');
-                            $('#delete_patient').removeClass('disabled')
-                            $('#delete_patient').addClass('active')
+                              $("#list10").navButtonAdd('#pager10', {position: 'last', title: '删除', caption: '删除',id:'delete', onClickButton: deletePatient})
+
                         }else{
-//                            $('#is_del').removeAttr("checked");
-                            $('#delete_patient').removeClass('active')
-                            $('#delete_patient').addClass('disabled')
+                            $('#delete').remove()
                         }
                         if (data['update']){
-//                            $('#is_edit').attr("checked",'true');
-                            $('#edit_patient').removeClass('disabled')
-                            $('#edit_patient').addClass('active')
+                           $("#list10").navButtonAdd('#pager10', {position: 'last', title: '编辑', caption: '编辑',id:'edit', onClickButton: editPatient})
                         }else{
-//                            $('#is_edit').removeAttr("checked");
-                            $('#edit_patient').removeClass('active')
-                            $('#edit_patient').addClass('disabled')
+                            $('#edit').remove()
                         }
                         if (data['show']){
-                            $('#send_email_patient').removeClass('disabled')
-                            $('#send_email_patient').addClass('active')
-                            $('#send_phone_patient').removeClass('disabled')
-                            $('#send_phone_patient').addClass('active')
+                            $("#list10").navButtonAdd('#pager10', {position: 'last', title: '添加', caption: '添加',id:'addPatient', onClickButton: createPatient})
+                            $("#list10").navButtonAdd('#pager10', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailPatient', onClickButton: sendEmailPatient})
+                            $("#list10").navButtonAdd('#pager10', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhonePatient', onClickButton: sendPhonePatient})
+
                         }else{
-                            $('#send_email_patient').removeClass('active')
-                            $('#send_email_patient').addClass('disabled')
-                            $('#send_phone_patient').removeClass('active')
-                            $('#send_phone_patient').addClass('disabled')
+                            $('#addPatient').remove();
+                            $('#sendEmailPatient').remove();
+                            $('#sendPhonePatient').remove();
                         }
                     }
                 }
@@ -381,46 +368,46 @@
         document.getElementById("search_dep_<%=@dep.id%>").setAttribute('selected','selected')
         <% end %>
 
-        $.ajax({
-                    type: "get",
-                    url: '/doctors/is_permission?menu_id=<%=@menu_id%>&hospital_id=' + $('#patient_hos_id').val() + '&department_id=' + $('#patient_dep').val(),
-                    data: 'text',
-                    success: function (data) {
-                        if (data['add']){
-                            $('#create_patient').removeClass('disabled')
-                            $('#create_patient').addClass('active')
-                        }else{
-                            $('#create_patient').removeClass('active')
-                            $('#create_patient').addClass('disabled')
-                        }
-                        if (data['delete']){
-                            $('#delete_patient').removeClass('disabled')
-                            $('#delete_patient').addClass('active')
-                        }else{
-                            $('#delete_patient').removeClass('active')
-                            $('#delete_patient').addClass('disabled')
-                        }
-                        if (data['update']){
-                            $('#edit_patient').removeClass('disabled')
-                            $('#edit_patient').addClass('active')
-                        }else{
-                            $('#edit_patient').removeClass('active')
-                            $('#edit_patient').addClass('disabled')
-                        }
-                        if (data['show']){
-                            $('#send_email_patient').removeClass('disabled')
-                            $('#send_email_patient').addClass('active')
-                            $('#send_phone_patient').removeClass('disabled')
-                            $('#send_phone_patient').addClass('active')
-                        }else{
-                            $('#send_email_patient').removeClass('active')
-                            $('#send_email_patient').addClass('disabled')
-                            $('#send_phone_patient').removeClass('active')
-                            $('#send_phone_patient').addClass('disabled')
-                        }
-                    }
-                }
-        );
+//        $.ajax({
+//                    type: "get",
+//                    url: '/doctors/is_permission?menu_id=<%#=@menu_id%>&hospital_id=' + $('#patient_hos_id').val() + '&department_id=' + $('#patient_dep').val(),
+//                    data: 'text',
+//                    success: function (data) {
+//                        if (data['add']){
+//                            $('#create_patient').removeClass('disabled')
+//                            $('#create_patient').addClass('active')
+//                        }else{
+//                            $('#create_patient').removeClass('active')
+//                            $('#create_patient').addClass('disabled')
+//                        }
+//                        if (data['delete']){
+//                            $('#delete_patient').removeClass('disabled')
+//                            $('#delete_patient').addClass('active')
+//                        }else{
+//                            $('#delete_patient').removeClass('active')
+//                            $('#delete_patient').addClass('disabled')
+//                        }
+//                        if (data['update']){
+//                            $('#edit_patient').removeClass('disabled')
+//                            $('#edit_patient').addClass('active')
+//                        }else{
+//                            $('#edit_patient').removeClass('active')
+//                            $('#edit_patient').addClass('disabled')
+//                        }
+//                        if (data['show']){
+//                            $('#send_email_patient').removeClass('disabled')
+//                            $('#send_email_patient').addClass('active')
+//                            $('#send_phone_patient').removeClass('disabled')
+//                            $('#send_phone_patient').addClass('active')
+//                        }else{
+//                            $('#send_email_patient').removeClass('active')
+//                            $('#send_email_patient').addClass('disabled')
+//                            $('#send_phone_patient').removeClass('active')
+//                            $('#send_phone_patient').addClass('disabled')
+//                        }
+//                    }
+//                }
+//        );
     })
 </script>
 <div class="modal fade" id="create_or_edit_form2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

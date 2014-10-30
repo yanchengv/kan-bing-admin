@@ -118,7 +118,7 @@
             {name:'department_id',index:'department_id', width:100, editable: true },
             {name:'mobile_phone',index:'mobile_phone', width:100, align:"right", editable: true },
             {name:'email',index:'email', width:130, align:"right", editable: true },
-            {name:'professional_title',index:'professional_title', width:80,align:"right",editable: true },
+            {name:'professional_title',index:'professional_title', width:80,align:"right",editable: true }
 //            {name:'introduction',index:'introduction', width:260, sortable:false}
         ],
         pager: jQuery('#pager12'),
@@ -359,7 +359,7 @@
     function doc_search_dep(){
         $('#is_edit').removeAttr("checked");
         $('#is_del').removeAttr("checked");
-        if ($('#doctor_dep').val()==''){
+        if ($('#doctor_dep').val()=='' || $('#doctor_dep').val()=='all'){
 //            $('#is_edit').removeAttr("checked");
 //            $('#is_del').removeAttr("checked");
             $('#is_edit').removeAttr("disabled");

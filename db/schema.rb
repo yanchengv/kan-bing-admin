@@ -624,6 +624,11 @@ ActiveRecord::Schema.define(version: 20141029094954) do
     t.text     "int_ecg_img"
     t.text     "bit_ecg_img"
     t.integer  "patient_id",   limit: 8
+    t.string   "hospital"
+    t.string   "department"
+    t.string   "doctor"
+    t.string   "parent_type"
+    t.string   "child_type"
   end
 
   create_table "edu_videos", force: true do |t|
@@ -875,6 +880,7 @@ ActiveRecord::Schema.define(version: 20141029094954) do
     t.string   "model_class"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "target"
     t.boolean  "is_show"
   end
 

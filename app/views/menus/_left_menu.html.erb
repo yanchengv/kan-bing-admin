@@ -49,7 +49,6 @@
                         pNode = pNode.getParentNode();
                     }
                     if (pNode !== node) {
-                        console.log(pNode)
                         var a = $("#" + pNode.tId + "_a");
                         a.removeClass("cur");
                         zTree_Menu.expandNode(pNode, false);
