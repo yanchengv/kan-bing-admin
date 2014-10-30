@@ -1,8 +1,7 @@
 <%#= stylesheet_link_tag    'ui-dialog' %>
 <%#= javascript_include_tag 'dialog-min' %>
 <style>
-    div.left{float: left;width: 250px !important;}
-    div.right{float: left;width: 200px !important;}
+
     ul.ztree {margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width:220px;height:360px;overflow-y:scroll;overflow-x:auto;}
     .select2-container{
         width:170px;
@@ -216,7 +215,7 @@
             var zTree = $.fn.zTree.getZTreeObj(treeId)
             var d2 = dialog({
                 title:'新建子节点',
-                content:'<%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label :角色名 %><%= f.text_field :name,id:'role2_name',name:'name',class:"form-control"%><%= f.label :英文代称 %><%= f.text_field :code,id:'role2_code',name:'code',class:"form-control"%><%= f.label :说明 %><%= f.text_field :instruction,id:'role2_instruction',name:'instruction',class:"form-control"%></div><% end %>',
+                content:'<%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label "角色名" %><%= f.text_field :name,id:'role2_name',name:'name',class:"form-control"%><%= f.label "英文代称" %><%= f.text_field :code,id:'role2_code',name:'code',class:"form-control"%><%= f.label "说明" %><%= f.text_field :instruction,id:'role2_instruction',name:'instruction',class:"form-control"%></div><% end %>',
                 okValue: '确定',
                 ok: function () {
                     $.ajax({
@@ -246,7 +245,7 @@
         var dl = dialog({
             title:'新建子节点',
             id: 'testID',
-            content: '<%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label :名称 %><div id="menus_name"><%= render partial: 'menus/form_name' %></div></div><%= f.label :操作 %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div><%= f.label :URI %><%= f.text_field :uri,id:'menu_uri',name:'uri',value:"/",class:"form-control"%></div><% end %>',
+            content: '<%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label "名称" %><div id="menus_name"><%= render partial: 'menus/form_name' %></div></div><%= f.label "操作" %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div><%= f.label :URI %><%= f.text_field :uri,id:'menu_uri',name:'uri',value:"/",class:"form-control"%></div><% end %>',
             okValue: '确定',
             ok: function () {
                 $.ajax({
@@ -293,7 +292,7 @@
         dialog({
             title:'新建子节点',
             id: 'testID',
-            content: '名称:<input class="form-control" type="text" value="'+treeNode.name+'" readonly/><%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label :操作 %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div></div><% end %>',
+            content: '名称:<input class="form-control" type="text" value="'+treeNode.name+'" readonly/><%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label "操作" %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div></div><% end %>',
             okValue: '确定',
             ok: function () {
                 $.ajax({
@@ -602,7 +601,7 @@
         var dg = dialog({
             title:'新建子节点',
             id: 'testID',
-            content: '名称:<input class="form-control" id="edit_menus_name" type="text" value="'+treeNode.name+'"/><%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label :操作 %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div></div><% end %>',
+            content: '名称:<input class="form-control" id="edit_menus_name" type="text" value="'+treeNode.name+'"/><%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label "操作" %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div></div><% end %>',
             okValue: '确定',
             ok: function () {
                 $.ajax({
@@ -866,25 +865,40 @@
     //-->
 </SCRIPT>
 
+<div id="ModuleManage">
+  <div class="zTreeDemoBackground left col-md-2 box">
+    <p class="title">系统权限：</p>
+    <ul id="perTree" class="ztree"></ul>
+  </div>
 
+  <div class="pull-left" style="height:360px;line-height:360px;font-size:24px;margin-right:15px;margin-left:15px;">
+    <span class="glyphicon glyphicon-arrow-right"></span>
+  </div>
 
-<div class="zTreeDemoBackground left">
-  系统权限：
-  <ul id="perTree" class="ztree"></ul>
+  <div class="right col-md-2 box" >
+    <p class="title">系统角色：</p>
+    <ul id="roleTree" class="ztree"></ul>
+  </div>
+  <div class="pull-left" style="height:360px;line-height:360px;font-size:24px;margin-right:15px;margin-left:15px;">
+    <span class="glyphicon glyphicon-arrow-right"></span>
+  </div>
+
+  <div class="right col-md-2 box">
+    <p class="title">系统管理员：</p>
+    <ul id="admin2Tree" class="ztree"></ul>
+  </div>
+  <style>
+      #ModuleManage ul.ztree {
+          margin-top: 10px;
+           border-width:0;
+           background: transparent;
+           width: 100%;
+          height: 360px;
+          overflow-y: scroll;
+          overflow-x: auto;}
+      #ModuleManage ul.ztree a span{font-size:14px;}
+  </style>
 </div>
-
-<div class="pull-left" style="height:360px;line-height:360px;font-size:24px;margin-right:15px;"><span class="glyphicon glyphicon-resize-horizontal"></span></div>
-<div class="right">
-  系统角色：
-  <ul id="roleTree" class="ztree"></ul>
-</div>
-<div class="pull-left" style="height:360px;line-height:360px;font-size:24px;margin-right:15px;margin-left: 40px;"><span class="glyphicon glyphicon-resize-horizontal"></span></div>
-
-<div class="right" style="margin-left: 25px;">
-  系统管理员：
-  <ul id="admin2Tree" class="ztree"></ul>
-</div>
-
 <div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -894,11 +908,11 @@
       </div>
       <div class="modal-body">
         <%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %>
-            <%= f.label :名称 %>
+            <%= f.label "名称" %>
             <div id="menus_parent_menu"><%#= render partial: 'menus/form_name' %></div>
-            <%= f.label :父菜单 %>
+            <%= f.label "父菜单" %>
             <div id="menus_parent_menu"><%#= render partial: 'menus/form_parent_menu' %></div>
-            <%= f.label :操作 %>
+            <%= f.label "操作" %>
             <div id="menus_priority"><%#= render partial: 'menus/form_priority' %></div>
             <%= f.label :URI %>
             <%= f.text_field :uri,name:'uri' ,class:"form-control"%>
