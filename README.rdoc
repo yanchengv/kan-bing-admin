@@ -1,28 +1,31 @@
-== README
+== 版本发布
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+版本特性说明:
 
-Things you may want to cover:
+v4.2.0  2014.10.31
 
-* Ruby version
+* 后台管理kanbing365用户的管理员的角色权限分配
 
-* System dependencies
+* User表的管理
 
-* Configuration
+* 多个类别的字典管理
 
-* Database creation
+* 教育视频管理
 
-* Database initialization
+* 孕期知识的管理
 
-* How to run the test suite
+* 移动端的版本信息管理
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* 后台医患关系，医友关系的管理
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+v4.0.0  2014.09.30
+
+* 后台项目搭建
+
+* 基本字典表的维护
+
+* 医生和患者管理(后台审核、增、删、改、查等功能)
+
+* 管理员管理留言
+
