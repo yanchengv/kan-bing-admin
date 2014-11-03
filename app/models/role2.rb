@@ -112,9 +112,19 @@ class Role2 < ActiveRecord::Base
   end
 =end
 
-  def child_menus(menu)  #判断指定菜单是否有子菜单
-    menu = Menu.where(id:menu['id']).first
-    return menu.child_menus
+  def child_menus(menus,menu)  #判断指定菜单是否有子菜单
+    @menu = Menu.where(id:menu['id']).first
+    @menus = []
+    p 'aa'
+    p menus
+    p 'bb'
+    menus.each do |m|
+      if m['pId'] == @menu.id
+        @menus.push(m)
+      end
+
+    end
+    return @menus
   end
 
   def menu_ztree2(menu_permissions)   #生成菜单权限树
@@ -126,7 +136,7 @@ class Role2 < ActiveRecord::Base
       if !@menu.nil?
         priority = menu_permission.priority
         @priority = {menu_id:@menu.id,priority:priority,menu_permission_id:menu_permission.id}.as_json
-        @menu={id:@menu.id,name:@menu.name,pId:@menu.parent_id,menu_permission_id:menu_permission.id,uri:@menu.uri}.as_json
+        @menu={id:@menu.id,name:@menu.name,pId:@menu.parent_id,menu_permission_id:menu_permission.id,uri:@menu.uri,hospital_id:menu_permission.hospital_id}.as_json
         @p_menus.push(@menu)
         @priorities.push(@priority)
       end
@@ -134,16 +144,18 @@ class Role2 < ActiveRecord::Base
     @p_menus.each do |menu|
       child = []
       menu_permission_id = []
+      priority_ids = []
       @priorities.each do |pri|
         if pri['menu_id'] == menu['id']
           if !pri['priority'].nil?
             priority = {:id => menu['id'].to_s+'_'+pri['priority']['id'].to_s,:pId => menu['id'],:name => pri['priority']['name'],:menu_permission_id => [pri['menu_permission_id']]}.as_json
             child.push(priority)
+            priority_ids.push(pri['priority']['id'])
           end
           menu_permission_id.push(pri['menu_permission_id'])
         end
       end
-      @menu = {id:menu['id'],name:menu['name'],pId:menu['pId'],menu_permission_id:menu_permission_id,uri:menu['uri'],children:child}.as_json
+      @menu = {id:menu['id'],name:menu['name'],pId:menu['pId'],menu_permission_id:menu_permission_id,uri:menu['uri'],hospital_id:menu['hospital_id'],priority_ids:priority_ids,children:child}.as_json
       @menus.push(@menu)
     end
     @menus=@menus.uniq
@@ -151,10 +163,10 @@ class Role2 < ActiveRecord::Base
     @all = @menus
     @menus.each do |menu|
       if menu['pId'].nil?
-        if child_menus(menu).empty?
-          @all_tree = {id:menu['id'],name:menu['name'],pId:menu['pId'],menu_permission_id:menu['menu_permission_id'],children:menu['children']}
+        if child_menus(@all,menu).empty?
+          @all_tree = {id:menu['id'],name:menu['name'],pId:menu['pId'],menu_permission_id:menu['menu_permission_id'],uri:menu['uri'],hospital_id:menu['hospital_id'],priority_ids:menu['priority_ids'],children:menu['children']}
         else
-          @all_tree = {id:menu['id'],name:menu['name'],pId:menu['pId'],menu_permission_id:menu['menu_permission_id'],children:stup2(@all,menu)}
+          @all_tree = {id:menu['id'],name:menu['name'],pId:menu['pId'],menu_permission_id:menu['menu_permission_id'],uri:menu['uri'],hospital_id:menu['hospital_id'],priority_ids:menu['priority_ids'],children:stup2(@all,menu)}
         end
         @all_trees.push(@all_tree)
       end
@@ -167,10 +179,10 @@ class Role2 < ActiveRecord::Base
     @all = menus
     menus.each do |menu2|
       if menu2['pId'].to_i == menu['id'].to_i
-        if child_menus(menu2).empty?
-          @menus = {id:menu2['id'],name:menu2['name'],pId:menu2['pId'],menu_permission_id:menu2['menu_permission_id'],children:menu2['children']}
+        if child_menus(@all,menu2).empty?
+          @menus = {id:menu2['id'],name:menu2['name'],pId:menu2['pId'],menu_permission_id:menu2['menu_permission_id'],uri:menu2['uri'],hospital_id:menu2['hospital_id'],priority_ids:menu2['priority_ids'],children:menu2['children']}
         else
-          @menus = {id:menu2['id'],name:menu2['name'],pId:menu2['pId'],menu_permission_id:menu2['menu_permission_id'],children:stup2(@all,menu2)}
+          @menus = {id:menu2['id'],name:menu2['name'],pId:menu2['pId'],menu_permission_id:menu2['menu_permission_id'],uri:menu2['uri'],hospital_id:menu2['hospital_id'],priority_ids:menu2['priority_ids'],children:stup2(@all,menu2)}
         end
         child_menus.push(@menus)
       end

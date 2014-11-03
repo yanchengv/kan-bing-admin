@@ -1,0 +1,1 @@
+<script>$(document).ready(function(){var hos_id = document.getElementById("menu_hospital_id").value;search(hos_id)});function search(hos_id){$.ajax({type: "get",url: "/menus/get_department?hospital_id=" + hos_id,data: "text",success: function (data) {$("#menu_department").html(data);}});}</script>

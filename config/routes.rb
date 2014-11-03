@@ -199,6 +199,9 @@ Rails.application.routes.draw do
       get 'is_permission', to:'doctors#is_permission'
       get 'show_index', to:'doctors#show_index'
       get 'get_doc_by_priority', to:'doctors#get_doc_by_priority'
+      get 'check_phone', to:'doctors#check_phone'
+      get 'check_email', to:'doctors#check_email'
+      get 'check_credential_type_number', to:'doctors#check_credential_type_number'
     end
   end
 
@@ -213,6 +216,9 @@ Rails.application.routes.draw do
       get 'search_department', to:'patients#search_department'
       get 'is_permission', to:'patients#is_permission'
       get 'show_index', to:'patients#show_index'
+      get 'check_phone', to:'patients#check_phone'
+      get 'check_email', to:'patients#check_email'
+      get 'credential_type_number', to:'patients#credential_type_number'
     end
   end
 

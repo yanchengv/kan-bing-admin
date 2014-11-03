@@ -255,11 +255,21 @@
         <% end %>
     }
     function create_child_menus(treeId,treeNode){
+
+        var parentNode = treeNode.getParentNode()
+        var content = ''
+        if (treeNode.name=='医生管理'|| treeNode.name=='患者管理'){
+            content = '<%= form_for("@menu",remote:true,html:{id:"doc_form"}) do |f| %><%= f.label "名称" %><%= f.text_field :name, id:"menu_name",class:"form-control" %><div id="menus_name"><%= render partial: "menus/form_hospital" %></div></div><%= f.label "操作" %><div id="menus_priority"><%= render partial: "menus/form_priority" %></div><%= f.label :URI %><input type="text" id="menu_uri" name="uri" value="'+treeNode.uri+'" class="form-control" readonly/><%#= f.text_field :uri,id:"menu_uri",name:"uri",value:"/",disabled:"disabled",class:"form-control"%></div><% end %>'
+        }else if(parentNode !=null && (parentNode.name=='医生管理'|| parentNode.name=='患者管理')){
+            content = '<%= render  partial: 'menus/get_dep'%><%= form_for("@menu",remote:true,html:{id:"doc_form"}) do |f| %><%= f.label "名称" %><%= f.text_field :name, id:"menu_name",class:"form-control" %><div id="menus_department"><div style="display:none;"><select id="menu_hospital_id"><option value="'+treeNode.hospital_id+'">'+treeNode.name+'<option></select></div><div id="menu_department"></div><%#= render partial: "menus/form_department" %></div></div><%= f.label "操作" %><div id="menus_priority"><%= render partial: "menus/form_priority" %></div><%= f.label :URI %><input type="text" id="menu_uri" name="uri" value="'+treeNode.uri+'" class="form-control" readonly/><%#= f.text_field :uri,id:"menu_uri",name:"uri",value:"/",disabled:"disabled",class:"form-control"%></div><% end %>'
+        }else{
+            content = '<%= form_for("@menu",remote:true,html:{id:"doc_form"}) do |f| %><%= f.label "名称" %><%= f.text_field :name, id:"menu_name",class:"form-control" %></div><%= f.label "操作" %><div id="menus_priority"><%= render partial: "menus/form_priority" %></div><%= f.label :URI %><%= f.text_field :uri,id:"menu_uri",name:"uri",value:"/",class:"form-control"%></div><% end %>'
+        }
         var zTree=$.fn.zTree.getZTreeObj(treeId)
         var dl = dialog({
             title:'新建子节点',
             id: 'testID',
-            content: '<%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label "名称" %><div id="menus_name"><%= render partial: 'menus/form_name' %></div></div><%= f.label "操作" %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div><%= f.label :URI %><%= f.text_field :uri,id:'menu_uri',name:'uri',value:"/",class:"form-control"%></div><% end %>',
+            content: ''+content,
             okValue: '确定',
             ok: function () {
                 $.ajax({
@@ -623,19 +633,23 @@
     function update_menus(treeId,treeNode){
         var zTree=$.fn.zTree.getZTreeObj(treeId)
         var dg = dialog({
-            title:'新建子节点',
+            title:'修改节点',
             id: 'testID',
-            content: '名称:<input class="form-control" id="edit_menus_name" type="text" value="'+treeNode.name+'"/><%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label "操作" %><div id="menus_priority"><%= render partial: 'menus/form_priority' %></div></div><% end %>',
+            content: '<%= render partial: 'menus/edit_priority_ids' %><input type="hidden" id="priority_ids_field" value="'+treeNode.priority_ids+'">名称:<input class="form-control" id="edit_menus_name" type="text" value="'+treeNode.name+'"/><%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %><%= f.label "操作" %><div id="edit_menus_priority"><select multiple name="priorities" id="menu_priorities"><%#= options_from_collection_for_select(@priorities, 'id', 'name',@menu.priority_ids) %><% @priorities = Priority.all %><% @priorities.each do |hos| %><option value="<%= hos.id %>" id="priority_<%= hos.id %>"><%= hos.name %></option><% end %></select></div></div><% end %>URI:<input class="form-control" id="edit_menus_uri" type="text" value="'+treeNode.uri+'"/>',
             okValue: '确定',
             ok: function () {
                 $.ajax({
                     type: 'post',
                     url: '/menu_permissions/create_by_menu',
-                    data: {name:$('#edit_menus_name').val(),menu_id:treeNode.id,priority:$('#menu_priorities').val()},
+                    data: {name:$('#edit_menus_name').val(),menu_id:treeNode.id,priority:$('#menu_priorities').val(),uri:$('#edit_menus_uri').val()},
                     success: function (data, response) {
                         if (data['success']) {
                             console.log(data)
                             treeNode.name = data["menu"]["name"]
+                            treeNode.uri = data["menu"]["uri"]
+                            treeNode.priority_ids = data["menu"]["priority_ids"]
+                            treeNode.menu_permission_id = data["menu"]["menu_permission_id"]
+                            treeNode.hospital_id = data["menu"]["hospital_id"]
                             zTree.updateNode(treeNode);
                             var child = treeNode.children
                             for (var j = child.length - 1; j >= 0; j--) {
@@ -668,35 +682,73 @@
     }
 
     function beforeEditName(treeId, treeNode) {
-        if (treeNode.isParent) {
-            var flag = true
-            for (var obj in treeNode.children) {
-                if ((''+treeNode.children[obj].id).indexOf("_") > 0){
-                    flag = false
-                }
-            }
-            if (flag){
-                className = (className === "dark" ? "" : "dark");
-                var zTree = $.fn.zTree.getZTreeObj(treeId);
-                zTree.selectNode(treeNode);
-                return confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？");
-            }else{
-                update_menus(treeId,treeNode)
-                beforeRename(treeId, treeNode,$('#edit_menus_name').val() , false)
-                return false
-            }
-        } else{
+//        if (treeNode.isParent) {
+//            var flag = true
+//            for (var obj in treeNode.children) {
+//                if ((''+treeNode.children[obj].id).indexOf("_") > 0){
+//                    flag = false
+//                }
+//            }
+//            if (flag){
+//                className = (className === "dark" ? "" : "dark");
+//                var zTree = $.fn.zTree.getZTreeObj(treeId);
+//                zTree.selectNode(treeNode);
+//                return confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？");
+//            }else{
+//                update_menus(treeId,treeNode)
+//                beforeRename(treeId, treeNode,$('#edit_menus_name').val() , false)
+//                return false
+//            }
+//        } else{
             update_menus(treeId,treeNode)
             beforeRename(treeId, treeNode,$('#edit_menus_name').val() , false)
             return false
-        }
+//        }
     }
 
     function beforeEditName2(treeId, treeNode) {
-        className = (className === "dark" ? "" : "dark");
-        var zTree = $.fn.zTree.getZTreeObj(treeId);
-        zTree.selectNode(treeNode);
-        return confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？");
+//        className = (className === "dark" ? "" : "dark");
+//        var zTree = $.fn.zTree.getZTreeObj(treeId);
+//        zTree.selectNode(treeNode);
+//        return confirm("进入节点 -- " + treeNode.name + " 的编辑状态吗？");
+        update_roles(treeId,treeNode)
+        return false
+    }
+
+    function update_roles(treeId,treeNode){
+        var zTree=$.fn.zTree.getZTreeObj(treeId)
+        var rd = dialog({
+            title:'修改节点',
+            id: 'testID',
+            content: '名称:<input class="form-control" id="edit_roles_name" type="text" value="'+treeNode.name+'"/>英文代称:<input class="form-control" id="edit_roles_code" type="text" value="'+treeNode.code+'"/>说明:<input class="form-control" id="edit_roles_instruction" type="text" value="'+treeNode.instruction+'"/>',
+            okValue: '确定',
+            ok: function () {
+                $.ajax({
+                    type: 'put',
+                    url: '/role2s/update_name',
+                    data: {name:$('#edit_roles_name').val(),id:treeNode.id,code:$('#edit_roles_code').val(),instruction:$('#edit_roles_instruction').val()},
+                    success: function (data, response) {
+                        if (data['success']) {
+                            console.log(data)
+                            treeNode.name = data["role"]["name"]
+                            treeNode.code = data["role"]["code"]
+                            treeNode.instruction = data["role"]["instruction"]
+                            zTree.updateNode(treeNode);
+                            rd.close().remove()
+                        }else{
+                            alert(data['error'])
+                        }
+
+                    },
+                    error: function () {
+
+                    }
+                })
+                return false;
+            },
+            cancelValue: '取消',
+            cancel: function () {}
+        }).width(320).show();
     }
 
     function beforeRename(treeId, treeNode, newName, isCancel) {

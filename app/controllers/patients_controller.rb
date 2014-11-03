@@ -332,16 +332,20 @@ class PatientsController < ApplicationController
   def create
     @patient = Patient.new(patient_params)
     # render json:{success:true,data:@patient}
-
-    respond_to do |format|
-      if @patient.save
-        # format.html { redirect_to @patient, notice: 'Patient was successfully created.' }
-        format.json { render json:{success:'保存成功'} }
-      else
-        # format.html { render :new }
-        format.json { render json: @patient.errors, status: :unprocessable_entity }
-      end
+    if @patient.save
+      render json: {success:true,data:@patient}
+    else
+      render json: {success:false,data:'保存失败.'}
     end
+    # respond_to do |format|
+    #   if @patient.save
+    #     # format.html { redirect_to @patient, notice: 'Patient was successfully created.' }
+    #     format.json { render json:{success:'保存成功'} }
+    #   else
+    #     # format.html { render :new }
+    #     format.json { render json: @patient.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # PATCH/PUT /patients/1
@@ -670,6 +674,62 @@ class PatientsController < ApplicationController
       end
     end
     render json: {add:add_flag,delete:delete_flag,update:update_flag,show:show_flag}
+  end
+
+  def check_email
+    @patient = Patient.find_by(id:params[:patient_id])
+    email=params[:email]
+    @user=Patient.where('email=?',email)
+    if !@patient.nil?
+      if !@user.empty? && @patient.email!=email
+        render json:{success:false,content:'此邮箱已注册'}
+      else
+        render json:{success:true,content:'此邮箱可以使用'}
+      end
+    else
+      if !@user.empty?
+        render json:{success:false,content:'此邮箱已注册'}
+      else
+        render json:{success:true,content:'此邮箱可以使用'}
+      end
+    end
+  end
+  def check_phone
+    @patient = Patient.find_by(id:params[:patient_id])
+    mobile_phone=params[:phone]
+    @user=Patient.where('mobile_phone=?',mobile_phone)
+    p @user
+    if !@patient.nil?
+      if !@user.empty? && @patient.mobile_phone!=mobile_phone
+        render json:{success:false,content:'此电话已占用'}
+      else
+        render json:{success:true,content:'电话可以使用'}
+      end
+    else
+      if !@user.empty?
+        render json:{success:false,content:'此电话已占用'}
+      else
+        render json:{success:true,content:'电话可以使用'}
+      end
+    end
+  end
+  def check_credential_type_number
+    @patient = Patient.find_by(id:params[:patient_id])
+    credential_type_number = params[:credential_type_number]
+    @user=Patient.where('credential_type_number=?',credential_type_number)
+    if !patient.nil?
+      if !@user.empty? && @patient.credential_type_number!=credential_type_number
+        render json:{success:false,content:'此证件号已占用'}
+      else
+        render json:{success:true,content:'此证件号可以使用'}
+      end
+    else
+      if !@user.empty?
+        render json:{success:false,content:'此证件号已占用'}
+      else
+        render json:{success:true,content:'此证件号可以使用'}
+      end
+    end
   end
 
   private
