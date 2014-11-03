@@ -591,8 +591,13 @@ class DoctorsController < ApplicationController
   # POST /doctors
   # POST /doctors.json
   def create
-    @doctor = Doctor.create(doctor_params)
-    render json:{success:'保存成功',data:@doctor}
+    @doctor = Doctor.new(doctor_params)
+    if @doctor.save
+      render json:{success:'true',data:@doctor}
+    else
+      render json:{success:'false',data:'保存失败!'}
+    end
+
     # respond_to do |format|
     #   if @doctor.save
     #     format.html { redirect_to @doctor, notice: 'Doctor was successfully created.' }
@@ -1251,6 +1256,62 @@ class DoctorsController < ApplicationController
       end
     end
     p @last_dep
+  end
+
+  def check_email
+    @doctor = Doctor.find_by(id:params[:doctor_id])
+    email=params[:email]
+    @user=Doctor.where('email=?',email)
+    p @user
+    if !@doctor.nil?
+      if !@user.empty? && @doctor.email!=email
+        render json:{success:false,content:'此邮箱已注册'}
+      else
+        render json:{success:true,content:'此邮箱可以使用'}
+      end
+    else
+      if !@user.empty?
+        render json:{success:false,content:'此邮箱已注册'}
+      else
+        render json:{success:true,content:'此邮箱可以使用'}
+      end
+    end  end
+  def check_phone
+    @doctor = Doctor.find_by(id:params[:doctor_id])
+    mobile_phone=params[:phone]
+    @user=Doctor.where('mobile_phone=?',mobile_phone)
+    p @user
+    if !@doctor.nil?
+      if !@user.empty? && @doctor.mobile_phone!=mobile_phone
+        render json:{success:false,content:'此电话已占用'}
+      else
+        render json:{success:true,content:'电话可以使用'}
+      end
+    else
+      if !@user.empty?
+        render json:{success:false,content:'此电话已占用'}
+      else
+        render json:{success:true,content:'电话可以使用'}
+      end
+    end
+  end
+  def check_credential_type_number
+    @doctor = Doctor.find_by(id:params[:doctor_id])
+    credential_type_number = params[:credential_type_number]
+    @user=Doctor.where('credential_type_number=?',credential_type_number)
+    if !@doctor.nil?
+      if !@user.empty? && @doctor.credential_type_number!=credential_type_number
+        render json:{success:false,content:'此证件号已占用'}
+      else
+        render json:{success:true,content:'此证件号可以使用'}
+      end
+    else
+      if !@user.empty?
+        render json:{success:false,content:'此证件号已占用'}
+      else
+        render json:{success:true,content:'此证件号可以使用'}
+      end
+    end
   end
 
   private
