@@ -19,8 +19,6 @@ class Admin2 < ActiveRecord::Base
         menus.push(menu)
       end
     end
-    p 'all_menus'
-    p menus
     return menus.uniq
   end
 

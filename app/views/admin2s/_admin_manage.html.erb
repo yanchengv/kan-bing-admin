@@ -21,7 +21,7 @@
                     edittype: "password", hidden:true, editrules:{edithidden:true} },
                 { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
                     editable: true, edittype: "password", hidden: true, editrules: {edithidden: true} },
-                { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {email: true, required: false} },
+                { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {custom: true, custom_func: check_email, required: false} },
                 { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}}
             ],
             rowList: [10, 20, 30],
@@ -91,6 +91,25 @@
         if (arguments[0] != '' && !reg.test(arguments[0])) {
             return [false, "手机号格式不正确！"];
         } else {
+            return [true, ""];
+        }
+    }
+    //验证email
+    function check_email() {
+        var email = arguments[0];
+        console.log(arguments);
+        var reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+        if (email != '' && !reg.test(email)) {
+            return [false, "请输入有效的邮箱格式！"];
+        } else {
+//            var obj = $.ajax({
+//                url: 'admin2s/get_by_email',
+//                type: 'get',
+//                data: {email: email },
+//                success: function (data) {
+//
+//                }
+//            });
             return [true, ""];
         }
     }

@@ -142,6 +142,12 @@ Rails.application.routes.draw do
       get 'get_nationality', to:'national_informations#get_nationality'
     end
   end
+  resources :pregnancy_knowledges do
+    collection do
+      get 'index_show', to: 'pregnancy_knowledges#show_index'
+      post 'oper_action', to: 'pregnancy_knowledges#oper_action'
+    end
+  end
   resources :provinces do
     collection do
       get 'test_index', to:'provinces#test_index'
@@ -184,6 +190,7 @@ Rails.application.routes.draw do
       post 'password_update', to:'admin2s#password_update'
       get 'test_index', to:'admin2s#test_index'
       post 'oper_action', to:'admin2s#oper_action'
+      get 'get_by_email', to:'admin2s#get_by_email'
     end
   end
 

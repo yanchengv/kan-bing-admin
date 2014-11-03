@@ -17,7 +17,7 @@ class DepartmentsController < ApplicationController
     if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'null'
       sql << " and hospital_id = #{params[:hospital_id]}"
     end
-    @departments = Department.where(sql);
+    @departments = Department.where(sql)
     count = @departments.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @departments = @departments.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))

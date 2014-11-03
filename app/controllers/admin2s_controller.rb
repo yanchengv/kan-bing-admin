@@ -97,6 +97,15 @@ class Admin2sController < ApplicationController
     #end
   end
 
+  def get_by_email
+    @admins = Admin2.where(:email => params[:email])
+    if @admins.empty?
+      render :json => {:success => true}
+    else
+      render :json => {:success => false, :errors => '邮箱已被注册,请更改！'}
+    end
+  end
+
   # DELETE /admins/1
   # DELETE /admins/1.json
   def destroy
