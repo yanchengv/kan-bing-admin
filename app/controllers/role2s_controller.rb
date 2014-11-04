@@ -103,11 +103,16 @@ class Role2sController < ApplicationController
   def update_name
     p_role_id = params[:id]
     role_id = p_role_id[p_role_id.index('-')+1,p_role_id.length]
-    @role2 = Role2.find_by(id:role_id)
-    if !@role2.nil?
-      @role2.update(name:params[:name])
+    @role = Role2.find_by(id:role_id)
+    @role2 = Menu.where(name:params[:name]).first
+    if params[:name] == ''
+      render json: {success:false,error:'角色名不可空!'}
+    elsif !@role2.nil? && @role.name != params[:name]
+      render json: {success:false,error:'角色名重复!'}
+    else
+      @role.update(name:params[:name],code:params[:code],instruction:params[:instruction])
+      render json: {success:true,role:@role}
     end
-    render json: @role2
   end
 
   # DELETE /role2s/1

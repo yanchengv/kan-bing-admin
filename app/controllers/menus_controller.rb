@@ -128,9 +128,9 @@ class MenusController < ApplicationController
       p 'role'
       p role.name
       if role.get_zTree == []
-        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,menu_permission_id:'',open:true}
+        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,menu_permission_id:'',code:role.code,instruction:role.instruction,open:true}
       else
-        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,menu_permission_id:'',children:role.get_zTree,open:true}
+        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,menu_permission_id:'',code:role.code,instruction:role.instruction,children:role.get_zTree,open:true}
       end
       @all_roles.push(@role)
     end
@@ -146,7 +146,7 @@ class MenusController < ApplicationController
         roles = []
         if !admin.role2s.empty?
           admin.role2s.each do |role|
-            @role = {id:'role-'+role.id.to_s,name:role.name,pId:admin.id,children:role.get_zTree}
+            @role = {id:'role-'+role.id.to_s,name:role.name,pId:admin.id,code:role.code,instruction:role.instruction,children:role.get_zTree}
             roles.push(@role)
           end
         end
@@ -398,7 +398,7 @@ class MenusController < ApplicationController
           priority_ids =  params[:priority]
         end
         @par_menu = Menu.find_by(id:parent_id)
-        if !@par_menu.parent_menu.nil? && (@par_menu.parent_menu.name=='医生管理' || @par_menu.parent_menu.name=='患者管理')
+        if !@par_menu.nil? && !@par_menu.parent_menu.nil? && (@par_menu.parent_menu.name=='医生管理' || @par_menu.parent_menu.name=='患者管理')
           @menu = Menu.create(name:name,parent_id:parent_id,uri:uri,is_show:1)
         else
           @menu = Menu.create(name:name,parent_id:parent_id,uri:uri)
@@ -419,7 +419,7 @@ class MenusController < ApplicationController
           if !@menu.nil?
             priority = menu_permission.priority
             @priority = {menu_id:@menu.id,priority:priority,menu_permission_id:menu_permission.id}.as_json
-            @menu={id:@menu.id,name:@menu.name,pId:@menu.parent_id,menu_permission_id:menu_permission.id,uri:@menu.uri}.as_json
+            @menu={id:@menu.id,name:@menu.name,pId:@menu.parent_id,menu_permission_id:menu_permission.id,uri:@menu.uri,hospital_id:menu_permission.hospital_id}.as_json
             @p_menus.push(@menu)
             @priorities.push(@priority)
           end
@@ -427,15 +427,17 @@ class MenusController < ApplicationController
         @p_menus.each do |menu|
           child = []
           menu_permission_id = []
+          priority_ids = []
           @priorities.each do |pri|
             if pri['menu_id'] == menu['id']
               if !pri['priority'].nil?
                 child.push({id:menu['id'].to_s+'_'+pri['priority']['id'].to_s,name:pri['priority']['name'],menu_permission_id:[pri['menu_permission_id']]})
+                priority_ids.push(pri['priority']['id'])
               end
               menu_permission_id.push(pri['menu_permission_id'])
             end
           end
-          @menu = {id:menu['id'],name:menu['name'],pId:menu['pId'],menu_permission_id:menu_permission_id,uri:menu['uri'],children:child}.as_json
+          @menu = {id:menu['id'],name:menu['name'],pId:menu['pId'],hospital_id:menu['hospital_id'],menu_permission_id:menu_permission_id,uri:menu['uri'],priority_ids:priority_ids,children:child}.as_json
           @menus.push(@menu)
         end
         @menus=@menus.uniq

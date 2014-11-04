@@ -5,6 +5,9 @@
     .form-control{
         width :200px;
     }
+    .error_remind{
+        border:#ff0000 1px solid
+    }
 </style>
 <div class="modal-dialog">
 <div class="modal-content">
@@ -27,8 +30,8 @@
     <% end %>
     <div class="row">
       <div class="col-md-6 field">
-        <%= f.label '姓名' %>
-        <%= f.text_field :name ,class:"form-control"%>
+        <%= f.label '姓名' %><span style="color:red"><b>*</b></span>
+        <%= f.text_field :name ,class:"form-control",onblur:"check_name(this.value,'true')"%>
       </div>
       <div class="col-md-6 field">
         <%= f.label :性别 %>
@@ -60,8 +63,8 @@
     </div>
     <div class="row">
       <div class="col-md-6 field">
-        <%= f.label :生日 %>
-        <input id='pat_birthday' data-format="yyyy-MM-dd" name='patient[birthday]' type="text" class="form-control"/>
+        <%= f.label :生日 %><span style="color:red"><b>*</b></span>
+        <input id='pat_birthday' data-format="yyyy-MM-dd" name='patient[birthday]' type="text" class="form-control" onblur="check_birthday(this.value,'true')" />
         <%#= f.date_select :birthday %>
       </div>
       <!--<div class="col-md-6 field">-->
@@ -110,7 +113,7 @@
       </div>
       <div class="col-md-6 field">
         <%= f.label :民族 %><br>
-        <select id="patient_nationality" name="patient[nationality]" >
+        <select id="patient_nationality" name="patient[nationality]" > <option value="">---请选择---</option>
         </select>
         <%#= f.text_field :nationality,class:"form-control" %>
       </div>
@@ -118,12 +121,12 @@
     </div>
     <div class="row">
       <div class="col-md-6 field">
-        <%= f.label :手机号 %><br>
-        <%= f.text_field :mobile_phone,class:"form-control" %>
+        <%= f.label :手机号 %>　<span style="color:blue"><b>*</b></span><br>
+        <%= f.text_field :mobile_phone,class:"form-control" ,onblur:"check_phone(this.value,'true')"%>
       </div>
       <div class="col-md-6 field">
-        <%= f.label :电子邮件 %><br>
-        <%= f.text_field :email,class:"form-control" %>
+        <%= f.label :电子邮件 %>　<span style="color:blue"><b>*</b></span><br>
+        <%= f.text_field :email,class:"form-control",onblur:"check_email(this.value,'true')" %>
       </div>
     </div>
     <div class="row">
@@ -286,7 +289,8 @@
     </div>
     </div>
     <div class="modal-footer">
-      <%= f.submit '确定',id:'new_or_edit_submit',class:"btn btn-primary",onclick:'create_or_update()'%>
+      <div style="font-size: 14px;margin-top: -20px;margin-bottom: 10px;">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项,手机号和电子邮箱至少填写一个.</div>
+      <%= f.submit '确定',id:'new_or_edit_submit',class:"btn btn-primary"%>
       <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 <% end %>
 </div>
@@ -294,16 +298,146 @@
 </div>
 <script>
     var credential_type_number_flag=true
+    var phone_flag=false
+    var name_flag=false
+    var email_flag=false
+    var birthday_flag=false
+    var two_blank=true
     function check_credential_type_number(value){
         if ($('#patient_credential_type').val()=='居民身份证') {
             var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
             if (reg.test(value) === false) {
                 alert('生份证号格式错误!')
+                $('#patient_credential_type_number').addClass('error_remind')
                 credential_type_number_flag = false
             } else {
-                showBirthday(value)
+                $.ajax({
+                    type:'get',
+                    url:'/patients/check_credential_type_number?patient_id=<%=@patient.id unless @patient.nil? %>',
+                    data:{credential_type_number:value},
+                    success:function(data){
+                        var is_use;
+                        is_use= data['success'];
+                        if(is_use==true) {
+                            credential_type_number_flag=true;
+                            showBirthday(value)
+                            $('#patient_credential_type_number').removeClass('error_remind')
+//                        document.getElementById('phone_div').innerHTML='<div class="succ-icon"></div>'
+                        }else{
+                            credential_type_number_flag=false;
+                            $('#patient_credential_type_number').addClass('error_remind')
+                            alert('身份证号码重复!')
+                        }
+                    }
+                })
             }
         }
+    }
+
+    function check_phone(phone,a){
+        var c_phone=/1[3|5|7|8|][0-9]{9}/;
+        var re_phone= new RegExp(c_phone);
+        if (phone != ''){
+            if (re_phone.test(phone) && phone.length==11){
+                $.ajax({
+                    type:'get',
+                    url:'/patients/check_phone?patient_id=<%=@patient.id unless @patient.nil? %>',
+                    data:{phone:phone},
+                    success:function(data){
+                        if(data['success']) {
+                            phone_flag=true;
+                            $('#patient_mobile_phone').removeClass('error_remind')
+                        }else{
+                            phone_flag=false;
+                            $('#patient_mobile_phone').addClass('error_remind')
+                            if (a=='true') {
+                                alert('手机号重复!')
+                            }
+                        }
+                    }
+                })
+            }else{
+                phone_flag=false;
+                $('#patient_mobile_phone').addClass('error_remind')
+                if (a=='true') {
+                    alert('手机号格式不正确!')
+                }
+            };
+        }else{
+            phone_flag=true;
+            $('#patient_mobile_phone').removeClass('error_remind')
+        }
+    }
+    function check_name(name,a){
+        var c_name=/^\s*$/g;
+        var re_name=new RegExp(/^\s*$/g)
+        if (re_name.test(name)){
+            name_flag=false;
+            $('#patient_name').addClass('error_remind')
+            if (a=='true'){
+                alert('姓名不能为空!')
+            }
+        }else{
+            name_flag=true;
+            $('#patient_name').removeClass('error_remind')
+
+        };
+    };
+    function check_email(email,a) {
+        var c_email=/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+        var re_email = new RegExp(c_email);
+        if (email!='') {
+            if(re_email.test(email)){
+                $.ajax({
+                    type:'get',
+                    url:'/patients/check_email?patient_id=<%=@patient.id unless @patient.nil? %>',
+                    data:{email:email},
+                    success:function(data){
+                        var is_use;
+                        is_use= data['success'];
+                        if(is_use==true) {
+                            email_flag=true;
+                            $('#patient_email').removeClass('error_remind')
+                        }else{
+                            email_flag=false;
+                            $('#patient_email').addClass('error_remind')
+                            if (a=='true') {
+                                alert('邮箱已注册!')
+                            }
+                        }
+
+                    }
+                })
+            }
+            else  {
+                email_flag=false;
+                $('#patient_email').addClass('error_remind')
+                if (a=='true') {
+                    alert('邮箱格式不正确')
+                }
+            } ;
+        }else{
+            email_flag=true;
+            $('#patient_email').removeClass('error_remind')
+        }
+    };
+
+    function check_birthday(birthday,a){
+        if($.trim(birthday).length==0){
+            $('#pat_birthday').addClass('error_remind')
+            if (a=='true'){
+                alert('生日不可为空!')
+            }
+        }else{
+            birthday_flag=true
+            $('#pat_birthday').removeClass('error_remind')
+        }
+    }
+
+    function change_type(){
+        $('#patient_credential_type_number').focus();
+        $('#patient_credential_type_number').removeClass('error_remind');
+        credential_type_number_flag = true
     }
 
     function showBirthday(val)
@@ -393,7 +527,7 @@
             url:'/patients',
             data:data,
             success:function(data){
-                alert(data['success'])
+//                alert(data['success'])
                 if (data['success']){
                     $('#create_or_edit_form2').modal('hide')
                     var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val()
@@ -411,6 +545,27 @@
 //        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     }
     $(function() {
+        $(":submit[id=new_or_edit_submit]").click(function(check){
+            var birthday = $('#pat_birthday').val()
+            var phone = $('#patient_mobile_phone').val()
+            var email = $('#patient_email').val()
+            var name = $('#patient_name').val()
+//            check_phone(phone)
+            check_name(name)
+//            check_email(email)
+            check_birthday(birthday)
+            if (phone=='' && email==''){
+                two_blank = false
+            }else{
+                two_blank = true
+            }
+            if(two_blank == false || credential_type_number_flag!=true||name_flag!=true||email_flag==false||phone_flag==false||credential_type_number_flag==false||birthday_flag==false){
+                alert("表单填写有误，不能提交表单！");
+                check.preventDefault();//此处阻止提交表单
+            }else{
+                create_or_update()
+            }
+        });
         $('#pat_last_treat_time').datetimepicker({
             lang:'ch',
             timepicker:false,
