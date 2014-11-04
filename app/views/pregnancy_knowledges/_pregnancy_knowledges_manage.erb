@@ -1,9 +1,13 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
+    类型名称:<input type="text" id="type_name">&nbsp;<a id="search_type_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_type_btn" class="btn btn-default btn-sm" role="button">清空</a>
+    <br>
     <table id="knowledge_type_list"></table>
     <div id="knowledge_type_pager"></div>
   </div>
   <div style="margin-left: 20px;margin-right: 20px;margin-top: 10px;">
+    标题:<input type="text" id="knowledge_title">&nbsp;<a id="search_knowledge_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_knowledge_btn" class="btn btn-default btn-sm" role="button">清空</a>
+    <br>
     <table id="knowledge_list"></table>
     <div id="knowledge_pager"></div>
   </div>
@@ -138,5 +142,22 @@
                 }//add
         )
     });
-
+//搜索类型
+$('#search_type_btn').click(function () {
+    var type = $('#type_name').val();
+    jQuery("#knowledge_type_list").jqGrid('setGridParam', {url: "pregnancy_knowledges/index_show?str=knowledge_type&title=" + type }).trigger("reloadGrid")
+});
+//清空类型条件
+$('#clear_type_btn').click(function () {
+    $('#type_name').val('');
+});
+//搜索标题
+$('#search_knowledge_btn').click(function () {
+    var title = $('#knowledge_title').val();
+    jQuery("#knowledge_list").jqGrid('setGridParam', {url: "pregnancy_knowledges/index_show?str=knowledge&title=" + title }).trigger("reloadGrid")
+});
+//清空标题条件
+$('#clear_knowledge_btn').click(function () {
+    $('#knowledge_title').val('');
+});
 </script>

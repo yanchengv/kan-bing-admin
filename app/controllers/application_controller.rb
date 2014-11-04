@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
           :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
       )
 
-      video_image_bucket = Bucket.find('webadmin-video') #查找Bucket
+      video_image_bucket = Bucket.find('dev-mimas') #查找Bucket
       obj = video_image_bucket.new_object #在此Bucket新建Object
       obj.key = getFileName(file.original_filename)
       #obj.key = file
@@ -69,7 +69,7 @@ class ApplicationController < ActionController::Base
     )
     #mimas_open_bucket = Bucket.find('mimas-open') #查找Bucket
     begin
-      OSSObject.delete(file, 'webadmin-video') #删除文件
+      OSSObject.delete(file, 'dev-mimas') #删除文件
     rescue
       puts 'delte  error'
     end

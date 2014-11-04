@@ -9,14 +9,18 @@ class PregnancyKnowledgesController < ApplicationController
 
   def show_index
     sql = 'true'
-    if params[:str] == 'knowledge_type'
-      sql << ' and parent_id is null'
-    end
-    if params[:str] == 'knowledge'
-      sql << ' and parent_id is not null'
-    end
     if !params[:parent_id].nil? && params[:parent_id] != '0' && params[:parent_id] != 'null'
       sql << " and parent_id = #{params[:parent_id]}"
+    else
+      if params[:str] == 'knowledge_type'
+        sql << ' and parent_id is null'
+      end
+      if params[:str] == 'knowledge'
+        sql << ' and parent_id is not null'
+      end
+    end
+    if !params[:title].nil? && params[:title] != '' && params[:title] != 'null'
+      sql << " and title like '%#{params[:title]}%'"
     end
     @pregnancy_knowledges = PregnancyKnowledge.where(sql)
     count = @pregnancy_knowledges.count
