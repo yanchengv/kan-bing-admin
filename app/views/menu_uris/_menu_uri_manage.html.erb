@@ -1,0 +1,64 @@
+<div style="margin-left: 20px; margin-right: 20px;">
+  <table id="list"></table>
+  <div id="pager"></div>
+</div>
+<script type="text/javascript">
+//        $(document).ready(function () {
+            jQuery("#list").jqGrid({
+                url: 'menu_uris/show_index',
+                datatype: "json",
+                mtype: 'GET',
+                colNames: ['ID', '菜单名', '菜单菜单URL', '说明'],
+                colModel: [
+                    { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden: true},
+                    { name: 'menu_name', index: 'menu_name', width: 100, align: "center", editable: true},
+                    { name: 'menu_uri', index: 'menu_uri', width: 100, align: "center", editable: true},
+                    { name: 'instruction', index: 'instruction', width: 150, align: "center", search: false, editable: true}
+                ],
+                rowList: [10, 20, 30],
+                sortname: 'id',
+                viewrecords: true,
+                sortorder: "desc",
+                autowidth: true,
+                rownumbers: true,
+                page: 1,
+                jsonReader: {
+                    root: "menu_uris",
+                    total: "totalpages",
+                    page: "currpage",
+                    records: "totalrecords",
+                    repeatitems: false
+                },
+                prmNames: {
+                    page: "page", // 表示请求页码的参数名称
+                    rows: "rows", // 表示请求行数的参数名称
+                    id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                    //   npage: null,
+                    totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                    editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+                    addoper: "add", // 当在add模式中提交数据时，操作的名称
+                    deloper: "del", // 当在delete模式中提交数据时，操作的名称
+                    subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+                },
+                editurl: 'menu_uris/oper_action',
+                closeAfterAdd: true,
+                pager: jQuery('#pager'),
+                //  multiselect: true,
+                rowNum: 20,
+                altclass: 'altRowsColour',
+                width: '500',
+                height: 'auto',
+                caption: "菜单URL管理"
+            }).navGrid('#pager', {
+                        cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                        deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                        refreshtext: "刷新", refreshtitle: "刷新"},
+                    {
+                        closeAfterEdit: true
+                    },//edit
+                    {
+                        closeAfterAdd: true
+                    }//add
+            )
+//        })
+</script>
