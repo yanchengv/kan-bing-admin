@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       get 'index_show', to: 'edu_videos#show_index'
       post 'oper_action', to: 'edu_videos#oper_action'
       post 'upload_image', to: 'edu_videos#upload_image'
+      post 'upload_video', to: 'edu_videos#upload_video'
       get 'get_doctors', to: 'edu_videos#get_doctors'
       get 'get_video_types', to:'edu_videos#get_video_types'
       post 'upload', to: 'edu_videos#upload'

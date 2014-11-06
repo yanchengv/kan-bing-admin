@@ -90,6 +90,19 @@ class EduVideosController < ApplicationController
     #end
   end
 
+  #上传视频
+  def upload_video
+    file=params[:edu_video][:video]
+    tmpfile = getFileName(file.original_filename.to_s)
+    uuid = upload_video_img_bucket(file)
+    url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/" << uuid
+    if true
+      render :json => {flag: true, url: url}
+    else
+      render :json => {flag: false, url: ''}
+    end
+  end
+
   def upload
     para={}
     para[:name]=params[:edu_video][:name]
@@ -107,9 +120,13 @@ class EduVideosController < ApplicationController
     para[:video_type_id]=params[:edu_video][:video_type]
     @video=EduVideo.new(para)
     if @video.save
-      render :json => {flag: true}
+      @video_types = VideoType.all
+      render :partial => 'edu_videos/edu_video_manage'
     else
-      render :json => {flag: false}
+      @doctors = Doctor.all
+      @types=VideoType.all
+      @video=EduVideo.new
+      render :partial => 'edu_videos/create'
     end
   end
 

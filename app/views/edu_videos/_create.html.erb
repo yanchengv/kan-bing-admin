@@ -15,7 +15,8 @@
 </style>
 <%= form_for @video,url:{action: 'upload', controller:'edu_videos'},:html => {:id => 'myForm',:multipart => true,:style => 'margin-left:20px;margin-top:-90px;'} do |f|%>
     <%= f.file_field :image, id:'fileupload',style:'visibility:hidden;'%>
-    <%= f.file_field :video_url,id:'videoupload',style:'visibility:hidden;',onChange:'getFileName(this)'%>
+    <%= f.file_field :video, id: 'video_upload', style: 'visibility:hidden;' %>
+    <%= f.text_field :video_url,id:'video_url',style:'visibility:hidden;'%>
     <%= f.text_field :image_url, id:'image_path',style:'visibility:hidden;' %>
     <table class="EditTable">
       <tr class="FormData">
@@ -68,10 +69,19 @@
       </tr>
       <tr class="FormData">
         <td colspan="2">
-          <div id="upload_div" style="display:inline;margin-left: 10px;"></div>
+          <div id="upload_div" style="display:inline;margin-left: 10px;">
+            <div id="uploadinfo"></div></div>
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td colspan="2">
+          <div id="progress2">
+            <%= f.submit '保存' %>
+          </div>
         </td>
       </tr>
     </table>
+
 
 <%end%>
 
@@ -92,12 +102,12 @@
         $("#fileupload").click();
     });
     $("#fakebtn2").click(function () {
-        $("#videoupload").click();
+        $("#video_upload").click();
     });
     var ChunkCount = 0;
     var stime;
         var url1 = "/edu_videos/upload_image";
-        var url2 = "/edu_videos/upload"
+        var url2 = "/edu_videos/upload_video"
         $('#fileupload').fileupload({
             autoUpload: true,
             url: url1,
@@ -116,51 +126,30 @@
                 }
             }
         });
-        $('#videoupload').fileupload({
+        $('#video_upload').fileupload({
             url: url2,
             dataType: 'json',
             //forceIframeTransport: true,
             maxChunkSize: 100000000000, //100Gb
-            add: function (e, data) {
-                $("#uploadinfo").remove();
-                $('#progress .bar').css(
-                        'width',
-                        '0%'
-                );
-                $("#upload_div").html(data.context = $('<button/>').text('上传')
-                        .appendTo(document.body)
-                        .click(function () {
-                            data.context = $('<p id="uploadinfo"></p>').text('正在上传...').replaceAll($(this));
-                            var d = new Date();
-                            data.submit();
-                            stime = d.getTime();
-                        }));
-                ChunkCount = 0;
-                $('#pausebtn').click(function(){
-                    data.abort();
-                });
-                $('#resumebtn').click(function(){
-
-                    data.uploadedBytes = 100000*ChunkCount;
-                    data.data = null;
-                    data.submit();
-
-                });
-            },
             fail:function (e, data) {
-                alert('上传失败！')
+                alert('上传失败！');
+                data.context = $("#uploadinfo").text('上传失败！');
                 console.log(data.errorThrown);
             },
             done: function (e, data) {
-                data.context = $("#uploadinfo").text('上传完成.')
-                document.getElementById("myForm").reset()
+                if (data.result.flag){
+                    $('#video_url').val(data.result.url);
+                    $('#video_path').val(data.result.url);
+                }
+                data.context = $("#uploadinfo").text('上传成功!');
             },
-            progressall: function (e, data) {
+            progress: function (e, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
                 $('#progress2 .bar').css(
                         'width',
                         progress + '%'
                 );
+                data.context = $("#uploadinfo").text('正在上传...');
             }
 
         });
