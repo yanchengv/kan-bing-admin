@@ -107,6 +107,20 @@ class DoctorsController < ApplicationController
   #   p @objJSON.as_json
   # end
   def index
+    @hospitals = nil
+    @departments = nil
+    if !current_user.hospital_id.nil? && current_user.hospital_id != ''
+      @hospitals = Hospital.where(id:current_user.hospital_id)
+      if !current_user.department_id.nil? && current_user.department_id != ''
+        @departments = Department.where(id:current_user.department_id)
+      else
+        @departments = Department.where(hosptial_id:current_user.hospital_id)
+      end
+    else
+      @hospitals = Hospital.all
+    end
+  end
+  def index2
     menu_name='医生管理'
     @hospitals=Doctor.new.manage_doctors(menu_name, current_user.id)
     @hos = Hospital.find_by(id:params[:hos_id])
@@ -198,6 +212,98 @@ class DoctorsController < ApplicationController
   end
 
   def show_index
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !params[:hos_id].nil? && params[:hos_id] != ''
+      hos_id = params[:hos_id]
+    end
+    if !params[:dep_id].nil? && params[:dep_id] != ''
+      if params[:dep_id] == 'all'
+        dep_id = ''
+      else
+        dep_id = params[:dep_id]
+      end
+    end
+    is_activated = params[:is_activated]
+    noOfRows = params[:rows]
+    page = params[:page]
+    @doctors_all = nil
+    if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
+      @doctors_all = Doctor.where(hospital_id:hos_id,department_id:dep_id)
+    elsif !hos_id.nil? && hos_id != ''
+      @doctors_all = Doctor.where(hospital_id:hos_id)
+    else
+      @doctors_all = Doctor.all
+    end
+    field = params[:searchField]
+    p params[:searchOper]
+    value = params[:searchString]
+    if !field.nil? && field!='' && !value.nil?
+      @doctors_all =  @doctors_all.where("#{field} like ?", "%#{value}%")
+    end
+    if is_activated=='0'
+      @doctors_all =  @doctors_all.where(is_activated:0)
+    end
+    if is_activated=='1'
+      @doctors_all =  @doctors_all.where.not(is_activated:0)
+    end
+    records=0
+    @total=0
+    if !@doctors_all.nil? && !@doctors_all.empty?
+      # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
+      records = @doctors_all.length
+      @doctors = @doctors_all.paginate(:per_page => noOfRows, :page => page)
+      if !noOfRows.nil?
+        if records%noOfRows.to_i == 0
+          @total = records/noOfRows.to_i
+        else
+          @total = (records/noOfRows.to_i)+1
+        end
+      end
+      @rows=[]
+      @doctors.each do |doc|
+        @province=Province.where(id:doc.province_id).first
+        @city=City.where(id:doc.city_id).first
+        @hospital=Hospital.where(id:doc.hospital_id).first
+        @department=Department.where(id:doc.department_id).first
+
+
+        @province.nil? ? province_name='':province_name=@province.name
+        @city.nil? ? city_name='':city_name=@city.name
+        @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
+        @department.nil? ? department_name='':department_name=@department.name
+        a={id:doc.id,
+           cell:[
+               doc.id,
+               doc.name,
+               doc.credential_type,
+               doc.credential_type_number,
+               doc.gender,
+               doc.birthday,
+               doc.birthplace,
+               # doc.province_id,
+               province_name,
+               city_name,
+               hospital_name,
+               department_name,
+               # doc.city_id,
+               # doc.hospital_id,
+               # doc.department_id,
+               doc.mobile_phone,
+               doc.email,
+               doc.professional_title,
+               doc.introduction
+           ]
+        }
+        @rows.push(a)
+      end
+    end
+    @objJSON = {total:@total,rows:@rows,page:page,records:records}
+
+    render :json => @objJSON.as_json
+  end
+
+  def show_index2
       # @doctor = Doctor.new
       # @doctors = Doctor.all
      # Admin2.joins(admin2s_role2s:  [{ role2: [{role2s_menu_permissions: [{menu_permission: :priority},{menu_permission: :menu}]}] }]).where(id:current_user.id)
@@ -446,6 +552,23 @@ class DoctorsController < ApplicationController
 
   # GET /doctors/new
   def new
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !hos_id.nil? && hos_id != ''
+      @hospitals = Hospital.where(id:hos_id)
+      if !dep_id.nil? && dep_id != ''
+        @departments = Department.where(id:dep_id)
+      else
+        @departments = Department.where(hosptial_id:hos_id)
+      end
+    else
+      @hospitals = Hospital.all
+    end
+    @doctor = Doctor.new
+    render partial: 'doctors/form'
+  end
+
+  def new2
 =begin
     @menu_id = params[:menu_id]
     @doctor = Doctor.new
@@ -510,6 +633,23 @@ class DoctorsController < ApplicationController
 
   # GET /doctors/1/edit
   def edit
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !hos_id.nil? && hos_id != ''
+      @hospitals = Hospital.where(id:hos_id)
+      if !dep_id.nil? && dep_id != ''
+        @departments = Department.where(id:dep_id)
+      else
+        @departments = Department.where(hosptial_id:hos_id)
+      end
+    else
+      @hospitals = Hospital.all
+    end
+    @doctor = Doctor.where(id:params[:id]).first
+    render partial: 'doctors/form'
+  end
+
+  def edit2
 =begin
     @menu_id = params[:menu_id]
     @doctor = Doctor.where(id:params[:id]).first
@@ -581,7 +721,7 @@ class DoctorsController < ApplicationController
     if !@doctor.department_id.nil? && @doctor.department_id != ''
       @departments = Department.where(id:@doctor.department_id)
     else
-      @department = Department.where(hospital_id:@doctor.hospital_id)
+      @departments = Department.where(hospital_id:@doctor.hospital_id)
     end
     # @hospital = Hospital.where(id:params[:hos_id])
     # @department = Department.where(hospital_id:params[:hos_id])
@@ -649,6 +789,18 @@ class DoctorsController < ApplicationController
   end
 
   def get_department
+    @departments = Department.where(hospital_id:params[:hospital_id])
+    if !current_user.department_id.nil? && current_user.department_id != ''
+      @departments = Department.where(id:current_user.department_id)
+    end
+    if params[:model_class] == 'patient'
+      render partial: 'patients/department_partial'
+    else
+      render partial: 'doctors/department_partial'
+    end
+  end
+
+  def get_department2
 =begin
     @department = Department.all
     @hospital_id = nil
@@ -984,6 +1136,14 @@ class DoctorsController < ApplicationController
   end
 
   def search_department
+    @departments = Department.where(hospital_id:params[:hos_id])
+    if !current_user.department_id.nil? && current_user.department_id != ''
+      @departments = Department.where(id:current_user.department_id)
+    end
+    render partial: 'doctors/search_department'
+  end
+
+  def search_department2
     @menu_id = params[:menu_id]
     @menu = Menu.find_by(id:@menu_id).parent_menu
     @child_menus = @menu.child_menus
@@ -1312,6 +1472,30 @@ class DoctorsController < ApplicationController
         render json:{success:true,content:'此证件号可以使用'}
       end
     end
+  end
+
+  def get_hospitals
+    @hospitals = Hospital.all
+    docs = {}
+    docs[0] = '----请选择----'
+    @hospitals.each do |hos|
+      docs[hos.id] = hos.name
+    end
+    render :json => {:hospitals => docs.as_json}
+  end
+
+  def get_departments
+    @departments = Department.all
+    if !params[:hospital_id].nil?
+      @departments = Department.where(hospital_id:params[:hospital_id])
+    end
+    docs = {}
+    str = "<option value=''>----请选择----</option>"
+    @departments.each do |dep|
+      docs[dep.id] = dep.name
+      str = str + "<option value='#{dep.id}'>#{dep.name}</option>"
+    end
+    render text: str
   end
 
   private

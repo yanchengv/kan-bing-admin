@@ -4,6 +4,8 @@ class Menu < ActiveRecord::Base
   belongs_to :parent_menu,foreign_key: :parent_id,class_name:"Menu"
   has_many :child_menus, foreign_key: :parent_id,class_name:"Menu" ,dependent: :destroy
   has_many :priorities, :through => :menu_permissions, :source  => :priority
+  has_many :role2_menus, dependent: :destroy
+  has_many :role2s, :through => :role2_menus, :source => :role2
 
   def all_menus
     @menus=Menu.all

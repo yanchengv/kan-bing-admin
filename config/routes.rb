@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :role2_menus
+
   resources :menu_uris do
     collection do
       get 'show_index', to:'menu_uris#show_index'
@@ -216,6 +218,8 @@ Rails.application.routes.draw do
       get 'check_phone', to:'doctors#check_phone'
       get 'check_email', to:'doctors#check_email'
       get 'check_credential_type_number', to:'doctors#check_credential_type_number'
+      get 'get_hospitals', to:'doctors#get_hospitals'
+      get 'get_departments', to:'doctors#get_departments'
     end
   end
 

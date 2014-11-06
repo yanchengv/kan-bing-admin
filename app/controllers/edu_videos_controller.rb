@@ -17,6 +17,18 @@ class EduVideosController < ApplicationController
 
   def show_index
     sql = 'true'
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !hos_id.nil? && hos_id != ''
+      if !dep_id.nil? && dep_id != ''
+        doc = "select id from doctors where hospital_id=#{hos_id} and department_id=#{dep_id}"
+        @doctors = Doctor.select("id").where(hospital_id:hos_id,department_id:dep_id)
+      else
+        doc = "select id from doctors where hospital_id=#{hos_id}"
+        @doctors = Doctor.select("id").where(hospital_id:hos_id)
+      end
+      sql << " and doctor_id in ("+doc+")"
+    end
     if !params[:type].nil? && params[:type] != '0' && params[:type] != 'null'
       sql << " and video_type_id = #{params[:type]}"
     end
