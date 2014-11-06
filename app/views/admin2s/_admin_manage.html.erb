@@ -13,7 +13,7 @@
             url: 'admin2s/test_index',
             datatype: "json",
             mtype: 'GET',
-            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号'],
+            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号','管理员类型','医院','科室'],
             colModel: [
                 { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden:true},
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
@@ -22,7 +22,53 @@
                 { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
                     editable: true, edittype: "password", hidden: true, editrules: {edithidden: true} },
                 { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {custom: true, custom_func: check_email, required: false} },
-                { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}}
+                { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}},
+                { name: 'admin_type', index: 'admin_type', width: 100, align: "center",editable: true,edittype:"select",
+                    editoptions: {dataEvents: [
+                        { type: 'change', fn: function (e) {
+                            select_type(this);
+                        } }
+
+                    ],
+                        dataInit: function (element) {
+                            $(element).select2();
+                        },
+                        style: "width:147px",
+
+                        value: "科室管理员:科室管理员;医院管理员:医院管理员;网站管理员:网站管理员"
+                    }},
+                { name: 'hospital_id', index: 'hospital_id', width: 100, align: "center", hidden:true,editable: true,edittype:"select", editrules: {edithidden:true},
+                    editoptions:{dataEvents: [
+                        { type: 'change', fn: function(e) {search(this); } }
+
+                    ],
+                        dataInit: function (element) {
+                            $(element).select2();
+                        },
+                        style: "width:147px",
+                        value: function () {
+                            var positions;
+                            $.ajax({
+                                url: "doctors/get_hospitals",
+                                async: false,
+                                success: function (data) {
+                                    positions = data.hospitals;
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                    alert(textStatus);
+                                }
+                            });
+                            return positions;
+                        }}},
+                { name: 'department_id', index: 'department_id', width: 150, align: "center", hidden: true, search: false, editable: true,edittype:"select", editrules: {edithidden: true},
+                    editoptions: {
+                        dataInit: function (element) {
+                            $(element).select2();
+                        },
+                        style: "width:147px",
+                        value: ":----请选择----"
+                    }
+                }
             ],
             rowList: [10, 20, 30],
             sortname: 'id',
@@ -134,4 +180,38 @@
         }
         <%end%>
     }
+
+    function select_type(obj){
+        var hos = $("select#hospital_id")
+        var dep = $("select#department_id")
+        if (obj.value=='医院管理员'){
+            dep.attr('disabled','disabled')
+            hos.removeAttr('disabled')
+        }
+        if (obj.value=='科室管理员'){
+            hos.removeAttr('disabled')
+            dep.removeAttr('disabled')
+        }
+        if (obj.value=='网站管理员'){
+            hos.attr('disabled','disabled')
+            dep.attr('disabled','disabled')
+        }
+    }
+
+function search(obj) {
+    change_department(obj.value, 'department_id') ;
+}
+function change_department(hos_id, select_id){
+    $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+    $.ajax({
+                type: "get",
+                url: '/doctors/get_departments?hospital_id=' + hos_id,
+                data: 'text',
+                success: function (data) {
+                    var classify3 = $("select#department_id");
+                    classify3.html(data);
+                }
+            }
+    );
+}
 </script>

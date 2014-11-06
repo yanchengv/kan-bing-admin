@@ -10,6 +10,18 @@ class ConsultAccusesController < ApplicationController
   def index_accuses
     #@consult_accuses = ConsultAccuse.all
     sql = 'id in (select question_id from consult_accuses)'
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !hos_id.nil? && hos_id != ''
+      if !dep_id.nil? && dep_id != ''
+        doc = "select id from doctors where hospital_id=#{hos_id} and department_id=#{dep_id}"
+        pat = "select id from patients where hospital_id=#{hos_id} and department_id=#{dep_id}"
+      else
+        doc = "select id from doctors where hospital_id=#{hos_id}"
+        pat = "select id from patients where hospital_id=#{hos_id}"
+      end
+      sql << " and created_by in (select id from users where doctor_id in ("+doc+") or patient_id in ("+pat+"))"
+    end
     if !params[:content].nil? && params[:content] != ''
       sql << " and consult_content like '%#{params[:content]}%'"
     end
@@ -19,6 +31,18 @@ class ConsultAccusesController < ApplicationController
   #被举报的回复
   def index_results
     sql = 'id in (select result_id from consult_accuses)'
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !hos_id.nil? && hos_id != ''
+      if !dep_id.nil? && dep_id != ''
+        doc = "select id from doctors where hospital_id=#{hos_id} and department_id=#{dep_id}"
+        pat = "select id from patients where hospital_id=#{hos_id} and department_id=#{dep_id}"
+      else
+        doc = "select id from doctors where hospital_id=#{hos_id}"
+        pat = "select id from patients where hospital_id=#{hos_id}"
+      end
+      sql << " and created_by in (select id from users where doctor_id in ("+doc+") or patient_id in ("+pat+"))"
+    end
     if !params[:content].nil? && params[:content] != ''
       sql << " and respond_content like '%#{params[:content]}%'"
     end

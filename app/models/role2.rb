@@ -3,6 +3,8 @@ class Role2 < ActiveRecord::Base
   has_many :menu_permissions, :through => :role2s_menu_permissions, :source  => :menu_permission
   has_many :admin2s_role2s, :dependent => :destroy
   has_many :admin2s, :through => :admin2s_role2s, :source  => :admin2
+  has_many :role2_menus, dependent: :destroy
+  has_many :menus, :through => :role2_menus, :source => :menu
 
   def get_zTree  #指定角色菜单树的生成
     menu_permissions = self.menu_permissions
@@ -115,14 +117,10 @@ class Role2 < ActiveRecord::Base
   def child_menus(menus,menu)  #判断指定菜单是否有子菜单
     @menu = Menu.where(id:menu['id']).first
     @menus = []
-    p 'aa'
-    p menus
-    p 'bb'
     menus.each do |m|
       if m['pId'] == @menu.id
         @menus.push(m)
       end
-
     end
     return @menus
   end
@@ -183,6 +181,47 @@ class Role2 < ActiveRecord::Base
           @menus = {id:menu2['id'],name:menu2['name'],pId:menu2['pId'],menu_permission_id:menu2['menu_permission_id'],uri:menu2['uri'],hospital_id:menu2['hospital_id'],priority_ids:menu2['priority_ids'],children:menu2['children']}
         else
           @menus = {id:menu2['id'],name:menu2['name'],pId:menu2['pId'],menu_permission_id:menu2['menu_permission_id'],uri:menu2['uri'],hospital_id:menu2['hospital_id'],priority_ids:menu2['priority_ids'],children:stup2(@all,menu2)}
+        end
+        child_menus.push(@menus)
+      end
+    end
+    child_tree = child_menus
+    child_menus = []
+    return child_tree
+  end
+
+  def menu_tree
+    menus = self.menus
+    root_tree(menus)
+  end
+
+  def root_tree(menus)
+    @menus = menus
+    @menus=@menus.uniq
+    @all_trees=[]
+    @all = @menus
+    @menus.each do |menu|
+      if menu.parent_id.nil?
+        if menu.child_menus.empty?
+          @all_tree = {id:menu.id,name:menu.name,pId:menu.parent_id,uri:menu.uri}
+        else
+          @all_tree = {id:menu.id,name:menu.name,pId:menu.parent_id,uri:menu.uri,children:child_tree(@all,menu)}
+        end
+        @all_trees.push(@all_tree)
+      end
+    end
+    return @all_trees
+  end
+
+  def child_tree(menus,menu)
+    child_menus=[]
+    @all = menus
+    menus.each do |menu2|
+      if menu2.parent_id.to_i == menu.id.to_i
+        if menu2.child_menus.empty?
+          @menus = {id:menu2.id,name:menu2.name,pId:menu2.parent_id,uri:menu2.uri}
+        else
+          @menus = {id:menu2.id,name:menu2.name,pId:menu2.parent_id,uri:menu2.uri,children:child_tree(@all,menu2)}
         end
         child_menus.push(@menus)
       end

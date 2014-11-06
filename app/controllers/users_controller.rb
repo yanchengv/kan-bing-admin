@@ -10,6 +10,18 @@ class UsersController < ApplicationController
 
   def show_index
     sql = 'true'
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !hos_id.nil? && hos_id != ''
+      if !dep_id.nil? && dep_id != ''
+        doc = "select id from doctors where hospital_id=#{hos_id} and department_id=#{dep_id}"
+        pat = "select id from patients where hospital_id=#{hos_id} and department_id=#{dep_id}"
+      else
+        doc = "select id from doctors where hospital_id=#{hos_id}"
+        pat = "select id from patients where hospital_id=#{hos_id}"
+      end
+      sql << " and (doctor_id in ("+doc+") or patient_id in ("+pat+")) "
+    end
     if params[:name] && params[:name] != '' && params[:name] != 'null'
       sql << " and( name like '%#{params[:name]}%' or  nick_name like '%#{params[:name]}%' or  real_name like '%#{params[:name]}%') "
     end
@@ -134,7 +146,16 @@ class UsersController < ApplicationController
 
   #医生
   def get_doctors
-    @doctors = Doctor.where('id not in (select doctor_id from users where doctor_id is not null)')
+    sql="id not in (select doctor_id from users where doctor_id is not null)"
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !hos_id.nil? && hos_id != ''
+      sql << " and hospital_id=#{hos_id}"
+    end
+    if !dep_id.nil? && dep_id != ''
+      sql << " and department_id=#{dep_id}"
+    end
+    @doctors = Doctor.where(sql)
     count = @doctors.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @doctors = @doctors.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
@@ -143,7 +164,16 @@ class UsersController < ApplicationController
 
   #护士
   def get_patients
-    @patients = Patient.where('id not in (select patient_id from users where patient_id is not null)')
+    sql="id not in (select patient_id from users where patient_id is not null)"
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !hos_id.nil? && hos_id != ''
+      sql << " and hospital_id=#{hos_id}"
+    end
+    if !dep_id.nil? && dep_id != ''
+      sql << " and department_id=#{dep_id}"
+    end
+    @patients = Patient.where(sql)
     count = @patients.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @patients = @patients.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))

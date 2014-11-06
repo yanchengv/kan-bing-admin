@@ -204,7 +204,7 @@ class MenusController < ApplicationController
     render :json => {success:true}
   end
 
-  def remove_nodes
+  def remove_nodes   #存在增删改查
     menu_id =  params[:data]['id']
     p_role_id = params[:targetNode]['id']
     role_id = p_role_id[p_role_id.index('-')+1,p_role_id.length]
@@ -274,7 +274,7 @@ class MenusController < ApplicationController
     render :json => {success:true}
     end
 
-  def get_menu_per(menus,menu,menu_id,result)  #循环遍历菜单树,找出当前结点中所有父结点中只有一个子结点的menu_permission_id
+  def get_menu_per(menus,menu,menu_id,result)  #循环遍历菜单树,找出当前结点中所有父结点中只有一个子结点的menu_permission_id #存在增删改查
       p menu
       p 'a'
       p menu[:pId]
@@ -300,7 +300,7 @@ class MenusController < ApplicationController
 
       end
     return result
-    end   #在remove_nodes中调用
+    end   #在remove_nodes中调用     #存在增删改查
 
   def loop_get_tree(menus,node)     #在remove_nodes中调用  　获得当前删除结点所在整个菜单树
     if !node['children'].nil? && node['children'] != []
@@ -311,9 +311,9 @@ class MenusController < ApplicationController
       end
     end
     return menus
-  end
+  end #存在增删改查
 
-  def remove_nodes2
+  def remove_nodes2 #存在增删改查
     p params[:data]
     param_id = params[:data]['id']
     p params[:data]['name']
