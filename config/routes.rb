@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+  resources :menu_uris do
+    collection do
+      get 'show_index', to:'menu_uris#show_index'
+      post 'oper_action', to: 'menu_uris#oper_action'
+    end
+  end
+
   resources :admin2s_role2s do
     collection do
       delete 'remove_nodes', to:'admin2s_role2s#remove_nodes'
