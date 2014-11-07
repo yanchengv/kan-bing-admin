@@ -4,104 +4,8 @@ class PatientsController < ApplicationController
 
   # GET /patients
   # GET /patients.json
-  # def index
-  #   # @patients = Patient.all
-  #   noOfRows = params[:rows]
-  #   page = params[:page]
-  #   @menu_id = params[:menu_id]
-  #   @patients_all=nil
-  #   if params[:menu_id]
-  #     menu_permission = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
-  #     # menu_permission_dep = MenuPermission.where(menu_id:params[:menu_id],admin2_id:current_user.id)
-  #     menu_permission_hos_id=[]
-  #     menu_permission_dep_id=[]
-  #     menu_permission.each do |hos|
-  #       if !hos.hospital_id.nil?
-  #         p menu_permission_hos_id
-  #         menu_permission_hos_id.concat(hos.hospital_id.split(","))
-  #       end
-  #       if !hos.department_id.nil?
-  #         menu_permission_dep_id.concat(hos.department_id.split(","))
-  #       end
-  #     end
-  #     # menu_permission_dep.each do |dep|
-  #     #   menu_permission_dep_id.concat(dep.hospital_id.split(","))
-  #     # end
-  #     p menu_permission_hos_id
-  #     p menu_permission_dep_id
-  #     if menu_permission_dep_id != []
-  #       if menu_permission_hos_id != []
-  #         sql="hospital_id in (#{menu_permission_hos_id.join(",")}) or department_id in (#{menu_permission_dep_id.join(",")})"
-  #         @patients_all = Patient.where(sql).distinct!
-  #       else
-  #         @patients_all = Patient.where(department_id:menu_permission_dep_id)
-  #       end
-  #     else
-  #       if !menu_permission_hos_id.nil? && menu_permission_hos_id != []
-  #         @patients_all = Patient.where(hospital_id:menu_permission_hos_id)
-  #       else
-  #         @patients_all = Patient.all
-  #       end
-  #     end
-  #   else
-  #     @patients_all = Patient.all
-  #   end
-  #   records=0
-  #   @total=0
-  #   if !@patients_all.nil? && !@patients_all.empty?
-  #     # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
-  #     records = @patients_all.length
-  #     @patients = @patients_all.paginate(:per_page => noOfRows, :page => page)
-  #     if !noOfRows.nil?
-  #       if records%noOfRows.to_i == 0
-  #         @total = records/noOfRows.to_i
-  #       else
-  #         @total = (records/noOfRows.to_i)+1
-  #       end
-  #     end
-  #     @rows=[]
-  #     @patients.each do |pat|
-  #       @province=Province.where(id:pat.province_id).first
-  #       @city=City.where(id:pat.city_id).first
-  #       @hospital=Hospital.where(id:pat.hospital_id).first
-  #       @department=Department.where(id:pat.department_id).first
-  #
-  #
-  #       @province.nil? ? province_name='':province_name=@province.name
-  #       @city.nil? ? city_name='':city_name=@city.name
-  #       @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
-  #       @department.nil? ? department_name='':department_name=@department.name
-  #       a={id:pat.id,
-  #          cell:[
-  #              # pat.id,
-  #              pat.name,
-  #              pat.credential_type,
-  #              pat.credential_type_number,
-  #              pat.gender,
-  #              pat.birthday,
-  #              pat.birthplace,
-  #              # pat.province_id,
-  #              # pat.city_id,
-  #              # pat.hospital_id,
-  #              # pat.department_id,
-  #              province_name,
-  #              city_name,
-  #              hospital_name,
-  #              department_name,
-  #              pat.mobile_phone,
-  #              pat.email,
-  #              pat.last_treat_time,
-  #              pat.introduction
-  #          ]
-  #       }
-  #       @rows.push(a)
-  #     end
-  #   end
-  #   @objJSON = {total:@total,rows:@rows,page:page,records:records}
-  #   @objJSON.as_json
-  # end
 
-  def index
+  def index         #含增删改查权限的 ############　删　################
     @hospitals = nil
     @departments = nil
     if !current_user.hospital_id.nil? && current_user.hospital_id != ''
@@ -109,7 +13,7 @@ class PatientsController < ApplicationController
       if !current_user.department_id.nil? && current_user.department_id != ''
         @departments = Department.where(id:current_user.department_id)
       else
-        @departments = Department.where(hosptial_id:current_user.hospital_id)
+        @departments = Department.where(hospital_id:current_user.hospital_id)
       end
     else
       @hospitals = Hospital.all
@@ -146,12 +50,8 @@ class PatientsController < ApplicationController
     if !params[:hos_id].nil? && params[:hos_id] != ''
       hos_id = params[:hos_id]
     end
-    if !params[:dep_id].nil? && params[:dep_id] != ''
-      if params[:dep_id] == 'all'
-        dep_id = ''
-      else
-        dep_id = params[:dep_id]
-      end
+    if !params[:dep_id].nil? && params[:dep_id] != '' && params[:dep_id] != 'all'
+      dep_id = params[:dep_id]
     end
     p dep_id
     is_activated = params[:is_activated]
@@ -163,7 +63,13 @@ class PatientsController < ApplicationController
     elsif !hos_id.nil? && hos_id != ''
       @patients_all = Patient.where(hospital_id:hos_id)
     else
-        @patients_all = Patient.all
+      @patients_all = Patient.all
+    end
+    field = params[:searchField]
+    p params[:searchOper]
+    value = params[:searchString]
+    if !field.nil? && field!='' && !value.nil?
+      @patients_all =  @patients_all.where("#{field} like ?", "%#{value}%")
     end
     if is_activated=='0'
       @patients_all =  @patients_all.where(is_activated:0)
@@ -198,8 +104,9 @@ class PatientsController < ApplicationController
         @department.nil? ? department_name='':department_name=@department.name
         a={id:pat.id,
            cell:[
-               # pat.id,
+               pat.id,
                pat.name,
+               pat.spell_code,
                pat.credential_type,
                pat.credential_type_number,
                pat.gender,
@@ -376,7 +283,7 @@ class PatientsController < ApplicationController
       end
       @objJSON = {total:@total,rows:@rows,page:page,records:records}
       render :json => @objJSON.as_json
-  end
+  end #含增删改查权限的 ############　删　################
   # GET /patients/1
   # GET /patients/1.json
   def show
@@ -400,7 +307,7 @@ class PatientsController < ApplicationController
   end
 
   # GET /patients/new
-  def new2
+  def new2    #含增删改查权限的 ############　删　################
     menu_name = '患者管理'
     @menu=Menu.where(name:menu_name).first
     @hos_menus = Menu.find_by_sql("select m.id,m.name,mp.hospital_id as hos_id,mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{@menu.id}")
@@ -451,7 +358,7 @@ class PatientsController < ApplicationController
     render partial: 'patients/form'
   end
 
-  def edit2
+  def edit2    #含增删改查权限的 ############　删　################
     @menu_id = params[:menu_id]
     @patient = Patient.where(id:params[:id]).first
     @hospitals = Hospital.where(id:@patient.hospital_id)
@@ -522,7 +429,7 @@ class PatientsController < ApplicationController
     # end
   end
 
-  def is_executable
+  def is_executable      #针对每一行验证权限   #含增删改查权限的 ############　删　################
     @menu_permissions = MenuPermission.where(menu_id: params[:menu_id], admin2_id: current_user.id)
     ids = params[:id].to_s
     p ids
@@ -752,7 +659,7 @@ class PatientsController < ApplicationController
     render partial: 'patients/search_department'
   end
 
-  def search_department2
+  def search_department2   #含增删改查权限的 ############　删　################
     @menu_id = params[:menu_id]
     @menu = Menu.where(name:'患者管理').first
     @child_menus = @menu.child_menus
@@ -770,57 +677,7 @@ class PatientsController < ApplicationController
     render partial: 'patients/search_department'
   end
 
-  def is_permission
-    add_flag=false
-    delete_flag=false
-    update_flag=false
-    show_flag=false
-    all_flag=true
-    hos_id = params[:hospital_id]
-    dep_id = params[:department_id]
-    @menu = Menu.where(name:'患者管理').first
-    @child_menus = @menu.all_child(Menu.all)
-    if @child_menus != []
-      @child_menus.each do |child_menu|
-        if dep_id==''
-          @hos_menu = Menu.find_by_sql("select m.id,m.name from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.parent_id=#{@menu.id} and mp.hospital_id=#{params[:hospital_id]}").first
-          p @hos_menu
-          if !@hos_menu.child_menus.empty?
-            add_flag = true
-            delete_flag = false
-            update_flag = false
-            show_flag = true
-          else
-            @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.id=#{child_menu.id} and mp.hospital_id=#{hos_id}")
-          end
-        else
-          @menu_permissions = MenuPermission.find_by_sql("select mp.priority_id from menu_permissions mp,menus m, role2s_menu_permissions rmp, admin2s_role2s ar where mp.menu_id=m.id and rmp.menu_permission_id=mp.id and rmp.role2_id=ar.role2_id and ar.admin2_id=#{current_user.id} and m.id=#{child_menu.id} and mp.hospital_id=#{hos_id} and mp.department_id=#{dep_id}")
-        end
-        if @menu_permissions != []
-          break
-        end
-      end
-    end
-    if !@menu_permissions.nil? && !@menu_permissions.empty?
-      @menu_permissions.each do |menu_permission|
-        if menu_permission['priority_id'] == 1
-          add_flag = true
-        end
-        if menu_permission['priority_id'] == 2
-          delete_flag = true
-        end
-        if menu_permission['priority_id'] == 3
-          update_flag = true
-        end
-        if menu_permission['priority_id'] == 4
-          show_flag = true
-        end
-      end
-    end
-    render json: {add:add_flag,delete:delete_flag,update:update_flag,show:show_flag}
-  end
-
-  def check_email
+  def check_email          #用于页面验证
     @patient = Patient.find_by(id:params[:patient_id])
     email=params[:email]
     @user=Patient.where('email=?',email)
@@ -838,7 +695,7 @@ class PatientsController < ApplicationController
       end
     end
   end
-  def check_phone
+  def check_phone           #用于页面验证
     @patient = Patient.find_by(id:params[:patient_id])
     mobile_phone=params[:phone]
     @user=Patient.where('mobile_phone=?',mobile_phone)
@@ -857,7 +714,7 @@ class PatientsController < ApplicationController
       end
     end
   end
-  def check_credential_type_number
+  def check_credential_type_number          #用于页面验证
     @patient = Patient.find_by(id:params[:patient_id])
     credential_type_number = params[:credential_type_number]
     @user=Patient.where('credential_type_number=?',credential_type_number)

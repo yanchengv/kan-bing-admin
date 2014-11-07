@@ -44,13 +44,14 @@
         url: "/doctors/show_index",
         datatype: "json",
         height: "auto",
-        colNames:['ID','姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','职称'],
+        colNames:['ID','姓名首字母简拼','姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','职称'],
         colModel:[
 //            {name:'act',index:'act', width:75,sortable:false},
-            {name:'id',index:'id', width:120, sorttype:"int",search:false },
-            {name:'name',index:'name', width:55, editable: true ,searchoptions: { sopt: ['eq']}},
+            {name:'id',index:'id', width:120, sorttype:"int", hidden:true,search:false },
+            {name:'spell_code',index:'spell_code', width:120, search:true , hidden:true,searchoptions: {searchhidden:true, sopt: ['in']}},
+            {name:'name',index:'name', width:55, editable: true ,searchoptions: { sopt: ['in']}},
             {name:'credential_type',index:'credential_type', width:100, editable: true ,edittype:"select",editoptions:{value:"身份证:身份证;其他:其他"},search:false },
-            {name:'credential_type_number',index:'credential_type_number', width:180, editable: true ,searchoptions: { sopt: ['eq']}},
+            {name:'credential_type_number',index:'credential_type_number', width:180, editable: true ,searchoptions: { sopt: ['in']}},
             {name:'gender',index:'gender', width:40, editable: true ,search:false },
             {name:'birthday',index:'birthday', width:90, editable: true ,search:false },
             {name:'birthplace',index:'birthplace', width:80, editable: true ,search:false },
@@ -58,8 +59,8 @@
             {name:'city_name',index:'city_name', width:100, editable: true ,search:false },
             {name:'hospital_id',index:'hospital_id', width:100, editable: true,search:false  },
             {name:'department_id',index:'department_id', width:100, editable: true,search:false  },
-            {name:'mobile_phone',index:'mobile_phone', width:100, align:"right", editable: true,searchoptions: { sopt: ['eq']} },
-            {name:'email',index:'email', width:130, align:"right", editable: true ,searchoptions: { sopt: ['eq']}},
+            {name:'mobile_phone',index:'mobile_phone', width:100, align:"right", editable: true,searchoptions: { sopt: ['in']} },
+            {name:'email',index:'email', width:130, align:"right", editable: true ,searchoptions: { sopt: ['in']}},
             {name:'professional_title',index:'professional_title', width:80,align:"right",editable: true,search:false }
 //            {name:'introduction',index:'introduction', width:260, sortable:false}
         ],
@@ -85,7 +86,7 @@
 
     var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
 //    自定义按钮
-    $("#list12").jqGrid('navGrid','#pager12',{edit:false,add:false,del:false,search:false,searchtext:"查找"});
+    $("#list12").jqGrid('navGrid','#pager12',{edit:false,add:false,del:false,search:false,searchtext:"查找",refreshtext:"刷新"});
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '添加', caption: '添加',id:'addDoctor', onClickButton: addDoctor});
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '删除', caption: '删除',id:'deleteDoctor', onClickButton: deleteDoctor});
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '修改', caption: '修改',id:'updateDoctor', onClickButton: updateDoctor});
@@ -97,7 +98,7 @@
     function addDoctor(){
         $.ajax({
             type:'get',
-            url:'/doctors/new?hos_id=' + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val(),
+            url:'/doctors/new',
             success:function(data){
                 $('#create_or_edit_form').html(data)
 
@@ -128,7 +129,7 @@
         if (selectedIds.length==1){
             $.ajax({
                 type:'get',
-                url:'/doctors/'+selectedIds+'/edit?hos_id=' + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val(),
+                url:'/doctors/'+selectedIds+'/edit',
                 success:function(data){
                     $('#create_or_edit_form').html(data)
                 }
@@ -183,6 +184,7 @@
 
 
     function doc_search_hos(){
+//        $('#searchString').val('')
         var hos_id = $('#doctor_hos_id').val()
         $.ajax({
             type: 'get',
@@ -194,10 +196,12 @@
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
     function doc_search_dep(){
+//        $('#searchString').val('')
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
     function search_activated(){
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() + "&priority_ids=" + priority_ids }).trigger("reloadGrid")
+//        $('#searchString').val('')
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()}).trigger("reloadGrid")
     }
     $(function() {
         $("#doctor_hos_id").select2();

@@ -8,6 +8,10 @@ class DepartmentsController < ApplicationController
 
   def show_index
     sql = 'true'
+    hos_id = current_user.hospital_id
+    if !hos_id.nil? && hos_id != ''
+      sql << " and (hospital_id = #{hos_id}) "
+    end
     if !params[:department_type].nil? && params[:department_type] != '-1' && params[:department_type] != 'null'
       sql << " and department_type = #{params[:department_type]}"
     end

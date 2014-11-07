@@ -37,6 +37,9 @@
         editurl: 'consult_accuses/cusult_oper_action',
         jsonReader: {
             root: "consult_questions",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
             repeatitems: false
         },
         gridComplete: function(){
@@ -110,6 +113,9 @@
         editurl: 'consult_accuses/cusult_oper_action',
         jsonReader: {
             root: "consult_results",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
             repeatitems: false
         },
         subGridRowExpanded: function (subgrid_id_r, row_id_r) {
@@ -140,6 +146,9 @@
                 editurl: 'consult_accuses/cusult_oper_action',
                 jsonReader: {
                     root: "consult_accuses",
+                    total: "totalpages",
+                    page: "currpage",
+                    records: "totalrecords",
                     repeatitems: false
                 }
             });

@@ -32,10 +32,25 @@
                     ],
                         dataInit: function (element) {
                             $(element).select2();
+                            init_select($(element))
                         },
                         style: "width:147px",
 
-                        value: "科室管理员:科室管理员;医院管理员:医院管理员;网站管理员:网站管理员"
+                        value: function () {
+                            var positions;
+                            $.ajax({
+                                url: "admin2s/get_admin_type",
+                                async: false,
+                                success: function (data) {
+                                    positions = data.admin_type;
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                    alert(textStatus);
+                                }
+                            });
+                            return positions;
+                        }
+//                                "科室管理员:科室管理员;医院管理员:医院管理员;网站管理员:网站管理员"
                     }},
                 { name: 'hospital_id', index: 'hospital_id', width: 100, align: "center", hidden:true,editable: true,edittype:"select", editrules: {edithidden:true},
                     editoptions:{dataEvents: [
@@ -44,6 +59,7 @@
                     ],
                         dataInit: function (element) {
                             $(element).select2();
+                            change_department($(element).val())
                         },
                         style: "width:147px",
                         value: function () {
@@ -185,6 +201,8 @@
         var hos = $("select#hospital_id")
         var dep = $("select#department_id")
         if (obj.value=='医院管理员'){
+//            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+            dep.val('')
             dep.attr('disabled','disabled')
             hos.removeAttr('disabled')
         }
@@ -193,19 +211,62 @@
             dep.removeAttr('disabled')
         }
         if (obj.value=='网站管理员'){
+            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+            $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+            dep.val('')
+            hos.val('')
             hos.attr('disabled','disabled')
             dep.attr('disabled','disabled')
         }
     }
 
+    function init_select(obj){
+        var row_id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+        $.ajax({
+                    type: "get",
+                    url: '/admin2s/get_admin2?admin_id=' + row_id,
+                    data: 'text',
+                    success: function (data) {
+                        var obj = $('select#admin_type')
+                        var hos = $("select#hospital_id")
+                        var dep = $("select#department_id")
+                        if (obj.val()=='医院管理员'){
+                            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+                            dep.val('')
+                            dep.attr('disabled','disabled')
+                            hos.removeAttr('disabled')
+                        }
+                        if (obj.val()=='科室管理员'){
+                            hos.removeAttr('disabled')
+                            dep.removeAttr('disabled')
+                            if(data['success']){
+                                $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html(data['data']['department_name'])
+                            }
+                        }
+                        if (obj.val()=='网站管理员'){
+                            hos.attr('disabled','disabled')
+                            dep.attr('disabled','disabled')
+                            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+                            $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+                            dep.val('')
+                            hos.val('')
+
+                        }
+                    }
+                }
+        );
+
+    }
+
 function search(obj) {
-    change_department(obj.value, 'department_id') ;
-}
-function change_department(hos_id, select_id){
     $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+    change_department(obj.value) ;
+}
+function change_department(hos_id){
+    var row_id = jQuery("#list").jqGrid('getGridParam', 'selrow');
     $.ajax({
                 type: "get",
-                url: '/doctors/get_departments?hospital_id=' + hos_id,
+                url: '/doctors/get_departments?hospital_id=' + hos_id+'&admin_id='+row_id,
                 data: 'text',
                 success: function (data) {
                     var classify3 = $("select#department_id");

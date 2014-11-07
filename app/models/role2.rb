@@ -6,7 +6,7 @@ class Role2 < ActiveRecord::Base
   has_many :role2_menus, dependent: :destroy
   has_many :menus, :through => :role2_menus, :source => :menu
 
-  def get_zTree  #指定角色菜单树的生成
+  def get_zTree  #指定角色菜单树的生成　根据菜单权限表
     menu_permissions = self.menu_permissions
     return menu_ztree2(menu_permissions)
   end
@@ -125,7 +125,7 @@ class Role2 < ActiveRecord::Base
     return @menus
   end
 
-  def menu_ztree2(menu_permissions)   #生成菜单权限树
+  def menu_ztree2(menu_permissions)   #生成菜单权限树  含权限
     @menus = []
     @p_menus = []
     @priorities = []
@@ -172,7 +172,7 @@ class Role2 < ActiveRecord::Base
     return @all_trees
   end
 
-  def stup2(menus,menu)   #递归生成菜单权限子树
+  def stup2(menus,menu)   #递归生成菜单权限子树    含权限
     child_menus=[]
     @all = menus
     menus.each do |menu2|
