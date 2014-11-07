@@ -45,6 +45,8 @@ Rails.application.routes.draw do
       post 'upload', to: 'edu_videos#upload'
       post 'upload_image', to: 'edu_videos#upload_image'
       get 'new_video', to:'edu_videos#new_video'
+      post 'edit_video', to: 'edu_videos#edit_video'
+      post 'video_edit', to:'edu_videos#video_edit'
     end
   end
   resources :video_types do

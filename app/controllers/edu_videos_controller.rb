@@ -5,7 +5,7 @@ class EduVideosController < ApplicationController
   require 'fileutils'
   require 'httparty'
   include HTTParty
-  before_action :set_edu_video, only: [:show, :edit, :update, :destroy]
+  before_action :set_edu_video, only: [:show, :edit, :destroy]
 
   # GET /edu_videos
   # GET /edu_videos.json
@@ -132,13 +132,20 @@ class EduVideosController < ApplicationController
     para[:video_type_id]=params[:edu_video][:video_type]
     @video=EduVideo.new(para)
     if @video.save
-      @video_types = VideoType.all
-      render :partial => 'edu_videos/edu_video_manage'
+      render json: {:success => true}
     else
-      @doctors = Doctor.all
-      @types=VideoType.all
-      @video=EduVideo.new
-      render :partial => 'edu_videos/create'
+      render json: {:success => false}
+    end
+  end
+
+  def video_edit
+    puts "==params[:video_id]======#{params[:video_id]}==================="
+    puts "==params[:edu_video]======#{params[:edu_video].to_json}==================="
+    @video=params[:edu_video]
+    if @video.save
+      render json: {:success => true}
+    else
+      render json: {:success => false}
     end
   end
 
@@ -149,6 +156,15 @@ class EduVideosController < ApplicationController
       @video=EduVideo.new
     end
     render :partial => 'edu_videos/create'
+  end
+
+  def edit_video
+    if !current_user.nil?
+      @doctors = Doctor.all
+      @types=VideoType.all
+      @video=EduVideo.find(params[:id])
+    end
+    render :partial => 'edu_videos/edit_video'
   end
   # POST /edu_videos
   # POST /edu_videos.json
@@ -174,7 +190,20 @@ class EduVideosController < ApplicationController
   # PATCH/PUT /edu_videos/1
   # PATCH/PUT /edu_videos/1.json
   def update
-    if @edu_video.update(edu_video_params)
+    file=params[:edu_video][:image]
+    if file
+      tmpfile = getFileName(file.original_filename.to_s)
+      uuid = upload_video_img_bucket(file)
+      url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/" << uuid
+      if url != params[:edu_video][:image_url]
+        params[:edu_video][:image_url] = url
+      end
+    end
+    @doc = Doctor.find_by_id(params[:video][:doctor_id])
+    @edu_video = EduVideo.find(params[:edu_video][:id])
+    if @edu_video.update_attributes(:name => params[:edu_video][:name], :content => params[:edu_video][:content], :doctor_name => @doc.nil? ? '' : @doc.name,
+                         :video_time => params[:edu_video][:video_time], :image_url => params[:edu_video][:image_url], :video_url => params[:edu_video][:video_url],
+                         :doctor_id => params[:video][:doctor_id], :video_type_id => params[:edu_video][:video_type])
       render :json => {:success => true}
     else
       render :json => {:success => false, :errors => '修改失败！'}

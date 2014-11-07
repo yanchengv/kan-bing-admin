@@ -128,7 +128,10 @@
             }//add
              ).navButtonAdd('#page_video', { title: '上传视频', caption: '上传视频', onClickButton: function () {
                 upload_video();
-            }, position: "first"});
+            }, position: "first"})
+            .navButtonAdd('#page_video', { title: '修改视频', caption: '修改视频', onClickButton: function () {
+                update_video();
+            }, position: "last"});
     //搜索视频
     $('#search_video_btn').click(function () {
         var video_search_id = $('#video_search_id').val();
@@ -149,6 +152,22 @@
                 $("#rightContent").html(data);
             }
         })
+    }
+    function update_video(){
+        var id = jQuery("#edu_video_list").jqGrid('getGridParam', 'selrow');
+        if (id){
+            $.ajax({
+                url: 'edu_videos/edit_video',
+                type: 'post',
+                data: {id: id},
+                success: function (data) {
+                    $("#rightContent").html(data);
+                }
+            })
+        }else{
+            alert('请选择需要进行修改的视频!');
+        }
+
     }
 //    $('#image').fileupload({
 //        autoUpload: true,

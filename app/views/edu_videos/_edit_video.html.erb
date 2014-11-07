@@ -1,4 +1,3 @@
-<div id="reminder"></div>
 <style>
     input,select{
         display: block; margin-top: 1em;
@@ -14,14 +13,14 @@
         /*box-sizing: border-box;*/
     }
 </style>
-<%= form_for @video,url:{action: 'upload', controller:'edu_videos'},:html => {:id => 'myForm',:multipart => true,:style => 'margin-left:20px;margin-top:-90px;'} do |f|%>
-    <%= f.file_field :image, id:'fileupload',style:'visibility:hidden;'%>
+<%= form_for @video,url:{action: 'video_edit', controller:'edu_videos'},:html => {:id => 'myForm',:multipart => true,:style => 'margin-left:20px;margin-top:-90px;'} do |f|%>
+    <%= f.file_field :image, id:'fileupload_img',style:'visibility:hidden;'%>
     <%= f.file_field :video, id: 'video_upload', style: 'visibility:hidden;' %>
     <%= f.text_field :video_url,id:'video_url',style:'visibility:hidden;'%>
     <%= f.text_field :image_url, id:'image_path',style:'visibility:hidden;' %>
     <table class="EditTable">
       <tr class="FormData">
-        <td class="CaptionTD">视频名称:</td>
+        <td class="CaptionTD">视频名称:</td><%= f.hidden_field :id, :value => @video.id%>
         <td class="DataTD"><%= f.text_field :name, :class => 'FormElement ui-widget-content ui-corner-all' %></td>
       </tr>
       <tr class="FormData">
@@ -32,33 +31,37 @@
         <td class="CaptionTD">医生:</td>
         <td class="DataTD"><select name="video[doctor_id]" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
           <% if !@doctors.nil? %>
-              <% hospitals_array = @doctors.map { |hospital| [hospital.name, hospital.id] } %>
               <option value="">请选择</option>
-              <%= options_for_select(hospitals_array) %>
+              <% @doctors.each do |doctor| %>
+                  <option value="<%= doctor.id %>"
+                          <% if doctor.id == @video.doctor_id %> selected="selected"
+                          <% end %> ><%= doctor.name %></option>
+              <% end %>
           <% end %>
         </select></td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">时间:</td>
-        <td class="DataTD"><%= f.date_field :video_time, id: 'video_time', style: 'width:172px;height:22px;' %></td>
+        <td class="DataTD"><%= f.date_field :video_time, id: 'video_time',value: @video.video_time ,  style: 'width:172px;height:22px;' %></td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">视频类型:</td>
         <td class="DataTD">
-          <% types_array = @types.map { |type| [type.type_name, type.id] } %>
           <select name="edu_video[video_type]" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
-            <option value="">请选择</option><%= options_for_select(types_array) %></select></td>
+            <option value="">请选择</option><% @types.each do |type|%>
+                <option value="<%= type.id%>" <% if type.id == @video.video_type_id %> selected="selected" <% end %> ><%= type.type_name%></option>
+                <% end %></select></td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">缩略图:</td>
         <td class="DataTD">
-          <input id="image_path2" type="text" disabled="disabled" class='FormElement ui-widget-content ui-corner-all' style="display:inline"/><input id="fakebtn1" style="display:inline" type="button" value="选择图片文件"/>
+          <input id="image_path2" type="text" value="<%= @video.image_url%>" disabled="disabled" class='FormElement ui-widget-content ui-corner-all' style="display:inline"/><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
          </td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">视频:</td>
         <td class="DataTD">
-          <input id="video_path" type="text" disabled="disabled" class='FormElement ui-widget-content ui-corner-all' style="display:inline"/><input id="fakebtn2" type="button" value="选择视频文件" style="display:inline"/>
+          <input id="video_path" type="text" value="<%= @video.video_url %>" disabled="disabled" class='FormElement ui-widget-content ui-corner-all' style="display:inline"/>
         </td>
       </tr>
       <tr class="FormData">
@@ -99,18 +102,15 @@
                 '0%'
         );
     }
-    $("#fakebtn1").click(function () {
-        $("#fileupload").click();
-    });
-    $("#fakebtn2").click(function () {
-        $("#video_upload").click();
+    $("#fakebtn1_img").click(function () {
+        $("#fileupload_img").click();
     });
     var ChunkCount = 0;
     var stime;
         var url1 = "/edu_videos/upload_image";
-        var url2 = "/edu_videos/upload_video"
-        $('#fileupload').fileupload({
+        $('#fileupload_img').fileupload({
             autoUpload: true,
+            type:'post',
             url: url1,
             dataType: 'json',
             //forceIframeTransport: true,
@@ -126,33 +126,6 @@
                    $('#image_path2').val(data.result.url);
                 }
             }
-        });
-        $('#video_upload').fileupload({
-            url: url2,
-            dataType: 'json',
-            //forceIframeTransport: true,
-            maxChunkSize: 100000000000, //100Gb
-            fail:function (e, data) {
-                alert('上传失败！');
-                data.context = $("#uploadinfo").text('上传失败！');
-                console.log(data.errorThrown);
-            },
-            done: function (e, data) {
-                if (data.result.flag){
-                    $('#video_url').val(data.result.url);
-                    $('#video_path').val(data.result.url);
-                }
-                data.context = $("#uploadinfo").text('上传成功!');
-            },
-            progress: function (e, data) {
-                var progress = parseInt(data.loaded / data.total * 100, 10);
-                $('#progress2 .bar').css(
-                        'width',
-                        progress + '%'
-                );
-                data.context = $("#uploadinfo").text('正在上传...');
-            }
-
         });
 
 </script>
