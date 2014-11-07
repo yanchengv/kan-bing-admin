@@ -8,6 +8,8 @@ class Admin2 < ActiveRecord::Base
   has_many :menu_trees, :through => :admin2_menus, :source  => :menu
   has_many :admin2s_role2s, :dependent => :destroy
   has_many :role2s, :through => :admin2s_role2s, :source  => :role2
+  belongs_to :department
+  belongs_to :hospital
 
   def t_menus     #管理员所拥有的菜单
     menus=[]

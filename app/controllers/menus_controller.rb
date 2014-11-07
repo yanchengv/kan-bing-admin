@@ -79,6 +79,28 @@ class MenusController < ApplicationController
     render partial:  'menus/role_manage'
   end
 
+  def show_all_menus2
+    role2 = Role2.new
+    @all_menus = role2.root_tree(Menu.all)
+    @total_menus = {name:'菜单列表',children:@all_menus,open:true}
+    @all_role= Role2.all
+    @all_roles=[]
+    @all_role.each do |role|
+      p 'role'
+      p role.name
+      if role.menu_tree == []
+        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,code:role.code,instruction:role.instruction,open:true}
+      else
+        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,code:role.code,instruction:role.instruction,children:role.menu_tree,open:true}
+      end
+      @all_roles.push(@role)
+    end
+    p 'a'
+    @all_roles = {name:'角色列表',children:@all_roles,open:true}
+    render partial: 'menus/show_all_menus2'
+
+  end
+
   def show_all_menus
     # @all_menus = Menu.select('id','parent_id as pId','name','table_name','model_class').all
     # @total_menus=[]
@@ -97,13 +119,13 @@ class MenusController < ApplicationController
     #     # end
     #   end
     # end
-    admin_priority = current_user.admin_priority params[:menu_id]
-    p admin_priority
-    @add_flag=admin_priority[:add_flag]
-    @delete_flag=admin_priority[:delete_flag]
-    @update_flag=admin_priority[:update_flag]
-    @show_flag=admin_priority[:show_flag]
-    p @add_flag,@delete_flag,@update_flag,@show_flag
+    # admin_priority = current_user.admin_priority params[:menu_id]
+    # p admin_priority
+    # @add_flag=admin_priority[:add_flag]
+    # @delete_flag=admin_priority[:delete_flag]
+    # @update_flag=admin_priority[:update_flag]
+    # @show_flag=admin_priority[:show_flag]
+    # p @add_flag,@delete_flag,@update_flag,@show_flag
     @add_flag=true
     @delete_flag=true
     @update_flag=true
@@ -383,6 +405,24 @@ class MenusController < ApplicationController
     @parent_menus = Menu.where(name:name,parent_id:parent_id)
     if name != ''
       if @parent_menus.empty?
+        uri = params[:uri]
+        @menu = Menu.create(name:name,parent_id:parent_id,uri:uri)
+        @menu = {id:@menu.id,name:@menu.name,pId:@menu.parent_id,uri:@menu.uri}
+        render :json => {success:true,data:@menu}
+      else
+        render :json => {success:false,data:'菜单名称与同级已有菜单重复!'}
+      end
+    else
+      render :json => {success:false,data:'菜单名称不能为空!'}
+    end
+  end
+
+  def create2
+    name=params[:name]
+    parent_id = params[:parent_id]
+    @parent_menus = Menu.where(name:name,parent_id:parent_id)
+    if name != ''
+      if @parent_menus.empty?
         hospital_id = params[:hospital_id]
         department_id = params[:department_id]
         parent_menu = Menu.where(id:params[:parent_name].to_i).first
@@ -504,12 +544,22 @@ class MenusController < ApplicationController
     # end
   end
 
-  def update_name
-    @menu = Menu.find_by(id:params[:id])
+  def update_menu
+    @menu = Menu.find_by(id:params[:menu_id])
     if !@menu.nil?
-      @menu.update(name:params[:name])
+      @menu2 = Menu.where(name:params[:name],parent_id: @menu.parent_id).first
     end
-    render json: @menu
+    p @menu2
+    if params[:name] == ''
+      render json: {success:false,error:'菜单名不可空!'}
+    elsif !@menu2.nil? && @menu2.id.to_i != params[:menu_id].to_i
+      render json: {success:false,error:'菜单名重复!'}
+    else
+      if !@menu.nil?
+        @menu.update(name:params[:name],uri:params[:uri])
+      end
+      render json: {success:true,menu:@menu}
+    end
   end
 
   # DELETE /menus/1

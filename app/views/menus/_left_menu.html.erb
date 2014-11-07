@@ -6,7 +6,8 @@
         function leftMeunsOnClick(event, treeId, treeNode) {
             if (treeNode.uri!=''){
                 $.ajax({
-                    url:treeNode.uri+'?hos_id='+treeNode.hospital_id+'&dep_id='+treeNode.department_id+'&menu_id='+treeNode.id,
+//                    url:treeNode.uri+'?hos_id='+treeNode.hospital_id+'&dep_id='+treeNode.department_id+'&menu_id='+treeNode.id,
+                    url:treeNode.uri,
                     type:'get',
                     beforeSend:function(response){
                              $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#d9edf0;line-height:100px;font-weight:bold;">loading...</div>')
@@ -109,7 +110,7 @@
                     $.fn.zTree.init($("#leftMenus"), setting, zNodes);
                     zTree_Menu = $.fn.zTree.getZTreeObj("leftMenus");
 //                  curMenu = zTree_Menu.getNodes()[0].children[0].children[0];
-                    if (curMenu = zTree_Menu.getNodes()[0].children != undefined) {
+                    if (zTree_Menu.getNodes()[0].children != undefined) {
                         curMenu = zTree_Menu.getNodes()[0].children[0];
                     }
                     else {

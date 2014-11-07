@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141105091212) do
+ActiveRecord::Schema.define(version: 20141105101614) do
 
   create_table "admin2_menus", force: true do |t|
     t.integer  "admin2_id"
@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 20141105091212) do
     t.string   "email"
     t.integer  "hospital_id",            limit: 8
     t.integer  "department_id",          limit: 8
-    t.integer  "admin_type"
+    t.string   "admin_type"
   end
 
   add_index "admin2s", ["confirmation_token"], name: "index_admin2s_on_confirmation_token", unique: true, using: :btree
@@ -626,6 +626,11 @@ ActiveRecord::Schema.define(version: 20141105091212) do
     t.text     "int_ecg_img"
     t.text     "bit_ecg_img"
     t.integer  "patient_id",   limit: 8
+    t.string   "hospital"
+    t.string   "department"
+    t.string   "doctor"
+    t.string   "parent_type"
+    t.string   "child_type"
   end
 
   create_table "edu_videos", force: true do |t|
@@ -1291,6 +1296,13 @@ ActiveRecord::Schema.define(version: 20141105091212) do
     t.datetime "updated_at"
     t.integer  "surgery_id"
     t.string   "name"
+  end
+
+  create_table "role2_menus", force: true do |t|
+    t.integer  "role2_id"
+    t.integer  "menu_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "role2s", force: true do |t|

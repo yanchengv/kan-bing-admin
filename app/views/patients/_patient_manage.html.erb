@@ -42,23 +42,24 @@
         url: "/patients/show_index",
         datatype: "json",
         height: "auto",
-        colNames:['姓名', '证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','最后就诊时间'],
+        colNames:['ID','姓名','姓名首字母简拼','证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','最后就诊时间'],
         colModel:[
 //            {name:'act',index:'act', width:75,sortable:false},
-//            {name:'id',index:'id', width:120, sorttype:"int"},
-            {name:'name',index:'name', width:55},
-            {name:'credential_type',index:'credential_type', width:100},
-            {name:'credential_type_number',index:'credential_type_number', width:180},
-            {name:'gender',index:'gender', width:40},
-            {name:'birthday',index:'birthday', width:90},
-            {name:'birthplace',index:'birthplace', width:80},
-            {name:'province_name',index:'province_name', width:100},
-            {name:'city_name',index:'city_name', width:100},
-            {name:'hospital_id',index:'hospital_id', width:100},
-            {name:'department_id',index:'department_id', width:100},
-            {name:'mobile_phone',index:'mobile_phone', width:100, align:"right",sorttype:"float"},
-            {name:'email',index:'email', width:130, align:"right",sorttype:"float"},
-            {name:'last_treat_time',index:'last_treat_time', width:80,align:"right",sorttype:"float"}
+            {name:'id',index:'id', width:120, sorttype:"int",hidden:true,search:false },
+            {name:'name',index:'name', width:55,searchoptions: { sopt: ['in']}},
+            {name:'spell_code',index:'spell_code', width:120, search:true , hidden:true,searchoptions: {searchhidden:true, sopt: ['in']}},
+            {name:'credential_type',index:'credential_type', width:100,search:false },
+            {name:'credential_type_number',index:'credential_type_number', width:180,searchoptions: { sopt: ['in']}},
+            {name:'gender',index:'gender', width:40,search:false },
+            {name:'birthday',index:'birthday', width:90,search:false },
+            {name:'birthplace',index:'birthplace', width:80,search:false },
+            {name:'province_name',index:'province_name', width:100,search:false },
+            {name:'city_name',index:'city_name', width:100,search:false },
+            {name:'hospital_id',index:'hospital_id', width:100,search:false },
+            {name:'department_id',index:'department_id', width:100,search:false },
+            {name:'mobile_phone',index:'mobile_phone', width:100, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
+            {name:'email',index:'email', width:130, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
+            {name:'last_treat_time',index:'last_treat_time', width:80,align:"right",sorttype:"float",search:false }
 //            {name:'introduction',index:'introduction', width:260, sortable:false}
         ],
         pager: jQuery('#pager10'),
@@ -80,7 +81,7 @@
         caption: "患者列表"
     });
     var selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
-    jQuery("#list10").jqGrid('navGrid','#pager10',{edit:false,add:false,del:false,search:false});
+    jQuery("#list10").jqGrid('navGrid','#pager10',{edit:false,add:false,del:false,search:false,searchtext:"查找",refreshtext:"刷新"});
     $("#list10").navButtonAdd('#pager10', {position: 'last', title: '添加', caption: '添加',id:'addPatient', onClickButton: createPatient})
     $("#list10").navButtonAdd('#pager10', {position: 'last', title: '删除', caption: '删除',id:'delete', onClickButton: deletePatient})
     $("#list10").navButtonAdd('#pager10', {position: 'last', title: '编辑', caption: '编辑',id:'edit', onClickButton: editPatient})
@@ -195,7 +196,7 @@
         jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
     function search_activated(){
-        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val()+"&priority_ids="+priority_ids }).trigger("reloadGrid")
+        jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val()}).trigger("reloadGrid")
     }
     $(function() {
         $("#patient_hos_id").select2();

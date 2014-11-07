@@ -26,7 +26,9 @@ class ConsultAccusesController < ApplicationController
       sql << " and consult_content like '%#{params[:content]}%'"
     end
     @consult_questions = ConsultQuestion.where( sql )
-    render :json => {:consult_questions => @consult_questions.as_json}
+    count = @consult_questions.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    render :json => {:consult_questions => @consult_questions.as_json,:totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
   #被举报的回复
   def index_results
@@ -48,7 +50,9 @@ class ConsultAccusesController < ApplicationController
     end
    # @consult_accuses = ConsultAccuse.all
     @consult_results = ConsultResult.where(sql)
-    render :json => {:consult_results => @consult_results.as_json}
+    count = @consult_results.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    render :json => {:consult_results => @consult_results.as_json,:totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
   #操作转向
   def oper_action
@@ -84,7 +88,9 @@ class ConsultAccusesController < ApplicationController
       @result = ConsultResult.find(params[:result_id])
       @consult_accuses = @result.consult_accuses
     end
-    render :json => {:consult_accuses => @consult_accuses.as_json}
+    count = @consult_accuses.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    render :json => {:consult_accuses => @consult_accuses.as_json,:totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
   # POST /consult_accuses

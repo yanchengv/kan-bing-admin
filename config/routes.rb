@@ -92,7 +92,7 @@ Rails.application.routes.draw do
       get 'form_parent_menu', to:'menus#form_parent_menu'
       get 'form_priority',to:'menus#form_priority'
       get 'get_department', to:'menus#get_department'
-      put 'update_name', to:'menus#update_name'
+      put 'update_menu', to:'menus#update_menu'
       delete 'remove_nodes2', to: 'menus#remove_nodes2'
       post 'drag2', to:'menus#drag2'
       get 'left_menu',to:'menus#left_menu'
@@ -203,6 +203,8 @@ Rails.application.routes.draw do
       get 'test_index', to:'admin2s#test_index'
       post 'oper_action', to:'admin2s#oper_action'
       get 'get_by_email', to:'admin2s#get_by_email'
+      get 'get_admin2', to:'admin2s#get_admin2'
+      get 'get_admin_type', to: 'admin2s#get_admin_type'
     end
   end
 
