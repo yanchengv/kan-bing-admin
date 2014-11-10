@@ -71,7 +71,7 @@ class EduVideosController < ApplicationController
   #上传图片
   def upload_image
 
-    file=params[:edu_video][:image]
+    file=params[:edu_video].nil? ? params[:image] : params[:edu_video][:image]
     tmpfile = getFileName(file.original_filename.to_s)
     uuid = upload_video_img_bucket(file)
     url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/" << uuid
@@ -80,31 +80,11 @@ class EduVideosController < ApplicationController
     else
       render :json => {flag: false, url: ''}
     end
-
-    #random=SecureRandom.random_number(9999999999)
-    #image_tmp_path='public/'+random.to_s+'.jpg'
-    #image_tmp=params[:edu_video][:image]
-    #image = MiniMagick::Image.open(image_tmp.path)
-    #image.resize '224x150!'
-    #image.write image_tmp_path
-    #c = Curl::Easy.new(Settings.files)
-    #c.multipart_form_post = true
-    #c.http_post(Curl::PostField.file('theFile', image_tmp_path))
-    #response=JSON.parse(c.body_str)
-    #@data=''
-    #if response['files']&&response['files'][0]['name']
-    #  FileUtils.remove_file image_tmp_path
-    #  uuid=response['files'][0]['name']
-    #  render :json => {flag: true, url: uuid}
-    #
-    #else
-    #  render :json => {flag: false, url: ''}
-    #end
   end
 
   #上传视频
   def upload_video
-    file=params[:edu_video][:video]
+    file=params[:edu_video].nil? ? params[:video] : params[:edu_video][:video]
     tmpfile = getFileName(file.original_filename.to_s)
     uuid = upload_video_img_bucket(file)
     url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/" << uuid
@@ -117,35 +97,43 @@ class EduVideosController < ApplicationController
 
   def upload
     para={}
-    para[:name]=params[:edu_video][:name]
-    para[:content]=params[:edu_video][:content]
-    para[:video_url]=params[:edu_video][:video_url]
-    para[:doctor_id]=params[:video][:doctor_id]
-    if !params[:video][:doctor_id].nil?
-      @doc = Doctor.find_by_id(params[:video][:doctor_id])
+    para[:name]=params[:name]
+    para[:content]=params[:content]
+    para[:video_url]=params[:video_url]
+    para[:doctor_id]=params[:doctor_id]
+    if !params[:doctor_id].nil?
+      @doc = Doctor.find_by_id(params[:doctor_id])
       if !@doc.nil?
         para[:doctor_name]=@doc.name
       end
     end
-    para[:video_time]=params[:edu_video][:video_time]
-    para[:image_url]= params[:edu_video][:image_url]
-    para[:video_type_id]=params[:edu_video][:video_type]
+    para[:video_time]=params[:video_time]
+    para[:image_url]= params[:image_url]
+    para[:video_type_id]=params[:video_type_id]
     @video=EduVideo.new(para)
     if @video.save
-      render json: {:success => true}
+      @video_types = VideoType.all
+      render :partial => 'edu_videos/edu_video_manage'
     else
-      render json: {:success => false}
+      @doctors = Doctor.all
+      @types=VideoType.all
+      @video=EduVideo.new
+      render :partial => 'edu_videos/create'
     end
   end
 
   def video_edit
-    puts "==params[:video_id]======#{params[:video_id]}==================="
-    puts "==params[:edu_video]======#{params[:edu_video].to_json}==================="
-    @video=params[:edu_video]
-    if @video.save
-      render json: {:success => true}
+    @video = EduVideo.find(params[:id])
+    @doc = Doctor.find_by_id(params[:doctor_id])
+    if @video.update_attributes(:name => params[:name], :content => params[:content], :doctor_name => @doc.nil? ? '' : @doc.name,
+                                :video_time => params[:video_time], :image_url => params[:image_url], :video_url => params[:video_url],
+                                :doctor_id => params[:doctor_id], :video_type_id => params[:video_type_id])
+      @video_types = VideoType.all
+      render :partial => 'edu_videos/edu_video_manage'
     else
-      render json: {:success => false}
+      @doctors = Doctor.all
+      @types=VideoType.all
+      render :partial => 'edu_videos/edit_video'
     end
   end
 
@@ -169,54 +157,29 @@ class EduVideosController < ApplicationController
   # POST /edu_videos
   # POST /edu_videos.json
   def create
-    @edu_video = EduVideo.new(edu_video_params)
-    if @edu_video.save
-      render :json => {:success => true}
-    else
-      render :json=> {:success => false, :errors => '添加失败！'}
+    respond_to do |format|
+      if @edu_video.save
+        format.html { redirect_to @edu_video, notice: 'Admin was successfully created.' }
+        format.json { render :show, status: :created, location: @edu_video }
+      else
+        format.html { render :new }
+        format.json { render json: @edu_video.errors, status: :unprocessable_entity }
+      end
     end
-
-    #respond_to do |format|
-    #  if @edu_video.save
-    #    format.html { redirect_to @edu_video, notice: 'Admin was successfully created.' }
-    #    format.json { render :show, status: :created, location: @edu_video }
-    #  else
-    #    format.html { render :new }
-    #    format.json { render json: @edu_video.errors, status: :unprocessable_entity }
-    #  end
-    #end
   end
 
   # PATCH/PUT /edu_videos/1
   # PATCH/PUT /edu_videos/1.json
   def update
-    file=params[:edu_video][:image]
-    if file
-      tmpfile = getFileName(file.original_filename.to_s)
-      uuid = upload_video_img_bucket(file)
-      url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/" << uuid
-      if url != params[:edu_video][:image_url]
-        params[:edu_video][:image_url] = url
+    respond_to do |format|
+      if @edu_video.update(edu_video_params)
+        format.html { redirect_to @edu_video, notice: 'Admin was successfully updated.' }
+        format.json { render :show, status: :ok, location: @edu_video }
+      else
+        format.html { render :edit }
+        format.json { render json: @edu_video.errors, status: :unprocessable_entity }
       end
     end
-    @doc = Doctor.find_by_id(params[:video][:doctor_id])
-    @edu_video = EduVideo.find(params[:edu_video][:id])
-    if @edu_video.update_attributes(:name => params[:edu_video][:name], :content => params[:edu_video][:content], :doctor_name => @doc.nil? ? '' : @doc.name,
-                         :video_time => params[:edu_video][:video_time], :image_url => params[:edu_video][:image_url], :video_url => params[:edu_video][:video_url],
-                         :doctor_id => params[:video][:doctor_id], :video_type_id => params[:edu_video][:video_type])
-      render :json => {:success => true}
-    else
-      render :json => {:success => false, :errors => '修改失败！'}
-    end
-    #respond_to do |format|
-    #  if @edu_video.update(edu_video_params)
-    #    format.html { redirect_to @edu_video, notice: 'Admin was successfully updated.' }
-    #    format.json { render :show, status: :ok, location: @edu_video }
-    #  else
-    #    format.html { render :edit }
-    #    format.json { render json: @edu_video.errors, status: :unprocessable_entity }
-    #  end
-    #end
   end
 
   # DELETE /edu_videos/1

@@ -14,23 +14,22 @@
         /*box-sizing: border-box;*/
     }
 </style>
-<%= form_for @video,url:{action: 'upload', controller:'edu_videos'},:html => {:id => 'myForm',:multipart => true,:style => 'margin-left:20px;margin-top:-90px;'} do |f|%>
-    <%= f.file_field :image, id:'fileupload',style:'visibility:hidden;'%>
-    <%= f.file_field :video, id: 'video_upload', style: 'visibility:hidden;' %>
-    <%= f.text_field :video_url,id:'video_url',style:'visibility:hidden;'%>
-    <%= f.text_field :image_url, id:'image_path',style:'visibility:hidden;' %>
+    <input type="file" name="image" id='fileupload' style='visibility:hidden;'>
+    <input type="file" name="video" id='video_upload' style='visibility:hidden;' >
+    <input type="text" name="video_url" id='video_url' style='visibility:hidden;'>
+   <input type="text" name="image_url" id='image_path' style='visibility:hidden;' >
     <table class="EditTable">
       <tr class="FormData">
         <td class="CaptionTD">视频名称:</td>
-        <td class="DataTD"><%= f.text_field :name, :class => 'FormElement ui-widget-content ui-corner-all' %></td>
+        <td class="DataTD"><input type="text" id="video_name" name="video" class='FormElement ui-widget-content ui-corner-all' ></td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">概要:</td>
-        <td class="DataTD"><%= f.text_field :content, :class => 'FormElement ui-widget-content ui-corner-all' %></td>
+        <td class="DataTD"><input type="text" id="video_content" name="content" class='FormElement ui-widget-content ui-corner-all' ></td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">医生:</td>
-        <td class="DataTD"><select name="video[doctor_id]" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
+        <td class="DataTD"><select name="video[doctor_id]" id="video_doctor_id" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
           <% if !@doctors.nil? %>
               <% hospitals_array = @doctors.map { |hospital| [hospital.name, hospital.id] } %>
               <option value="">请选择</option>
@@ -40,13 +39,13 @@
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">时间:</td>
-        <td class="DataTD"><%= f.date_field :video_time, id: 'video_time', style: 'width:172px;height:22px;' %></td>
+        <td class="DataTD"><input type="date" name="video_time" id='video_time' style='width:172px;height:22px;' ></td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">视频类型:</td>
         <td class="DataTD">
           <% types_array = @types.map { |type| [type.type_name, type.id] } %>
-          <select name="edu_video[video_type]" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
+          <select name="edu_video[video_type]" id="video_type_id" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
             <option value="">请选择</option><%= options_for_select(types_array) %></select></td>
       </tr>
       <tr class="FormData">
@@ -77,14 +76,11 @@
       <tr class="FormData">
         <td colspan="2">
           <div id="progress2">
-            <%= f.submit '保存' %>
+            <input type="button" value="保存" onclick="submit_add_video()">
           </div>
         </td>
       </tr>
     </table>
-
-
-<%end%>
 
 <script>
     function getFileName(obj)
@@ -154,5 +150,26 @@
             }
 
         });
-
+    function submit_add_video() {
+        $.ajax({
+            url: "/edu_videos/upload",
+            type: 'post',
+            data: {
+                name: $('#video_name').val(),
+                content: $('#video_content').val(),
+                video_time: $('#video_time').val(),
+                image_url: $('#image_path').val(),
+                video_url: $('#video_url').val(),
+                doctor_id: $('#video_doctor_id').val(),
+                video_type_id: $('#video_type_id').val()
+            },
+            async: false,
+            success: function (data) {
+                $("#rightContent").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('视频上传失败!');
+            }
+        });
+    }
 </script>

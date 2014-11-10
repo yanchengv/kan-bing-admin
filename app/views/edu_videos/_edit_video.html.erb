@@ -13,23 +13,24 @@
         /*box-sizing: border-box;*/
     }
 </style>
-<%= form_for @video,url:{action: 'video_edit', controller:'edu_videos'},:html => {:id => 'myForm',:multipart => true,:style => 'margin-left:20px;margin-top:-90px;'} do |f|%>
-    <%= f.file_field :image, id:'fileupload_img',style:'visibility:hidden;'%>
-    <%= f.file_field :video, id: 'video_upload', style: 'visibility:hidden;' %>
-    <%= f.text_field :video_url,id:'video_url',style:'visibility:hidden;'%>
-    <%= f.text_field :image_url, id:'image_path',style:'visibility:hidden;' %>
+<!--url:{action: 'video_edit', controller:'edu_videos'}-->
+<%#= form_for @video,:html => {:id => 'myForm',:multipart => true,:style => 'margin-left:20px;margin-top:-90px;'} do |f|%>
+    <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
+    <input type="file" name='video' id='video_upload' style='visibility:hidden;'>
+    <input type="text" name="video_url" id='video_url' style='visibility:hidden;' value="<%= @video.video_url %>">
+    <input type=" text" name="image_url"  id='image_path' style='visibility:hidden;' value="<%= @video.image_url %>" >
     <table class="EditTable">
       <tr class="FormData">
-        <td class="CaptionTD">视频名称:</td><%= f.hidden_field :id, :value => @video.id%>
-        <td class="DataTD"><%= f.text_field :name, :class => 'FormElement ui-widget-content ui-corner-all' %></td>
+        <td class="CaptionTD">视频名称:</td><input type="hidden" name="id" id="video_id" value="<%= @video.id%>">
+        <td class="DataTD"><input type="text" id="video_name" name='name' class='FormElement ui-widget-content ui-corner-all' value="<%= @video.name %>" ></td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">概要:</td>
-        <td class="DataTD"><%= f.text_field :content, :class => 'FormElement ui-widget-content ui-corner-all' %></td>
+        <td class="DataTD"><input type="text" name='content' id="video_content" class='FormElement ui-widget-content ui-corner-all' value="<%= @video.content %>" ></td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">医生:</td>
-        <td class="DataTD"><select name="video[doctor_id]" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
+        <td class="DataTD"><select name="video[doctor_id]" id="video_doctor_id" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
           <% if !@doctors.nil? %>
               <option value="">请选择</option>
               <% @doctors.each do |doctor| %>
@@ -42,12 +43,12 @@
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">时间:</td>
-        <td class="DataTD"><%= f.date_field :video_time, id: 'video_time',value: @video.video_time ,  style: 'width:172px;height:22px;' %></td>
+        <td class="DataTD"><input type="text" name='video_time' id='video_time' value="<%= @video.video_time %>" style='width:172px;height:22px;'></td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">视频类型:</td>
         <td class="DataTD">
-          <select name="edu_video[video_type]" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
+          <select name="edu_video[video_type]" id="video_type_id" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
             <option value="">请选择</option><% @types.each do |type|%>
                 <option value="<%= type.id%>" <% if type.id == @video.video_type_id %> selected="selected" <% end %> ><%= type.type_name%></option>
                 <% end %></select></td>
@@ -80,15 +81,11 @@
       <tr class="FormData">
         <td colspan="2">
           <div id="progress2">
-            <%= f.submit '保存' %>
+            <input type="button" value="保存" onclick="submit_video()">
           </div>
         </td>
       </tr>
     </table>
-
-
-<%end%>
-
 <script>
     function getFileName(obj)
     {
@@ -96,7 +93,7 @@
         var filepath = obj.value.substring(pos+1);
         var pos2 = filepath.lastIndexOf("\\")*1;
         var filename = filepath.substring(pos2+1);
-        $('#video_path').val(filename)
+        $('#video_path').val(filename);
         $('#progress2 .bar').css(
                 'width',
                 '0%'
@@ -121,11 +118,36 @@
             },
 
             done: function (e, data) {
+                alert('上传成功!');
                 if (data.result.flag){
+                    alert(data.result.flag);
                    $('#image_path').val(data.result.url);
                    $('#image_path2').val(data.result.url);
                 }
             }
         });
+
+    function submit_video(){
+        $.ajax({
+            url: "/edu_videos/video_edit",
+            type: 'post',
+            data: { id: $('#video_id').val(),
+                    name: $('#video_name').val(),
+                    content:$('#video_content').val(),
+                    video_time:$('#video_time').val(),
+                    image_url:$('#image_path').val(),
+                    video_url:$('#video_url').val(),
+                    doctor_id:$('#video_doctor_id').val(),
+                    video_type_id:$('#video_type_id').val()
+            },
+            async: false,
+            success: function (data) {
+                $("#rightContent").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('视频修改失败!');
+            }
+        });
+    }
 
 </script>
