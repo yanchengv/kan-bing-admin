@@ -78,6 +78,48 @@ class Admin2sRole2sController < ApplicationController
     # end
   end
 
+  def get_role2s
+    @admin_role = Admin2sRole2.where(admin2_id: params[:admin2_id])
+    render json: {data:@admin_role}
+  end
+
+  def authorization_create
+    admin2_id = params[:admin2_id]
+    role2_ids = params[:role2_id].to_s.split(',')
+    p role2_ids
+    @admin2s_role2s = Admin2sRole2.where(admin2_id: admin2_id)
+    if !@admin2s_role2s.empty?
+      @admin2s_role2s.each do |admin2s_role2|
+        if !role2_ids.empty?
+          flag  = true
+          role2_ids.each do |role2_id|
+            if admin2s_role2.role2_id.to_i == role2_id.to_i
+              flag = false
+            end
+            @admin_roles = Admin2sRole2.where(admin2_id:admin2_id,role2_id:role2_id)
+            p @admin_roles
+            p @admin_roles.empty?
+            if @admin_roles.empty?
+              @admin2s_role2 = Admin2sRole2.create(admin2_id:admin2_id,role2_id:role2_id)
+            end
+          end
+          if flag
+            admin2s_role2.destroy
+          end
+        else
+          admin2s_role2.destroy
+        end
+      end
+    else
+      if !role2_ids.empty?
+        role2_ids.each do |role2_id|
+          @admin2s_role2 = Admin2sRole2.create(admin2_id:admin2_id,role2_id:role2_id)
+        end
+      end
+    end
+    render json: {success:true}
+  end
+
   # PATCH/PUT /admin2s_role2s/1
   # PATCH/PUT /admin2s_role2s/1.json
   def update

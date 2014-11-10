@@ -1,0 +1,166 @@
+<table id="admin_list"></table>
+<div id="admin_pager"></div>
+<div style="height: 50px;">  </div>
+角色管理中选中的角色属于该管理员,可以通过勾选和取消勾选来配制该管理员的角色.
+<table id="list"></table>
+<div id="pager"></div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        jQuery("#admin_list").jqGrid({
+            url: '/admin2s/web_admin_show?admin_id=<%= params[:id]%>',
+            datatype: "json",
+            mtype: 'GET',
+            colNames: ['ID', '姓名', '邮箱', '手机号','管理员类型'],
+            colModel: [
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden:true},
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
+                { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {custom: true, custom_func: check_email, required: false} },
+                { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}},
+                { name: 'admin_type', index: 'admin_type', width: 100, align: "center",editable: true},
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc",
+            autowidth: true,
+            rownumbers: true,
+            page:1,
+            jsonReader: {
+                root: "admin2s",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page", // 表示请求页码的参数名称
+                rows: "rows", // 表示请求行数的参数名称
+                id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                //   npage: null,
+                totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+                addoper: "add", // 当在add模式中提交数据时，操作的名称
+                deloper: "del", // 当在delete模式中提交数据时，操作的名称
+                subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+            },
+            closeAfterAdd:true,
+//            pager: jQuery('#admin_pager'),
+            //  multiselect: true,
+            rowNum: 20,
+            altclass: 'altRowsColour',
+            width: '500',
+            height: 'auto',
+            caption: "网站管理员"
+//            onSelectRow: function(id){
+//                jQuery("#list").jqGrid('setGridParam',{url:"/role2s/show_index?admin2_id="+ id}).trigger('reloadGrid');
+//            }
+        });
+        jQuery("#list").jqGrid({
+            url: '/role2s/show_index',
+            datatype: "json",
+            mtype: 'GET',
+            colNames: ['ID', '角色名','英文代称','说明'],
+            colModel: [
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
+                { name: 'code', index: 'code', width: 100, align: "center", editable: true},
+                { name: 'instruction', index: 'instruction', width: 100, align: "center", editable: true}
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc",
+            autowidth: true,
+            jsonReader: {
+                root: "role2s",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page", // 表示请求页码的参数名称
+                rows: "rows", // 表示请求行数的参数名称
+                id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                //   npage: null,
+                totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+                addoper: "add", // 当在add模式中提交数据时，操作的名称
+                deloper: "del", // 当在delete模式中提交数据时，操作的名称
+                subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+            },
+            editurl:'/role2s/oper_action',
+            closeAfterAdd:true,
+            pager: jQuery('#pager'),
+            multiselect: true,
+            rowNum: 20,
+            altclass: 'altRowsColour',
+            width: '500',
+            height: 'auto',
+            caption: "角色管理",
+            setSelection:1,
+            onSelectRow: function(){
+                var selectedIds  = jQuery("#list").jqGrid("getGridParam","selarrrow");
+                var admin_id = <%= @admin2.id %>
+                <%# if params[:admin2_id] %>
+                   // admin_id = <%#= params[:admin2_id] %>
+                <%# end %>
+                $.ajax({
+                    url: 'admin2s_role2s/authorization_create?admin2_id='+admin_id+'&role2_id=' + selectedIds,
+                    type: 'post',
+                    success: function (data) {
+
+                    }
+                })
+            },
+            gridComplete: function() {
+                var admin_id  = jQuery("#admin_list").jqGrid("getGridParam","selrow");
+                var selectedIds  = jQuery("#list").jqGrid("getGridParam","selarrrow");
+                if(selectedIds){
+                    var selected_ids = ''+selectedIds
+                    if (selected_ids.split(',')[0]!=''){
+                        for(var i=0; i<selected_ids.split(',').length;i++){
+                            $(this).jqGrid("setSelection",selected_ids.split(',')[i]);
+                        }
+                    }
+                }
+//                $.ajax({
+//                    url: 'admin2s_role2s/get_role2s?admin2_id='+admin_id,
+//                    type: 'get',
+//                    success: function (data) {
+//                        for( var obj in data['data']) {
+//                            console.log(data['data'][obj]['role2_id'])
+//                            jQuery('#list').jqGrid('setSelection',data['data'][obj]['role2_id']);
+//                        }
+//                    }
+//                })
+                <% if !@curr_roles.empty? %>
+                    <% @curr_roles.each do |role| %>
+                        jQuery('#list').jqGrid('setSelection','<%= role.id%>');
+                    <% end %>
+                <% end %>
+            }
+
+        }).navGrid('#pager', {
+                    cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
+                    deltext:"删除",deltitle:"删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
+                {
+                    closeAfterEdit: true
+                },//edit
+                {
+                    closeAfterAdd:true
+                }//add
+        );
+    });
+
+    //验证姓名
+    function check_name() {
+        console.log(arguments);
+        var reg = /^[a-zA-Z\u4e00-\u9fa5]+$/;
+        if (!reg.test(arguments[0])) {
+            return [false, "不能为空，只能为汉字或字母！"];
+        } else {
+            return [true, ""];
+        }
+    }
+</script>
