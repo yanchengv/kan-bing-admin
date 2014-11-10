@@ -10,7 +10,7 @@
                     url:treeNode.uri,
                     type:'get',
                     beforeSend:function(response){
-                             $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#d9edf0;line-height:100px;font-weight:bold;">loading...</div>')
+                             $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#ebeced;line-height:100px;font-weight:bold;"><img src="/loading.gif" /></div>')
                     },
                     success:function (response,data){
                         $('#rightContent').html(response)
@@ -127,14 +127,14 @@
     <style type="text/css">
         #homeLeftMenus .ztree{
             width:20%;
-            background: #3a3633;
+            background: #313235;
             background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
-            background: -moz-linear-gradient(left,#3a3633 93%,#2a2725 100%);
-            background: -webkit-gradient(linear,left top,right top,color-stop(93%,#3a3633),color-stop(100%,#2a2725));
-            background: -webkit-linear-gradient(left,#3a3633 93%,#2a2725 100%);
-            background: -o-linear-gradient(left,#3a3633 93%,#2a2725 100%);
-            background: -ms-linear-gradient(left,#3a3633 93%,#2a2725 100%);
-            background: linear-gradient(to right,#3a3633 93%,#2a2725 100%);
+            background: -moz-linear-gradient(left,#313235 93%,#222324 100%);
+            background: -webkit-gradient(linear,left top,right top,color-stop(93%,#313235),color-stop(100%,#222324));
+            background: -webkit-linear-gradient(left,#313235 93%,#222324 100%);
+            background: -o-linear-gradient(left,#313235 93%,#222324 100%);
+            background: -ms-linear-gradient(left,#313235 93%,#222324 100%);
+            background: linear-gradient(to right,#313235 93%,#222324 100%);
             padding:0px;
         }
         #homeLeftMenus .ztree * {
@@ -152,22 +152,22 @@
             line-height:39px;
             text-align:left;
             display:block;
-            background: #3a3633;
+            background: #313235;
             background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
-            background: -moz-linear-gradient(left,#3a3633 93%,#2a2725 100%);
-            background: -webkit-gradient(linear,left top,right top,color-stop(93%,#3a3633),color-stop(100%,#2a2725));
-            background: -webkit-linear-gradient(left,#3a3633 93%,#2a2725 100%);
-            background: -o-linear-gradient(left,#3a3633 93%,#2a2725 100%);
-            background: -ms-linear-gradient(left,#3a3633 93%,#2a2725 100%);
-            background: linear-gradient(to right,#3a3633 93%,#2a2725 100%);
+            background: -moz-linear-gradient(left,#313235 93%,#222324 100%);
+            background: -webkit-gradient(linear,left top,right top,color-stop(93%,#313235),color-stop(100%,#222324));
+            background: -webkit-linear-gradient(left,#313235 93%,#222324 100%);
+            background: -o-linear-gradient(left,#313235 93%,#222324 100%);
+            background: -ms-linear-gradient(left,#313235 93%,#222324 100%);
+            background: linear-gradient(to right,#313235 93%,#222324 100%);
             padding-left:10px;
             padding-right:10px;
         }
-        #homeLeftMenus .ztree .level0{background:#403e3d;}
+        #homeLeftMenus .ztree .level0{background:#1c1d1e;}
 
         #homeLeftMenus .ztree .level1:hover a{color:#fff;text-decoration:none;}
         #homeLeftMenus .ztree li a.level0.cur {
-            background-color: #3a3633;
+            background-color: #1c1d1e;
         }
         #homeLeftMenus .ztree li a.level0.cur span{
             color:#ffffff !important;
@@ -195,7 +195,7 @@
             padding-top: 0px;
             background-color:transparent !important;
             color: #fff !important;
-            height: 16px;
+            height: 39px;
             border:0px !important;
             opacity: 0.8;
             font-weight:bold;
@@ -231,8 +231,14 @@
         #homeLeftMenus .ztree li span.button.center_open {
             background-position: -92px -26px;
         }
-        #homeLeftMenus .ztree li span.button.center_docu {
-            background-position:-56px -26px;
+        #homeLeftMenus .ztree li.level1 span.button.center_docu {
+            background-position:-56px -26px !important;
+        }
+        #homeLeftMenus .ztree li.level0 span.level0.center_docu {
+            background-position:0px 100px !important;
+        }
+        #homeLeftMenus .ztree li.level0 span.level0.bottom_docu {
+            background-position:0px 100px !important;
         }
 
         #homeLeftMenus .ztree li span.button.switch {
@@ -256,6 +262,9 @@
         }
         #homeLeftMenus .ztree li .level0.button.roots_close {
             background-position: -74px -80px;
+        }
+        #homeLeftMenus .ztree li span.button.roots_docu{
+            background-position: 0px 100px;
         }
         #homeLeftMenus .ztree li .level0.button.center_open {
             background-position: -92px -80px;
