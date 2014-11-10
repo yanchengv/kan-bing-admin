@@ -189,10 +189,28 @@
     function admin_privilege(){
         <% if current_user %>
         var id = jQuery("#list").jqGrid('getGridParam', 'selrow');   //选中行的id
+        var rowDatas = $("#list").jqGrid('getRowData', id);
         if (id == null){
             alert('请选择授权人！')
         }else{
-            window.location.href = 'menus/show?id=' + id
+            if (rowDatas["admin_type"]=='网站管理员') {
+//            window.location.href = 'menus/show?id=' + id
+                $.ajax({
+                    url:'role2s/role2_show?id=' + id,
+                    type:'get',
+                    beforeSend:function(response){
+                        $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#d9edf0;line-height:100px;font-weight:bold;">loading...</div>')
+                    },
+                    success:function (response,data){
+                        $('#rightContent').html(response)
+                    },
+                    error:function(response){
+                        $('#rightContent').html('response')
+                    }
+                })
+            }else{
+                alert('只有网站管理员可以执行此操作!')
+            }
         }
         <%end%>
     }

@@ -10,7 +10,9 @@ Rails.application.routes.draw do
 
   resources :admin2s_role2s do
     collection do
+      post 'authorization_create', to:'admin2s_role2s#authorization_create'
       delete 'remove_nodes', to:'admin2s_role2s#remove_nodes'
+      get 'get_role2s', to:'admin2s_role2s#get_role2s'
     end
   end
 
@@ -101,6 +103,7 @@ Rails.application.routes.draw do
 
   resources :role2s do
     collection do
+      get 'role2_show',to:'role2s#curr_roles'
       get 'show_index', to:'role2s#show_index'
       post 'oper_action', to:'role2s#oper_action'
       put 'update_name', to:'role2s#update_name'
@@ -205,6 +208,7 @@ Rails.application.routes.draw do
       get 'get_by_email', to:'admin2s#get_by_email'
       get 'get_admin2', to:'admin2s#get_admin2'
       get 'get_admin_type', to: 'admin2s#get_admin_type'
+      get 'web_admin_show', to:'admin2s#web_admin_show'
     end
   end
 

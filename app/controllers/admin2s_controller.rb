@@ -31,6 +31,15 @@ class Admin2sController < ApplicationController
     render :json => {:admin2s => @admins.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
+  def web_admin_show
+    @admins = Admin2.where(id:params[:admin_id])
+    # @admins = Admin2.where(admin_type: '网站管理员')
+    count = @admins.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @admins = @admins.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:admin2s => @admins.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
   def oper_action
     if params[:oper] == 'add'
       create

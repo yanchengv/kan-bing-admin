@@ -11,6 +11,15 @@ class Role2sController < ApplicationController
   # GET /role2s/1
   # GET /role2s/1.json
 
+  def curr_roles
+    id=params[:id]
+    @admin2 = Admin2.where(id:id).first
+    if @admin2
+      @curr_roles = @admin2.role2s
+    end
+    render partial: 'role2s/admin_authorization'
+  end
+
   def show_index
     sql = 'true'
     # if params[:name] && params[:name] != ''

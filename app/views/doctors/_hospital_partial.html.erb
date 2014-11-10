@@ -20,7 +20,9 @@
         <% hospital = Doctor.find_by(id:params[:id]).hospital %>
         <% if !hos_id.nil? && hos_id != '' && !hospital.nil?%>
         $('#s2id_doctor_hospital_id').children('.select2-choice').children('.select2-chosen').html('<%=hospital.name %>')
-        document.getElementById('hos_<%= hos_id %>').setAttribute('selected','selected')
+        if (document.getElementById('hos_<%= hos_id %>') != null) {
+            document.getElementById('hos_<%= hos_id %>').setAttribute('selected', 'selected')
+        }
         <% end %>
         <% end %>
         search()
