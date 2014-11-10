@@ -112,7 +112,6 @@
             //forceIframeTransport: true,
             maxChunkSize: 100000000, //100Mb
             fail:function (e, data) {
-                console.log(data.errorThrown);
                 alert('上传失败！')
             },
 
@@ -131,7 +130,6 @@
             fail:function (e, data) {
                 alert('上传失败！');
                 data.context = $("#uploadinfo").text('上传失败！');
-                console.log(data.errorThrown);
             },
             done: function (e, data) {
                 if (data.result.flag){

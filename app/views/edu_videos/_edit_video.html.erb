@@ -13,8 +13,6 @@
         /*box-sizing: border-box;*/
     }
 </style>
-<!--url:{action: 'video_edit', controller:'edu_videos'}-->
-<%#= form_for @video,:html => {:id => 'myForm',:multipart => true,:style => 'margin-left:20px;margin-top:-90px;'} do |f|%>
     <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
     <input type="file" name='video' id='video_upload' style='visibility:hidden;'>
     <input type="text" name="video_url" id='video_url' style='visibility:hidden;' value="<%= @video.video_url %>">
@@ -120,7 +118,6 @@
             done: function (e, data) {
                 alert('上传成功!');
                 if (data.result.flag){
-                    alert(data.result.flag);
                    $('#image_path').val(data.result.url);
                    $('#image_path2').val(data.result.url);
                 }
