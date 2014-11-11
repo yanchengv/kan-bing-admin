@@ -204,12 +204,18 @@
         <%= f.label :专业职称 %><br>
         <select id="doctor_professional_title" name="doctor[professional_title]" >
           <option value="">---请选择---</option>
-          <option id="主治医师" value="主治医师">主治医师</option>
-          <option id="主任医师" value="主任医师">主任医师</option>
-          <option id="副主任医师" value="副主任医师">副主任医师</option>
-          <option id="主任技师" value="主任技师">主任技师</option>
-          <option id="副主任技师" value="副主任技师">副主任技师</option>
-          <option id="特聘高年资医师" value="特聘高年资医师">特聘高年资医师</option>
+          <% @doc_pro = Dictionary.where(dictionary_type_id:4) %>
+          <% if !@doc_pro.empty? %>
+            <% @doc_pro.each do |pro| %>
+              <option id="<%= pro.name %>" value="<%= pro.name %>"><%= pro.name %></option>
+            <% end %>
+          <% end %>
+          <!--<option id="主治医师" value="主治医师">主治医师</option>-->
+          <!--<option id="主任医师" value="主任医师">主任医师</option>-->
+          <!--<option id="副主任医师" value="副主任医师">副主任医师</option>-->
+          <!--<option id="主任技师" value="主任技师">主任技师</option>-->
+          <!--<option id="副主任技师" value="副主任技师">副主任技师</option>-->
+          <!--<option id="特聘高年资医师" value="特聘高年资医师">特聘高年资医师</option>-->
         </select>
         <%#= f.text_field :professional_title,class:"form-control" %>
       </div>

@@ -30,6 +30,41 @@
   <option value="1">已经激活</option>
   <option value="0">未激活</option>
 </select>
+  <div style="margin-top: 10px;" class="row">
+    <%= form_for '', url: {controller: 'patients', action: 'show_index'}, method: 'get',:html => {:multipart => true} do |f| %>
+      <div class="col-md-10 field">
+         <div class="col-md-3 field">
+          <%= f.label :搜索条件 %>:<select name="searchField" id="searchField" style="width:140px;margin-left: 2px;height: 30px;" onchange="change_state(this.value)">
+          <option value="">请选择搜索条件</option>
+          <option value="name">按姓名</option>
+          <option value="spell_code">按简拼</option>
+          <option value="credential_type_number">按证件号码</option>
+          <option value="mobile_phone">按手机号</option>
+          <option value="email">按邮箱</option>
+        </select>
+        </div>
+        <div class="col-md-3 field" style="margin-left: -50px;">
+          <div class="col-md-3 field"><%= f.label :值%>:</div><div class="col-md-9 field" style="margin-left: -30px;"><%= f.text_field :name,id:'searchString',name:'searchString',class: 'form-control', placeholder: '回车搜索', style:"width:180px;height: 30px;" ,onkeydown:"entersearch1(event)"%></div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <script>
+      function change_state(value){
+          if (value == '') {
+              $('#searchString').attr('disabled','disabled')
+          } else {
+              $('#searchString').removeAttr('disabled')
+          }
+      }
+      function entersearch1(event){
+          if (event.keyCode == 13)
+          {
+              var url= "/patients/show_index?searchField=" + $('#searchField').val() + '&searchString=' + $('#searchString').val()+'&hos_id=' + $('#patient_hos_id').val() + '&dep_id=' + $('#patient_dep').val()
+              jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+          }
+      }
+  </script>
 </div>
 
 <table id="list10"></table>
@@ -152,7 +187,7 @@
         }else{
             alert('请至少选择一条记录!')
         }
-        var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
+        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     }
 //    发送手机激活码
@@ -173,15 +208,12 @@
         }else{
             alert('请至少选择一条记录!')
         }
-        var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
+        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
         jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     }
 
     function pat_search_hos(){
-        $('#is_edit').removeAttr("checked");
-        $('#is_del').removeAttr("checked");
-        $('#is_edit').removeAttr("disabled");
-        $('#is_del').removeAttr("disabled");
+        $('#searchString').val('')
         var hos_id = $('#patient_hos_id').val()
         $.ajax({
             type: 'get',
@@ -193,15 +225,19 @@
         jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?hos_id=" + $('#patient_hos_id').val() +  "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
     function pat_search_dep(){
+        $('#searchString').val('')
         jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
     }
     function search_activated(){
+        $('#searchString').val('')
         jQuery("#list10").jqGrid('setGridParam', {url: "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()  + "&is_activated=" + $('#is_activated').val()}).trigger("reloadGrid")
     }
     $(function() {
         $("#patient_hos_id").select2();
         $("#patient_dep").select2();
         $("#is_activated").select2();
+        $("#searchField").select2();
+        $('#searchString').attr('disabled','disabled')
     })
 </script>
 <div class="modal fade" id="create_or_edit_form2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
