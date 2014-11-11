@@ -1,16 +1,11 @@
-.navbar .ui-widget-content {
-    border-width: 0px;
-    background: transparent;
-    color: #d9dfe7;
 
-}
 
 #menu li a {
     color: #fff;
     font-family: "Microsoft YaHei", Arial;
-    height: 50px;
+    height: 34px;
     display: inline-block;
-    padding-top: 15px !important;
+    padding-top: 10px !important;
     text-align: center !important;
 
 }
@@ -21,7 +16,7 @@
 }
 
 #menu li ul {
-    top: 50px !important;
+    top: 49px !important;
     left: 0px !important;
     background: #2f343a;
 }
@@ -37,13 +32,13 @@
 
 #menu .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
     border-width: 0px !important;
-    background: #272b34 !important;
+    background: #28292d !important;
     color: #ffffff !important;
 }
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
     border-width: 0px !important;
-    background: #272b34 !important;
+    background: #28292d !important;
     color: #ffffff !important;
 }
 
@@ -76,6 +71,7 @@
     margin: 0;
     padding: 0;
     width: auto;
+    background:#313235;
 }
 #menu li {
     width: 140px;
@@ -85,4 +81,36 @@
 .ui-menu .ui-state-focus,
 .ui-menu .ui-state-active {
     margin: 0px !important;
+}
+
+
+
+
+
+
+
+.nologin_nav{
+    height:49px;
+    width:100%;
+    padding:0 15px;
+    background:#313235;
+    border-bottom:1px solid #2c2d30;
+    color:#fff;
+}
+.nologin_logo{
+    line-height:49px;
+    font-weight:bold;
+    font-family: "Microsoft YaHei",Arial;
+    font-size:20px;
+    float:left;
+    width:300px;
+}
+.nologin_menu{
+    float:right;
+    background:#000;
+}
+.nologin_menu .ui-widget-content{
+    height:29px;
+    background:#313235;
+    border:none;
 }

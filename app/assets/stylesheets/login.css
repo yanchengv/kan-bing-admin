@@ -20,6 +20,7 @@
 .username {
     margin-top: 83px;
     height: 35px;
+    line-height:35px;
     width: 235px;
     margin-left: 80px;
     outline-width: 0px;
@@ -27,6 +28,7 @@
 .password {
     margin-top: 8px;
     height: 35px;
+    line-height:35px;
     width: 235px;
     margin-left: 80px;
     outline-width: 0px;
