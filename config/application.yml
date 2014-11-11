@@ -27,6 +27,14 @@ defaults: &defaults
 
   hospital_code:
     yuquan: '00001'
+
+  aliyunOSS:
+      server: 'oss.aliyuncs.com'
+      access_key_id: 'h17xgVZatOgQ6IeJ'
+      secret_access_key: '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+      default_bucket: 'mimas-open'
+      video_bucket: 'dev-mimas'
+      oss_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
 development:
   <<: *defaults
 
@@ -58,3 +66,11 @@ production:
   jsdicom: 'http://www.kanbing365.com:9002/dicom/show/'
   hospital_code:
     yuquan: '00001'
+
+  aliyunOSS:
+      server: 'oss.aliyuncs.com'
+      access_key_id: 'h17xgVZatOgQ6IeJ'
+      secret_access_key: '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+      default_bucket: 'mimas-open'
+      video_bucket: 'webadmin-video'
+      oss_url: 'http://webadmin-video.oss-cn-beijing.aliyuncs.com/'

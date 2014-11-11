@@ -74,9 +74,8 @@ class EduVideosController < ApplicationController
     file=params[:edu_video].nil? ? params[:image] : params[:edu_video][:image]
     tmpfile = getFileName(file.original_filename.to_s)
     uuid = upload_video_img_bucket(file)
-    url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/" << uuid
     if true
-      render :json => {flag: true, url: url}
+      render :json => {flag: true, url: uuid}
     else
       render :json => {flag: false, url: ''}
     end
@@ -87,9 +86,8 @@ class EduVideosController < ApplicationController
     file=params[:edu_video].nil? ? params[:video] : params[:edu_video][:video]
     tmpfile = getFileName(file.original_filename.to_s)
     uuid = upload_video_img_bucket(file)
-    url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/" << uuid
     if true
-      render :json => {flag: true, url: url}
+      render :json => {flag: true, url: uuid}
     else
       render :json => {flag: false, url: ''}
     end
@@ -125,6 +123,12 @@ class EduVideosController < ApplicationController
   def video_edit
     @video = EduVideo.find(params[:id])
     @doc = Doctor.find_by_id(params[:doctor_id])
+    if @video.video_url != params[:video_url]
+      delte_file_from_aliyun(@video.video_url)  #删除之前的file
+    end
+    if @video.image_url != params[:image_url]
+      delte_file_from_aliyun(@video.image_url)
+    end
     if @video.update_attributes(:name => params[:name], :content => params[:content], :doctor_name => @doc.nil? ? '' : @doc.name,
                                 :video_time => params[:video_time], :image_url => params[:image_url], :video_url => params[:video_url],
                                 :doctor_id => params[:doctor_id], :video_type_id => params[:video_type_id])
@@ -185,6 +189,8 @@ class EduVideosController < ApplicationController
   # DELETE /edu_videos/1
   # DELETE /edu_videos/1.json
   def destroy
+    delte_file_from_aliyun(@edu_video.image_url)  #删除对应的缩略图
+    delte_file_from_aliyun(@edu_video.video_url)  #删除对应的视频
    if @edu_video.destroy
      render :json => {:success => true}
    end

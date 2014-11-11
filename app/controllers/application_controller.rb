@@ -8,6 +8,10 @@ class ApplicationController < ActionController::Base
   require 'aliyun/oss/bucket'
   include Aliyun::OSS
 
+  SERVER = Settings.aliyunOSS.server
+  OSSKEY = Settings.aliyunOSS.access_key_id
+  SECRET_KEY = Settings.aliyunOSS.secret_access_key
+  BUCKET = Settings.aliyunOSS.video_bucket
   def access_flag
     menu_name = params[:menu_name]
     flag=false
@@ -33,12 +37,12 @@ class ApplicationController < ActionController::Base
   def upload_video_img_bucket(file)
     if !file.original_filename.empty?
       Aliyun::OSS::Base.establish_connection!(
-          :server => 'oss-cn-beijing.aliyuncs.com', #可不填,默认为此项
-          :access_key_id => 'h17xgVZatOgQ6IeJ',
-          :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+          :server => SERVER, #可不填,默认为此项
+          :access_key_id => OSSKEY,
+          :secret_access_key => SECRET_KEY
       )
 
-      video_image_bucket = Bucket.find('dev-mimas') #查找Bucket
+      video_image_bucket = Bucket.find(BUCKET) #查找Bucket
       obj = video_image_bucket.new_object #在此Bucket新建Object
       obj.key = getFileName(file.original_filename)
       #obj.key = file
@@ -63,13 +67,13 @@ class ApplicationController < ActionController::Base
   # delete object by filename
   def delte_file_from_aliyun(file)
     Aliyun::OSS::Base.establish_connection!(
-        :server => 'oss.aliyuncs.com', #可不填,默认为此项
-        :access_key_id => 'h17xgVZatOgQ6IeJ',
-        :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+        :server => SERVER, #可不填,默认为此项
+        :access_key_id => OSSKEY,
+        :secret_access_key => SECRET_KEY
     )
-    #mimas_open_bucket = Bucket.find('mimas-open') #查找Bucket
+   # mimas_open_bucket = Bucket.find(BUCKET) #查找Bucket
     begin
-      OSSObject.delete(file, 'dev-mimas') #删除文件
+      OSSObject.delete(file, 'dev_mimas') #删除文件
     rescue
       puts 'delte  error'
     end
