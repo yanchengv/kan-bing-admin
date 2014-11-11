@@ -28,6 +28,5 @@
 //= require_tree ./routers
 //= require jquery-ui
 //= require jquery.ztree.all-3.5.min
-//= require dialog-min.js
 //= require_tree .
 //= require jquery.fileupload

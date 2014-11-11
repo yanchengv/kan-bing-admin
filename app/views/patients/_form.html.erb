@@ -159,21 +159,21 @@
     </div>
     <!--<div class="row">-->
     <!--<div class="col-md-6 field">-->
-    <%#= f.label :保险类型 %><br>
+    <%#= f.label :保险类型 %>
     <!--<%#= f.text_field :insurance_type,class:"form-control" %>-->
     <!--</div>-->
     <!--<div class="col-md-6 field">-->
-    <%#= f.label :保险号码 %><br>
+    <%#= f.label :保险号码 %>
     <!--<%#= f.text_field :insurance_number,class:"form-control" %>-->
     <!--</div>-->
     <!--</div>-->
     <!--<div class="row">-->
     <!--<div class="col-md-6 field">-->
-    <%#= f.label :疾病类型 %><br>
+    <%#= f.label :疾病类型 %>
     <%#= f.text_field :diseases_type,class:"form-control"  %>
     <!--</div>-->
     <!--<div class="col-md-6 field">-->
-    <%#= f.label :最后就诊时间 %><br>
+    <%#= f.label :最后就诊时间 %>
     <!--<input id='pat_last_treat_time' data-format="yyyy-MM-dd" name='patient[last_treat_time]' type="text" class="form-control"/>-->
     <%#= f.date_select :last_treat_time %>
     <!--</div>-->
@@ -298,9 +298,9 @@
 </div>
 <script>
     var credential_type_number_flag=true
-    var phone_flag=false
+    var phone_flag=true
     var name_flag=false
-    var email_flag=false
+    var email_flag=true
     var birthday_flag=false
     var two_blank=true
     function check_credential_type_number(value){
