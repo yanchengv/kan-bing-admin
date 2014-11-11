@@ -463,7 +463,7 @@ class DoctorsController < ApplicationController
       @hospitals = Hospital.all
     end
     @doctor = Doctor.new
-    render partial: 'doctors/form'
+    render partial: 'doctors/doctor_form'
   end
 
   def new2   #含增删改查权限的 ############　删　################
@@ -544,7 +544,7 @@ class DoctorsController < ApplicationController
       @hospitals = Hospital.all
     end
     @doctor = Doctor.where(id:params[:id]).first
-    render partial: 'doctors/form'
+    render partial: 'doctors/doctor_form'
   end
 
   def edit2   #含增删改查权限的 ############　删　################
