@@ -127,7 +127,7 @@
         autoOpen: false,
         modal: true,    // 设置对话框为模态（modal）对话框
         resizable: true,
-        width: 560,
+        width: 540,
         position: {
             my: "center",
             at: "center",
@@ -146,10 +146,10 @@
             }
         },
         buttons: {  // 为对话框添加按钮
-            "取消": function() {$("#consoleDlg").dialog("close")},
             "创建": addContact,
             "保存": updateContact,
-            "删除": deleteContact
+            "删除": deleteContact,
+            "取消": function() {$("#consoleDlg").dialog("close")}
         }
     });
 
@@ -157,20 +157,22 @@
     //    自定义按钮
     $("#list12").jqGrid("navGrid", "#pager12", {
         addtext: '添加',
-        addfunc : openDialog4Adding ,
+        addfunc : openDialog4Adding,  // (1) 点击添加按钮，则调用openDialog4Adding方法
         edittext: '编辑',
         editfunc : openDialog4Updating, // (2) 点击编辑按钮，则调用openDialog4Updating方法
         view: true,
         viewtext: '查看',
         deltext:    '删除',
-        delfunc : openDialog4Deleting,
-        alerttext : "请选择需要操作的数据行!"
+        delfunc : openDialog4Deleting,  // (3) 点击删除按钮，则调用openDialog4Deleting方法
+        search:false,
+        refreshtext:"刷新",
+        alerttext : "请选择记录!"
     });
 //    自定义按钮
 //    $("#list12").jqGrid('navGrid','#pager12',{edit:false,add:false,del:false,search:false,searchtext:"查找",refreshtext:"刷新"});
-    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '添加', caption: '添加',id:'addDoctor', onClickButton: addDoctor});
-    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '删除', caption: '删除',id:'deleteDoctor', onClickButton: deleteDoctor});
-    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '修改', caption: '修改',id:'updateDoctor', onClickButton: updateDoctor});
+//    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '添加', caption: '添加',id:'addDoctor', onClickButton: addDoctor});
+//    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '删除', caption: '删除',id:'deleteDoctor', onClickButton: deleteDoctor});
+//    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '修改', caption: '修改',id:'updateDoctor', onClickButton: updateDoctor});
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailDoctor', onClickButton: sendEmailDoctor});
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhoneDoctor', onClickButton: sendPhoneDoctor});
 
@@ -185,6 +187,7 @@
 //        consoleDlg.find("input").removeAttr("disabled").val("");
                 dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                 dialogButtonPanel.find("button:contains('创建')").show();
+                consoleDlg.dialog("option", "width", "540");
                 consoleDlg.dialog("option", "title", "创建").dialog("open");
             }
         })
@@ -202,6 +205,7 @@
 //        consoleDlg.find("input").removeAttr("disabled");
                     dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                     dialogButtonPanel.find("button:contains('保存')").show();
+                    consoleDlg.dialog("option", "width", "540");
                     consoleDlg.dialog("option", "title", "修改").dialog("open");
                 }
             })
@@ -373,7 +377,7 @@
         credential_type_number_flag = true
     }
 
-    function addContact(){
+    function addContact(){ //    添加医生
         var birthday = $('#doc_birthday').val()
         var phone = $('#doctor_mobile_phone').val()
         var email = $('#doctor_email').val()
@@ -393,7 +397,7 @@
             alert("表单填写有误，不能提交表单！");
         }
     }
-    function updateContact(){
+    function updateContact(){ // 修改医生
         addContact()
     }
     function deleteContact(){
@@ -471,13 +475,13 @@
                     }else {
                         alert('发送失败!如果是多个,可能部分发送成功!')
                     }
+                    var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
+                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }
             })
         }else{
             alert('请至少选择一条记录!')
         }
-        var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
-        jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     };
 //    发送手机验证码
     function sendPhoneDoctor(){
@@ -491,14 +495,13 @@
                     }else {
                         alert('发送失败!如果是多个,可能部分发送成功!')
                     }
-
+                    var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
+                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }
             })
         }else{
             alert('请至少选择一条记录!')
         }
-        var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
-        jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     };
 
 
