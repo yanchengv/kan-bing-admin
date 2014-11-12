@@ -8,6 +8,10 @@
 
     }
 </style>
+<div id="consoleDlg2">
+  <div id="pat_create_or_edit_form">
+  </div>
+</div>
 <div id="search_div" style="margin:10px;">
   医院：<select  id="patient_hos_id" onchange="pat_search_hos()" >
   <option value="">---请选择---</option>
@@ -33,7 +37,7 @@
   <div style="margin-top: 10px;" class="row">
     <%= form_for '', url: {controller: 'patients', action: 'show_index'}, method: 'get',:html => {:multipart => true} do |f| %>
       <div class="col-md-10 field">
-         <div class="col-md-3 field">
+         <div class="col-md-3 field" style="padding: 0px;margin-left: 0px;">
           <%= f.label :搜索条件 %>:<select name="searchField" id="searchField" style="width:140px;margin-left: 2px;height: 30px;" onchange="change_state(this.value)">
           <option value="">请选择搜索条件</option>
           <option value="name">按姓名</option>
@@ -43,14 +47,17 @@
           <option value="email">按邮箱</option>
         </select>
         </div>
-        <div class="col-md-3 field" style="margin-left: -50px;">
-          <div class="col-md-3 field"><%= f.label :值%>:</div><div class="col-md-9 field" style="margin-left: -30px;"><%= f.text_field :name,id:'searchString',name:'searchString',class: 'form-control', placeholder: '回车搜索', style:"width:180px;height: 30px;" ,onkeydown:"entersearch1(event)"%></div>
+        <div class="col-md-3 field" style="margin-left: -50px;padding: 0px;">
+          <div class="col-md-3 field"><%= f.label :值%>:</div><div class="col-md-9 field" style="margin-left: -30px;"><%= f.text_field :name,id:'searchString',name:'searchString',class: 'form-control', placeholder: '回车搜索', style:"width:180px;height: 26px;margin-left:-20px;" ,onkeydown:"entersearch1(event)"%></div>
         </div>
       </div>
     <% end %>
   </div>
   <script>
       function change_state(value){
+          $('#searchString').val('')
+          var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
+          jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
           if (value == '') {
               $('#searchString').attr('disabled','disabled')
           } else {
@@ -77,7 +84,7 @@
         url: "/patients/show_index",
         datatype: "json",
         height: "auto",
-        colNames:['ID','姓名','姓名首字母简拼','证件类型','证件号码', '性别','出生日期','出生地','省','市','医院','科室','手机号','邮箱','最后就诊时间'],
+        colNames:['ID','姓名','姓名首字母简拼','证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','受教育程度','最后就诊时间'],
         colModel:[
 //            {name:'act',index:'act', width:75,sortable:false},
             {name:'id',index:'id', width:120, sorttype:"int",hidden:true,search:false },
@@ -88,12 +95,16 @@
             {name:'gender',index:'gender', width:40,search:false },
             {name:'birthday',index:'birthday', width:90,search:false },
             {name:'birthplace',index:'birthplace', width:80,search:false },
+            {name:'marriage',index:'marriage', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
             {name:'province_name',index:'province_name', width:100,search:false },
             {name:'city_name',index:'city_name', width:100,search:false },
-            {name:'hospital_id',index:'hospital_id', width:100,search:false },
-            {name:'department_id',index:'department_id', width:100,search:false },
+            {name:'hospital_name',index:'hospital_name', width:100,search:false },
+            {name:'department_name',index:'department_name', width:100,search:false },
+            {name:'citizenship',index:'citizenship', width:100,search:false },
+            {name:'nationality',index:'nationality', width:100,search:false },
             {name:'mobile_phone',index:'mobile_phone', width:100, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
             {name:'email',index:'email', width:130, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
+            {name:'education',index:'education', width:130, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
             {name:'last_treat_time',index:'last_treat_time', width:80,align:"right",sorttype:"float",search:false }
 //            {name:'introduction',index:'introduction', width:260, sortable:false}
         ],
@@ -107,6 +118,10 @@
         rowList:[10,20,30,40],
         altRows: true,
         ignoreCase: true,
+        jsonReader: {
+            root: "patients",
+            repeatitems: false
+        },
         onSelectRow: function(id){
             selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
         },
@@ -115,13 +130,297 @@
         multiselect: true,
         caption: "患者列表"
     });
+    $("#consoleDlg2").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        position:
+        {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                console.log(pos.top)
+                var topOffset = $( this ).css( pos ).offset().top;
+                console.log(topOffset)
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "创建": addContact,
+            "保存": updateContact,
+            "删除": deleteContact,
+            "取消": function() {$("#consoleDlg2").dialog("close")}
+        }
+    });
+    //    自定义按钮
+    $("#list10").jqGrid("navGrid", "#pager10", {
+        addtext: '添加',
+        addfunc : openDialog4Adding, // (1) 点击添加按钮，则调用openDialog4Adding方法
+        edittext: '编辑',
+        editfunc : openDialog4Updating, // (2) 点击编辑按钮，则调用openDialog4Updating方法
+        view: true,
+        viewtext: '查看',
+        deltext:    '删除',
+        delfunc : openDialog4Deleting, // (3) 点击删除按钮，则调用openDialog4Deleting方法
+        search:false,
+        refreshtext:"刷新",
+        alerttext : "请选择记录!"
+    });
     var selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
-    jQuery("#list10").jqGrid('navGrid','#pager10',{edit:false,add:false,del:false,search:false,searchtext:"查找",refreshtext:"刷新"});
-    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '添加', caption: '添加',id:'addPatient', onClickButton: createPatient})
-    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '删除', caption: '删除',id:'delete', onClickButton: deletePatient})
-    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '编辑', caption: '编辑',id:'edit', onClickButton: editPatient})
+//    jQuery("#list10").jqGrid('navGrid','#pager10',{edit:false,add:false,del:false,search:false,searchtext:"查找",refreshtext:"刷新"});
+//    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '添加', caption: '添加',id:'addPatient', onClickButton: createPatient})
+//    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '删除', caption: '删除',id:'delete', onClickButton: deletePatient})
+//    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '编辑', caption: '编辑',id:'edit', onClickButton: editPatient})
     $("#list10").navButtonAdd('#pager10', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailPatient', onClickButton: sendEmailPatient})
     $("#list10").navButtonAdd('#pager10', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhonePatient', onClickButton: sendPhonePatient})
+
+    function openDialog4Adding() {
+        $.ajax({
+            type:'get',
+            url:'/patients/new',
+            success:function(data){
+                $('#pat_create_or_edit_form').html(data)
+                var consoleDlg2 = $("#consoleDlg2");
+                var dialogButtonPanel = consoleDlg2.siblings(".ui-dialog-buttonpane");
+//        consoleDlg2.find("input").removeAttr("disabled").val("");
+                dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                dialogButtonPanel.find("button:contains('创建')").show();
+                consoleDlg2.dialog("option", "width", "540");
+                consoleDlg2.dialog("option", "title", "创建").dialog("open");
+
+            }
+        })
+    }
+
+    function openDialog4Updating(id) {
+        if (selectedIds.length==1) {
+            $.ajax({
+                type: 'get',
+                url: '/patients/' + selectedIds + '/edit',
+                success: function (data) {
+                    $('#pat_create_or_edit_form').html(data)
+                    var consoleDlg2 = $("#consoleDlg2");
+                    var dialogButtonPanel = consoleDlg2.siblings(".ui-dialog-buttonpane");
+//        consoleDlg2.find("input").removeAttr("disabled").val("");
+                    dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                    dialogButtonPanel.find("button:contains('保存')").show();
+                    consoleDlg2.dialog("option", "width", "540");
+                    consoleDlg2.dialog("option", "title", "修改").dialog("open");
+                }
+            })
+        }else {
+            alert('必须且只能选择一条记录!')
+        }
+    }
+
+    function openDialog4Deleting(id) {
+        var consoleDlg2 = $("#consoleDlg2");
+        $('#pat_create_or_edit_form').html('删除所选记录?')
+        var dialogButtonPanel = consoleDlg2.siblings(".ui-dialog-buttonpane");
+//        consoleDlg2.find("input").removeAttr("disabled").val("");
+        dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+        dialogButtonPanel.find("button:contains('删除')").show();
+        consoleDlg2.dialog("option", "width", "260");
+        consoleDlg2.dialog("option", "title", "删除").dialog("open");
+    }
+
+    var credential_type_number_flag=true
+    var phone_flag=false
+    var name_flag=false
+    var email_flag=false
+    var birthday_flag=false
+    var two_blank=true
+    function check_credential_type_number(value){
+        row_id = jQuery("#list10").jqGrid('getGridParam', 'selrow');
+        if ($('#patient_credential_type').val()=='居民身份证') {
+            var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+            if (reg.test(value) === false) {
+                alert('生份证号格式错误!')
+                $('#patient_credential_type_number').addClass('error_remind')
+                credential_type_number_flag = false
+            } else {
+                $.ajax({
+                    type:'get',
+                    url:'/patients/check_credential_type_number?patient_id='+row_id,
+                    data:{credential_type_number:value},
+                    success:function(data){
+                        var is_use;
+                        is_use= data['success'];
+                        if(is_use==true) {
+                            credential_type_number_flag=true;
+                            showBirthday(value)
+                            $('#patient_credential_type_number').removeClass('error_remind')
+//                        document.getElementById('phone_div').innerHTML='<div class="succ-icon"></div>'
+                        }else{
+                            credential_type_number_flag=false;
+                            $('#patient_credential_type_number').addClass('error_remind')
+                            alert('身份证号码重复!')
+                        }
+                    }
+                })
+            }
+        }
+    }
+
+    function check_phone(phone,a){
+        row_id = jQuery("#list10").jqGrid('getGridParam', 'selrow');
+        var c_phone=/1[3|5|7|8|][0-9]{9}/;
+        var re_phone= new RegExp(c_phone);
+        if (phone != ''){
+            if (re_phone.test(phone) && phone.length==11){
+                $.ajax({
+                    type:'get',
+                    url:'/patients/check_phone?patient_id='+row_id,
+                    data:{phone:phone},
+                    success:function(data){
+                        if(data['success']) {
+                            phone_flag=true;
+                            $('#patient_mobile_phone').removeClass('error_remind')
+                        }else{
+                            phone_flag=false;
+                            $('#patient_mobile_phone').addClass('error_remind')
+                            if (a=='true') {
+                                alert('手机号重复!')
+                            }
+                        }
+                    }
+                })
+            }else{
+                phone_flag=false;
+                $('#patient_mobile_phone').addClass('error_remind')
+                if (a=='true') {
+                    alert('手机号格式不正确!')
+                }
+            };
+        }else{
+            phone_flag=true;
+            $('#patient_mobile_phone').removeClass('error_remind')
+        }
+    }
+    function check_name(name,a){
+        var c_name=/^\s*$/g;
+        var re_name=new RegExp(/^\s*$/g)
+        if (re_name.test(name)){
+            name_flag=false;
+            $('#patient_name').addClass('error_remind')
+            if (a=='true'){
+                alert('姓名不能为空!')
+            }
+        }else{
+            name_flag=true;
+            $('#patient_name').removeClass('error_remind')
+
+        };
+    };
+    function check_email(email,a) {
+        row_id = jQuery("#list10").jqGrid('getGridParam', 'selrow');
+        var c_email=/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+        var re_email = new RegExp(c_email);
+        if (email!='') {
+            if(re_email.test(email)){
+                $.ajax({
+                    type:'get',
+                    url:'/patients/check_email?patient_id='+row_id,
+                    data:{email:email},
+                    success:function(data){
+                        var is_use;
+                        is_use= data['success'];
+                        if(is_use==true) {
+                            email_flag=true;
+                            $('#patient_email').removeClass('error_remind')
+                        }else{
+                            email_flag=false;
+                            $('#patient_email').addClass('error_remind')
+                            if (a=='true') {
+                                alert('邮箱已注册!')
+                            }
+                        }
+
+                    }
+                })
+            }
+            else  {
+                email_flag=false;
+                $('#patient_email').addClass('error_remind')
+                if (a=='true') {
+                    alert('邮箱格式不正确')
+                }
+            } ;
+        }else{
+            email_flag=true;
+            $('#patient_email').removeClass('error_remind')
+        }
+    };
+
+    function check_birthday(birthday,a){
+        if($.trim(birthday).length==0){
+            $('#pat_birthday').addClass('error_remind')
+            if (a=='true'){
+                alert('生日不可为空!')
+            }
+        }else{
+            birthday_flag=true
+            $('#pat_birthday').removeClass('error_remind')
+        }
+    }
+
+    function change_type(){
+        $('#patient_credential_type_number').focus();
+        $('#patient_credential_type_number').removeClass('error_remind');
+        credential_type_number_flag = true
+    }
+
+    function addContact() {      //    添加患者
+        var birthday = $('#pat_birthday').val()
+        var phone = $('#patient_mobile_phone').val()
+        var email = $('#patient_email').val()
+        var name = $('#patient_name').val()
+        check_phone(phone)
+        check_name(name)
+        check_email(email)
+        check_birthday(birthday)
+        if (phone=='' && email==''){
+            two_blank = false
+        }else{
+            two_blank = true
+        }
+        if(two_blank == false || credential_type_number_flag!=true||name_flag!=true||email_flag==false||phone_flag==false||credential_type_number_flag==false||birthday_flag==false){
+            alert("表单填写有误，不能提交表单！");
+        }else{
+            create_or_update()
+        }
+    }
+
+    function updateContact(id) {   //    编辑患者
+        addContact()
+
+    }
+
+    function deleteContact(id) {    //    编辑患者
+        $.ajax({
+            type: 'delete',
+            url: '/patients/' + selectedIds,
+            success: function (data) {
+                if (data['success']) {
+                    window.parent.$("#consoleDlg2").dialog("close");
+//                    alert('删除成功!')
+                } else {
+                    alert('删除失败!')
+                }
+            }
+        })
+        $('#refresh_list10').click()
+//        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
+//        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+    }
 
 //    添加患者
     function createPatient(){
@@ -166,8 +465,9 @@
                 }
             })
         }
-        var url= "/patients/show_index?menu_id=<%=@menu_id%>&hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
-        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+        $('#refresh_list10').click()
+//        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
+//        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     }
 
 //    发送邮箱激活码
@@ -187,8 +487,9 @@
         }else{
             alert('请至少选择一条记录!')
         }
-        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
-        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+        $('#refresh_list10').click()
+//        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
+//        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     }
 //    发送手机激活码
     function sendPhonePatient(){
@@ -208,8 +509,9 @@
         }else{
             alert('请至少选择一条记录!')
         }
-        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
-        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+        $('#refresh_list10').click()
+//        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
+//        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     }
 
     function pat_search_hos(){
@@ -237,6 +539,7 @@
         $("#patient_dep").select2();
         $("#is_activated").select2();
         $("#searchField").select2();
+        $("#patient_department_id").select2();
         $('#searchString').attr('disabled','disabled')
     })
 </script>

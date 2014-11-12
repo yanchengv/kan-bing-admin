@@ -25,7 +25,6 @@
           </ul>
         </div>
     <% end %>
-    <input type="hidden"/>
     <div class="row">
       <div class="col-md-6 field">
         <%= f.label '姓名' %><span style="color:red"><b>*</b></span>
@@ -315,8 +314,9 @@
                 if (data['success']){
                     window.parent.$("#consoleDlg").dialog("close");
 //                    $('#create_or_edit_form').modal('hide')
-                    var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()
-                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+                    $('#refresh_list12').click()
+//                    var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()
+//                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }else{
                     alert('失败!')
                 }
@@ -333,8 +333,9 @@
                 if (data['success']){
                     window.parent.$("#consoleDlg").dialog("close");
 //                    $('#create_or_edit_form').modal('hide')
-                    var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()
-                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+                    $('#refresh_list12').click()
+//                    var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()
+//                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }else{
                     alert('失败!')
                 }
@@ -402,6 +403,8 @@
         $('#doctor_nationality').select2();
         $('#doctor_citizenship').select2();
         $('#doctor_position').select2();
+        $('#doctor_hospital_id').select2();
+        $('#doctor_department_id').select2();
         $('#doctor_professional_title').select2();
         $('#doc_birthday').datetimepicker({
             lang:'ch',
