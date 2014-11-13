@@ -144,6 +144,7 @@ class DoctorsController < ApplicationController
     if is_activated=='1'
       @doctors_all =  @doctors_all.where.not(is_activated:0)
     end
+    @doctors_all = @doctors_all.order("#{params[:sidx]} #{params[:sord]}")
     records=0
     @total=0
     if !@doctors_all.nil? && !@doctors_all.empty?
@@ -169,34 +170,41 @@ class DoctorsController < ApplicationController
         @city.nil? ? city_name='':city_name=@city.name
         @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
         @department.nil? ? department_name='':department_name=@department.name
-        a={id:doc.id,
-           cell:[
-               doc.id,
-               doc.spell_code,
-               doc.name,
-               doc.credential_type,
-               doc.credential_type_number,
-               doc.gender,
-               doc.birthday,
-               doc.birthplace,
-               # doc.province_id,
-               province_name,
-               city_name,
-               hospital_name,
-               department_name,
-               # doc.city_id,
-               # doc.hospital_id,
-               # doc.department_id,
-               doc.mobile_phone,
-               doc.email,
-               doc.professional_title,
-               doc.introduction
-           ]
-        }
+        # a={id:doc.id,
+        #    cell:[
+        #        doc.id,
+        #        doc.spell_code,
+        #        doc.name,
+        #        doc.credential_type,
+        #        doc.credential_type_number,
+        #        doc.gender,
+        #        doc.birthday,
+        #        doc.birthplace,
+        #        # doc.province_id,
+        #        province_name,
+        #        city_name,
+        #        hospital_name,
+        #        department_name,
+        #        # doc.city_id,
+        #        # doc.hospital_id,
+        #        # doc.department_id,
+        #        doc.mobile_phone,
+        #        doc.email,
+        #        doc.professional_title,
+        #        doc.introduction
+        #    ]
+        # }
+        a = {id:doc.id,sepll_code:doc.spell_code,name:doc.name,credential_type:doc.credential_type,credential_type_number:doc.credential_type_number,gender:doc.gender,birthday:doc.birthday,
+             birthplace:doc.birthplace,province_id:doc.province_id,province_name:province_name,city_id:doc.city_id,city_name:city_name,hospital_id:doc.hospital_id,hospital_name:hospital_name,
+             department_id:doc.department_id,department_name:department_name,address:doc.address,nationality:doc.nationality,citizenship:doc.citizenship,photo:doc.photo,marriage:doc.marriage,
+             mobile_phone:doc.mobile_phone,home_phone:doc.home_phone,home_address:doc.home_address,contact:doc.contact,contact_phone:doc.contact_phone,home_postcode:doc.home_postcode,
+             email:doc.email,introduction:doc.introduction,professional_title:doc.professional_title,position:doc.position,hire_date:doc.hire_date,certificate_number:doc.certificate_number,
+             expertise:doc.expertise,degree:doc.degree,graduated_from:doc.graduated_from,graduated_at:doc.graduated_at,research_paper:doc.research_paper,wechat:doc.wechat,rewards:doc.rewards}
         @rows.push(a)
       end
     end
-    @objJSON = {total:@total,rows:@rows,page:page,records:records}
+    # @objJSON = {total:@total,rows:@rows,page:page,records:records}
+    @objJSON = {total:@total,doctors:@rows,page:page,records:records}
 
     render :json => @objJSON.as_json
   end
@@ -463,7 +471,7 @@ class DoctorsController < ApplicationController
       @hospitals = Hospital.all
     end
     @doctor = Doctor.new
-    render partial: 'doctors/form'
+    render partial: 'doctors/doctor_form'
   end
 
   def new2   #含增删改查权限的 ############　删　################
@@ -544,7 +552,7 @@ class DoctorsController < ApplicationController
       @hospitals = Hospital.all
     end
     @doctor = Doctor.where(id:params[:id]).first
-    render partial: 'doctors/form'
+    render partial: 'doctors/doctor_form'
   end
 
   def edit2   #含增删改查权限的 ############　删　################

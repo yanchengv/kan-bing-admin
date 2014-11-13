@@ -77,6 +77,7 @@ class PatientsController < ApplicationController
     if is_activated=='1'
       @patients_all =  @patients_all.where.not(is_activated:0)
     end
+    @patients_all = @patients_all.order("#{params[:sidx]} #{params[:sord]}")
     records=0
     @total=0
     if !@patients_all.nil? && !@patients_all.empty?
@@ -102,34 +103,45 @@ class PatientsController < ApplicationController
         @city.nil? ? city_name='':city_name=@city.name
         @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
         @department.nil? ? department_name='':department_name=@department.name
-        a={id:pat.id,
-           cell:[
-               pat.id,
-               pat.name,
-               pat.spell_code,
-               pat.credential_type,
-               pat.credential_type_number,
-               pat.gender,
-               pat.birthday,
-               pat.birthplace,
-               # pat.province_id,
-               # pat.city_id,
-               # pat.hospital_id,
-               # pat.department_id,
-               province_name,
-               city_name,
-               hospital_name,
-               department_name,
-               pat.mobile_phone,
-               pat.email,
-               pat.last_treat_time,
-               pat.introduction
-           ]
+        # a={id:pat.id,
+        #    cell:[
+        #        pat.id,
+        #        pat.name,
+        #        pat.spell_code,
+        #        pat.credential_type,
+        #        pat.credential_type_number,
+        #        pat.gender,
+        #        pat.birthday,
+        #        pat.birthplace,
+        #        pat.marriage,
+        #        # pat.province_id,
+        #        # pat.city_id,
+        #        # pat.hospital_id,
+        #        # pat.department_id,
+        #        province_name,
+        #        city_name,
+        #        hospital_name,
+        #        department_name,
+        #        pat.citizenship,
+        #        pat.nationality,
+        #        pat.mobile_phone,
+        #        pat.email,
+        #        pat.education,
+        #        pat.last_treat_time,
+        #        pat.introduction
+        #    ]
+        # }
+        a = {id:pat.id,name:pat.name,spell_code:pat.spell_code,credential_type:pat.credential_type,credential_type_number:pat.credential_type_number,
+             gender:pat.gender,birthday:pat.birthday,birthplace:pat.birthplace,marriage:pat.marriage,province_id:pat.province_id,city_id:pat.city_id,
+             hospital_id:pat.hospital_id,department_id:pat.department_id,province_name:province_name,city_name:city_name,citizenship:pat.citizenship,
+             nationality:pat.nationality,mobile_phone:pat.mobile_phone,email:pat.email,education:pat.education,last_treat_time:pat.last_treat_time,
+             introduction:pat.introduction,hospital_name:hospital_name,department_name:department_name
         }
         @rows.push(a)
       end
     end
-    @objJSON = {total:@total,rows:@rows,page:page,records:records}
+    # @objJSON = {total:@total,rows:@rows,page:page,records:records}
+    @objJSON = {total:@total,patients:@rows,page:page,records:records}
     render :json => @objJSON.as_json
   end
 
@@ -303,7 +315,7 @@ class PatientsController < ApplicationController
       @hospitals = Hospital.all
     end
     @patient = Patient.new
-    render partial: 'patients/form'
+    render partial: 'patients/patient_form'
   end
 
   # GET /patients/new
@@ -337,6 +349,8 @@ class PatientsController < ApplicationController
     @patient = Patient.new
     # @hospital = Hospital.where(id:params[:hos_id])
     # @department = Department.where(hospital_id:params[:hos_id])
+    @dep = @patients_all.inspect
+    oper_action_admin2s_path
     render partial: 'patients/form'
   end
 
@@ -355,7 +369,7 @@ class PatientsController < ApplicationController
       @hospitals = Hospital.all
     end
     @patient = Patient.where(id:params[:id]).first
-    render partial: 'patients/form'
+    render partial: 'patients/patient_form'
   end
 
   def edit2    #含增删改查权限的 ############　删　################
@@ -718,7 +732,7 @@ class PatientsController < ApplicationController
     @patient = Patient.find_by(id:params[:patient_id])
     credential_type_number = params[:credential_type_number]
     @user=Patient.where('credential_type_number=?',credential_type_number)
-    if !patient.nil?
+    if !@patient.nil?
       if !@user.empty? && @patient.credential_type_number!=credential_type_number
         render json:{success:false,content:'此证件号已占用'}
       else

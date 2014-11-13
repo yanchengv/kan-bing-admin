@@ -258,7 +258,7 @@ Rails.application.routes.draw do
       get 'show_index', to:'patients#show_index'
       get 'check_phone', to:'patients#check_phone'
       get 'check_email', to:'patients#check_email'
-      get 'credential_type_number', to:'patients#credential_type_number'
+      get 'check_credential_type_number', to:'patients#check_credential_type_number'
     end
   end
 

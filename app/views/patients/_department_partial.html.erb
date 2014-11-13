@@ -8,7 +8,7 @@
 </select>
 <script>
     $(function() {
-       $("#patient_department_id").select2();
+        $("#patient_department_id").select2();
         <% if !params[:id].nil? %>
         <% dep_id = Patient.find_by(id:params[:id]).department_id %>
         <% department = Patient.find_by(id:params[:id]).department %>

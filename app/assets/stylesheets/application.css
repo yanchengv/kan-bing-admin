@@ -19,7 +19,6 @@
  *= require ui.jqgrid
  *= require jquery.datetimepicker
   *= require zTreeStyle
-  *= require ui-dialog
  *= require_self
    *= require admin2s_role2s
 
@@ -32,6 +31,7 @@
     height: auto;
     margin-right: 30px;
 }
+body{background:url(mybg.png) #f3f3f3;}
 
 .clear {
     clear: both;

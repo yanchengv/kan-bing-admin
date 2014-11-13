@@ -10,7 +10,7 @@
                     url:treeNode.uri,
                     type:'get',
                     beforeSend:function(response){
-                             $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#ebeced;line-height:100px;font-weight:bold;"><img src="/loading.gif" /></div>')
+                             $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#ebeced;line-height:100px;font-weight:bold;"><img src="/loading.gif" style="margin-top:40px;"/></div>')
                     },
                     success:function (response,data){
                         $('#rightContent').html(response)
@@ -127,8 +127,7 @@
     <style type="text/css">
         #homeLeftMenus .ztree{
             width:20%;
-            background: #313235;
-            background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
+            background: #313235 !important;
             background: -moz-linear-gradient(left,#313235 93%,#222324 100%);
             background: -webkit-gradient(linear,left top,right top,color-stop(93%,#313235),color-stop(100%,#222324));
             background: -webkit-linear-gradient(left,#313235 93%,#222324 100%);
@@ -145,29 +144,28 @@
         }
         a{ font-family: Verdana, Arial !important;}
         #homeLeftMenus .ztree li a{color:#a8a8a8;}
-        #homeLeftMenus .ztree li a.level0 {
-            text-decoration:none;
-            width:100%;
-            height: 39px;
-            line-height:39px;
-            text-align:left;
-            display:block;
+        #homeLeftMenus .ztree li.level0 {
+            /*text-decoration:none;*/
+            /*width:100%;*/
+            /*height: 39px;*/
+            /*line-height:39px !important;*/
+            /*text-align:left;*/
+            /*display:block;*/
+            border-bottom:1px solid #2e2f32;
             background: #313235;
-            background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
             background: -moz-linear-gradient(left,#313235 93%,#222324 100%);
             background: -webkit-gradient(linear,left top,right top,color-stop(93%,#313235),color-stop(100%,#222324));
             background: -webkit-linear-gradient(left,#313235 93%,#222324 100%);
             background: -o-linear-gradient(left,#313235 93%,#222324 100%);
             background: -ms-linear-gradient(left,#313235 93%,#222324 100%);
             background: linear-gradient(to right,#313235 93%,#222324 100%);
-            padding-left:10px;
-            padding-right:10px;
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#313235', endColorstr='#313235',GradientType=1 );
         }
-        #homeLeftMenus .ztree .level0{background:#1c1d1e;}
-
+        #homeLeftMenus .ztree li.level0 a{height:39px;margin-left:10px;line-height:39px;}
+        #homeLeftMenus .ztree li ul.level0{background:#1c1d1e !important;width:100%;}
         #homeLeftMenus .ztree .level1:hover a{color:#fff;text-decoration:none;}
         #homeLeftMenus .ztree li a.level0.cur {
-            background-color: #1c1d1e;
+            /*background-color: #313235;*/
         }
         #homeLeftMenus .ztree li a.level0.cur span{
             color:#ffffff !important;
@@ -182,15 +180,10 @@
             word-spacing: 2px;
             font-family:"Microsoft YaHei", Verdana, Arial, Helvetica, AppleGothic, sans-serif;
         }
-        #homeLeftMenus .ztree li a.level0 span.button {
-            float:right;
-            margin-left: 10px;
-            visibility: visible;
-            display:none;
-        }
-        #homeLeftMenus .ztree li span.button.switch.level0 {
-            float:right;
-        }
+
+        #homeLeftMenus .ztree li span.level0{float:right}
+        #homeLeftMenus .ztree li a.level0{float:left;line-height:39px;}
+        #homeLeftMenus .ztree li{clear:both;}
         #homeLeftMenus .ztree li a.curSelectedNode {
             padding-top: 0px;
             background-color:transparent !important;
@@ -223,7 +216,7 @@
             padding: 0;
             margin: 0;
             list-style: none;
-            line-height: 33px;
+            line-height: 39px;
             text-align: left;
             white-space: nowrap;
             outline: 0;
@@ -297,10 +290,10 @@
             document.getElementById("homeLeftMenus").style.height = (h-57)+"px";
         }
     </script>
-    <div class="zleftMenusBackground left" style="height:100%;float:left;width:15% !important;margin-top:-25px !important;overflow:hidden;" id="homeLeftMenus">
+    <div class="zleftMenusBackground left" style="height:100%;float:left;width:15% !important;*width:14% !important;margin-top:0px !important;overflow:hidden;" id="homeLeftMenus">
       <ul id="leftMenus" class="ztree" style="width:100%;height:100%;overflow:hidden;margin-top:0px !important;"></ul>
     </div>
-    <div id="rightContent" style="float:right;width:85%;padding:10px;position:relative;">
+    <div id="rightContent" style="float:right;width:85%;*width:84%;padding:10px;position:relative;">
       欢迎登录
     </div>
 <%end%>

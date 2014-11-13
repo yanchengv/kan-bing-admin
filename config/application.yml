@@ -3,7 +3,7 @@ defaults: &defaults
   cis: 'http://192.168.1.239/3003/'
 
   videoServerIp: 'http://192.168.174.63/'
-  mimas: 'http://fitark.org:9001'
+  mimas: 'http://fitark.org'
 #  pic: 'http://pic.greenhealth.mobi:7500/files/'
   pic: 'http://pic.kanbing365.com/files/'
   files: 'http://fitark.org:7500/files/'
