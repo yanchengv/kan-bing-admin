@@ -27,20 +27,21 @@ class MenusController < ApplicationController
     @menus=[]
     if count>0
       @all_menus.each do |menu|
-        @per_names = []
-        if !menu.menu_permissions.empty?
-          menu.menu_permissions.each do |menu_permission|
-            if !menu_permission.priority.nil?
-              @per_names.push(menu_permission.priority.name)
-            end
-          end
-        end
-        p @per_names
+        # @per_names = []
+        # if !menu.menu_permissions.empty?
+        #   menu.menu_permissions.each do |menu_permission|
+        #     if !menu_permission.priority.nil?
+        #       @per_names.push(menu_permission.priority.name)
+        #     end
+        #   end
+        # end
+        # p @per_names
         parent_name=''
         if menu.parent_menu
           parent_name = menu.parent_menu.name
         end
-        @menu = {id:menu.id,name:menu.name,parent_name:parent_name,priorities:@per_names,uri:menu.uri}
+        # @menu = {id:menu.id,name:menu.name,parent_name:parent_name,priorities:@per_names,uri:menu.uri}
+        @menu = {id:menu.id,name:menu.name,parent_name:parent_name,uri:menu.uri}
         @menus.push(@menu)
       end
     end
@@ -77,28 +78,6 @@ class MenusController < ApplicationController
     end
     @menus = Menu.select('id','parent_id as pId','name','table_name','model_class').all
     render partial:  'menus/role_manage'
-  end
-
-  def show_all_menus2
-    role2 = Role2.new
-    @all_menus = role2.root_tree(Menu.all)
-    @total_menus = {name:'菜单列表',children:@all_menus,open:true}
-    @all_role= Role2.all
-    @all_roles=[]
-    @all_role.each do |role|
-      p 'role'
-      p role.name
-      if role.menu_tree == []
-        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,code:role.code,instruction:role.instruction,open:true}
-      else
-        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,code:role.code,instruction:role.instruction,children:role.menu_tree,open:true}
-      end
-      @all_roles.push(@role)
-    end
-    p 'a'
-    @all_roles = {name:'角色列表',children:@all_roles,open:true}
-    render partial: 'menus/show_all_menus2'
-
   end
 
   def show_all_menus

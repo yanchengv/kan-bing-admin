@@ -16,8 +16,8 @@
     var perSetting = {
         check: {
             enable: true,
-                chkStyle: "checkbox",
-                chkboxType: { "Y": "ps", "N": "ps" }
+            chkStyle: "checkbox",
+            chkboxType: { "Y": "ps", "N": "ps" }
         },
         view:{
             addHoverDom:addHoverDom,
@@ -51,8 +51,8 @@
             onRemove: onRemove,
             onClick:onClick,
             beforeDrag: beforeDrag,
-            beforeDrop: beforeDrop,
-            onDrop: onDrop
+            beforeDrop: beforeDrop
+//            onDrop: onDrop
         }
     };
 
@@ -119,11 +119,11 @@
     function addHoverDom(treeId,treeNode){
         if ((''+treeNode.id).indexOf("_") > 0) {
         }else{
-        var sObj = $("#" + treeNode.tId + "_span");
-        if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
-        var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
-                + "' title='添加子节点' onfocus='this.blur();'></span>";
-        sObj.after(addStr);
+            var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                    + "' title='添加子节点' onfocus='this.blur();'></span>";
+            sObj.after(addStr);
         }
         var btn = $("#addBtn_"+treeNode.tId);
         if (btn) btn.bind("click", function(){
@@ -213,9 +213,9 @@
         var tree_node = treeNode
         while (tree_node.level > 0){
 //            if (tree_node.level > 0){
-                tree_node.checked=true
-                treeObj.updateNode(tree_node);
-                tree_node = tree_node.getParentNode()
+            tree_node.checked=true
+            treeObj.updateNode(tree_node);
+            tree_node = tree_node.getParentNode()
 //            }
 
         }
@@ -366,7 +366,7 @@
             var tar_child = targetNode.children
             for(var obj in tar_child){
                 if (tar_child[obj].id == (treeNodes[0].id)) {
-                  is_exists = true
+                    is_exists = true
                 }
             }
             if (!is_exists) {
@@ -390,35 +390,6 @@
         }
 
     };
-
-    function onDrop(event, treeId, treeNodes, targetNode, moveType){
-        var treeObj=$.fn.zTree.getZTreeObj("perTree"),
-                nodes2=treeObj.getCheckedNodes(true);
-        var right_treeObj = $.fn.zTree.getZTreeObj("roleTree");
-//        判断是否拖拽成功
-        var nodes=right_treeObj.getNodesByParam("id", treeNodes[0].id, null);
-        var param_nodes = []
-        for (var i = 0; i < nodes2.length; i++) {
-            var node_i = {id: nodes2[i].id, name: nodes2[i].name, pId: nodes2[i].pId}
-            var is_right_nodes = right_treeObj.getNodesByParam("id", nodes2[i].id, targetNode);
-            param_nodes.push(node_i)
-        }
-        if (nodes.length>0) {
-            $.ajax({
-                type: 'post',
-                url: '/role2_menus',
-//                data: {data: param_nodes,targetNode:targetNode,nodes:treeNodes},
-                success: function (data, response) {
-//                    right_treeObj.reAsyncChildNodes
-//                    right_treeObj.refresh();
-//                    $.fn.zTree.init($("#roleTree"), roleSetting, roleNodes);
-                },
-                error: function () {
-
-                }
-            })
-        }
-    } ;
 
 
     function update_menus(treeId,treeNode){
@@ -456,8 +427,8 @@
     }
 
     function beforeEditName(treeId, treeNode) {
-            update_menus(treeId,treeNode)
-            return false
+        update_menus(treeId,treeNode)
+        return false
 //        }
     }
 
@@ -558,10 +529,10 @@
 
     var perNodes=<%= raw @total_menus.to_json %>
     var roleNodes=<%= raw @all_roles.to_json %>
-    $(document).ready(function(){
-        $.fn.zTree.init($("#perTree"), perSetting, perNodes);
-        $.fn.zTree.init($("#roleTree"), roleSetting, roleNodes);
-    });
+            $(document).ready(function(){
+                $.fn.zTree.init($("#perTree"), perSetting, perNodes);
+                $.fn.zTree.init($("#roleTree"), roleSetting, roleNodes);
+            });
     //-->
 </SCRIPT>
 
@@ -582,9 +553,9 @@
   <style>
       #ModuleManage ul.ztree {
           margin-top: 10px;
-           border-width:0;
-           background: transparent;
-           width: 100%;
+          border-width:0;
+          background: transparent;
+          width: 100%;
           height: 360px;
           overflow-y: scroll;
           overflow-x: auto;}

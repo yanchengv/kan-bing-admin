@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :role2_menus
+  resources :role2_menus do
+    collection do
+      get 'menus_to_roles', to: 'role2_menus#menus_to_roles'
+    end
+  end
 
   resources :menu_uris do
     collection do

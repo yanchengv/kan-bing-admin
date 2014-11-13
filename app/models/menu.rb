@@ -45,7 +45,7 @@ class Menu < ActiveRecord::Base
   end
   # 左侧导航
   def  left_menu admin_id
-    #  含增删改查等权限的左菜单      ##############　删　#############
+    #  含增删改查等权限的左菜单
     # @menus=Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,mp.hospital_id,mp.department_id from role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp,menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{admin_id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.is_show is null GROUP BY menus.id;")
     #  不含增删改查等权限的左菜单
     @menus=Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri from role2s r, role2_menus rm, admin2s_role2s ar, menus where rm.role2_id=ar.role2_id and rm.menu_id=menus.id and ar.admin2_id=#{admin_id} GROUP BY menus.id;")

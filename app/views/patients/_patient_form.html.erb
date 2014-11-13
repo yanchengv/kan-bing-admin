@@ -10,8 +10,9 @@
         border:#ff0000 1px solid
     }
 </style>
-<div class="modal-header"><div style="font-size: 12px">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项,手机号和电子邮箱至少填写一个.</div></div>
-<div class="modal-body">
+<div style="font-size: 12px;">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项,手机号和电子邮箱至少填写一个.</div>
+<hr style="margin: 10px 0px;"/>
+<div>
 <%= form_for(@patient,remote:true,html:{id:'pat_form'}) do |f| %>
     <% if @patient.errors.any? %>
         <div id="error_explanation">
@@ -26,11 +27,11 @@
     <% end %>
     <div class="row">
       <div class="col-md-6 field">
-        <%= f.label '姓名' %><span style="color:red"><b>*</b></span>
+        <%= f.label '姓名' %><span style="color:red"><b>*</b></span><br>
         <%= f.text_field :name ,class:"form-control",onblur:"check_name(this.value,'true')"%>
       </div>
       <div class="col-md-6 field">
-        <%= f.label :性别 %>
+        <%= f.label :性别 %><br>
         <div id="pat_gender"><%= render partial: 'patients/gender_partial' %></div>
         <%#= f.text_field :gender ,class:"form-control"%>
       </div>
@@ -53,13 +54,13 @@
         <%#= f.text_field :credential_type ,class:"form-control"%>
       </div>
       <div class="col-md-6 field">
-        <%= f.label '证件号码' %>
+        <%= f.label '证件号码' %><br>
         <%= f.text_field :credential_type_number,class:"form-control",onblur:"check_credential_type_number(this.value)" %>
       </div>
     </div>
     <div class="row">
       <div class="col-md-6 field">
-        <%= f.label :生日 %><span style="color:red"><b>*</b></span>
+        <%= f.label :生日 %><span style="color:red"><b>*</b></span><br>
         <input id='pat_birthday' data-format="yyyy-MM-dd" name='patient[birthday]' type="text" class="form-control" onblur="check_birthday(this.value,'true')" />
         <%#= f.date_select :birthday %>
       </div>
