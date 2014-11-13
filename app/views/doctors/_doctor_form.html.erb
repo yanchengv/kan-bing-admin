@@ -11,8 +11,9 @@
         border:#ff0000 1px solid
     }
 </style>
-<div class="modal-header"><div style="font-size: 12px">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项,手机号和电子邮箱至少填写一个.</div></div>
-<div class="modal-body">
+<div style="font-size: 12px">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项,手机号和电子邮箱至少填写一个.</div>
+<hr style="margin: 10px 0px;"/>
+<div>
 <%= form_for(@doctor,remote:true,html:{id:'doc_form'}) do |f| %>
     <% if @doctor.errors.any? %>
         <div id="error_explanation">
@@ -27,11 +28,11 @@
     <% end %>
     <div class="row">
       <div class="col-md-6 field">
-        <%= f.label '姓名' %><span style="color:red"><b>*</b></span>
+        <%= f.label '姓名' %><span style="color:red"><b>*</b></span><br>
         <%= f.text_field :name ,class:"form-control",onblur:"check_name(this.value,'true')" %>
       </div>
       <div class="col-md-6 field">
-        <%= f.label :性别 %>
+        <%= f.label :性别 %><br>
         <div id="doc_gender"><%= render partial: 'doctors/gender_partial' %></div>
         <%#= f.text_field :gender ,class:"form-control"%>
       </div>
@@ -54,13 +55,13 @@
         <%#= f.text_field :credential_type ,class:"form-control"%>
       </div>
       <div class="col-md-6 field">
-        <%= f.label '证件号码' %>
+        <%= f.label '证件号码' %><br>
         <%= f.text_field :credential_type_number,class:"form-control",onblur:"check_credential_type_number(this.value,'true')" %>
       </div>
     </div>
     <div class="row">
       <div class="col-md-6 field">
-        <%= f.label :生日 %><span style="color:red"><b>*</b></span>
+        <%= f.label :生日 %><span style="color:red"><b>*</b></span><br>
         <input id='doc_birthday' data-format="yyyy-MM-dd" name='doctor[birthday]' type="text" class="form-control" onblur="check_birthday(this.value,'true')"/>
         <%#= f.date_select :birthday %>
       </div>
@@ -110,7 +111,7 @@
     <!--</div>-->
     <div class="row">
       <div class="col-md-6 field">
-        <%= f.label :选择医院 %>
+        <%= f.label :选择医院 %><br>
         <div id="doc_hospital"><%= render partial: 'doctors/hospital_partial' %></div>
       </div>
       <!--<div class="col-md-6 field">-->
@@ -118,7 +119,7 @@
       <%#= f.text_field :hospital_name ,class:"form-control"%>
       <!--</div>-->
       <div class="col-md-6 field">
-        <%= f.label :选择科室 %>
+        <%= f.label :选择科室 %><br>
         <div id="doc_department"><%= render partial: 'doctors/department_partial' %></div>
       </div>
     </div>
@@ -142,7 +143,7 @@
     <!--</div>-->
     <div class="row">
       <div class="col-md-6 field">
-        <%= f.label :国籍 %>
+        <%= f.label :国籍 %><br>
         <select id="doctor_citizenship" name="doctor[citizenship]" onchange="get_nationality()" >
           <option value="">---请选择---</option>
           <% @citizenships = NationalInformation.where(parent_id:nil) %>
@@ -155,7 +156,7 @@
         <%#= f.text_field :citizenship,class:"form-control" %>
       </div>
       <div class="col-md-6 field">
-        <%= f.label :民族 %>
+        <%= f.label :民族 %><br>
         <select id="doctor_nationality" name="doctor[nationality]" >
           <option value="">---请选择---</option>
         </select>
