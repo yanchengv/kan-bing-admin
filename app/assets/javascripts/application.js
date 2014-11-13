@@ -31,3 +31,4 @@
 //= require dialog-min.js
 //= require_tree .
 //= require jquery.fileupload
+//= require kindeditor

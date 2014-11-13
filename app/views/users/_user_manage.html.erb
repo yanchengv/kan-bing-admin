@@ -152,7 +152,7 @@
                 .navButtonAdd('#user_page', { title: '批量激活', caption: '批量激活', onClickButton: function(){
                     batch_state('true')}, position: "last"})
                 .navButtonAdd('#user_page', { title: '批量禁用', caption: '批量禁用', onClickButton: function(){
-                    batch_state('false')}, position: "last"})
+                    batch_state('false')}, position: "last"});
     //批量删除
     function batch_delete(){
         var ids = $('#user_list').jqGrid('getGridParam', 'selarrrow');

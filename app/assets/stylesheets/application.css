@@ -33,3 +33,10 @@
     margin-right: 30px;
 }
 
+.clear {
+    clear: both;
+    height: 0px;
+    overflow: hidden;
+    font-size: 0px;
+}
+

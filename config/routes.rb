@@ -57,6 +57,19 @@ Rails.application.routes.draw do
       post 'oper_action', to: 'video_types#oper_action'
     end
   end
+  resources :home_pages do
+    collection do
+      get 'index_show', to: 'home_pages#show_index'
+      post 'oper_action', to: 'home_pages#oper_action'
+      post 'upload' => 'home_pages#upload'
+    end
+  end
+  resources :page_blocks do
+    collection do
+      get 'index_show', to: 'page_blocks#show_index'
+      post 'oper_action', to: 'page_blocks#oper_action'
+    end
+  end
   resources :apk_versions do
     collection do
       get 'index_show', to: 'apk_versions#show_index'

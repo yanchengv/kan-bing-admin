@@ -1,0 +1,86 @@
+<div style="width: 100%"><div style="margin-left: 20px;">
+  <table id="home_page_list"></table>
+  <div id="page_home"></div></div> </div>
+<script type="text/javascript">
+jQuery("#home_page_list").jqGrid({
+    url: 'home_pages/index_show',
+    datatype: "json",
+    autowidth: true,
+    mtype: 'GET',
+    colNames: ['ID', '标题', '内容', '医院ID', '医院', '科室ID', '科室'],
+    colModel: [
+        {name: 'id', index: 'id', align: "center", hidden:true},
+        {name: 'name', index: 'name', align: "center", editable:true},
+        {name: 'content', index: 'content', align: "center", editable: true},
+        {name: 'hospital_id', index: 'hospital_id', align: "center", editable: true},
+        {name: 'hospital_name', index: 'hospital_name', align: "center", editable: true},
+        {name: 'department_id', index: 'department_id', align: "center", editable: true},
+        {name: 'department_name', index: 'department_name', align: "center", editable: true}
+    ],
+    rowList: [10, 20, 30],
+    sortname: 'id',
+    viewrecords: true,
+    sortorder: "desc",
+    rownumbers: true,
+    page: 1,
+    jsonReader: {
+        root: "home_pages",
+        total: "totalpages",
+        page: "currpage",
+        records: "totalrecords",
+        repeatitems: false
+    },
+    prmNames: {
+        page: "page", // 表示请求页码的参数名称
+        rows: "rows", // 表示请求行数的参数名称
+        id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+        //   npage: null,
+        totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+        editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+        addoper: "add", // 当在add模式中提交数据时，操作的名称
+        deloper: "del", // 当在delete模式中提交数据时，操作的名称
+        subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+    },
+    editurl: 'home_pages/oper_action',
+    closeAfterAdd: true,
+    pager: jQuery('#page_home'),
+    multiselect: true,
+    rowNum: 20,
+    altclass: 'altRowsColour',
+    width: '500',
+    height: 'auto',
+    caption: "首界面管理"
+}).navGrid('#page_home', {
+            cloneToTop: true, add: false, edit: false,
+            del:false, view: false, search: false, refreshtext: "刷新", refreshtitle: "刷新"}
+).navButtonAdd('#page_home', { title: '删除', buttonicon: "ui-icon-trash", caption: '删除', onClickButton: function () {
+        }, position: "first"}).navButtonAdd('#page_home', { title: '查看', buttonicon: "ui-icon-document", caption: '查看', onClickButton: function () {
+        }, position: "first"}).navButtonAdd('#page_home', { title: '编辑', buttonicon: "ui-icon-pencil", 'data-no-turbolink': true, caption: '编辑', onClickButton: function () {
+            edit_home_page()
+        }, position: "first"}).navButtonAdd('#page_home', { title: '添加', caption: '添加', 'data-no-turbolink': true, buttonicon: "ui-icon-plus", onClickButton: function () {
+            new_home_page()
+        }, position: "first"});
+    function new_home_page(){
+        $.ajax({
+            url: 'home_pages/new',
+            type: 'get',
+            success: function (data) {
+                $("#rightContent").html(data);
+            }
+        });
+    }
+    function edit_home_page(){
+        var id = jQuery("#home_page_list").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请选择编辑项！');
+        }{
+            $.ajax({
+                type: 'get',
+                url: '/home_pages/' + id + '/edit',
+                success: function (data) {
+                    $("#rightContent").html(data);
+                }
+            });
+        }
+    }
+</script>
