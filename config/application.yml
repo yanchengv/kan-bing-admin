@@ -28,6 +28,12 @@ defaults: &defaults
   hospital_code:
     yuquan: '00001'
 
+
+# :server => 'oss.aliyuncs.com', #可不填,默认为此项
+#          :access_key_id => 'h17xgVZatOgQ6IeJ',
+#          :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+
+
   aliyunOSS:
       server: 'oss.aliyuncs.com'
       access_key_id: 'h17xgVZatOgQ6IeJ'

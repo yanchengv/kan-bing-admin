@@ -70,14 +70,6 @@
     <tr class="FormData">
       <td colspan="2">
         <div id="progress2">
-          <input type="button" value="保存" onclick="submit_add_video()">
-        </div>
-      </td>
-    </tr>
-
-    <tr class="FormData">
-      <td colspan="2">
-        <div id="progress2">
           <div class="bar" style="width: 0%;margin-top:10px;"></div>
         </div>
       </td>
@@ -89,7 +81,13 @@
         </div>
       </td>
     </tr>
-
+    <tr class="FormData">
+      <td colspan="2">
+        <div id="progress2">
+          <input type="button" value="保存" onclick="submit_add_video()">
+        </div>
+      </td>
+    </tr>
 
 
   </table>
@@ -142,14 +140,14 @@
         maxChunkSize: 100000000000, //100Gb
         fail: function (e, data) {
             alert('上传失败！');
-            data.context = $("#uploadinfo").text('上传失败！');
+            data.context = $("#uploadinfo").text('视频上传失败！');
         },
         done: function (e, data) {
             if (data.result.flag) {
                 $('#video_url').val(data.result.url);
                 $('#video_path').val(data.result.url);
             }
-            data.context = $("#uploadinfo").text('上传成功!');
+            data.context = $("#uploadinfo").text('视频上传成功!');
         },
         progress: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -157,7 +155,7 @@
                     'width',
                     progress + '%'
             );
-            data.context = $("#uploadinfo").text('正在上传...');
+            data.context = $("#uploadinfo").text('视频正在上传...');
         }
 
     });

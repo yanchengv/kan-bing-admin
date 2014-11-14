@@ -53,6 +53,9 @@
                 deloper: "del", // 当在delete模式中提交数据时，操作的名称
                 subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
             },
+            gridComplete: function () {
+                jQuery("#knowledge_list").jqGrid('setGridParam', {url: "pregnancy_knowledges/index_show?str=knowledge"}).trigger("reloadGrid");
+            },
             editurl:'pregnancy_knowledges/oper_action',
             closeAfterAdd:true,
             pager: jQuery('#knowledge_type_pager'),
