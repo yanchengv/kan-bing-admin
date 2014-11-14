@@ -4,7 +4,7 @@
     }
     .form-control{
         width :200px;
-        height: 26px;;
+        height: 26px;
     }
     .error_remind{
         border:#ff0000 1px solid
@@ -25,19 +25,16 @@
           </ul>
         </div>
     <% end %>
-    <div class="row">
-      <div class="col-md-6 field">
-        <%= f.label '姓名' %><span style="color:red"><b>*</b></span><br>
+    <div class="">
+      <div style="display:inline-block;width:50%"><%= f.label '姓名' %><span style="color:red"><b>*</b></span><br>
         <%= f.text_field :name ,class:"form-control",onblur:"check_name(this.value,'true')"%>
       </div>
-      <div class="col-md-6 field">
-        <%= f.label :性别 %><br>
+       <div style="display:inline-block;width:49%"><%= f.label :性别 %><br>
         <div id="pat_gender"><%= render partial: 'patients/gender_partial' %></div>
-        <%#= f.text_field :gender ,class:"form-control"%>
-      </div>
+       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6 field">
+    <div class="">
+      <div style="display:inline-block;width:50%">
         <%= f.label '证件类型' %><br>
         <select id="patient_credential_type" name="patient[credential_type]" >
           <option value="">---请选择---</option>
@@ -53,13 +50,13 @@
         </select>
         <%#= f.text_field :credential_type ,class:"form-control"%>
       </div>
-      <div class="col-md-6 field">
+      <div style="display:inline-block;width:49%">
         <%= f.label '证件号码' %><br>
         <%= f.text_field :credential_type_number,class:"form-control",onblur:"check_credential_type_number(this.value)" %>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6 field">
+    <div class="">
+      <div style="display:inline-block;width:50%">
         <%= f.label :生日 %><span style="color:red"><b>*</b></span><br>
         <input id='pat_birthday' data-format="yyyy-MM-dd" name='patient[birthday]' type="text" class="form-control" onblur="check_birthday(this.value,'true')" />
         <%#= f.date_select :birthday %>
@@ -68,7 +65,7 @@
       <%#= f.label :出生地 %>
       <%#= f.text_field :birthplace,class:"form-control" %>
       <!--</div>-->
-      <div class="col-md-6 field">
+      <div style="display:inline-block;width:49%">
         <%= f.label :最后就诊时间 %><br>
         <input id='pat_last_treat_time' data-format="yyyy-MM-dd" name='patient[last_treat_time]' type="text" class="form-control"/>
         <%#= f.date_select :last_treat_time %>
@@ -84,18 +81,18 @@
     <!--<div id="pat_city"><%#= render partial: 'patients/city_partial' %></div>-->
     <!--</div>-->
     <!--</div>-->
-    <div class="row">
-      <div class="col-md-6 field">
+    <div>
+      <div style="display:inline-block;width:50%">
         <%= f.label :选择医院 %><br>
         <div id="pat_hospital"><%= render partial: 'patients/hospital_partial' %></div>
       </div>
-      <div class="col-md-6 field">
+      <div style="display:inline-block;width:49%">
         <%= f.label :选择科室 %><br>
         <div id="pat_department"><%= render partial: 'patients/department_partial' %></div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6 field">
+    <div>
+      <div style="display:inline-block;width:50%">
         <%= f.label :国籍 %><br>
         <select id="patient_citizenship" name="patient[citizenship]" onchange="get_nationality()">
           <option value="">---请选择---</option>
@@ -108,7 +105,7 @@
         </select>
         <%#= f.text_field :citizenship,class:"form-control" %>
       </div>
-      <div class="col-md-6 field">
+      <div style="display:inline-block;width:49%">
         <%= f.label :民族 %><br>
         <select id="patient_nationality" name="patient[nationality]" > <option value="">---请选择---</option>
         </select>
@@ -116,18 +113,18 @@
       </div>
 
     </div>
-    <div class="row">
-      <div class="col-md-6 field">
+    <div>
+      <div style="display:inline-block;width:50%">
         <%= f.label :手机号 %>　<span style="color:blue"><b>*</b></span><br>
         <%= f.text_field :mobile_phone,class:"form-control" ,onblur:"check_phone(this.value,'true')"%>
       </div>
-      <div class="col-md-6 field">
+      <div style="display:inline-block;width:49%">
         <%= f.label :电子邮件 %>　<span style="color:blue"><b>*</b></span><br>
         <%= f.text_field :email,class:"form-control",onblur:"check_email(this.value,'true')" %>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6 field">
+    <div>
+      <div style="display:inline-block;width:50%">
         <%= f.label :婚姻状况 %><br>
         <select id="patient_marriage" name="patient[marriage]" >
           <option value="">---请选择---</option>
@@ -139,7 +136,7 @@
         </select>
         <%#= f.text_field :marriage,class:"form-control" %>
       </div>
-      <div class="col-md-6 field">
+      <div style="display:inline-block;width:49%">
         <%= f.label :受教育程度 %><br>
         <select id="patient_education" name="patient[education]" >
           <!--<option value="">---请选择---</option>-->
