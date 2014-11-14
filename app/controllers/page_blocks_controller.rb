@@ -9,6 +9,15 @@ class PageBlocksController < ApplicationController
 
   def show_index
     sql = 'true'
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !hos_id.nil? && hos_id != ''
+      if !dep_id.nil? && dep_id != ''
+        sql = " and hospital_id=#{hos_id} and department_id=#{dep_id}"
+      else
+        sql = " and hospital_id=#{hos_id}"
+      end
+    end
     @page_blocks = HomePage.where(sql)
     count = @page_blocks.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1

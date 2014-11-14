@@ -161,7 +161,7 @@ class Admin2sController < ApplicationController
     @admin2 = Admin2.find_by(id:params[:admin_id])
     if !@admin2.nil?
       if !@admin2.department.nil?
-        @admin2 = {id:@admin2.id,name:@admin2.name,email:@admin2.email,mobile_phone:@admin2.mobile_phone,department_id:@admin2.department_id,department_name:@admin2.department.name,hosptial_id:@admin2.hospital_id}
+        @admin2 = {id:@admin2.id,name:@admin2.name,email:@admin2.email,mobile_phone:@admin2.mobile_phone,department_id:@admin2.department_id,department_name:@admin2.department.name,hospital_id:@admin2.hospital_id}
       end
       render json: {success:true, data:@admin2}
     else

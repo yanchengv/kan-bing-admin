@@ -309,7 +309,7 @@ class PatientsController < ApplicationController
       if !dep_id.nil? && dep_id != ''
         @departments = Department.where(id:dep_id)
       else
-        @departments = Department.where(hosptial_id:hos_id)
+        @departments = Department.where(hospital_id:hos_id)
       end
     else
       @hospitals = Hospital.all
@@ -363,7 +363,7 @@ class PatientsController < ApplicationController
       if !dep_id.nil? && dep_id != ''
         @departments = Department.where(id:dep_id)
       else
-        @departments = Department.where(hosptial_id:hos_id)
+        @departments = Department.where(hospital_id:hos_id)
       end
     else
       @hospitals = Hospital.all
