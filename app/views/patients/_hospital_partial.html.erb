@@ -6,7 +6,6 @@
         <option id='hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
      <% end %>
 <% end %>
-    <%#= f.select :hospital,options_from_collection_for_select(Hospital.all,'id','name'), :placeholder => "搜索",:style => "display:none;" %>
    </select>
 
 <script>
@@ -26,12 +25,12 @@
     })
     function search() {
         var hos = $("#patient_hospital_id").val();
-        change_department2(hos) ;
+        change_department2(hos,'patient') ;
     }
-    function change_department2(hos_id){
+    function change_department2(hos_id,model_class){
         $.ajax({
                     type: "get",
-                    url: '/patients/get_department?menu_id=<%=@menu_id%>&hospital_id=' + hos_id,
+                    url: '/patients/get_department?hospital_id=' + hos_id+'&model_class='+model_class,
                     data: 'text',
                     success: function (data) {
                         $("#pat_department").html(data);
