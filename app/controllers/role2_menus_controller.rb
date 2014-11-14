@@ -84,6 +84,27 @@ class Role2MenusController < ApplicationController
     render json: {success:true}
   end
 
+  def menus_to_roles
+    role2 = Role2.new
+    @all_menus = role2.root_tree(Menu.all)
+    @total_menus = {name:'菜单列表',children:@all_menus,open:true}
+    @all_role= Role2.all
+    @all_roles=[]
+    @all_role.each do |role|
+      p 'role'
+      p role.name
+      if role.menu_tree == []
+        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,code:role.code,instruction:role.instruction,open:true}
+      else
+        @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,code:role.code,instruction:role.instruction,children:role.menu_tree,open:true}
+      end
+      @all_roles.push(@role)
+    end
+    p 'a'
+    @all_roles = {name:'角色列表',children:@all_roles,open:true}
+    render partial: 'role2_menus/menus_to_roles'
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_role2_menu

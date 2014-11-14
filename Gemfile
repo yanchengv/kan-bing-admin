@@ -49,7 +49,7 @@ gem 'uuidtools'
 gem 'aliyun-oss-ex', '~> 0.7.0.1402831795'
 gem 'rest-client'
 gem 'carrierwave-aliyun'
-gem 'rails_kindeditor', path: '/home/git/rails_kindeditor' #git: 'git@fitark.org:saturn/rails_kindeditor.git'
+gem 'rails_kindeditor', git: 'git@fitark.org:saturn/rails_kindeditor.git'#path: '/home/git/rails_kindeditor'
 
 # Use unicorn as the app server
 # gem 'unicorn'

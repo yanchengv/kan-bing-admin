@@ -1,3 +1,11 @@
+GIT
+  remote: git@fitark.org:saturn/rails_kindeditor.git
+  revision: 31c641f3b989c558d88addaebedb97ba982b6722
+  specs:
+    rails_kindeditor (0.4.5)
+      carrierwave
+      mini_magick
+
 GEM
   remote: http://ruby.taobao.org/
   specs:
@@ -197,6 +205,7 @@ DEPENDENCIES
   mini_magick (~> 3.7.0)
   mysql2
   rails (= 4.1.6)
+  rails_kindeditor!
   rainbows
   rest-client
   ruby-pinyin (~> 0.2.3)
