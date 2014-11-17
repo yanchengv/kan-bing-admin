@@ -1,9 +1,12 @@
-<div style="width: 100%"><div style="margin-left: 20px;">
-  <table id="home_page_list"></table>
-  <div id="page_home"></div></div> </div>
+<div style="width: 100%">
+  <div style="hight: 48%;margin-left: 20px;margin-right: 20px;">
+    <table id="home_page_list"></table>
+    <div id="page_home"></div>
+  </div>
+</div>
 <script type="text/javascript">
     KindEditor.ready(function (K) {
-        var editor1 = K.create('textarea[name="content"]', {
+        K.create('textarea[name="content"]', {
             cssPath: '/KindEditor/plugins/code/prettify.css',
             uploadJson: '/KindEditor/jsp/upload_json.jsp',
             fileManagerJson: '/KindEditor/jsp/file_manager_json.jsp',
@@ -25,7 +28,7 @@ jQuery("#home_page_list").jqGrid({
         {name: 'department_id', index: 'department_id', align: "center", editable: true},
         {name: 'department_name', index: 'department_name', align: "center", editable: true}
     ],
-    rowList: [10, 20, 30],
+    rowList: [10, 15, 20],
     sortname: 'id',
     viewrecords: true,
     sortorder: "desc",
@@ -53,7 +56,7 @@ jQuery("#home_page_list").jqGrid({
     closeAfterAdd: true,
     pager: jQuery('#page_home'),
     multiselect: true,
-    rowNum: 20,
+    rowNum: 10,
     altclass: 'altRowsColour',
     width: '500',
     height: 'auto',
@@ -69,13 +72,6 @@ jQuery("#home_page_list").jqGrid({
             new_home_page()
         }, position: "first"});
     function new_home_page(){
-//        $.ajax({
-//            url: 'home_pages/new',
-//            type: 'get',
-//            success: function (data) {
-//                $("#rightContent").html(data);
-//            }
-//        });
         var href= "/home_pages/home_page_manage"
         window.location.replace(href);
     }
@@ -84,13 +80,8 @@ jQuery("#home_page_list").jqGrid({
         if (!id) {
             alert('请选择编辑项！');
         }{
-            $.ajax({
-                type: 'get',
-                url: '/home_pages/' + id + '/edit',
-                success: function (data) {
-                    $("#rightContent").html(data);
-                }
-            });
+            var href = '/home_pages/' + id + '/edit';
+            window.location.replace(href);
         }
     }
 </script>

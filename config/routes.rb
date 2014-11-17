@@ -73,6 +73,7 @@ Rails.application.routes.draw do
     collection do
       get 'index_show', to: 'page_blocks#show_index'
       post 'oper_action', to: 'page_blocks#oper_action'
+      get 'page_block_manage', to: 'page_blocks#page_blocks_manage'
     end
   end
   resources :apk_versions do

@@ -13,9 +13,9 @@ class HomePagesController < ApplicationController
     dep_id = current_user.department_id
     if !hos_id.nil? && hos_id != ''
       if !dep_id.nil? && dep_id != ''
-        sql = " and hospital_id=#{hos_id} and department_id=#{dep_id}"
+        sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
       else
-        sql = " and hospital_id=#{hos_id}"
+        sql << " and hospital_id=#{hos_id}"
       end
     end
     @home_pages = HomePage.where(sql)
@@ -38,6 +38,13 @@ class HomePagesController < ApplicationController
   # GET /home_pages/1
   # GET /home_pages/1.json
   def show
+    if current_user.admin_type == '医院管理员'
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
+    elsif current_user.admin_type == '科室管理员'
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
+    else
+      @left_menus=Menu.new.left_menu admin_id
+    end
   end
 
   # GET /home_pages/new
@@ -45,20 +52,31 @@ class HomePagesController < ApplicationController
     @home_page = HomePage.new
     @hospitals = Hospital.all
     @departments = Department.all
-    render :partial => 'home_pages/new', 'data-no-turbolink' => true
+    render :partial => 'home_pages/new'
   end
 
   # GET /home_pages/1/edit
   def edit
+    @menus=current_user.admin2_menus
+    admin_id=current_user.id
+    @kindeditor=true
     @hospitals = Hospital.all
     @departments = Department.all
-    render :partial => 'home_pages/edit'
+    if current_user.admin_type == '医院管理员'
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
+    elsif current_user.admin_type == '科室管理员'
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
+    else
+      @left_menus=Menu.new.left_menu admin_id
+    end
+   # render :partial => 'home_pages/edit'
   end
 
   # POST /home_pages
   # POST /home_pages.json
   def create
     respond_to do |format|
+      @home_page = HomePage.new(params[:home_page].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name))
       if @home_page.save
         format.html { redirect_to @home_page, notice: 'HomePage was successfully created.' }
         format.json { render :show, status: :created, location: @home_page }
@@ -73,7 +91,7 @@ class HomePagesController < ApplicationController
   # PATCH/PUT /home_pages/1.json
   def update
     respond_to do |format|
-      if @home_page.update(home_page_params)
+      if @home_page.update(params[:home_page].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name))
         format.html { redirect_to @home_page, notice: 'HomePage was successfully updated.' }
         format.json { render :show, status: :ok, location: @home_page }
       else

@@ -9,16 +9,16 @@ class PageBlocksController < ApplicationController
 
   def show_index
     sql = 'true'
-    hos_id = current_user.hospital_id
-    dep_id = current_user.department_id
-    if !hos_id.nil? && hos_id != ''
-      if !dep_id.nil? && dep_id != ''
-        sql = " and hospital_id=#{hos_id} and department_id=#{dep_id}"
-      else
-        sql = " and hospital_id=#{hos_id}"
-      end
-    end
-    @page_blocks = HomePage.where(sql)
+    #hos_id = current_user.hospital_id
+    #dep_id = current_user.department_id
+    #if !hos_id.nil? && hos_id != ''
+    #  if !dep_id.nil? && dep_id != ''
+    #    sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
+    #  else
+    #    sql << " and hospital_id=#{hos_id}"
+    #  end
+    #end
+    @page_blocks = PageBlock.where(sql)
     count = @page_blocks.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @page_blocks = @page_blocks.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
@@ -43,17 +43,36 @@ class PageBlocksController < ApplicationController
 
   # GET /page_blocks/new
   def new
+    menu_list
     @page_block = PageBlock.new
+    @home_pages = HomePage.all
   end
 
   # GET /page_blocks/1/edit
   def edit
+    menu_list
+    @home_pages = HomePage.all
   end
 
+  def page_blocks_manage
+    @menus=current_user.admin2_menus
+    admin_id=current_user.id
+    @kindeditor=true
+    @page_block = PageBlock.new
+    @home_pages = HomePage.all
+    if current_user.admin_type == '医院管理员'
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
+    elsif current_user.admin_type == '科室管理员'
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
+    else
+      @left_menus=Menu.new.left_menu admin_id
+    end
+  end
   # POST /page_blocks
   # POST /page_blocks.json
   def create
     respond_to do |format|
+      @page_block = PageBlock.new(params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id))
       if @page_block.save
         format.html { redirect_to @page_block, notice: 'PageBlock was successfully created.' }
         format.json { render :show, status: :created, location: @page_block }
@@ -68,7 +87,7 @@ class PageBlocksController < ApplicationController
   # PATCH/PUT /page_blocks/1.json
   def update
     respond_to do |format|
-      if @page_block.update(page_block_params)
+      if @page_block.update(params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id))
         format.html { redirect_to @page_block, notice: 'PageBlock was successfully updated.' }
         format.json { render :show, status: :ok, location: @page_block }
       else
@@ -91,6 +110,15 @@ class PageBlocksController < ApplicationController
     #end
   end
 
+  def menu_list
+    if current_user.admin_type == '医院管理员'
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
+    elsif current_user.admin_type == '科室管理员'
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
+    else
+      @left_menus=Menu.new.left_menu admin_id
+    end
+  end
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_page_block

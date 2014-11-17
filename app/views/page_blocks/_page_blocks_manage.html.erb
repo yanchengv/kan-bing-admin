@@ -3,9 +3,9 @@
   <div id="page_block"></div></div> </div>
 
 <script type="text/javascript">
-//页面模块
+    //页面模块
     jQuery("#list_page_block").jqGrid({
-        url: 'consult_accuses/index_results',
+        url: 'page_blocks/index_show',
         datatype: "json",
         autowidth: true,
         height: 'auto',
@@ -18,14 +18,13 @@
         ],
         rownumbers: true,
         page: 1,
-        rowNum: 20,
-        rowList: [10, 20, 30],
+        rowNum: 10,
+        rowList: [10, 15, 20],
         pager: '#page_block',
         sortname: 'id',
         viewrecords: true,
         sortorder: "desc",
         multiselect: false,
-        subGrid: true,
         caption: "界面区块管理",
         editurl: 'page_blocks/oper_action',
         jsonReader: {
@@ -51,6 +50,22 @@
     ).navButtonAdd('#page_block', { title: '删除', buttonicon: "ui-icon-trash", caption: '删除', onClickButton: function () {
             }, position: "first"}).navButtonAdd('#page_block', { title: '查看', buttonicon: "ui-icon-document", caption: '查看', onClickButton: function () {
             }, position: "first"}).navButtonAdd('#page_block', { title: '编辑', buttonicon: "ui-icon-pencil", caption: '编辑', onClickButton: function () {
+                edit_page_block()
             }, position: "first"}).navButtonAdd('#page_block', { title: '添加', caption: '添加', buttonicon: "ui-icon-plus", onClickButton: function () {
+                new_page_block()
             }, position: "first"});
+    function new_page_block() {
+        var href = "/page_blocks/page_block_manage"
+        window.location.replace(href);
+    }
+    function edit_page_block() {
+        var id = jQuery("#list_page_block").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请选择编辑项！');
+        }
+        {
+            var href = '/page_blocks/' + id + '/edit';
+            window.location.replace(href);
+        }
+    }
 </script>
