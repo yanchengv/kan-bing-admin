@@ -66,6 +66,7 @@ Rails.application.routes.draw do
       get 'index_show', to: 'home_pages#show_index'
       post 'oper_action', to: 'home_pages#oper_action'
       post 'upload' => 'home_pages#upload'
+      get 'home_page_manage',to:'home_pages#home_page_manage'
     end
   end
   resources :page_blocks do

@@ -69,13 +69,15 @@ jQuery("#home_page_list").jqGrid({
             new_home_page()
         }, position: "first"});
     function new_home_page(){
-        $.ajax({
-            url: 'home_pages/new',
-            type: 'get',
-            success: function (data) {
-                $("#rightContent").html(data);
-            }
-        });
+//        $.ajax({
+//            url: 'home_pages/new',
+//            type: 'get',
+//            success: function (data) {
+//                $("#rightContent").html(data);
+//            }
+//        });
+        var href= "/home_pages/home_page_manage"
+        window.location.replace(href);
     }
     function edit_home_page(){
         var id = jQuery("#home_page_list").jqGrid('getGridParam', 'selrow');

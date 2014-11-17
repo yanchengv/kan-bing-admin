@@ -10,7 +10,6 @@ class HomeController < ApplicationController
       else
         @left_menus=Menu.new.left_menu admin_id
       end
-      p @left_menus
       #  @menus= [
       # {name: '父节点1',id:'1', children: [
       #     {name: '子节点1',id:2},
