@@ -1,5 +1,6 @@
 class HomePage < ActiveRecord::Base
   belongs_to :hospital, :foreign_key => :hospital_id
+  belongs_to :department, :foreign_key => :department_id
   has_many :page_blocks, :foreign_key => :page_id
   before_create :set_pk_code
   before_save :set_default_value

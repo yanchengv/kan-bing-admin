@@ -5,7 +5,7 @@
 <script type="text/javascript">
     //页面模块
     jQuery("#list_page_block").jqGrid({
-        url: 'page_blocks/index_show',
+        url: '/page_blocks/index_show',
         datatype: "json",
         autowidth: true,
         height: 'auto',
@@ -13,7 +13,7 @@
         colModel: [
             {name: 'id', index: 'id', align: "center", hidden: true},
             {name: 'name', index: 'name', align: "center"},
-            {name: 'content', index: 'content', align: "center"},
+            {name: 'content', index: 'content', align: "center" },
             {name: 'page_id', index: 'page_id', align: "center"}
         ],
         rownumbers: true,
@@ -26,7 +26,7 @@
         sortorder: "desc",
         multiselect: false,
         caption: "界面区块管理",
-        editurl: 'page_blocks/oper_action',
+        editurl: '/page_blocks/oper_action',
         jsonReader: {
             root: "page_blocks",
             total: "totalpages",
@@ -46,10 +46,8 @@
         }
     }).navGrid('#page_block', {
                 cloneToTop: true, add: false, edit: false,
-                del: false, view: false, search: false, refreshtext: "刷新", refreshtitle: "刷新"}
-    ).navButtonAdd('#page_block', { title: '删除', buttonicon: "ui-icon-trash", caption: '删除', onClickButton: function () {
-            }, position: "first"}).navButtonAdd('#page_block', { title: '查看', buttonicon: "ui-icon-document", caption: '查看', onClickButton: function () {
-            }, position: "first"}).navButtonAdd('#page_block', { title: '编辑', buttonicon: "ui-icon-pencil", caption: '编辑', onClickButton: function () {
+                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"}
+    ).navButtonAdd('#page_block', { title: '编辑', buttonicon: "ui-icon-pencil", caption: '编辑', onClickButton: function () {
                 edit_page_block()
             }, position: "first"}).navButtonAdd('#page_block', { title: '添加', caption: '添加', buttonicon: "ui-icon-plus", onClickButton: function () {
                 new_page_block()

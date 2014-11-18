@@ -18,7 +18,7 @@ class PageBlocksController < ApplicationController
     #    sql << " and hospital_id=#{hos_id}"
     #  end
     #end
-    @page_blocks = PageBlock.where(sql)
+    @page_blocks = PageBlock.where(sql).order('created_at desc')
     count = @page_blocks.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @page_blocks = @page_blocks.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
@@ -39,6 +39,7 @@ class PageBlocksController < ApplicationController
   # GET /page_blocks/1
   # GET /page_blocks/1.json
   def show
+    @kindeditor=true
   end
 
   # GET /page_blocks/new
@@ -111,6 +112,9 @@ class PageBlocksController < ApplicationController
   end
 
   def menu_list
+    @menus=current_user.admin2_menus
+    admin_id=current_user.id
+    @kindeditor=true
     if current_user.admin_type == '医院管理员'
       @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
     elsif current_user.admin_type == '科室管理员'

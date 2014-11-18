@@ -1,4 +1,8 @@
 <%= form_for(@home_page) do |f| %>
+    <% @kindeditor=true
+       @hospitals = Hospital.all
+       @departments = Department.all
+    %>
     <div class="field pull-left font-yahei" style="margin-bottom:15px;margin-top:15px;margin-right:15px;">
       <%= f.label '标题', :class=>"CaptionTD" %>
       <%= f.text_field :name, :class => 'FormElement ui-widget-content ui-corner-all' %>
