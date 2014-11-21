@@ -1,9 +1,17 @@
 class HomePagesController < ApplicationController
   before_action :set_home_page, only: [:show, :edit, :update, :destroy]
-
+  skip_before_filter :verify_authenticity_token, only: [:upload]
   # GET /home_pages
   # GET /home_pages.json
   def index
+    @home_pages=HomePage.where(hospital_id:1).first;
+    if  @home_pages
+         @home_page_id=@home_pages.id
+        page_block_ids=@home_pages.content
+       ids=page_block_ids.delete("[]").split(",")
+        @page_block=PageBlock.where(id:ids).shuffle
+    end
+
     render :partial => 'home_pages/home_pages_manage'
   end
 
@@ -38,17 +46,9 @@ class HomePagesController < ApplicationController
   # GET /home_pages/1
   # GET /home_pages/1.json
   def show
-    @kindeditor=true
-    @menus=current_user.admin2_menus
+    menu_list
+    @kindeditor='page_show'
     @home_page = HomePage.find(params[:id])
-    admin_id=current_user.id
-    if current_user.admin_type == '医院管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
-    elsif current_user.admin_type == '科室管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
-    else
-      @left_menus=Menu.new.left_menu admin_id
-    end
   end
 
   # GET /home_pages/new
@@ -59,32 +59,15 @@ class HomePagesController < ApplicationController
 
   # GET /home_pages/1/edit
   def edit
-    @menus=current_user.admin2_menus
-    admin_id=current_user.id
+    menu_list
     @kindeditor=true
     @hospitals = Hospital.all
     @departments = Department.all
-    if current_user.admin_type == '医院管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
-    elsif current_user.admin_type == '科室管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
-    else
-      @left_menus=Menu.new.left_menu admin_id
-    end
-   # render :partial => 'home_pages/edit'
   end
 
   def menu_default
-    @menus=current_user.admin2_menus
-    admin_id=current_user.id
     @kindeditor=true
-    if current_user.admin_type == '医院管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
-    elsif current_user.admin_type == '科室管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
-    else
-      @left_menus=Menu.new.left_menu admin_id
-    end
+    menu_list
   end
 
   # POST /home_pages
@@ -105,9 +88,14 @@ class HomePagesController < ApplicationController
   # PATCH/PUT /home_pages/1
   # PATCH/PUT /home_pages/1.json
   def update
+    id= params[:id]
+    page_block_ids=params[:pageBlogIds]
+    page_block_ids= '['+page_block_ids +']'
+    @home_page = HomePage.find(id)
     respond_to do |format|
-      if @home_page.update(params[:home_page].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name))
-        format.html { redirect_to @home_page, notice: 'HomePage was successfully updated.' }
+      # if @home_page.update(params[:home_page].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name))
+        if @home_page.update(id:id,content:page_block_ids)
+      format.html { redirect_to @home_page, notice: 'HomePage was successfully updated.' }
         format.json { render :show, status: :ok, location: @home_page }
       else
         format.html { render :edit }
@@ -133,7 +121,7 @@ class HomePagesController < ApplicationController
     file=params[:imgFile]
     tmpfile = getFileName(file.original_filename.to_s)
     uuid = upload_video_img_bucket(file)
-    url = "http://note-upload.oss-cn-beijing.aliyuncs.com/" << uuid
+    url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/" << uuid
     if true
       render :text => ({:error => 0, :url => url}.to_json)
     else
@@ -142,16 +130,20 @@ class HomePagesController < ApplicationController
   end
 
   def home_page_manage
-    @menus=current_user.admin2_menus
-    admin_id=current_user.id
+    menu_list
     @kindeditor=true
     @home_page = HomePage.new
     @hospitals = Hospital.all
     @departments = Department.all
+  end
+
+  def menu_list
+    @menus=current_user.admin2_menus
+    admin_id=current_user.id
     if current_user.admin_type == '医院管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"},{name: "患者管理", uri: "/patients"},{name: "用户管理", uri: "/users"},{name: "管理员管理", uri: "/admin2s"},{name: "医院管理", uri: "/hospitals"},{name: "教育视频管理", uri: "/edu_videos"},{name:"留言管理",uri:"/consult_accuses"},{name:"首页管理",uri:"",children:[{name:"首界面管理",uri:"/home_pages"},{name:"首界面区块管理",uri:"/page_blocks"}]}]
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
     elsif current_user.admin_type == '科室管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"},{name: "患者管理", uri: "/patients"},{name: "用户管理", uri: "/users"},{name: "教育视频管理", uri: "/edu_videos"},{name:"留言管理",uri:"/consult_accuses"},{name:"首页管理",uri:"",children:[{name:"首界面管理",uri:"/home_pages"},{name:"首界面区块管理",uri:"/page_blocks"}]}]
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
     else
       @left_menus=Menu.new.left_menu admin_id
     end

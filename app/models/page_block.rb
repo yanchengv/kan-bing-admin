@@ -1,7 +1,7 @@
 class PageBlock < ActiveRecord::Base
   belongs_to :home_page, :foreign_key => :page_id
   before_create :set_pk_code
-  before_save :set_default_value
+  # before_save :set_default_value
   def set_pk_code
     if self.id&&self.id!=0
       self.id = id

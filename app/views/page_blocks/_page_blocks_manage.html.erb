@@ -13,7 +13,7 @@
         colModel: [
             {name: 'id', index: 'id', align: "center", hidden: true},
             {name: 'name', index: 'name', align: "center"},
-            {name: 'content', index: 'content', align: "center" },
+            {name: 'content', index: 'content', align: "center", hidden: true, editrules: {edithidden: true} },
             {name: 'page_id', index: 'page_id', align: "center"}
         ],
         rownumbers: true,
@@ -46,7 +46,12 @@
         }
     }).navGrid('#page_block', {
                 cloneToTop: true, add: false, edit: false,
-                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"}
+                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
+            {   },//edit
+            {   }, //add
+            {   }, //del
+            {   }, //search
+            { width:600  } //view
     ).navButtonAdd('#page_block', { title: '编辑', buttonicon: "ui-icon-pencil", caption: '编辑', onClickButton: function () {
                 edit_page_block()
             }, position: "first"}).navButtonAdd('#page_block', { title: '添加', caption: '添加', buttonicon: "ui-icon-plus", onClickButton: function () {

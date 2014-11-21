@@ -39,7 +39,8 @@ class PageBlocksController < ApplicationController
   # GET /page_blocks/1
   # GET /page_blocks/1.json
   def show
-    @kindeditor=true
+    menu_list
+    @kindeditor='block_show'
   end
 
   # GET /page_blocks/new
@@ -87,15 +88,25 @@ class PageBlocksController < ApplicationController
   # PATCH/PUT /page_blocks/1
   # PATCH/PUT /page_blocks/1.json
   def update
-    respond_to do |format|
-      if @page_block.update(params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id))
-        format.html { redirect_to @page_block, notice: 'PageBlock was successfully updated.' }
-        format.json { render :show, status: :ok, location: @page_block }
-      else
-        format.html { render :edit }
-        format.json { render json: @page_block.errors, status: :unprocessable_entity }
-      end
-    end
+    id= params[:id]
+    page_block_ids=params[:pageBlogIds].split(",")
+    page_block_ids.each_with_index { |page_block_id, index|
+     @page_block=PageBlock.where(id:page_block_id).first
+      @page_block.update(page_id: index+1)
+
+    }
+     # PageBlock.where(id:id).first
+      render json: 'dd'
+
+    # respond_to do |format|
+    #   if @page_block.update(params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id))
+    #     format.html { redirect_to @page_block, notice: 'PageBlock was successfully updated.' }
+    #     format.json { render :show, status: :ok, location: @page_block }
+    #   else
+    #     format.html { render :edit }
+    #     format.json { render json: @page_block.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # DELETE /page_blocks/1
@@ -126,7 +137,7 @@ class PageBlocksController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_page_block
-    @page_block = PageBlock.find(params[:id])
+    # @page_block = PageBlock.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

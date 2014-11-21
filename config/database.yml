@@ -11,6 +11,7 @@ development:
   pool: 5
   username: root
   password: 123
+#  host: 192.168.1.225
 #  template: template0
 #  host: fitark.org
 #  adapter: mysql2

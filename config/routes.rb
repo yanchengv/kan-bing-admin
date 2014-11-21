@@ -67,6 +67,7 @@ Rails.application.routes.draw do
       post 'oper_action', to: 'home_pages#oper_action'
       post 'upload' => 'home_pages#upload'
       get 'home_page_manage',to:'home_pages#home_page_manage'
+      post 'update',to:'home_pages#update'
     end
   end
   resources :page_blocks do
@@ -74,6 +75,7 @@ Rails.application.routes.draw do
       get 'index_show', to: 'page_blocks#show_index'
       post 'oper_action', to: 'page_blocks#oper_action'
       get 'page_block_manage', to: 'page_blocks#page_blocks_manage'
+      post 'update',to:'page_blocks#update'
     end
   end
   resources :apk_versions do
