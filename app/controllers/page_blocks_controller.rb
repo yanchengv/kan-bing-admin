@@ -98,15 +98,6 @@ class PageBlocksController < ApplicationController
   # PATCH/PUT /page_blocks/1
   # PATCH/PUT /page_blocks/1.json
   def update
-    #id= params[:id]
-    #page_block_ids=params[:pageBlogIds].split(",")
-    #page_block_ids.each_with_index { |page_block_id, index|
-    # @page_block=PageBlock.where(id:page_block_id).first
-    #  @page_block.update(page_id: index+1)
-    #
-    #}
-    # # PageBlock.where(id:id).first
-    #  render json: 'dd'
     if current_user
       @page_block.updated_id = current_user.id
       @page_block.updated_name = current_user.name
@@ -126,10 +117,7 @@ class PageBlocksController < ApplicationController
   def page_blocks_setting
     hospital_id=current_user.hospital_id
     department_id=current_user.hospital_id
-    p 111111
-    p  hospital_id
-    p   department_id
-    @page_block=PageBlock.where('hospital_id=? AND department_id=?',hospital_id,department_id).order(page_id: :asc)
+    @page_block=PageBlock.where('hospital_id=? AND department_id=? AND is_show=?',hospital_id,department_id,true).order(position: :asc)
     @hospital_id=hospital_id
     @department_id=department_id
     render partial: 'page_blocks/page_blocks_setting'
@@ -139,13 +127,13 @@ class PageBlocksController < ApplicationController
     page_block_ids=params[:pageBlogIds].split(",")
     page_block_ids.each_with_index { |page_block_id, index|
       @page_block=PageBlock.where(id: page_block_id).first
-      @page_block.update(page_id: index+1)
+      @page_block.update(position: index+1)
 
     }
 
     hospital_id=params[:hospital_id]
     department_id=params[:department_id]
-    @page_block=PageBlock.where(hospital_id:1).order(page_id: :asc)
+    @page_block=PageBlock.where('hospital_id=? AND department_id=? AND is_show=?',hospital_id,department_id,true).order(position: :asc)
     @hospital_id=hospital_id
     @department_id=department_id
     render partial: 'page_blocks/page_blocks_setting'
@@ -169,9 +157,9 @@ class PageBlocksController < ApplicationController
     admin_id=current_user.id
     @kindeditor=true
     if current_user.admin_type == '医院管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/page_blocks/page_blocks_setting"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
     elsif current_user.admin_type == '科室管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
+      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/page_blocks/page_blocks_setting"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
     else
       @left_menus=Menu.new.left_menu admin_id
     end
