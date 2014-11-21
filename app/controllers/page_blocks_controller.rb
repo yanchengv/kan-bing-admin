@@ -78,7 +78,7 @@ class PageBlocksController < ApplicationController
   # POST /page_blocks.json
   def create
     respond_to do |format|
-      @page_block = PageBlock.new(params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id))
+      @page_block = PageBlock.new(page_block_params)
       if current_user
         @page_block.hospital_id = current_user.hospital_id
         @page_block.department_id = current_user.department_id
@@ -103,7 +103,7 @@ class PageBlocksController < ApplicationController
       @page_block.updated_name = current_user.name
     end
     respond_to do |format|
-      if @page_block.update(params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id, :position, :is_show))
+      if @page_block.update(page_block_params)
         format.html { redirect_to @page_block, notice: 'PageBlock was successfully updated.' }
         format.json { render :show, status: :ok, location: @page_block }
       else
@@ -179,12 +179,12 @@ class PageBlocksController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_page_block
-    # @page_block = PageBlock.find(params[:id])
+     @page_block = PageBlock.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def page_block_params
-    params.permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id, :position, :is_show)
+    params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id, :position, :is_show)
   end
 end
 
