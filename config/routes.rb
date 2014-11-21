@@ -76,6 +76,8 @@ Rails.application.routes.draw do
       post 'oper_action', to: 'page_blocks#oper_action'
       get 'page_block_manage', to: 'page_blocks#page_blocks_manage'
       post 'update',to:'page_blocks#update'
+      post 'update_position',to:'page_blocks#update_position'
+      get 'page_blocks_setting',to:'page_blocks#page_blocks_setting'
     end
   end
   resources :apk_versions do

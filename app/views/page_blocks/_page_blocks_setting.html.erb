@@ -1,0 +1,77 @@
+<style>
+    .page_block_module{float:left;}
+    #page_block_list{width: 1200px}
+    .p_title{ display: none;background:#e8f5fe;width:150px}
+</style>
+<div id="loader"></div>
+<button id="layoutting">排版</button>
+<button id="layout_save">保存</button>
+<button id="layout_cancle">取消</button>
+<div id="page_block_list">
+  <% @page_block.each do |page|%>
+      <div id="<%= page.id%>" class="page_block_module">
+        <div class="p_title">拖拽排版</div>
+        <%= raw page.content%>
+      </div>
+  <%end%>
+
+</div>
+
+<script>
+
+
+    $(function(){
+        var hospital_id=<%= @hospital_id%>
+        var department_id=<%= @department_id%>
+        var page_block_ids=[]; //存储页面排版的顺序
+//点击按钮进行页面排版
+        $("#layoutting").click(function(){
+            $(".p_title").show();
+        });
+        $("#block_page").click(function(){
+                    $(".p_title").hide();
+                }
+        );
+//        取消排版
+        $("#layout_cancle").click(function(){
+            $.ajax({
+                type:'get',
+                url:'/page_blocks/page_blocks_setting',
+                success:function(data){
+                    $("#rightContent").html(data)
+                }
+            })
+        });
+//        保存排版
+        $("#layout_save").click(function(){
+            $.ajax({
+                type:'post',
+                url:'/page_blocks/update_position',
+                data:{hospital_id:hospital_id,department_id:department_id,pageBlogIds:page_block_ids},
+                success:function(data){
+                    $("#rightContent").html(data)
+                }
+            })
+        })
+
+//        排版
+        $(".p_title").bind('mouseover',function(){
+            $(this).css("cursor","move")
+        });'""'
+
+        var $show = $("#loader");
+        var $orderlist = $("#orderlist");
+        var $list = $("#page_block_list");
+        $list.sortable({
+            opacity: 0.6, //设置拖动时候的透明度
+            revert: true, //缓冲效果
+            cursor: 'move', //拖动的时候鼠标样式
+            handle: '.p_title',  //可以拖动的部位，模块的标题部分
+            update: function(event, ui){
+                page_block_ids=$(this).sortable('toArray').toString()
+            }
+        });
+    });
+
+
+</script>

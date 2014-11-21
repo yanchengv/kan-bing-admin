@@ -33,9 +33,10 @@ class PageBlocksController < ApplicationController
       set_page_block
       destroy
     elsif params[:oper] == 'del_res'
-     destroy_res
+      destroy_res
     end
   end
+
   # GET /page_blocks/1
   # GET /page_blocks/1.json
   def show
@@ -70,6 +71,7 @@ class PageBlocksController < ApplicationController
       @left_menus=Menu.new.left_menu admin_id
     end
   end
+
   # POST /page_blocks
   # POST /page_blocks.json
   def create
@@ -91,12 +93,13 @@ class PageBlocksController < ApplicationController
     id= params[:id]
     page_block_ids=params[:pageBlogIds].split(",")
     page_block_ids.each_with_index { |page_block_id, index|
-     @page_block=PageBlock.where(id:page_block_id).first
+      @page_block=PageBlock.where(id: page_block_id).first
+      @page_block.update(page_id: index+1)
       @page_block.update(page_id: index+1)
 
     }
-     # PageBlock.where(id:id).first
-      render json: 'dd'
+    # PageBlock.where(id:id).first
+    render json: 'dd'
 
     # respond_to do |format|
     #   if @page_block.update(params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id))
@@ -107,6 +110,35 @@ class PageBlocksController < ApplicationController
     #     format.json { render json: @page_block.errors, status: :unprocessable_entity }
     #   end
     # end
+  end
+
+  # 展现界面排版的页面
+  def page_blocks_setting
+    hospital_id=current_user.hospital_id
+    department_id=current_user.hospital_id
+    p 111111
+    p  hospital_id
+    p   department_id
+    @page_block=PageBlock.where('hospital_id=? AND department_id=?',hospital_id,department_id).order(page_id: :asc)
+    @hospital_id=hospital_id
+    @department_id=department_id
+    render partial: 'page_blocks/page_blocks_setting'
+  end
+  # 修改排版位置
+  def update_position
+    page_block_ids=params[:pageBlogIds].split(",")
+    page_block_ids.each_with_index { |page_block_id, index|
+      @page_block=PageBlock.where(id: page_block_id).first
+      @page_block.update(page_id: index+1)
+
+    }
+
+    hospital_id=params[:hospital_id]
+    department_id=params[:department_id]
+    @page_block=PageBlock.where(hospital_id:1).order(page_id: :asc)
+    @hospital_id=hospital_id
+    @department_id=department_id
+    render partial: 'page_blocks/page_blocks_setting'
   end
 
   # DELETE /page_blocks/1
@@ -134,6 +166,7 @@ class PageBlocksController < ApplicationController
       @left_menus=Menu.new.left_menu admin_id
     end
   end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_page_block
