@@ -1,5 +1,6 @@
 class PageBlock < ActiveRecord::Base
   belongs_to :home_page, :foreign_key => :page_id
+  include SessionsHelper
   before_create :set_pk_code
   # before_save :set_default_value
   def set_pk_code

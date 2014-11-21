@@ -47,12 +47,14 @@ class PageBlocksController < ApplicationController
   # GET /page_blocks/new
   def new
     menu_list
+    @kindeditor='block_new'
     @page_block = PageBlock.new
     @home_pages = HomePage.all
   end
 
   # GET /page_blocks/1/edit
   def edit
+    @kindeditor='block_edit'
     menu_list
     @home_pages = HomePage.all
   end
@@ -77,6 +79,12 @@ class PageBlocksController < ApplicationController
   def create
     respond_to do |format|
       @page_block = PageBlock.new(params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id))
+      if current_user
+        @page_block.hospital_id = current_user.hospital_id
+        @page_block.department_id = current_user.department_id
+        @page_block.created_id = current_user.id
+        @page_block.created_name = current_user.name
+      end
       if @page_block.save
         format.html { redirect_to @page_block, notice: 'PageBlock was successfully created.' }
         format.json { render :show, status: :created, location: @page_block }
@@ -90,26 +98,28 @@ class PageBlocksController < ApplicationController
   # PATCH/PUT /page_blocks/1
   # PATCH/PUT /page_blocks/1.json
   def update
-    id= params[:id]
-    page_block_ids=params[:pageBlogIds].split(",")
-    page_block_ids.each_with_index { |page_block_id, index|
-      @page_block=PageBlock.where(id: page_block_id).first
-      @page_block.update(page_id: index+1)
-      @page_block.update(page_id: index+1)
-
-    }
-    # PageBlock.where(id:id).first
-    render json: 'dd'
-
-    # respond_to do |format|
-    #   if @page_block.update(params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id))
-    #     format.html { redirect_to @page_block, notice: 'PageBlock was successfully updated.' }
-    #     format.json { render :show, status: :ok, location: @page_block }
-    #   else
-    #     format.html { render :edit }
-    #     format.json { render json: @page_block.errors, status: :unprocessable_entity }
-    #   end
-    # end
+    #id= params[:id]
+    #page_block_ids=params[:pageBlogIds].split(",")
+    #page_block_ids.each_with_index { |page_block_id, index|
+    # @page_block=PageBlock.where(id:page_block_id).first
+    #  @page_block.update(page_id: index+1)
+    #
+    #}
+    # # PageBlock.where(id:id).first
+    #  render json: 'dd'
+    if current_user
+      @page_block.updated_id = current_user.id
+      @page_block.updated_name = current_user.name
+    end
+    respond_to do |format|
+      if @page_block.update(params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id, :position, :is_show))
+        format.html { redirect_to @page_block, notice: 'PageBlock was successfully updated.' }
+        format.json { render :show, status: :ok, location: @page_block }
+      else
+        format.html { render :edit }
+        format.json { render json: @page_block.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   # 展现界面排版的页面
@@ -167,6 +177,17 @@ class PageBlocksController < ApplicationController
     end
   end
 
+  #修改是否显示的状态
+  def change_is_show
+    if params[:id] && params[:is_show]
+      @page_block = PageBlock.find(params[:id])
+      @page_block.update_attribute(:is_show, params[:is_show])
+      render :json => {:success => true}
+    else
+      render :json => {:success => false, :errors => '修改失败！'}
+    end
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_page_block
@@ -175,7 +196,7 @@ class PageBlocksController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def page_block_params
-    params.permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id)
+    params.permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id, :position, :is_show)
   end
 end
 
