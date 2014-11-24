@@ -11,7 +11,7 @@
 
 <script type="text/javascript">
     jQuery("#dictionary_type_list").jqGrid({
-        url: 'dictionary_types/index_show',
+        url: '/dictionary_types/index_show',
         datatype: "json",
         mtype: 'GET',
         colNames: [ 'ID', '名称', '编码',  '描述'],
@@ -36,7 +36,7 @@
             repeatitems: false
         },
         onSelectRow: function (rowid) {
-            jQuery("#dictionary_list").jqGrid('setGridParam', {url: "dictionaries/index_show?dictionary_type_id=" + rowid }).trigger("reloadGrid");
+            jQuery("#dictionary_list").jqGrid('setGridParam', {url: "/dictionaries/index_show?dictionary_type_id=" + rowid }).trigger("reloadGrid");
             var id = jQuery("#dictionary_type_list").jqGrid('getGridParam', 'selrow');
             var grid = $("#dictionary_list");
             grid.setColProp("dictionary_type_id", { editoptions: { defaultValue: id} });
@@ -53,7 +53,7 @@
             addoper: "add", // 当在add模式中提交数据时，操作的名称
             deloper: "del" // 当在delete模式中提交数据时，操作的名称
         },
-        editurl: 'dictionary_types/oper_action',
+        editurl: '/dictionary_types/oper_action',
         closeAfterAdd: true,
         pager: jQuery('#page_type'),
         // multiselect: true,
@@ -76,7 +76,7 @@
     );
     //字典管理
     jQuery("#dictionary_list").jqGrid({
-        url: 'dictionaries/index_show',
+        url: '/dictionaries/index_show',
         datatype: "json",
         mtype: 'GET',
         colNames: ['ID', '名称', '编码', '类型ID', '类型', '描述'],
@@ -85,7 +85,7 @@
             { name: 'name', index: 'name', align: "center", editable: true},
             { name: 'code', index: 'code', align: "center", editable: true},
             { name: 'dictionary_type_id', index: 'dictionary_type_id',hidden: true, editable: true, editrules: {custom: true, custom_func: check_type, require: true}},
-            { name: 'dictionary_type_name', index: 'dictionary_type_name',editable: true, hidden: true, editrules: {edithidden: true}, editoptions: { readonly: 'readonly'}},
+            { name: 'dictionary_type_name', index: 'dictionary_type_name',editable: true, hidden: true, jsonmap: 'dictionary_type.name', editrules: {edithidden: true}, editoptions: { readonly: 'readonly'}},
             { name: 'description', index: 'description', align: "center", editable: true, edittype: 'textarea', editoptions:{rows: 5, style: "width:200px"}}
         ],
         rowList: [10, 20, 30],
@@ -113,7 +113,7 @@
             deloper: "del", // 当在delete模式中提交数据时，操作的名称
             subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
         },
-        editurl: 'dictionaries/oper_action',
+        editurl: '/dictionaries/oper_action',
         closeAfterAdd: true,
         pager: jQuery('#page_dictionary'),
         //   multiselect: true,

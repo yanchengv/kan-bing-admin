@@ -1,6 +1,6 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">视频类型名称：<input type="text" id="video_type_name">&nbsp;&nbsp;<a id="search_type_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_type_btn" class="btn btn-default btn-sm" role="button">清空</a>
+    <div style="margin-bottom: 10px;">视频类型名称：<input type="text" id="video_type_name">&nbsp;&nbsp;<button id="search_type_btn">搜索</button>&nbsp;<button id="clear_type_btn">清空</button>
     </div>
     <table id="video_type_list"></table>
     <div id="page_type"></div>
@@ -9,7 +9,7 @@
 
 <script type="text/javascript">
     jQuery("#video_type_list").jqGrid({
-        url: 'video_types/index_show',
+        url: '/video_types/index_show',
         datatype: "json",
         mtype: 'GET',
         colNames: [ 'ID', '视频类型名称'],
@@ -41,7 +41,7 @@
             addoper: "add", // 当在add模式中提交数据时，操作的名称
             deloper: "del" // 当在delete模式中提交数据时，操作的名称
         },
-        editurl: 'video_types/oper_action',
+        editurl: '/video_types/oper_action',
         closeAfterAdd: true,
         pager: jQuery('#page_type'),
        // multiselect: true,
@@ -66,7 +66,7 @@
     //搜索视频类型
     function search_video_type(){
         var type_name = $('#video_type_name').val();
-        jQuery("#video_type_list").jqGrid('setGridParam', {url: "video_types/index_show?name=" + type_name }).trigger("reloadGrid");
+        jQuery("#video_type_list").jqGrid('setGridParam', {url: "/video_types/index_show?name=" + type_name }).trigger("reloadGrid");
     }
     $('#search_type_btn').click(function () {
         search_video_type();

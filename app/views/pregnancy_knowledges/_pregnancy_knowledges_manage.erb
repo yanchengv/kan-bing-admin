@@ -1,12 +1,12 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    类型名称:<input type="text" id="type_name">&nbsp;<a id="search_type_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_type_btn" class="btn btn-default btn-sm" role="button">清空</a>
+    类型名称:<input type="text" id="type_name">&nbsp;<button id="search_type_btn">搜索</button>&nbsp;<button id="clear_type_btn">清空</button>
     <br>
     <table id="knowledge_type_list"></table>
     <div id="knowledge_type_pager"></div>
   </div>
   <div style="margin-left: 20px;margin-right: 20px;margin-top: 10px;">
-    标题:<input type="text" id="knowledge_title">&nbsp;<a id="search_knowledge_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_knowledge_btn" class="btn btn-default btn-sm" role="button">清空</a>
+    标题:<input type="text" id="knowledge_title">&nbsp;<button id="search_knowledge_btn">搜索</button>&nbsp;<button id="clear_knowledge_btn">清空</button>
     <br>
     <table id="knowledge_list"></table>
     <div id="knowledge_pager"></div>
@@ -19,7 +19,7 @@
 //:id,:parent_id,:title,:content
     $(document).ready(function () {
         jQuery("#knowledge_type_list").jqGrid({
-            url: 'pregnancy_knowledges/index_show?str=knowledge_type',
+            url: '/pregnancy_knowledges/index_show?str=knowledge_type',
             datatype: "json",
             mtype: 'GET',
             colNames: ['ID', '类型名称', '内容描述'],
@@ -54,9 +54,9 @@
                 subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
             },
             gridComplete: function () {
-                jQuery("#knowledge_list").jqGrid('setGridParam', {url: "pregnancy_knowledges/index_show?str=knowledge"}).trigger("reloadGrid");
+                jQuery("#knowledge_list").jqGrid('setGridParam', {url: "/pregnancy_knowledges/index_show?str=knowledge"}).trigger("reloadGrid");
             },
-            editurl:'pregnancy_knowledges/oper_action',
+            editurl:'/pregnancy_knowledges/oper_action',
             closeAfterAdd:true,
             pager: jQuery('#knowledge_type_pager'),
           //  multiselect: true,
@@ -66,7 +66,7 @@
             height: 'auto',
             caption: "孕育知识类型管理",
             onSelectRow: function (rowid) {
-                jQuery("#knowledge_list").jqGrid('setGridParam', {url: "pregnancy_knowledges/index_show?str=knowledge&parent_id=" + rowid }).trigger("reloadGrid");
+                jQuery("#knowledge_list").jqGrid('setGridParam', {url: "/pregnancy_knowledges/index_show?str=knowledge&parent_id=" + rowid }).trigger("reloadGrid");
                 var grid = $("#knowledge_list");
                 grid.setColProp("parent_id", { editoptions: { defaultValue: rowid} });
                 var title = $('#knowledge_type_list').jqGrid('getRowData', rowid).title;
@@ -85,7 +85,7 @@
     });
     $(document).ready(function () {
         jQuery("#knowledge_list").jqGrid({
-            url: 'pregnancy_knowledges/index_show?str=knowledge',
+            url: '/pregnancy_knowledges/index_show?str=knowledge',
             datatype: "json",
             mtype: 'GET',
             colNames: ['ID', '标题', '内容','父节点ID', '父节点'],
@@ -93,12 +93,13 @@
                 { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
                 { name: 'title', index: 'title', align: "center", editable: true},
                 { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
-                { name: 'parent_id', index: 'parent_id', align: "center", editable: true, hidden: true, editrules: {edithidden: false}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
-                    var rowData = $('#knowledge_type_list').jqGrid('getRowData', rowId);
-                    return rowData.title
-                    }
+                { name: 'parent_id', index: 'parent_id', align: "center", editable: true, hidden: true, editrules: {edithidden: false}
+//                    , formatter: function (rowId, cellval, colpos, rwdat, _act) {
+//                    var rowData = $('#knowledge_type_list').jqGrid('getRowData', rowId);
+//                    return rowData.title
+//                    }
                 },
-                {name: 'parent_title', index: 'parent_title', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, editoptions: { readonly: 'readonly'}}
+                {name: 'parent_title', index: 'parent_title', align: "center", editable: true, hidden: true, jsonmap: 'parent.title', editrules: {edithidden: true}, editoptions: { readonly: 'readonly'}}
             ],
             rowList: [10, 15, 20],
             sortname: 'id',
@@ -125,7 +126,7 @@
                 deloper: "del", // 当在delete模式中提交数据时，操作的名称
                 subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
             },
-            editurl: 'pregnancy_knowledges/oper_action',
+            editurl: '/pregnancy_knowledges/oper_action',
             closeAfterAdd: true,
             pager: jQuery('#knowledge_pager'),
             //  multiselect: true,
@@ -148,7 +149,7 @@
 //搜索类型
 $('#search_type_btn').click(function () {
     var type = $('#type_name').val();
-    jQuery("#knowledge_type_list").jqGrid('setGridParam', {url: "pregnancy_knowledges/index_show?str=knowledge_type&title=" + type }).trigger("reloadGrid")
+    jQuery("#knowledge_type_list").jqGrid('setGridParam', {url: "/pregnancy_knowledges/index_show?str=knowledge_type&title=" + type }).trigger("reloadGrid")
 });
 //清空类型条件
 $('#clear_type_btn').click(function () {
@@ -157,7 +158,7 @@ $('#clear_type_btn').click(function () {
 //搜索标题
 $('#search_knowledge_btn').click(function () {
     var title = $('#knowledge_title').val();
-    jQuery("#knowledge_list").jqGrid('setGridParam', {url: "pregnancy_knowledges/index_show?str=knowledge&title=" + title }).trigger("reloadGrid")
+    jQuery("#knowledge_list").jqGrid('setGridParam', {url: "/pregnancy_knowledges/index_show?str=knowledge&title=" + title }).trigger("reloadGrid")
 });
 //清空标题条件
 $('#clear_knowledge_btn').click(function () {

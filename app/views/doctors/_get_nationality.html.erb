@@ -5,3 +5,22 @@
         <option id="<%= national.name %>" value="<%= national.name %>"><%= national.name %></option>
     <% end %>
 <% end %>
+<script>
+  $(function(){
+      <% if !params[:id].nil? %>
+      <% if params[:type]== 'doc' %>
+          <% doc = Doctor.find_by(id:params[:id]) %>
+          $('#s2id_doctor_nationality').children('.select2-choice').children('.select2-chosen').html('<%=doc.nationality%>')
+          if (document.getElementById('<%=doc.nationality%>')!=null) {
+              document.getElementById('<%=doc.nationality%>').setAttribute('selected', 'selected')
+          }
+      <% elsif params[:type]== 'pat' %>
+      <% pat = Patient.find_by(id:params[:id]) %>
+      $('#s2id_doctor_nationality').children('.select2-choice').children('.select2-chosen').html('<%=pat.nationality%>')
+      if (document.getElementById('<%=pat.nationality%>')!=null) {
+          document.getElementById('<%=pat.nationality%>').setAttribute('selected', 'selected')
+      }
+      <% end %>
+      <% end %>
+  })
+</script>

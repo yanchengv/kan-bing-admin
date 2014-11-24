@@ -1,6 +1,6 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">版本号：<input type="text" id="version_num_search">&nbsp;&nbsp;<a id="search_apk_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_apk_btn" class="btn btn-default btn-sm" role="button">清空</a>
+    <div style="margin-bottom: 10px;">版本号：<input type="text" id="version_num_search">&nbsp;&nbsp;<button id="search_apk_btn">搜索</button>&nbsp;<button id="clear_apk_btn" >清空</button>
     </div>
     <table id="apk_list"></table>
     <div id="page_apk"></div>
@@ -9,7 +9,7 @@
 
 <script type="text/javascript">
     jQuery("#apk_list").jqGrid({
-        url: 'apk_versions/index_show',
+        url: '/apk_versions/index_show',
         datatype: "json",
         mtype: 'GET',
         colNames: [ 'ID', '版本号', '版本路径', '更改时间', '版本内容'],
@@ -50,7 +50,7 @@
             addoper: "add", // 当在add模式中提交数据时，操作的名称
             deloper: "del" // 当在delete模式中提交数据时，操作的名称
         },
-        editurl: 'apk_versions/oper_action',
+        editurl: '/apk_versions/oper_action',
         closeAfterAdd: true,
         pager: jQuery('#page_apk'),
         multiselect: true,
@@ -85,7 +85,7 @@
                         data: {ids: ids},
                         success: function (data) {
                             if (data.success == true) {
-                                jQuery("#apk_list").jqGrid('setGridParam', {url: "apk_versions/index_show"}).trigger("reloadGrid");
+                                jQuery("#apk_list").jqGrid('setGridParam', {url: "/apk_versions/index_show"}).trigger("reloadGrid");
                             } else {
                                 alert('操作失败！');
                             }
@@ -97,7 +97,7 @@
     //搜索apk
     $('#search_apk_btn').click(function () {
         var version_num = $('#version_num_search').val();
-        jQuery("#apk_list").jqGrid('setGridParam', {url: "apk_versions/index_show?version_num=" + version_num }).trigger("reloadGrid")
+        jQuery("#apk_list").jqGrid('setGridParam', {url: "/apk_versions/index_show?version_num=" + version_num }).trigger("reloadGrid")
     });
     //清空k
     $('#clear_apk_btn').click(function () {

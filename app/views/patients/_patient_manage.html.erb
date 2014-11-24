@@ -12,7 +12,8 @@
   <div id="pat_create_or_edit_form">
   </div>
 </div>
-<div id="search_div" style="margin:10px;">
+<div style="margin:10px 20px;">
+<div id="search_div" style="margin-bottom:10px;">
   医院：<select  id="patient_hos_id" onchange="pat_search_hos()" >
   <option value="">---请选择---</option>
   <% if !@hospitals.empty? && !@hospitals.nil?  %>
@@ -74,6 +75,7 @@
 
 <table id="list10"></table>
 <div id="pager10"></div>
+</div>
 
 <script>
     var row_id;
@@ -231,9 +233,9 @@
     }
 
     var credential_type_number_flag=true
-    var phone_flag=false
+    var phone_flag=true
     var name_flag=false
-    var email_flag=false
+    var email_flag=true
     var birthday_flag=false
     var two_blank=true
     function check_credential_type_number(value){

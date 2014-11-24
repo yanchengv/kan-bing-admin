@@ -981,29 +981,3 @@
       #ModuleManage ul.ztree a span{font-size:14px;}
   </style>
 </div>
-<div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title"><b>创建或编辑</b></h4>
-      </div>
-      <div class="modal-body">
-        <%= form_for('@menu',remote:true,html:{id:'doc_form'}) do |f| %>
-            <%= f.label "名称" %>
-            <div id="menus_parent_menu"><%#= render partial: 'menus/form_name' %></div>
-            <%= f.label "父菜单" %>
-            <div id="menus_parent_menu"><%#= render partial: 'menus/form_parent_menu' %></div>
-            <%= f.label "操作" %>
-            <div id="menus_priority"><%#= render partial: 'menus/form_priority' %></div>
-            <%= f.label :URI %>
-            <%= f.text_field :uri,name:'uri' ,class:"form-control"%>
-      </div>
-      <div class="modal-footer">
-          <%= f.submit '确定',id:'new_or_edit_submit',class:"btn btn-primary",onclick:'create_or_update()'%>
-          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-      </div>
-        <% end %>
-    </div>
-  </div>
-</div>

@@ -1,14 +1,20 @@
+<style>
+    .blue_btn{
+        background-color: blue;
+        color: white;
+    }
+</style>
 <div style="margin-left: 20px;margin-right: 20px;">
   <div id="btn" style="margin:10px;">
-    <a title="province" class="btn btn-default" role="button" href="javascript:click_btn('province')">省管理</a>
-    <a title="city" class="btn btn-default" role="button" href="javascript:click_btn('city')">市管理</a>
-    <a title="county" class="btn btn-default" role="button" href="javascript:click_btn('county')">县管理</a>
-    <a title="all" class="btn btn-primary" role="button" href="javascript:click_btn('all')">全部</a>
+    <button title="province" onclick="click_btn('province')">省管理</button>
+    <button title="city" onclick="click_btn('city')">市管理</button>
+    <button title="county" onclick="click_btn('county')">县管理</button>
+    <button title="all" onclick="click_btn('all')">全部</button>
   </div>
   <div id="search_div" style="margin:10px;">
     省：<input type="text" id="province_name"> 市：<input type="text" id="city_name">
     县：<input type="text" id="county_name">
-    <a id="search_btn" class="btn btn-default btn-sm" role="button">搜索</a>
+    <button id="search_btn">搜索</button>
   </div>
   <div id="province_city_county">
     <div id="province">
@@ -61,7 +67,7 @@
                 deloper: "del",
                 subgridid: "id"
             },
-            editurl:'provinces/oper_action',
+            editurl:'/provinces/oper_action',
             pager: jQuery('#page_province'),
             //    multiselect: true,
             multiboxonly:true,
@@ -99,7 +105,8 @@
                 })
 
     $(function(){
-        $( "#search_btn" ).button().on( "click", function() {
+//        $( "#search_btn" ).button().on( "click", function() {
+        $("#search_btn" ).click(function () {
             var province_name = $('#province_name').val();
             var city_name = $('#city_name').val();
             var county_name = $('#county_name').val();
@@ -119,8 +126,8 @@
 
     });
     function click_btn(value){
-        $('#btn a[title='+value+']').removeClass("btn-default").addClass("btn-primary");
-        $('#btn a[title!='+value+']').removeClass("btn-primary").addClass("btn-default");
+        $('#btn button[title='+value+']').addClass("blue_btn");
+        $('#btn button[title!='+value+']').removeClass("blue_btn");
         if(value=='province'){
             $('#'+value+'').css('display','block');
             $('#city').css('display','none');
@@ -188,7 +195,7 @@
                 deloper: "del",
                 subgridid: "id"
             },
-            editurl:'cities/oper_action',
+            editurl:'/cities/oper_action',
             pager: jQuery('#page_city'),
             // multiselect: true,
             rowNum: 10,
@@ -251,7 +258,7 @@
                 addoper: "add",
                 deloper: "del"
             },
-            editurl:'counties/oper_action',
+            editurl:'/counties/oper_action',
             pager: jQuery('#page_county'),
             //  multiselect: true,
             rowNum: 10,
@@ -268,6 +275,9 @@
                     closeAfterAdd:true
                 })
     });
+        $(function(){
+            click_btn('all')
+        })
 </script>
 
 <div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

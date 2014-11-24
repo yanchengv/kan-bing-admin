@@ -1,3 +1,7 @@
+<div id="video_consoleDlg">
+  <div id="upload_video_form">
+  </div>
+</div>
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
     <div style="margin-bottom: 10px;">视频类型：<select id="video_search_id" style="width: 139px;">
@@ -5,8 +9,8 @@
       <% @video_types.each do |type|%>
           <option value="<%= type.id%>"><%= type.type_name %></option>
       <% end %>
-    </select>&nbsp;&nbsp;视频名称：<input type="text" id="video_name">&nbsp;&nbsp;<a id="search_video_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;
-      <a id="clear_type_btn" class="btn btn-default btn-sm" role="button">清空</a>
+    </select>&nbsp;&nbsp;视频名称：<input type="text" id="search_video_name">&nbsp;&nbsp;<button id="search_video_btn">搜索</button>&nbsp;
+      <button id="clear_type_btn">清空</button>
     </div>
     <% link_to '上传视频', '/edu_videos/new_video'%>
     <table id="edu_video_list"></table>
@@ -19,7 +23,7 @@
         $("#video_search_id").select2();
     });
     jQuery("#edu_video_list").jqGrid({
-        url: 'edu_videos/index_show',
+        url: '/edu_videos/index_show',
         datatype: "json",
         mtype: 'GET',
         colNames: [ 'ID', '视频名称', '概要', '缩略图地址',  '视频地址', '医生ID', '医生', '时间', '类型ID', '视频类型'],
@@ -38,7 +42,7 @@
                     value: function () {
                         var positions;
                         $.ajax({
-                            url: "edu_videos/get_doctors",
+                            url: "/edu_videos/get_doctors",
                             async: false,
                             success: function (data) {
                                 positions = data.doctors;
@@ -67,7 +71,7 @@
                     value: function () {
                         var positions;
                         $.ajax({
-                            url: "edu_videos/get_video_types",
+                            url: "/edu_videos/get_video_types",
                             async: false,
                             success: function (data) {
                                 positions = data.video_types;
@@ -106,7 +110,7 @@
             addoper: "add", // 当在add模式中提交数据时，操作的名称
             deloper: "del" // 当在delete模式中提交数据时，操作的名称
         },
-        editurl: 'edu_videos/oper_action',
+        editurl: '/edu_videos/oper_action',
         closeAfterAdd: true,
         pager: jQuery('#page_video'),
        // multiselect: true,
@@ -115,6 +119,34 @@
         width: '500',
         height: 'auto',
         caption: "教育视频管理"
+    });
+    $("#video_consoleDlg").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: false,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                console.log(pos.top)
+                var topOffset = $( this ).css( pos ).offset().top;
+                console.log(topOffset)
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "保存": addContact,
+            "修改": updateContact,
+            "取消": function() {$("#video_consoleDlg").dialog("close")}
+        }
     });
     jQuery("#edu_video_list").jqGrid('navGrid', '#page_video', {
                 cloneToTop: true, add:false, edit: false,
@@ -135,38 +167,98 @@
     //搜索视频
     $('#search_video_btn').click(function () {
         var video_search_id = $('#video_search_id').val();
-        var video_name = $('#video_name').val();
-        jQuery("#edu_video_list").jqGrid('setGridParam', {url: "edu_videos/index_show?type=" + video_search_id +'&name=' + video_name }).trigger("reloadGrid")
+        var video_name = $('#search_video_name').val();
+        jQuery("#edu_video_list").jqGrid('setGridParam', {url: "/edu_videos/index_show?type=" + video_search_id +'&name=' + video_name }).trigger("reloadGrid")
     });
     //清空搜索医院的查询条件
-    $('#video_search_id').click(function () {
+    $('#clear_type_btn').click(function () {
         $("#province_search_id").select2("val", "0");
-        $('#video_name').val('');
+        $('#search_video_name').val('');
     });
-    function upload_video(){
+    function upload_video(){  //弹出上传视频对话框
 //        window.location.href='edu_videos/new_video';
         $.ajax({
-            url:'edu_videos/new_video',
+            url:'/edu_videos/new_video',
             type:'get',
             success:function(data){
-                $("#rightContent").html(data);
+                $("#upload_video_form").html(data);
+                var video_consoleDlg = $("#video_consoleDlg");
+                var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                dialogButtonPanel.find("button:contains('保存')").show();
+                video_consoleDlg.dialog("option", "width", "540");
+                video_consoleDlg.dialog("option", "title", "上传视频").dialog("open");
             }
         })
     }
-    function update_video(){
+    function update_video(){   //弹出修改视频信息对话框
         var id = jQuery("#edu_video_list").jqGrid('getGridParam', 'selrow');
         if (id){
             $.ajax({
-                url: 'edu_videos/edit_video',
+                url: '/edu_videos/edit_video',
                 type: 'post',
                 data: {id: id},
                 success: function (data) {
-                    $("#rightContent").html(data);
+                    $("#upload_video_form").html(data);
+                    var video_consoleDlg = $("#video_consoleDlg");
+                    var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                    dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                    dialogButtonPanel.find("button:contains('修改')").show();
+                    video_consoleDlg.dialog("option", "width", "540");
+                    video_consoleDlg.dialog("option", "title", "修改视频").dialog("open");
                 }
             })
         }else{
             alert('请选择需要进行修改的视频!');
         }
 
+    }
+    function addContact(){   //保存视频信息
+        $.ajax({
+            url: "/edu_videos/upload",
+            type: 'post',
+            data: {
+                name: $('#video_name').val(),
+                content: $('#video_content').val(),
+                video_time: $('#video_time').val(),
+                image_url: $('#image_path').val(),
+                video_url: $('#video_url').val(),
+                doctor_id: $('#video_doctor_id').val(),
+                video_type_id: $('#video_type_id').val()
+            },
+            async: false,
+            success: function (data) {
+                window.parent.$("#video_consoleDlg").dialog("close");
+                $('#refresh_edu_video_list').click()   //保存成功后关闭对话框
+//                $("#rightContent").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('视频上传失败!');
+            }
+        });
+    }
+    function updateContact(){   //修改视频信息
+        $.ajax({
+            url: "/edu_videos/video_edit",
+            type: 'post',
+            data: { id: $('#video_id').val(),
+                name: $('#video_name').val(),
+                content:$('#video_content').val(),
+                video_time:$('#video_time').val(),
+                image_url:$('#image_path').val(),
+                video_url:$('#video_url').val(),
+                doctor_id:$('#video_doctor_id').val(),
+                video_type_id:$('#video_type_id').val()
+            },
+            async: false,
+            success: function (data) {
+                window.parent.$("#video_consoleDlg").dialog("close");
+                $('#refresh_edu_video_list').click()  //修改成功后关闭对话框
+//                $("#rightContent").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('视频修改失败!');
+            }
+        });
     }
 </script>

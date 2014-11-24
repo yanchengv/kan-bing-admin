@@ -1,9 +1,14 @@
 class HospitalsController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_hospital, only: [:show, :edit, :update, :destroy]
 
   # GET /hospitals
   # GET /hospitals.json
   def index
+    @add_flag=true
+    if current_user.admin_type == '医院管理员'
+      @add_flag=false
+    end
     @provinces = Province.all
     @cities = City.all
 

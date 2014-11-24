@@ -4,8 +4,9 @@
 
     }
     .form-control{
-        width :200px;
-        height :26px;
+        width :200px !important;
+        height :26px !important;
+        border-radius: .2em;
     }
     .error_remind{
         border:#ff0000 1px solid
@@ -27,7 +28,7 @@
         </div>
     <% end %>
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label '姓名' %><span style="color:red"><b>*</b></span><br>
         <%= f.text_field :name ,class:"form-control",onblur:"check_name(this.value,'true')" %>
       </div>
@@ -38,7 +39,7 @@
       </div>
     </div>
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label '证件类型' %><br>
         <select id="doctor_credential_type" name="doctor[credential_type]" onchange="change_type()">
           <option value="">---请选择---</option>
@@ -60,7 +61,7 @@
       </div>
     </div>
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :生日 %><span style="color:red"><b>*</b></span><br>
         <input id='doc_birthday' data-format="yyyy-MM-dd" name='doctor[birthday]' type="text" class="form-control" onblur="check_birthday(this.value,'true')"/>
         <%#= f.date_select :birthday %>
@@ -110,7 +111,7 @@
     <!--</div>-->
     <!--</div>-->
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :选择医院 %><br>
         <div id="doc_hospital"><%= render partial: 'doctors/hospital_partial' %></div>
       </div>
@@ -142,7 +143,7 @@
     <!--</div>-->
     <!--</div>-->
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :国籍 %><br>
         <select id="doctor_citizenship" name="doctor[citizenship]" onchange="get_nationality()" >
           <option value="">---请选择---</option>
@@ -164,7 +165,7 @@
       </div>
     </div>
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :电子邮箱 %>　<span style="color:blue"><b>*</b></span><br>
         <%= f.text_field :email,class:"form-control",onblur:"check_email(this.value,'true')" %>
       </div>
@@ -174,7 +175,7 @@
       </div>
     </div>
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :职位 %><br>
         <select id="doctor_position" name="doctor[position]" >
           <option value="">---请选择---</option>
@@ -206,7 +207,7 @@
       </div>
     </div>
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :专长 %><br>
         <%= f.text_field :expertise,class:"form-control" %>
       </div>
@@ -226,7 +227,7 @@
       </div>
     </div>
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :毕业学校 %><br>
         <%= f.text_field :graduated_from,class:"form-control" %>
       </div>
@@ -380,7 +381,7 @@
     function get_nationality(){
         $.ajax({
             type:'get',
-            url:'/national_informations/get_nationality?nation_id='+$('#doctor_citizenship').val(),
+            url:'/national_informations/get_nationality?nation_id='+$('#doctor_citizenship').val()+'&id=<%=params[:id]%>&type=doc',
             success:function(data){
                 $('#doctor_nationality').html(data)
             }
@@ -430,10 +431,7 @@
         if (document.getElementById('<%=doc.degree%>')!=null) {
             document.getElementById('<%=doc.degree%>').setAttribute('selected', 'selected')
         }
-        $('#s2id_doctor_nationality').children('.select2-choice').children('.select2-chosen').html('<%=doc.nationality%>')
-        if (document.getElementById('<%=doc.nationality%>')!=null) {
-            document.getElementById('<%=doc.nationality%>').setAttribute('selected', 'selected')
-        }
+
         $('#s2id_doctor_citizenship').children('.select2-choice').children('.select2-chosen').html('<%=doc.citizenship%>')
         if (document.getElementById('<%=doc.citizenship%>')!=null) {
             document.getElementById('<%=doc.citizenship%>').setAttribute('selected', 'selected')
@@ -446,13 +444,12 @@
         if (document.getElementById('<%=doc.position%>')!=null) {
             document.getElementById('<%=doc.position%>').setAttribute('selected', 'selected')
         }
+        get_nationality()
+        $('#s2id_doctor_nationality').children('.select2-choice').children('.select2-chosen').html('<%=doc.nationality%>')
+        if (document.getElementById('<%=doc.nationality%>')!=null) {
+            document.getElementById('<%=doc.nationality%>').setAttribute('selected', 'selected')
+        }
         <% end %>
-        $.ajax({
-            type:'get',
-            url:'/national_informations/get_nationality?nation_id='+$('#doctor_citizenship').val(),
-            success:function(data){
-                $('#doctor_nationality').html(data)
-            }
-        })
+
     })
 </script>

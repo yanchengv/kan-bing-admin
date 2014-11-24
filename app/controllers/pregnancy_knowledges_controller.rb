@@ -26,7 +26,7 @@ class PregnancyKnowledgesController < ApplicationController
     count = @pregnancy_knowledges.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @pregnancy_knowledges = @pregnancy_knowledges.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-    render :json => {:pregnancy_knowledges => @pregnancy_knowledges.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+    render :json => {:pregnancy_knowledges => @pregnancy_knowledges.as_json(:include => [{:parent => {:only => [:id, :title]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
   def oper_action

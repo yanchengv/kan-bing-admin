@@ -1,4 +1,5 @@
 class EduVideosController < ApplicationController
+  before_filter :signed_in_user
   require 'rubygems'
   require 'mini_magick'
   require 'curb'
@@ -123,10 +124,10 @@ class EduVideosController < ApplicationController
   def video_edit
     @video = EduVideo.find(params[:id])
     @doc = Doctor.find_by_id(params[:doctor_id])
-    if !@edu_video.video_url.nil? && (@video.video_url != params[:video_url])
+    if !@video.video_url.nil? && (@video.video_url != params[:video_url])
       delte_file_from_aliyun(@video.video_url)  #删除之前的file
     end
-    if !@edu_video.image_url.nil? && (@video.image_url != params[:image_url])
+    if !@video.image_url.nil? && (@video.image_url != params[:image_url])
       delte_file_from_aliyun(@video.image_url)
     end
     if @video.update_attributes(:name => params[:name], :content => params[:content], :doctor_name => @doc.nil? ? '' : @doc.name,

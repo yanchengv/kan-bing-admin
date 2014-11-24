@@ -1,4 +1,4 @@
-<div>*提示: 通过勾选和取消勾选<b>角色管理</b>中的行来配制该管理员的角色。</div>
+<div style="font-size:14px;"><span style="color: #ff0000">提示:</span> 通过勾选和取消勾选<b>角色管理</b>中的行来配制该管理员的角色。</div>
 <br/>
 <table id="admin_list"></table>
 <div id="admin_pager"></div>
@@ -107,7 +107,7 @@
                    // admin_id = <%#= params[:admin2_id] %>
                 <%# end %>
                 $.ajax({
-                    url: 'admin2s_role2s/authorization_create?admin2_id='+admin_id+'&role2_id=' + selectedIds,
+                    url: '/admin2s_role2s/authorization_create?admin2_id='+admin_id+'&role2_id=' + selectedIds,
                     type: 'post',
                     success: function (data) {
 

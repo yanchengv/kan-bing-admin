@@ -15,6 +15,9 @@ class Admin2sController < ApplicationController
     if current_user.admin_type == '医院管理员'
       sql = "hospital_id = #{current_user.hospital_id}"
     end
+    if params[:admin_type] && params[:admin_type] != ''
+      sql << " and admin_type = '#{params[:admin_type]}'"
+    end
     if params[:name] && params[:name] != ''
       sql << " and name like '%#{params[:name]}%'"
     end
@@ -131,7 +134,8 @@ class Admin2sController < ApplicationController
   end
 
   def setting
-    render template: 'admin2s/setting'
+    # render template: 'admin2s/setting'
+    render partial: 'admin2s/setting_form'
   end
 
   def password_update
@@ -184,6 +188,14 @@ class Admin2sController < ApplicationController
       types['网站管理员']='网站管理员'
     end
     render :json => {:admin_type => types.as_json}
+  end
+
+  def check_old_pwd   #修改密码时验证原密码是否正确
+    if current_user.authenticate(params[:old_password])
+      render json:{success:true,content:'原密码正确！'}
+    else
+      render json:{success:false,content:'原密码错误！'}
+    end
   end
 
   private

@@ -1,14 +1,14 @@
 <div style="width: 100%"><div style="width: 48%;float:left;margin-left: 20px;">
-  <div style="margin-bottom: 10px;">咨询内容：<input type="text" id="question_content">&nbsp;<a id="search_question_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_question_btn" class="btn btn-default btn-sm" role="button">清空</a></div>
+  <div style="margin-bottom: 10px;">咨询内容：<input type="text" id="question_content">&nbsp;<button id="search_question_btn">搜索</button>&nbsp;<button id="clear_question_btn">清空</button></div>
   <table id="list_ques"></table>
   <div id="page_ques"></div></div><div style="width: 48%;float:left;margin-left: 20px;">
-  <div style="margin-bottom: 10px;">回复内容：<input type="text" id="result_content">&nbsp;<a id="search_result_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_result_btn" class="btn btn-default btn-sm" role="button">清空</a></div>
+  <div style="margin-bottom: 10px;">回复内容：<input type="text" id="result_content">&nbsp;<button id="search_result_btn">搜索</button>&nbsp;<button id="clear_result_btn">清空</button></div>
   <table id="list_result"></table>
   <div id="page_result"></div></div> </div>
 
 <script type="text/javascript">
     jQuery("#list_ques").jqGrid({
-        url: 'consult_accuses/index_accuses',
+        url: '/consult_accuses/index_accuses',
         datatype: "json",
         autowidth:true,
         height: 'auto',
@@ -34,7 +34,7 @@
             deloper: "del_que", // 当在delete模式中提交数据时，操作的名称
             subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
         },
-        editurl: 'consult_accuses/cusult_oper_action',
+        editurl: '/consult_accuses/cusult_oper_action',
         jsonReader: {
             root: "consult_questions",
             total: "totalpages",
@@ -43,7 +43,7 @@
             repeatitems: false
         },
         gridComplete: function(){
-            jQuery("#list_result").jqGrid('setGridParam', {url: "consult_accuses/index_results"}).trigger("reloadGrid");
+            jQuery("#list_result").jqGrid('setGridParam', {url: "/consult_accuses/index_results"}).trigger("reloadGrid");
         },
         subGridRowExpanded: function (subgrid_id, row_id) {
             var subgrid_table_id, pager_id;
@@ -70,7 +70,7 @@
                     deloper: "del", // 当在delete模式中提交数据时，操作的名称
                     subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
                 },
-                editurl: 'consult_accuses/cusult_oper_action',
+                editurl: '/consult_accuses/cusult_oper_action',
                 jsonReader: {
                     root: "consult_accuses",
                     repeatitems: false
@@ -84,7 +84,7 @@
     jQuery("#list_ques").jqGrid('navGrid', '#page_ques', {add: false, edit: false, deltext: "删除", deltitle: "删除"});
 //回复举报
     jQuery("#list_result").jqGrid({
-        url: 'consult_accuses/index_results',
+        url: '/consult_accuses/index_results',
         datatype: "json",
         autowidth: true,
         height: 'auto',
@@ -110,7 +110,7 @@
             deloper: "del_res", // 当在delete模式中提交数据时，操作的名称
             subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
         },
-        editurl: 'consult_accuses/cusult_oper_action',
+        editurl: '/consult_accuses/cusult_oper_action',
         jsonReader: {
             root: "consult_results",
             total: "totalpages",
@@ -124,7 +124,7 @@
             pager_id_r = "p_" + subgrid_table_id_r;
             $("#" + subgrid_id_r).html("<table id='" + subgrid_table_id_r + "' class='scroll'></table><div id='" + pager_id_r + "' class='scroll'></div>");
             jQuery("#" + subgrid_table_id_r).jqGrid({
-                url: "consult_accuses/get_accuses?result_id=" + row_id_r,
+                url: "/consult_accuses/get_accuses?result_id=" + row_id_r,
                 datatype: "json",
                 colNames: ['举报ID', '举报原因', '创建时间'],
                 colModel: [
@@ -143,7 +143,7 @@
                     deloper: "del", // 当在delete模式中提交数据时，操作的名称
                     subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
                 },
-                editurl: 'consult_accuses/cusult_oper_action',
+                editurl: '/consult_accuses/cusult_oper_action',
                 jsonReader: {
                     root: "consult_accuses",
                     total: "totalpages",
@@ -161,7 +161,7 @@
     //搜索咨询
     $('#search_question_btn').click(function () {
         var text = $('#question_content').val();
-        jQuery("#list_ques").jqGrid('setGridParam', {url: "consult_accuses/index_accuses?content=" + text }).trigger("reloadGrid")
+        jQuery("#list_ques").jqGrid('setGridParam', {url: "/consult_accuses/index_accuses?content=" + text }).trigger("reloadGrid")
     });
     //清空搜索咨询条件
     $('#clear_question_btn').click(function () {
@@ -170,7 +170,7 @@
     //搜索回复
     $('#search_result_btn').click(function () {
         var text = $('#result_content').val();
-        jQuery("#list_result").jqGrid('setGridParam', {url: "consult_accuses/index_results?content=" + text }).trigger("reloadGrid")
+        jQuery("#list_result").jqGrid('setGridParam', {url: "/consult_accuses/index_results?content=" + text }).trigger("reloadGrid")
     });
     //清空搜索回复条件
     $('#clear_result_btn').click(function () {

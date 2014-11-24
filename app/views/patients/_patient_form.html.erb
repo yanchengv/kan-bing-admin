@@ -26,7 +26,7 @@
         </div>
     <% end %>
     <div class="">
-      <div style="display:inline-block;width:50%"><%= f.label '姓名' %><span style="color:red"><b>*</b></span><br>
+      <div style="display:inline-block;width:49%"><%= f.label '姓名' %><span style="color:red"><b>*</b></span><br>
         <%= f.text_field :name ,class:"form-control",onblur:"check_name(this.value,'true')"%>
       </div>
        <div style="display:inline-block;width:49%"><%= f.label :性别 %><br>
@@ -34,7 +34,7 @@
        </div>
     </div>
     <div class="">
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label '证件类型' %><br>
         <select id="patient_credential_type" name="patient[credential_type]" >
           <option value="">---请选择---</option>
@@ -56,7 +56,7 @@
       </div>
     </div>
     <div class="">
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :生日 %><span style="color:red"><b>*</b></span><br>
         <input id='pat_birthday' data-format="yyyy-MM-dd" name='patient[birthday]' type="text" class="form-control" onblur="check_birthday(this.value,'true')" />
         <%#= f.date_select :birthday %>
@@ -82,7 +82,7 @@
     <!--</div>-->
     <!--</div>-->
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :选择医院 %><br>
         <div id="pat_hospital"><%= render partial: 'patients/hospital_partial' %></div>
       </div>
@@ -92,7 +92,7 @@
       </div>
     </div>
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :国籍 %><br>
         <select id="patient_citizenship" name="patient[citizenship]" onchange="get_nationality()">
           <option value="">---请选择---</option>
@@ -114,7 +114,7 @@
 
     </div>
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :手机号 %>　<span style="color:blue"><b>*</b></span><br>
         <%= f.text_field :mobile_phone,class:"form-control" ,onblur:"check_phone(this.value,'true')"%>
       </div>
@@ -124,7 +124,7 @@
       </div>
     </div>
     <div>
-      <div style="display:inline-block;width:50%">
+      <div style="display:inline-block;width:49%">
         <%= f.label :婚姻状况 %><br>
         <select id="patient_marriage" name="patient[marriage]" >
           <option value="">---请选择---</option>
@@ -339,7 +339,7 @@
     function get_nationality(){
         $.ajax({
             type:'get',
-            url:'/national_informations/get_nationality?nation_id='+$('#patient_citizenship').val(),
+            url:'/national_informations/get_nationality?nation_id='+$('#patient_citizenship').val()+'&id=<%= params[:id] %>&type=pat',
             success:function(data){
                 $('#patient_nationality').html(data)
             }
@@ -429,21 +429,15 @@
         if (document.getElementById('<%=pat.education%>')!=null) {
             document.getElementById('<%=pat.education%>').setAttribute('selected', 'selected')
         }
-        $('#s2id_patient_nationality').children('.select2-choice').children('.select2-chosen').html('<%=pat.nationality%>')
-        if (document.getElementById('<%=pat.nationality%>')!=null) {
-            document.getElementById('<%=pat.nationality%>').setAttribute('selected', 'selected')
-        }
         $('#s2id_patient_citizenship').children('.select2-choice').children('.select2-chosen').html('<%=pat.citizenship%>')
         if (document.getElementById('<%=pat.citizenship%>')!=null) {
             document.getElementById('<%=pat.citizenship%>').setAttribute('selected', 'selected')
         }
+        get_nationality()
+        $('#s2id_patient_nationality').children('.select2-choice').children('.select2-chosen').html('<%=pat.nationality%>')
+        if (document.getElementById('<%=pat.nationality%>')!=null) {
+            document.getElementById('<%=pat.nationality%>').setAttribute('selected', 'selected')
+        }
         <% end %>
-        $.ajax({
-            type:'get',
-            url:'/national_informations/get_nationality?nation_id='+$('#patient_citizenship').val(),
-            success:function(data){
-                $('#patient_nationality').html(data)
-            }
-        })
     })
 </script>

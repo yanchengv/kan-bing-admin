@@ -12,8 +12,9 @@
   <div id="doc_create_or_edit_form">
   </div>
 </div>
+<div style="margin:10px 20px;">
 <!--<h1>Listing doctors</h1>-->
-<div id="search_div" style="margin:10px;">
+<div id="search_div" style="margin-bottom: 10px">
   医院：<select  id="doctor_hos_id" name="doctor_hos_id" onchange="doc_search_hos()" >
   <option value="">---请选择---</option>
   <% if !@hospitals.nil? && !@hospitals.empty? %>
@@ -76,7 +77,7 @@
 
 <table id="list12"></table>
 <div id="pager12"></div>
-
+</div>
 <script>
     var lastSel = 0
     var row_id;

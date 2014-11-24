@@ -1,7 +1,7 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
     <div style="margin-bottom: 10px;">医生名：<input type="text" id="doc_name">
-      <a id="search_ships_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_ships_btn" class="btn btn-default btn-sm" role="button">清空</a>
+      <button id="search_ships_btn">搜索</button>&nbsp;<button id="clear_ships_btn">清空</button>
     </div>
 
     <table id="list_doctors_ships"></table>
@@ -13,14 +13,14 @@
     //搜索
     $('#search_ships_btn').click(function () {
         var name = $('#doc_name').val();
-        jQuery("#list_doctors_ships").jqGrid('setGridParam', {url: "doctor_friendships/index_show?name=" + name}).trigger("reloadGrid")
+        jQuery("#list_doctors_ships").jqGrid('setGridParam', {url: "/doctor_friendships/index_show?name=" + name}).trigger("reloadGrid")
     });
     //清空
     $('#clear_ships_btn').click(function () {
         $('#doc_name').val('');
     });
     jQuery("#list_doctors_ships").jqGrid({
-        url: 'doctor_friendships/index_show',
+        url: '/doctor_friendships/index_show',
         datatype: "json",
         autowidth:true,
         height: 'auto',
@@ -36,7 +36,7 @@
                     value: function () {
                         var positions;
                         $.ajax({
-                            url: "doctor_friendships/get_doctors",
+                            url: "/doctor_friendships/get_doctors",
                             async: false,
                             success: function (data) {
                                 positions = data.doctors;
@@ -57,7 +57,7 @@
                     value: function () {
                         var positions;
                         $.ajax({
-                            url: "doctor_friendships/get_doctors",
+                            url: "/doctor_friendships/get_doctors",
                             async: false,
                             success: function (data) {
                                 positions = data.doctors;
@@ -92,7 +92,7 @@
             deloper: "del", // 当在delete模式中提交数据时，操作的名称
             subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
         },
-        editurl: 'doctor_friendships/oper_action',
+        editurl: '/doctor_friendships/oper_action',
         jsonReader: {
             root: "doctor_friendships",
             total: "totalpages",
@@ -126,7 +126,7 @@
                         data: {ids: ids},
                         success: function (data) {
                             if (data.success == true) {
-                                jQuery("#list_doctors_ships").jqGrid('setGridParam', {url: "doctor_friendships/index_show"}).trigger("reloadGrid");
+                                jQuery("#list_doctors_ships").jqGrid('setGridParam', {url: "/doctor_friendships/index_show"}).trigger("reloadGrid");
                             } else {
                                 alert('操作失败！');
                             }

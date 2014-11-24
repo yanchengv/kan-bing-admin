@@ -5,7 +5,7 @@
 <script type="text/javascript">
 //        $(document).ready(function () {
             jQuery("#list").jqGrid({
-                url: 'menu_uris/show_index',
+                url: '/menu_uris/show_index',
                 datatype: "json",
                 mtype: 'GET',
                 colNames: ['ID', '菜单名', '菜单菜单URL', '说明'],
@@ -40,7 +40,7 @@
                     deloper: "del", // 当在delete模式中提交数据时，操作的名称
                     subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
                 },
-                editurl: 'menu_uris/oper_action',
+                editurl: '/menu_uris/oper_action',
                 closeAfterAdd: true,
                 pager: jQuery('#pager'),
                 //  multiselect: true,

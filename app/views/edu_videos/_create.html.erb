@@ -1,7 +1,7 @@
 <div id="reminder"></div>
 <style>
     input, select {
-        display: block;
+        /*display: block;*/
         margin-top: 1em;
     }
 
@@ -11,7 +11,7 @@
     }
 
     #progress1, #progress2 {
-        width: 600px;
+        width: 490px;
         background: #f5f5f5;
         /*box-sizing: border-box;*/
     }
@@ -20,8 +20,8 @@
 <input type="file" name="video" id='video_upload' style='visibility:hidden;display:none;'>
 <input type="text" name="video_url" id='video_url' style='visibility:hidden;display:none;'>
 <input type="text" name="image_url" id='image_path' style='visibility:hidden;display:none;'>
-<div class="box" style="width:50%">
-  <p class="title">上传视频</p>
+<div class="box" >
+  <!--<p class="title">上传视频</p>-->
   <table class="EditTable" style="width:80%;margin:0 auto;">
     <tr class="FormData">
       <td class="CaptionTD">视频名称:</td>
@@ -36,7 +36,7 @@
     <tr class="FormData">
       <td class="CaptionTD">医生:</td>
       <td class="DataTD">
-        <select name="video[doctor_id]" id="video_doctor_id" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
+        <select name="video[doctor_id]" id="video_doctor_id" style="width:209px;height:26px;" class="select2-container FormElement ui-widget-content ui-corner-all">
           <% if !@doctors.nil? %>
               <% hospitals_array = @doctors.map { |hospital| [hospital.name, hospital.id] } %>
               <option value="">请选择</option>
@@ -46,13 +46,16 @@
     </tr>
     <tr class="FormData">
       <td class="CaptionTD">时间:</td>
-      <td class="DataTD"><input type="date" name="video_time" id='video_time' style='width:172px;height:22px;'></td>
+      <td class="DataTD">
+        <input id='video_time' data-format="yyyy-MM-dd" name='video_time' type="text" style='width:209px;height:26px;'  class='FormElement ui-widget-content ui-corner-all'/>
+        <!--<input type="date" name="video_time" id='video_time' style='width:172px;height:22px;'>-->
+      </td>
     </tr>
     <tr class="FormData">
       <td class="CaptionTD">视频类型:</td>
       <td class="DataTD">
         <% types_array = @types.map { |type| [type.type_name, type.id] } %>
-        <select name="edu_video[video_type]" id="video_type_id" style="width:172px;height:22px;" class="select2-container FormElement ui-widget-content ui-corner-all">
+        <select name="edu_video[video_type]" id="video_type_id" style="width:209px;height:26px;" class="select2-container FormElement ui-widget-content ui-corner-all">
           <option value="">请选择</option><%= options_for_select(types_array) %></select></td>
     </tr>
     <tr class="FormData">
@@ -81,13 +84,13 @@
         </div>
       </td>
     </tr>
-    <tr class="FormData">
-      <td colspan="2">
-        <div id="progress2">
-          <input type="button" value="保存" onclick="submit_add_video()">
-        </div>
-      </td>
-    </tr>
+    <!--<tr class="FormData">-->
+      <!--<td colspan="2">-->
+        <!--<div id="progress2">-->
+          <!--<input type="button" value="保存" onclick="submit_add_video()">-->
+        <!--</div>-->
+      <!--</td>-->
+    <!--</tr>-->
 
 
   </table>
@@ -95,6 +98,13 @@
 
 
 <script>
+  $(function(){
+      $('#video_time').datetimepicker({
+          lang:'ch',
+          timepicker:false,
+          format:'Y-m-d'
+      });
+  })
     function getFileName(obj) {
         var pos = obj.value.lastIndexOf("/") * 1;
         var filepath = obj.value.substring(pos + 1);

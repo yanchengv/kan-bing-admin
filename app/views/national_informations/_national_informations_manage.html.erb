@@ -15,7 +15,7 @@
 
     $(document).ready(function () {
         jQuery("#country_list").jqGrid({
-            url: 'national_informations/index_show?str=country',
+            url: '/national_informations/index_show?str=country',
             datatype: "json",
             mtype: 'GET',
             colNames: ['ID', '名称'],
@@ -48,7 +48,7 @@
                 deloper: "del", // 当在delete模式中提交数据时，操作的名称
                 subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
             },
-            editurl:'national_informations/oper_action',
+            editurl:'/national_informations/oper_action',
             closeAfterAdd:true,
             pager: jQuery('#country_pager'),
           //  multiselect: true,
@@ -58,7 +58,7 @@
             height: 'auto',
             caption: "国家管理",
             onSelectRow: function (rowid) {
-                jQuery("#national_list").jqGrid('setGridParam', {url: "national_informations/index_show?str=national&parent_id=" + rowid }).trigger("reloadGrid");
+                jQuery("#national_list").jqGrid('setGridParam', {url: "/national_informations/index_show?str=national&parent_id=" + rowid }).trigger("reloadGrid");
                 var grid = $("#national_list");
                 grid.setColProp("parent_id", { editoptions: { defaultValue: rowid} });
             }
@@ -75,7 +75,7 @@
     });
     $(document).ready(function () {
         jQuery("#national_list").jqGrid({
-            url: 'national_informations/index_show?str=national',
+            url: '/national_informations/index_show?str=national',
             datatype: "json",
             mtype: 'GET',
             colNames: ['ID', '名称', '父节点'],
@@ -109,7 +109,7 @@
                 deloper: "del", // 当在delete模式中提交数据时，操作的名称
                 subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
             },
-            editurl: 'national_informations/oper_action',
+            editurl: '/national_informations/oper_action',
             closeAfterAdd: true,
             pager: jQuery('#national_pager'),
             //  multiselect: true,

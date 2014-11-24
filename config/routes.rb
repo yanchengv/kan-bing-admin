@@ -233,6 +233,7 @@ Rails.application.routes.draw do
       get 'get_admin2', to:'admin2s#get_admin2'
       get 'get_admin_type', to: 'admin2s#get_admin_type'
       get 'web_admin_show', to:'admin2s#web_admin_show'
+      get 'check_old_pwd', to:'admin2s#check_old_pwd'
     end
   end
 
