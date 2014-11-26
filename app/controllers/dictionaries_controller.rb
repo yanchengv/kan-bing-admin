@@ -1,4 +1,5 @@
 class DictionariesController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_dictionary, only: [:show, :edit, :update, :destroy]
 
   # GET /dictionaries

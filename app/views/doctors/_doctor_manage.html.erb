@@ -1,4 +1,4 @@
-
+#encoding:utf-8
 <style>
     .ui-pg-input{
         height:30px;
@@ -69,6 +69,7 @@
           if (event.keyCode == 13)
           {
               var url= "/doctors/show_index?searchField=" + $('#searchField').val() + '&searchString=' + $('#searchString').val()+'&hos_id=' + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
+              url = encodeURI(url)  //处理 ｕｒｌ中文问题
               jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
           }
       }

@@ -1,4 +1,5 @@
 class ConsultResultsController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_consult_result, only: [:show, :edit, :update, :destroy]
 
   # GET /consult_results

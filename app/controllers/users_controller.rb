@@ -1,5 +1,6 @@
 # encoding:utf-8
 class UsersController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /users

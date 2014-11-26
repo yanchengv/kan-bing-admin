@@ -8,12 +8,14 @@
 <button id="layout_save">保存</button>
 <button id="layout_cancle">取消</button>
 <div id="page_block_list">
+<% if !@page_block.nil? && !@page_block.empty? %>
   <% @page_block.each do |page|%>
       <div id="<%= page.id%>" class="page_block_module">
         <div class="p_title">拖拽排版</div>
         <%= raw page.content%>
       </div>
   <%end%>
+<% end %>
 
 </div>
 

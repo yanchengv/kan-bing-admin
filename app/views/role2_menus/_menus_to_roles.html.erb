@@ -269,7 +269,6 @@
         var treeObj=$.fn.zTree.getZTreeObj("perTree"),
                 nodes2=treeObj.getCheckedNodes(true);
         return true;
-        return false
     }
 
     function beforeDrop(treeId, treeNodes, targetNode, moveType) {
@@ -429,7 +428,6 @@
     function beforeEditName(treeId, treeNode) {
         update_menus(treeId,treeNode)
         return false
-//        }
     }
 
     function beforeEditName2(treeId, treeNode) {

@@ -1,4 +1,5 @@
 class ProvincesController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_province, only: [:show, :edit, :update, :destroy]
   respond_to :js
 
