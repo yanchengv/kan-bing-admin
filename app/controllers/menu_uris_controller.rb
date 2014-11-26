@@ -1,4 +1,5 @@
 class MenuUrisController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_menu_uri, only: [:show, :edit, :update, :destroy]
 
   # GET /menu_uris

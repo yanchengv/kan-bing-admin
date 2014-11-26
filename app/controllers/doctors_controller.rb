@@ -1,3 +1,4 @@
+#encoding:utf-8
 class DoctorsController < ApplicationController
   require 'httparty'
   include HTTParty

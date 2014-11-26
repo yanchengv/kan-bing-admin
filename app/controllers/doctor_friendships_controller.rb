@@ -1,5 +1,6 @@
 #encoding:utf-8
 class DoctorFriendshipsController < ApplicationController
+  before_filter :signed_in_user
     before_action :set_doctor_friendship, only: [:show, :edit, :update, :destroy]
 
     # GET /doctor_friendships

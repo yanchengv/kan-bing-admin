@@ -67,6 +67,7 @@
           if (event.keyCode == 13)
           {
               var url= "/patients/show_index?searchField=" + $('#searchField').val() + '&searchString=' + $('#searchString').val()+'&hos_id=' + $('#patient_hos_id').val() + '&dep_id=' + $('#patient_dep').val()
+              url = encodeURI(url)  //处理 ｕｒｌ中文问题
               jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
           }
       }

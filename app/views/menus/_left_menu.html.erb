@@ -110,16 +110,18 @@
                     $.fn.zTree.init($("#leftMenus"), setting, zNodes);
                     zTree_Menu = $.fn.zTree.getZTreeObj("leftMenus");
 //                  curMenu = zTree_Menu.getNodes()[0].children[0].children[0];
-                    if (zTree_Menu.getNodes()[0].children != undefined) {
-                        curMenu = zTree_Menu.getNodes()[0].children[0];
-                    }
-                    else {
-                        curMenu = zTree_Menu.getNodes()[0]
-                    }
+                    if (zTree_Menu.getNodes() != undefined) {
+                        if (zTree_Menu.getNodes()[0].children != undefined) {
+                            curMenu = zTree_Menu.getNodes()[0].children[0];
+                        }
+                        else {
+                            curMenu = zTree_Menu.getNodes()[0]
+                        }
 
-                    zTree_Menu.selectNode(curMenu);
-                    var a = $("#" + zTree_Menu.getNodes()[0].tId + "_a");
-                    a.addClass("cur");
+                        zTree_Menu.selectNode(curMenu);
+                        var a = $("#" + zTree_Menu.getNodes()[0].tId + "_a");
+                        a.addClass("cur");
+                    }
                 });
         //-->
 

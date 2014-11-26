@@ -1,4 +1,5 @@
 class ApkVersionsController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_apk_version, only: [:show, :edit, :update, :destroy]
 
   # GET /apk_versions

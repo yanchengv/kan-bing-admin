@@ -1,5 +1,6 @@
 #encoding:utf-8
 class TreatmentRelationshipsController < ApplicationController
+  before_filter :signed_in_user
     before_action :set_treatment_relationship, only: [:show, :edit, :update, :destroy]
 
     # GET /treatment_relationships

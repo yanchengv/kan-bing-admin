@@ -1,4 +1,5 @@
 class ConsultQuestionsController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_consult_question, only: [:show, :edit, :update, :destroy]
 
   # GET /consult_questions

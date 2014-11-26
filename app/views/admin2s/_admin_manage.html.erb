@@ -4,12 +4,12 @@
     <select id="admin_type" onchange="search_type()" style="width:130px;">
       <option value="">----全部----</option>
       <% if current_user.admin_type == '医院管理员' %>
-          <option value="医院管理员">医院管理员</option>
-          <option value="科室管理员">科室管理员</option>
+          <option value="hos_admin">医院管理员</option>
+          <option value="dep_admin">科室管理员</option>
       <% else %>
-          <option value="网站管理员">网站管理员</option>
-          <option value="科室管理员">科室管理员</option>
-          <option value="医院管理员">医院管理员</option>
+          <option value="web_admin">网站管理员</option>
+          <option value="dep_admin">科室管理员</option>
+          <option value="hos_admin">医院管理员</option>
       <% end %>
     </select>
     姓名：<input type="text" id="search_name"> 邮箱：<input type="text" id="search_email">

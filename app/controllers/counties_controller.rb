@@ -1,4 +1,5 @@
 class CountiesController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_county, only: [:show, :edit, :update, :destroy]
   def index
     render partial: 'counties/county_manage'
