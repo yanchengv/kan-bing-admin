@@ -1,7 +1,7 @@
 GIT
   remote: git@fitark.org:saturn/rails_kindeditor.git
-  revision: a8cf17562cdcbc9c4ffa83ab4a505625ccd21ef5
-  ref: a8cf1756
+  revision: be21acfe21ffdd072113ebaa06039b78006bf5f5
+  ref: be21acfe
   specs:
     rails_kindeditor (0.4.5)
       carrierwave
