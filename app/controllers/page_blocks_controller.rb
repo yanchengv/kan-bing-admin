@@ -226,6 +226,8 @@ class PageBlocksController < ApplicationController
               '#{doc.department.nil? ? '' : doc.department.name}',
               #{doc.id})\" src='#{photo_url}' title='#{doc.name}'></a>")
       end
+    else
+      str = content
     end
     return str
   end
