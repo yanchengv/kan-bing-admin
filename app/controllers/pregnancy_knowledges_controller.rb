@@ -1,4 +1,5 @@
 class PregnancyKnowledgesController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_pregnancy_knowledge, only: [:show, :edit, :update, :destroy]
 
   # GET /pregnancy_knowledges

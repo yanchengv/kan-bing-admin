@@ -1,4 +1,5 @@
 class NationalInformationsController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_national_information, only: [:show, :edit, :update, :destroy]
 
   # GET /national_informations

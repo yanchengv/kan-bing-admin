@@ -11,12 +11,20 @@ class Admin2sController < ApplicationController
 
   def test_index
 
+    if params[:admin_type] == 'hos_admin'
+      admin_type = '医院管理员'
+    elsif params[:admin_type] == 'dep_admin'
+      admin_type = '科室管理员'
+    elsif params[:admin_type] == 'web_admin'
+      admin_type = '网站管理员'
+    else
+    end
     sql = 'true'
     if current_user.admin_type == '医院管理员'
       sql = "hospital_id = #{current_user.hospital_id}"
     end
-    if params[:admin_type] && params[:admin_type] != ''
-      sql << " and admin_type = '#{params[:admin_type]}'"
+    if admin_type
+      sql << " and admin_type = '#{admin_type}'"
     end
     if params[:name] && params[:name] != ''
       sql << " and name like '%#{params[:name]}%'"
@@ -178,11 +186,9 @@ class Admin2sController < ApplicationController
     if current_user.admin_type == '医院管理员'
       types['科室管理员']='科室管理员'
       types['医院管理员']='医院管理员'
-    end
-    if current_user.admin_type == '科室管理员'
+    elsif current_user.admin_type == '科室管理员'
       types['科室管理员']='科室管理员'
-    end
-    if current_user.admin_type == '网站管理员'
+    else
       types['科室管理员']='科室管理员'
       types['医院管理员']='医院管理员'
       types['网站管理员']='网站管理员'

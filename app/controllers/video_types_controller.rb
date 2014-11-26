@@ -1,4 +1,5 @@
 class VideoTypesController < ApplicationController
+  before_filter :signed_in_user
   before_action :set_video_type, only: [:show, :edit, :update, :destroy]
 
   # GET /video_types

@@ -124,13 +124,13 @@ class PageBlocksController < ApplicationController
   end
   # 修改排版位置
   def update_position
-    page_block_ids=params[:pageBlogIds].split(",")
-    page_block_ids.each_with_index { |page_block_id, index|
-      @page_block=PageBlock.where(id: page_block_id).first
-      @page_block.update(position: index+1)
-
-    }
-
+    if !params[:pageBlogIds].nil?
+      page_block_ids=params[:pageBlogIds].split(",")
+      page_block_ids.each_with_index { |page_block_id, index|
+        @page_block=PageBlock.where(id: page_block_id).first
+        @page_block.update(position: index+1)
+      }
+    end
     hospital_id=params[:hospital_id]
     department_id=params[:department_id]
     @page_block=PageBlock.where('hospital_id=? AND department_id=? AND is_show=?',hospital_id,department_id,true).order(position: :asc)
