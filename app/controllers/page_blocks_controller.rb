@@ -218,7 +218,7 @@ class PageBlocksController < ApplicationController
         else
           photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
         end
-        str = str.sub!('头像', "<a class='pl' href='#'><img alt='#{doc.name}' style='width:55px;height:77 px' onclick='showDoctorPage(#{doc.id}, \"\");return false;' onmouseover=\"change_doctor(
+        str = str.sub!('头像', "<a class='pl' href='#' onclick='showDoctorPage(#{doc.id}, \"\");return false;'><img alt='#{doc.name}' style='width:55px;height:77 px' onmouseover=\"change_doctor(
           '#{photo_url}',
               '#{doc.introduction}',
               '#{doc.name}',
