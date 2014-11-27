@@ -19,14 +19,10 @@
 //= require select2
 //= require jquery.datetimepicker
 //= require grid.locale-cn
-//= require_tree ./templates
-//= require_tree ./models
-//= require_tree ./collections
-//= require_tree ./views
 //= require jquery.jqGrid
-//= require_tree ./routers
 //= require jquery-ui
 //= require jquery.ztree.all-3.5.min
 //= require_tree .
 //= require jquery.fileupload
 //= require kindeditor
+//= require jquery.slides.min
