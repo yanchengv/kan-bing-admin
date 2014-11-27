@@ -123,7 +123,7 @@
             url: url1,
             dataType: 'json',
             //forceIframeTransport: true,
-            maxChunkSize: 100000000, //100Mb
+//            maxChunkSize: 100000000, //100Mb
             fail:function (e, data) {
                 console.log(data.errorThrown);
                 alert('上传失败！')
@@ -142,7 +142,8 @@
         url: url2,
         dataType: 'json',
         //forceIframeTransport: true,
-        maxChunkSize: 100000000000, //100Gb
+//        maxChunkSize: 100000000000, //100Gb
+        maxFileSize: 100000000000, //100Gb
         fail: function (e, data) {
             alert('上传失败！');
             data.context = $("#uploadinfo").text('视频上传失败！');

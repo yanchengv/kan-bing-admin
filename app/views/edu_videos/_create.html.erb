@@ -71,10 +71,11 @@
       </td>
     </tr>
     <tr class="FormData">
-      <td colspan="2">
+      <td colspan="2" class="files">
         <div id="progress2">
           <div class="bar" style="width: 0%;margin-top:10px;"></div>
         </div>
+        <!--<span class="fileupload-buttonbar" style="float:right;display: none" id="cancel_button"><button type="reset" class="cancel">取消</button></span>-->
       </td>
     </tr>
     <tr class="FormData">
@@ -131,7 +132,7 @@
         url: url1,
         dataType: 'json',
         //forceIframeTransport: true,
-        maxChunkSize: 100000000, //100Mb
+        maxChunkSize: 0, //100Mb
         fail: function (e, data) {
             alert('上传失败！')
         },
@@ -143,11 +144,12 @@
             }
         }
     });
-    $('#video_upload').fileupload({
+  var jqXHR = $('#video_upload').fileupload({
         url: url2,
         dataType: 'json',
         //forceIframeTransport: true,
-        maxChunkSize: 100000000000, //100Gb
+//        maxChunkSize: 100000000000, //100Gb
+        maxFileSize: 100000000000,//100Gb
         fail: function (e, data) {
             alert('上传失败！');
             data.context = $("#uploadinfo").text('视频上传失败！');
@@ -166,9 +168,15 @@
                     progress + '%'
             );
             data.context = $("#uploadinfo").text('视频正在上传...');
+//            $('#cancel_button').css('display','block');
         }
 
     });
+//  $('button.cancel').click(function (e) {
+//      alert(jqXHR)
+//      jqXHR.abort();
+//      $("#uploadinfo").text('视频上传已取消!');
+//  });
     function submit_add_video() {
         $.ajax({
             url: "/edu_videos/upload",
