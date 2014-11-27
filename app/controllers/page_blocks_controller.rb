@@ -185,7 +185,7 @@ class PageBlocksController < ApplicationController
     if content.include? 'picture_list'
       len = content.scan('图片').length
       for i in 0..(len-1) do
-        if len > urls.size
+        if i >= urls.size
           str = content.sub!('图片', "<img src='#{urls[i-urls.size*(len / urls.size)]}' />")
         else
           str = content.sub!('图片', "<img src='#{urls[i]}' />")
@@ -208,7 +208,7 @@ class PageBlocksController < ApplicationController
 
       pc = content.scan('头像').length
       for j in 0..(pc-1) do
-        if pc > urls.size
+        if i >= urls.size
           doc = Doctor.find(urls[j-urls.size*(pc / urls.size)])
         else
           doc = Doctor.find(urls[j])
