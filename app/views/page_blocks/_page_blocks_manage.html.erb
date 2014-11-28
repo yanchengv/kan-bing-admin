@@ -39,11 +39,10 @@
         url: '/page_blocks/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: ['ID', '标题', '内容', '界面ID', '排版顺序', '状态', '是否显示'],
+        colNames: ['ID', '标题', '界面ID', '排版顺序', '状态', '是否显示'],
         colModel: [
             {name: 'id', index: 'id', align: "center", hidden: true},
             {name: 'name', index: 'name', align: "center"},
-            {name: 'content', index: 'content', align: "center", hidden: true, editrules: {edithidden: true} },
             {name: 'page_id', index: 'page_id', align: "center"},
             {name: 'position', index: 'position', align: "center"},
             { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
@@ -92,21 +91,23 @@
         editurl: '/page_blocks/oper_action',
         closeAfterAdd: true,
         pager: jQuery('#page_block'),
-        multiselect: true,
+        multiselect: false,
         rowNum: 20,
         altclass: 'altRowsColour',
         height: 'auto',
         caption: "界面区块管理"
     }).navGrid('#page_block', {
                 cloneToTop: true, add: false, edit: false,
-                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
+                deltext: "删除", deltitle: "删除", view: false, search: false, refreshtext: "刷新", refreshtitle: "刷新"},
             {
                 closeAfterEdit: true
             },//edit
             {
                 closeAfterAdd: true
             }//a
-    ).navButtonAdd('#page_block', { title: '编辑', buttonicon: "ui-icon-pencil", caption: '编辑', onClickButton: function () {
+    ).navButtonAdd('#page_block', { title: '查看', buttonicon: "ui-icon ui-icon-document", caption: '查看', onClickButton: function () {
+                view_page_block()
+            }, position: "first"}).navButtonAdd('#page_block', { title: '编辑', buttonicon: "ui-icon-pencil", caption: '编辑', onClickButton: function () {
                 edit_page_block()
             }, position: "first"}).navButtonAdd('#page_block', { title: '添加', caption: '添加', buttonicon: "ui-icon-plus", onClickButton: function () {
                 new_page_block()
@@ -119,10 +120,18 @@
         var id = jQuery("#list_page_block").jqGrid('getGridParam', 'selrow');
         if (!id) {
             alert('请选择编辑项！');
-        }
-        {
+        }else{
             var href = '/page_blocks/' + id + '/edit';
             window.location.replace(href);
         }
     }
+        function view_page_block(){
+            var id = jQuery("#list_page_block").jqGrid('getGridParam', 'selrow');
+            if (!id) {
+                alert('请选择查看项！');
+            }else{
+                var href = "/page_blocks/" + id;
+                window.location.replace(href);
+            }
+        }
 </script>
