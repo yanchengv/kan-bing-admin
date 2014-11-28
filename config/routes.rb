@@ -40,6 +40,20 @@ Rails.application.routes.draw do
       get 'get_ranks', to:'hospitals#hospital_rank'
     end
   end
+  resources :block_models do
+    collection do
+      get 'index_show', to: 'block_models#show_index'
+      post 'oper_action', to: 'block_models#oper_action'
+      post 'batch_delete', to: 'block_models#batch_delete'
+    end
+  end
+  resources :block_contents do
+    collection do
+      get 'index_show', to: 'block_contents#show_index'
+      post 'oper_action', to: 'block_contents#oper_action'
+      post 'batch_delete', to: 'block_contents#batch_delete'
+    end
+  end
   resources :edu_videos do
     collection do
       get 'index_show', to: 'edu_videos#show_index'
