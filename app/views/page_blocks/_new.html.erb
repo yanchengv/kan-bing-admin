@@ -13,17 +13,20 @@
       </div>
       <div class="clear"></div>
       <div class="field" style="margin-bottom:15px;">
-        <%= f.label '内容', :class => "CaptionTD" %>
-        <%= f.kindeditor :content, {
-                :allowFileManager => false,
-                :filterMode => false,
-                :owner_id => @page_block.id,
-                :editor_id => 'my_editor',
-                :window_onload => true,
-                :simple_mode => false,
-                :authenticity_token => form_authenticity_token,
-                uploadJson: "/home_pages/upload?authenticity_token=#{form_authenticity_token}"}
-        %>
+        <%= f.label '模版样式', :class => "CaptionTD" %>
+        <% @black_models = BlockModel.all %>
+        <select id="block_model_sel" name="content" onchange="show_content(this.value)" >
+          <option value="">---请选择---</option>
+          <% @black_models.each do |bm| %>
+          <option value="<%= bm.example %>"><%= bm.title%></option>
+          <% end %>
+        </select>
+      </div>
+      <div class="clear"></div>
+      <div class="field" style="margin-bottom:15px;">
+        <%= f.label '样式示例', :class => "CaptionTD" %>
+        <%#= f.text_area :content, :id => 'content', :style => 'visibility:hidden;'%>
+        <div id="show_model_example" style="width: auto; height: auto;"></div>
       </div>
       <div class="clear"></div>
       <div class="field font-yahei" style="margin-bottom:15px;">
@@ -36,4 +39,23 @@
       </div>
   <% end %>
 </div>
+<script>
+  function show_content(content){
+   /*   $.ajax({
+                  type: "get",
+                  url: '/block_models/' + id,
+                  data: 'text',
+                  success: function (data) {
+                      if (data.success == true) {
+                          jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show"}).trigger("reloadGrid");
+                      } else {
+                          alert('操作失败！');
+                      }
+                  }
+              }
+      );*/
+      document.getElementById('show_model_example').innerHTML = content;
+
+  }
+</script>
 
