@@ -27,12 +27,7 @@
       </div>
       <div class="clear"></div>
       <div class="field font-yahei" style="margin-bottom:15px;">
-        <%= f.label '所属界面', :class => "CaptionTD" %>
-        <%= f.select(:page_id, @home_pages.collect { |t| [t.name, t.id] }, {:include_blank => false}, :class => "select2-container FormElement ui-widget-content ui-corner-all") %>
-      </div>
-      <div class="clear"></div>
-      <div class="field font-yahei" style="margin-bottom:15px;">
-        <%= f.label '医生ids', :class => "CaptionTD" %>
+        <%= f.label '内容ids', :class => "CaptionTD" %>
         <input type="text" name="doctor_list">
       </div>
       <div class="clear"></div>
