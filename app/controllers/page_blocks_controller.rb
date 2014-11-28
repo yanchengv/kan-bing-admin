@@ -200,7 +200,7 @@ class PageBlocksController < ApplicationController
           else
             photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
           end
-          str = content.sub!('医生照片', "<a href='#' onclick='showDoctorPage(#{@doctor.id}, \"str\");return false;'><img alt='#{@doctor.name}' style='width:75px;height:99px' id='img_url' src='#{photo_url}' title='#{@doctor.name}'></a>")
+          str = content.sub!('医生照片', "<a href='#' onclick='showDoctorPage(#{@doctor.id}, \"str\");return false;' target='_blank'><img alt='#{@doctor.name}' style='width:75px;height:99px' id='img_url' src='#{photo_url}' title='#{@doctor.name}'></a>")
           .sub!('医生姓名', @doctor.name)
           .sub!('所属医院', @doctor.hospital.nil? ? '' : @doctor.hospital.name)
           .sub!('所属科室', @doctor.department.nil? ? '' : @doctor.department.name)
@@ -219,7 +219,7 @@ class PageBlocksController < ApplicationController
           else
             photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
           end
-          str = str.sub!('头像', "<a class='pl' href='#' onclick='showDoctorPage(#{doc.id}, \"\");return false;'><img alt='#{doc.name}' style='width:55px;height:77 px' onmouseover=\"change_doctor(
+          str = str.sub!('头像', "<a class='pl' href='#' onclick='showDoctorPage(#{doc.id}, \"\");return false;' target='_blank'><img alt='#{doc.name}' style='width:55px;height:77 px' onmouseover=\"change_doctor(
           '#{photo_url}',
               '#{doc.introduction}',
               '#{doc.name}',
