@@ -116,10 +116,10 @@ class DoctorsController < ApplicationController
   def show_index
     hos_id = current_user.hospital_id
     dep_id = current_user.department_id
-    if !params[:hos_id].nil? && params[:hos_id] != ''
+    if !params[:hos_id].nil? && params[:hos_id] != '' && params[:hos_id] != 'undefined'
       hos_id = params[:hos_id]
     end
-    if !params[:dep_id].nil? && params[:dep_id] != '' && params[:dep_id] != 'all'
+    if !params[:dep_id].nil? && params[:dep_id] != '' && params[:dep_id] != 'all' && params[:dep_id] != 'undefined'
       dep_id = params[:dep_id]
     end
     is_activated = params[:is_activated]
@@ -139,6 +139,20 @@ class DoctorsController < ApplicationController
     if !field.nil? && field!='' && !value.nil?
       @doctors_all =  @doctors_all.where("#{field} like ?", "%#{value}%")
     end
+    sql = 'true'
+    if params[:name] && params[:name] != ''
+      sql << " and name like '%#{params[:name]}%'"
+    end
+    if params[:email] && params[:email] != ''
+      sql << " and email like '%#{params[:email]}%'"
+    end
+    if params[:mobile_phone] && params[:mobile_phone] != ''
+      sql << " and mobile_phone like '%#{params[:mobile_phone]}%'"
+    end
+    if params[:credential_type_number] && params[:credential_type_number] != ''
+      sql << " and credential_type_number like '%#{params[:credential_type_number]}%'"
+    end
+    @doctors_all =  @doctors_all.where(sql)
     if is_activated=='0'
       @doctors_all =  @doctors_all.where(is_activated:0)
     end

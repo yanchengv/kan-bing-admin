@@ -5,7 +5,7 @@ class PatientsController < ApplicationController
   # GET /patients
   # GET /patients.json
 
-  def index         #含增删改查权限的 ############　删　################
+  def index
     @hospitals = nil
     @departments = nil
     if !current_user.hospital_id.nil? && current_user.hospital_id != ''
@@ -21,7 +21,7 @@ class PatientsController < ApplicationController
     render partial: 'patients/patient_manage'
   end
 
-  def index2
+  def index2          #含增删改查权限的 ############　删　################
 =begin
     menu_name='医院人员'
     @hospitals=Patient.new.manage_patients menu_name
@@ -47,10 +47,10 @@ class PatientsController < ApplicationController
   def show_index
     hos_id = current_user.hospital_id
     dep_id = current_user.department_id
-    if !params[:hos_id].nil? && params[:hos_id] != ''
+    if !params[:hos_id].nil? && params[:hos_id] != '' && params[:hos_id] != 'undefined'
       hos_id = params[:hos_id]
     end
-    if !params[:dep_id].nil? && params[:dep_id] != '' && params[:dep_id] != 'all'
+    if !params[:dep_id].nil? && params[:dep_id] != '' && params[:dep_id] != 'all' && params[:dep_id] != 'undefined'
       dep_id = params[:dep_id]
     end
     p dep_id
@@ -71,6 +71,20 @@ class PatientsController < ApplicationController
     if !field.nil? && field!='' && !value.nil?
       @patients_all =  @patients_all.where("#{field} like ?", "%#{value}%")
     end
+    sql = 'true'
+    if params[:name] && params[:name] != ''
+      sql << " and name like '%#{params[:name]}%'"
+    end
+    if params[:email] && params[:email] != ''
+      sql << " and email like '%#{params[:email]}%'"
+    end
+    if params[:mobile_phone] && params[:mobile_phone] != ''
+      sql << " and mobile_phone like '%#{params[:mobile_phone]}%'"
+    end
+    if params[:credential_type_number] && params[:credential_type_number] != ''
+      sql << " and credential_type_number like '%#{params[:credential_type_number]}%'"
+    end
+    @patients_all =  @patients_all.where(sql)
     if is_activated=='0'
       @patients_all =  @patients_all.where(is_activated:0)
     end
@@ -145,7 +159,7 @@ class PatientsController < ApplicationController
     render :json => @objJSON.as_json
   end
 
-  def show_index2
+  def show_index2                  #含增删改查权限的 ############　删　################
       # @patients = Patient.all
 =begin
     menu_name='医院人员'

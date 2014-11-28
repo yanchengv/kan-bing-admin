@@ -24,9 +24,11 @@ class EduVideosController < ApplicationController
       if !dep_id.nil? && dep_id != ''
         doc = "select id from doctors where hospital_id=#{hos_id} and department_id=#{dep_id}"
         @doctors = Doctor.select("id").where(hospital_id:hos_id,department_id:dep_id)
+        # sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
       else
         doc = "select id from doctors where hospital_id=#{hos_id}"
         @doctors = Doctor.select("id").where(hospital_id:hos_id)
+        # sql << " and hospital_id=#{hos_id}"
       end
       sql << " and doctor_id in ("+doc+")"
     end
@@ -85,6 +87,7 @@ class EduVideosController < ApplicationController
   #上传视频
   def upload_video
     file=params[:edu_video].nil? ? params[:video] : params[:edu_video][:video]
+    p file.original_filename
     tmpfile = getFileName(file.original_filename.to_s)
     uuid = upload_video_img_bucket(file)
     if true
@@ -100,6 +103,8 @@ class EduVideosController < ApplicationController
     para[:content]=params[:content]
     para[:video_url]=params[:video_url]
     para[:doctor_id]=params[:doctor_id]
+    para[:hospital_id]=current_user.hospital_id
+    para[:department_id]=current_user.department_id
     if !params[:doctor_id].nil?
       @doc = Doctor.find_by_id(params[:doctor_id])
       if !@doc.nil?
@@ -144,7 +149,17 @@ class EduVideosController < ApplicationController
 
   def new_video
     if !current_user.nil?
-      @doctors = Doctor.all
+      hos_id = current_user.hospital_id
+      dep_id = current_user.department_id
+      if !hos_id.nil? && hos_id != ''
+        if !dep_id.nil? && dep_id != ''
+          @doctors = Doctor.where(hospital_id:hos_id,department_id:dep_id)
+        else
+          @doctors = Doctor.where(hospital_id:hos_id)
+        end
+      else
+        @doctors = Doctor.all
+      end
       @types=VideoType.all
       @video=EduVideo.new
     end
@@ -153,7 +168,17 @@ class EduVideosController < ApplicationController
 
   def edit_video
     if !current_user.nil?
-      @doctors = Doctor.all
+      hos_id = current_user.hospital_id
+      dep_id = current_user.department_id
+      if !hos_id.nil? && hos_id != ''
+        if !dep_id.nil? && dep_id != ''
+          @doctors = Doctor.where(hospital_id:hos_id,department_id:dep_id)
+        else
+          @doctors = Doctor.where(hospital_id:hos_id)
+        end
+      else
+        @doctors = Doctor.all
+      end
       @types=VideoType.all
       @video=EduVideo.find(params[:id])
     end
