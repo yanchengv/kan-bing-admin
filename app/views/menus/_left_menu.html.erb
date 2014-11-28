@@ -308,10 +308,10 @@
               <%= render partial: 'home_pages/show' %>
           <% elsif @kindeditor == 'block_new' %>
               <%= render partial: 'page_blocks/new' %>
-          <% elsif @kindeditor == 'block_edit' %>
-              <%= render partial: 'page_blocks/edit' %>
-            <%else%>
+          <%elsif @kindeditor == 'page_edit' %>
               <%= render partial: 'home_pages/edit' %>
+          <% else %>
+              <%= render partial: 'page_blocks/edit' %>
           <% end %>
         </div>
     <%end%>

@@ -60,7 +60,7 @@ class HomePagesController < ApplicationController
   # GET /home_pages/1/edit
   def edit
     menu_list
-    @kindeditor=true
+    @kindeditor='page_edit'
     @hospitals = Hospital.all
     @departments = Department.all
   end

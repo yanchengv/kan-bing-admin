@@ -54,7 +54,7 @@ class PageBlocksController < ApplicationController
 
   # GET /page_blocks/1/edit
   def edit
-    @kindeditor='block_edit'
+    @kindeditor=true
     menu_list
     @home_pages = HomePage.all
   end
@@ -180,55 +180,58 @@ class PageBlocksController < ApplicationController
 
   #动态样式的添加
   def dynamic_style(content, urls)
-    urls = urls.split(',')
-    str = ''
-    if content.include? 'picture_list'
-      len = content.scan('图片').length
-      for i in 0..(len-1) do
-        if i >= urls.size
-          str = content.sub!('图片', "<img src='#{urls[i-urls.size*(len / urls.size)]}' />")
-        else
-          str = content.sub!('图片', "<img src='#{urls[i]}' />")
+    str = content
+    if !urls.nil? && !urls.empty? && urls != ''
+      urls = urls.split(',')
+      if content.include? 'picture_list'
+        len = content.scan('图片').length
+        for i in 0..(len-1) do
+          if i >= urls.size
+            str = str.sub!('图片', "<img src='#{urls[i-urls.size*(len / urls.size)]}' />")
+          else
+            str = str.sub!('图片', "<img src='#{urls[i]}' />")
+          end
         end
-      end
-    elsif content.include? 'doctor_list_d'
-      @doctor = Doctor.find(urls[0])
-      if @doctor
-        if @doctor.photo
-          photo_url = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{@doctor.photo}"
-        else
-          photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
+      elsif content.include? 'doctor_list_d'
+        @doctor = Doctor.find(urls[0])
+        if @doctor
+          if @doctor.photo
+            photo_url = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{@doctor.photo}"
+          else
+            photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
+          end
+          str = content.sub!('医生照片', "<a href='#' onclick='showDoctorPage(#{@doctor.id}, \"str\");return false;'><img alt='#{@doctor.name}' style='width:75px;height:99px' id='img_url' src='#{photo_url}' title='#{@doctor.name}'></a>")
+          .sub!('医生姓名', @doctor.name)
+          .sub!('所属医院', @doctor.hospital.nil? ? '' : @doctor.hospital.name)
+          .sub!('所属科室', @doctor.department.nil? ? '' : @doctor.department.name)
+          .sub!('医生简介', @doctor.introduction)
         end
-        str = content.sub!('医生照片', "<a href='#' onclick='showDoctorPage(#{@doctor.id}, \"str\");return false;'><img alt='#{@doctor.name}' style='width:75px;height:99px' id='img_url' src='#{photo_url}' title='#{@doctor.name}'></a>")
-                    .sub!('医生姓名', @doctor.name)
-                    .sub!('所属医院', @doctor.hospital.nil? ? '' : @doctor.hospital.name)
-                    .sub!('所属科室', @doctor.department.nil? ? '' : @doctor.department.name)
-                    .sub!('医生简介', @doctor.introduction)
-      end
 
-      pc = content.scan('头像').length
-      for j in 0..(pc-1) do
-        if i >= urls.size
-          doc = Doctor.find(urls[j-urls.size*(pc / urls.size)])
-        else
-          doc = Doctor.find(urls[j])
-        end
-        if doc.photo
-          photo_url = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doc.photo}"
-        else
-          photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
-        end
-        str = str.sub!('头像', "<a class='pl' href='#' onclick='showDoctorPage(#{doc.id}, \"\");return false;'><img alt='#{doc.name}' style='width:55px;height:77 px' onmouseover=\"change_doctor(
+        pc = content.scan('头像').length
+        for j in 0..(pc-1) do
+          if j >= urls.size
+            doc = Doctor.find(urls[j-urls.size*(pc / urls.size)])
+          else
+            doc = Doctor.find(urls[j])
+          end
+          if doc.photo
+            photo_url = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doc.photo}"
+          else
+            photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
+          end
+          str = str.sub!('头像', "<a class='pl' href='#' onclick='showDoctorPage(#{doc.id}, \"\");return false;'><img alt='#{doc.name}' style='width:55px;height:77 px' onmouseover=\"change_doctor(
           '#{photo_url}',
               '#{doc.introduction}',
               '#{doc.name}',
               '#{doc.hospital.nil? ? '' : doc.hospital.name}',
               '#{doc.department.nil? ? '' : doc.department.name}',
               #{doc.id});return false;\" src='#{photo_url}' title='#{doc.name}'></a>")
+        end
+      else
+        str = content
       end
-    else
-      str = content
     end
+
     return str
   end
 
