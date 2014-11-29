@@ -296,23 +296,25 @@
     <div class="zleftMenusBackground left" style="height:100%;float:left;width:14% !important;margin-top:0px !important;overflow:hidden;" id="homeLeftMenus">
       <ul id="leftMenus" class="ztree" style="width:100%;height:100%;overflow:hidden;margin-top:0px !important;"></ul>
     </div>
-    <%if @kindeditor.nil?%>
+    <%#if @kindeditor.nil?%>
     <div id="rightContent" style="float:right;width:84% !important;padding:10px;position:relative;">
       欢迎登录
     </div>
-    <%else%>
-        <div id="rightContent" style="float:right;width:84% !important;padding:10px;position:relative;">
-          <% if @kindeditor == 'block_show' %>
-              <%= render partial: 'page_blocks/show' %>
-          <% elsif @kindeditor == 'page_show' %>
-              <%= render partial: 'home_pages/show' %>
-          <% elsif @kindeditor == 'block_new' %>
-              <%= render partial: 'page_blocks/new' %>
-          <%elsif @kindeditor == 'page_edit' %>
-              <%= render partial: 'home_pages/edit' %>
-          <% else %>
-              <%= render partial: 'page_blocks/edit' %>
-          <% end %>
-        </div>
-    <%end%>
+    <%#else%>
+        <!--<div id="rightContent" style="float:right;width:84% !important;padding:10px;position:relative;">-->
+          <!--<%# if @kindeditor == 'block_show' %>-->
+              <!--<%#= render partial: 'page_blocks/show' %>-->
+          <!--<%# elsif @kindeditor == 'page_show' %>-->
+              <!--<%#= render partial: 'home_pages/show' %>-->
+          <!--<%# elsif @kindeditor == 'block_new' %>-->
+              <!--<%#= render partial: 'page_blocks/new' %>-->
+          <!--<%#elsif @kindeditor == 'page_edit' %>-->
+              <!--<%#= render partial: 'home_pages/edit' %>-->
+          <!--<%# elsif @kindeditor == 'contents_manage' %>-->
+              <!--<%#= render partial: 'block_contents/block_contents_manage' %>-->
+          <!--<%# else %>-->
+              <!--<%#= render partial: 'page_blocks/edit' %>-->
+          <!--<%# end %>-->
+        <!--</div>-->
+    <%#end%>
 <%end%>

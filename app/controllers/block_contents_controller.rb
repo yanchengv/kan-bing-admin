@@ -9,11 +9,7 @@ class BlockContentsController < ApplicationController
   end
 
   def show_index
-    sql = 'true'
-    if params[:version_num] && params[:version_num] != '' && params[:version_num] != 'null'
-      sql << " and version_num like '%#{params[:version_num]}%'"
-    end
-    @block_contents = BlockContent.where(sql)
+    @block_contents = BlockContent.where(:block_id => params[:block_id])
     count = @block_contents.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @block_contents = @block_contents.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
@@ -53,7 +49,7 @@ class BlockContentsController < ApplicationController
     if @block_content.save
       render :json => {:success => true}
     else
-      render :json=> {:success => false, :errors => '添加失败！'}
+      render :json => {:success => false, :errors => '添加失败！'}
     end
 
     #respond_to do |format|
@@ -65,6 +61,93 @@ class BlockContentsController < ApplicationController
     #    format.json { render json: @block_content.errors, status: :unprocessable_entity }
     #  end
     #end
+  end
+
+  #保存内容到区块
+  def save_content_to_block
+    @page_block = PageBlock.find(params[:block_id])
+    if @page_block
+      ids = params[:ids]
+      content = @page_block.content
+      if content.include? 'doctor_list_d'
+        @doctor = Doctor.find(ids[0])
+        if @doctor
+          if @doctor.photo
+            photo_url = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{@doctor.photo}"
+          else
+            photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
+          end
+          content = content.sub!('医生照片', "<a href='#' onclick='showDoctorPage(#{@doctor.id}, \"str\");return false;' target='_blank'><img alt='#{@doctor.name}' style='width:75px;height:99px' id='img_url' src='#{photo_url}' title='#{@doctor.name}'></a>")
+          .sub!('医生姓名', @doctor.name)
+          .sub!('所属医院', @doctor.hospital.nil? ? '' : @doctor.hospital.name)
+          .sub!('所属科室', @doctor.department.nil? ? '' : @doctor.department.name)
+          .sub!('医生简介', @doctor.introduction)
+        end
+        pc = content.scan('头像').length
+        for j in 0..(pc-1) do
+          if j >= urls.size
+            doc = Doctor.find(urls[j-urls.size*(pc / urls.size)])
+          else
+            doc = Doctor.find(urls[j])
+          end
+          if doc.photo
+            photo_url = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doc.photo}"
+          else
+            photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
+          end
+          content = content.sub!('头像', "<a class='pl' href='#' onclick='showDoctorPage(#{doc.id}, \"\");return false;' target='_blank'><img alt='#{doc.name}' style='width:55px;height:77 px' onmouseover=\"change_doctor(
+          '#{photo_url}',
+              '#{doc.introduction}',
+              '#{doc.name}',
+              '#{doc.hospital.nil? ? '' : doc.hospital.name}',
+              '#{doc.department.nil? ? '' : doc.department.name}',
+              #{doc.id});return false;\" src='#{photo_url}' title='#{doc.name}'></a>")
+        end
+
+      else
+        @block_contents = BlockContent.where(:block_id => @page_block.id)
+        cs = @block_contents.count
+        if content.include? 'title_list'
+          ts = content.scan('标题内容').length
+          puts "==========ts =#{ts}"
+          content = content.sub!('more', '')
+          for j in 0..(ts-1) do
+            if j >= cs
+              puts "=======#{j-cs.size*(ts / cs.size)}======"
+              block_content = @block_contents[j-cs.size*(ts / cs.size)]
+              content = content.sub!('<a>', "<a href='#{block_content.url}'").sub!('标题内容', block_content.title).sub!('时间', block_content.create_date.to_s)
+            else
+              block_content = @block_contents[0]
+              content = content.sub!('<a>', "<a href='#{block_content.url}'").sub!('标题内容', block_content.title).sub!('时间', block_content.create_date.to_s)
+            end
+          end
+        elsif @page_block.content.include? 'block_text'
+          content = content.sub!('more', '').sub!('内容编辑区', @block_contents.first.content )
+        elsif @page_block.content.include? 'picture_list'
+          len = content.scan('图片').length
+          for i in 0..(len-1) do
+            if i >= cs
+              content = content.sub!('图片', "<img src='#{@block_contents[i-cs.size*(len / cs.size)].url}' />")
+            else
+              content = content.sub!('图片', "<img src='#{@block_contents[i]}' />")
+            end
+          end
+        elsif @page_block.content.include? 'show_list'
+          len = content.scan('图片').length
+          for i in 0..(len-1) do
+            if i >= cs
+              block_content = @block_contents[i-cs.size*(len / cs.size)]
+              content = content.sub!('图片', "<img src='#{block_content.url}' />").sub!('名称', block_content.title).sub!('内容', block_content.content)
+            else
+              block_content = @block_contents[i]
+              content = content.sub!('图片', "<img src='#{block_content.url}' />").sub!('名称', block_content.title).sub!('内容', block_content.content)
+            end
+          end
+        end
+      end
+      @page_block.update_attributes(:content => str)
+    end
+    redirect_to :action => :show, :controller => 'page_blocks', :id => @page_block.id
   end
 
   # PATCH/PUT /block_contents/1
@@ -89,9 +172,9 @@ class BlockContentsController < ApplicationController
   # DELETE /block_contents/1
   # DELETE /block_contents/1.json
   def destroy
-   if @block_content.destroy
-     render :json => {:success => true}
-   end
+    if @block_content.destroy
+      render :json => {:success => true}
+    end
     #respond_to do |format|
     #  format.html { redirect_to block_contents_url, notice: 'Admin was successfully destroyed.' }
     #  format.json { head :no_content }
@@ -112,13 +195,13 @@ class BlockContentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_block_content
-      @block_content = BlockContent.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_block_content
+    @block_content = BlockContent.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def block_content_params
-      params.permit(:title, :content, :desc, :example)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def block_content_params
+    params.permit(:block_name, :title, :content, :url, :block_type, :create_date, :block_id)
+  end
 end

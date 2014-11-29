@@ -113,8 +113,15 @@
                 new_page_block()
             }, position: "first"});
     function new_page_block() {
-        var href = "/page_blocks/new"
-        window.location.replace(href);
+        $.ajax({
+            url: "/page_blocks/new",
+            type: 'get',
+            success: function (data) {
+                $('#rightContent').html(data)
+            }
+        })
+//        var href = "/page_blocks/new"
+//        window.location.replace(href);
     }
     function edit_page_block() {
         var id = jQuery("#list_page_block").jqGrid('getGridParam', 'selrow');

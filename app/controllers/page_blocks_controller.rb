@@ -40,16 +40,14 @@ class PageBlocksController < ApplicationController
   # GET /page_blocks/1
   # GET /page_blocks/1.json
   def show
-    menu_list
-    @kindeditor='block_show'
+   render :partial => 'page_blocks/show'
   end
 
   # GET /page_blocks/new
   def new
-    menu_list
-    @kindeditor='block_new'
     @page_block = PageBlock.new
     @home_pages = HomePage.all
+    render :partial => 'page_blocks/new'
   end
 
   # GET /page_blocks/1/edit
@@ -77,7 +75,6 @@ class PageBlocksController < ApplicationController
   # POST /page_blocks
   # POST /page_blocks.json
   def create
-    respond_to do |format|
       @page_block = PageBlock.new(page_block_params)
       if current_user
         @page_block.hospital_id = current_user.hospital_id
@@ -85,15 +82,25 @@ class PageBlocksController < ApplicationController
         @page_block.created_id = current_user.id
         @page_block.created_name = current_user.name
       end
-      @page_block.content = dynamic_style(@page_block.content, params[:doctor_list])
-      if @page_block.save
-        format.html { redirect_to @page_block, notice: 'PageBlock was successfully created.' }
-        format.json { render :show, status: :created, location: @page_block }
-      else
-        format.html { render :new }
-        format.json { render json: @page_block.errors, status: :unprocessable_entity }
+      if @page_block.content.include? '区块名称'
+        @page_block.content = @page_block.content.sub!('区块名称', @page_block.name)
       end
-    end
+      if @page_block.save
+        if @page_block.content.include? 'user_login'
+          redirect_to :action => :show, :id => @page_block.id
+        else
+          if @page_block.content.include? 'title_list' || (@page_block.content.include? 'block_text')
+            render :partial => 'block_contents/block_contents_manage', :object => @page_block
+
+          elsif @page_block.content.include? 'picture_list' || (@page_block.content.include? 'show_list')
+            render :partial => 'block_contents/picture_list_manage', :object => @page_block
+          else
+           render :partial => 'block_contents/block_doctors_manage', :object => @page_block
+          end
+        end
+      else
+        redirect_to :action => :new
+      end
   end
 
   # PATCH/PUT /page_blocks/1
@@ -103,7 +110,6 @@ class PageBlocksController < ApplicationController
       @page_block.updated_id = current_user.id
       @page_block.updated_name = current_user.name
     end
-    @page_block.content = dynamic_style(@page_block.content, params[:doctor_list])
     respond_to do |format|
       if @page_block.update(page_block_params)
         format.html { redirect_to @page_block, notice: 'PageBlock was successfully updated.' }
@@ -119,11 +125,12 @@ class PageBlocksController < ApplicationController
   def page_blocks_setting
     hospital_id=current_user.hospital_id
     department_id=current_user.hospital_id
-    @page_block=PageBlock.where('hospital_id=? AND department_id=? AND is_show=?',hospital_id,department_id,true).order(position: :asc)
+    @page_block=PageBlock.where('hospital_id=? AND department_id=? AND is_show=?', hospital_id, department_id, true).order(position: :asc)
     @hospital_id=hospital_id
     @department_id=department_id
     render partial: 'page_blocks/page_blocks_setting'
   end
+
   # 修改排版位置
   def update_position
     if !params[:pageBlogIds].nil?
@@ -135,7 +142,7 @@ class PageBlocksController < ApplicationController
     end
     hospital_id=params[:hospital_id]
     department_id=params[:department_id]
-    @page_block=PageBlock.where('hospital_id=? AND department_id=? AND is_show=?',hospital_id,department_id,true).order(position: :asc)
+    @page_block=PageBlock.where('hospital_id=? AND department_id=? AND is_show=?', hospital_id, department_id, true).order(position: :asc)
     @hospital_id=hospital_id
     @department_id=department_id
     render partial: 'page_blocks/page_blocks_setting'
@@ -238,7 +245,7 @@ class PageBlocksController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_page_block
-     @page_block = PageBlock.find(params[:id])
+    @page_block = PageBlock.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

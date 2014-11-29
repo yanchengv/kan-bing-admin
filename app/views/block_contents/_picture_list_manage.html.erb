@@ -1,0 +1,68 @@
+<div style="width: 100%">
+  <div style="margin-left: 20px;margin-right: 20px;">
+    <table id="block_content_pictures_list"></table>
+    <div id="page_block_content_pictures"></div>
+  </div>
+</div>
+<script type="text/javascript">
+    jQuery("#block_content_pictures_list").jqGrid({
+        url: '/block_contents/index_show?block_id=<%= @page_block.id%>',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '区块名称', '标题', '图片路径', '内容', '区块ID'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'block_name', index: 'block_name', align: "center", editable: true, editoptions: { defaultValue: "<%= @page_block.name%>", readonly: 'readonly'}},
+            { name: 'title', index: 'title', align: "center", editable: true},
+            { name: 'url', index: 'url', align: "center", editable: true},
+            { name: 'content', index: 'content', align: "center", editable: true},
+
+            { name: 'block_id', index: 'block_id', align: "center", editable: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
+        ],
+        rownumbers: true,
+        page: 1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "block_contents",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: '/block_contents/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_block_content_pictures'),
+        multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "区块内容管理"
+    });
+    jQuery("#block_content_pictures_list").jqGrid('navGrid', '#page_block_content_pictures', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+    );
+
+</script>

@@ -1,0 +1,86 @@
+<div style="width: 100%">
+  <div style="margin-left: 20px;margin-right: 20px;">
+    <table id="block_doctor_list"></table>
+    <div id="page_block_doctor"></div>
+  </div>
+</div>
+<script type="text/javascript">
+    jQuery("#block_doctor_list").jqGrid({
+        url: '/doctors/show_index',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: ['ID', '姓名首字母简拼', '姓名', '证件类型', '证件号码', '性别', '出生日期', '出生地', '婚姻状况', '省', '市', '医院', '科室', '国籍', '民族', '手机号', '邮箱', '职称', '职位', '学历', '专长', '毕业学校', '毕业时间'],
+        colModel: [
+//            {name:'act',index:'act', width:75,sortable:false},
+            {name: 'id', index: 'id', width: 120, sorttype: "int", hidden: true, search: false },
+            {name: 'spell_code', index: 'spell_code', width: 120, search: true, hidden: true, searchoptions: {searchhidden: true, sopt: ['in']}},
+            {name: 'name', index: 'name', width: 55, editable: true, searchoptions: { sopt: ['in']}},
+            {name: 'credential_type', index: 'credential_type', width: 100, editable: true, edittype: "select", editoptions: {value: "身份证:身份证;其他:其他"}, search: false },
+            {name: 'credential_type_number', index: 'credential_type_number', width: 180, editable: true, searchoptions: { sopt: ['in']}},
+            {name: 'gender', index: 'gender', width: 40, editable: true, search: false },
+            {name: 'birthday', index: 'birthday', width: 90, editable: true, search: false },
+            {name: 'birthplace', index: 'birthplace', width: 80, editable: true, search: false },
+            {name: 'marriage', index: 'marriage', width: 80, search: false, hidden: true, editrules: {edithidden: true}},
+            {name: 'province_name', index: 'province_name', width: 100, hidden: true, editable: true, search: false  },
+            {name: 'city_name', index: 'city_name', width: 100, hidden: true, editable: true, search: false },
+            {name: 'hospital_name', index: 'hospital_name', width: 100, editable: true, search: false  },
+            {name: 'department_name', index: 'department_name', width: 100, editable: true, search: false  },
+            {name: 'citizenship', index: 'citizenship', width: 100, search: false },
+            {name: 'nationality', index: 'nationality', width: 100, search: false },
+            {name: 'mobile_phone', index: 'mobile_phone', width: 100, align: "right", editable: true, searchoptions: { sopt: ['in']} },
+            {name: 'email', index: 'email', width: 130, align: "right", editable: true, searchoptions: { sopt: ['in']}},
+            {name: 'professional_title', index: 'professional_title', width: 80, align: "right", editable: true, search: false },
+            {name: 'position', index: 'position', width: 80, search: false, hidden: true, editrules: {edithidden: true}},
+            {name: 'degree', index: 'degree', width: 80, search: false, hidden: true, editrules: {edithidden: true}},
+            {name: 'expertise', index: 'expertise', width: 80, search: false, hidden: true, editrules: {edithidden: true}},
+            {name: 'graduated_from', index: 'graduated_from', width: 80, search: false, hidden: true, editrules: {edithidden: true}},
+            {name: 'graduated_at', index: 'graduated_at', width: 80, search: false, hidden: true, editrules: {edithidden: true}}
+//            {name:'introduction',index:'introduction', width:260, sortable:false}
+        ],
+        rownumbers: true,
+        page:1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "doctors",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: '/doctors/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_block_doctor'),
+        multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "区块医生管理"
+    });
+    jQuery("#block_doctor_list").jqGrid('navGrid', '#page_block_doctor', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+             );
+
+</script>

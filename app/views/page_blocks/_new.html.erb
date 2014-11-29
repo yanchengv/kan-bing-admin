@@ -5,57 +5,52 @@
   <!--<span class="pull-right btn btn-primary" style="margin-top:4px;margin-right:15px;"><%#= link_to '返回', notes_path %></span>-->
   <strong class="ui-jqdialog-title" >添加区块</strong></p>
 <div class="EditTable">
-  <%= form_for @page_block, :url => url_for(:controller => 'page_blocks', :action => 'create') do |f| %>
-      <% @home_pages = HomePage.all %>
       <div class="field pull-left font-yahei" style="margin-bottom:15px;margin-top:15px;margin-right:15px;">
-        <%= f.label '标题', :class => "CaptionTD" %>
-        <%= f.text_field :name, :class => 'FormElement ui-widget-content ui-corner-all' %>
+        <label class="CaptionTD">区块名称</label>
+        <input type="text" name="name" id="name" class="FormElement ui-widget-content ui-corner-all">
       </div>
-      <div class="clear"></div>
       <div class="field" style="margin-bottom:15px;">
-        <%= f.label '模版样式', :class => "CaptionTD" %>
-        <% @black_models = BlockModel.all %>
-        <select id="block_model_sel" name="content" onchange="show_content(this.value)" >
-          <option value="">---请选择---</option>
-          <% @black_models.each do |bm| %>
-          <option value="<%= bm.example %>"><%= bm.title%></option>
-          <% end %>
-        </select>
-      </div>
-      <div class="clear"></div>
-      <div class="field" style="margin-bottom:15px;">
-        <%= f.label '样式示例', :class => "CaptionTD" %>
-        <%#= f.text_area :content, :id => 'content', :style => 'visibility:hidden;'%>
-        <div id="show_model_example" style="width: auto; height: auto;"></div>
-      </div>
-      <div class="clear"></div>
-      <div class="field font-yahei" style="margin-bottom:15px;">
-        <%= f.label '内容ids', :class => "CaptionTD" %>
-        <input type="text" name="doctor_list">
+        <label class="CaptionTD">模版样式</label>
+        <div class="clear"></div>
+        <input type="radio" name="content" value="<%= BlockModel.find_by_title('登录').content%>">
+        <%= image_tag 'user_login.jpg'%>
+        <input type="radio" name="content" value="<%= BlockModel.find_by_title('标题列表').content %>">
+        <%= image_tag 'title_list.jpg' %>
+        <input type="radio" name="content" value="<%= BlockModel.find_by_title('文本显示').content %>">
+        <%= image_tag 'show_text.jpg' %>
+        <div class="clear"></div>
+        <input type="radio" name="content" value="<%= BlockModel.find_by_title('图片展示').content %>">
+        <%= image_tag 'show_pictures.jpg' %>
+        <div class="clear"></div>
+        <input type="radio" name="content" value="<%= BlockModel.find_by_title('医生展示').content %>">
+        <%= image_tag 'doctor_list.jpg' %>
+        <div class="clear"></div>
+        <input type="radio" name="content" value="<%= BlockModel.find_by_title('多院展示').content %>">
+        <%= image_tag 'show_hospitals.jpg' %>
       </div>
       <div class="clear"></div>
       <div class="actions">
-        <%= f.submit '保存', :class => 'fm-button ui-state-default ui-corner-all fm-button-icon-left ' %>
+        <button type="button" class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="submit_new()">保存</button>
       </div>
-  <% end %>
 </div>
 <script>
-  function show_content(content){
-   /*   $.ajax({
-                  type: "get",
-                  url: '/block_models/' + id,
-                  data: 'text',
-                  success: function (data) {
-                      if (data.success == true) {
-                          jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show"}).trigger("reloadGrid");
-                      } else {
-                          alert('操作失败！');
-                      }
-                  }
-              }
-      );*/
-      document.getElementById('show_model_example').innerHTML = content;
-
-  }
+    function submit_new() {
+        $.ajax({
+            url: "/page_blocks",
+            type: 'post',
+            data: {
+                page_block:{
+                    name: $('#name').val(),
+                    content: $('input[name="content"]:checked').val()
+                }
+            },
+            async: false,
+            success: function (data) {
+                $("#rightContent").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('区块添加失败!');
+            }
+        });
+    }
 </script>
-
