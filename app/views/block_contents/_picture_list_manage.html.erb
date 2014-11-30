@@ -3,6 +3,10 @@
     <table id="block_content_pictures_list"></table>
     <div id="page_block_content_pictures"></div>
   </div>
+  <br>
+  <div>
+    <button class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="save_content()">保存内容到对应的区块</button>
+  </div>
 </div>
 <script type="text/javascript">
     jQuery("#block_content_pictures_list").jqGrid({
@@ -63,6 +67,39 @@
             {
                 closeAfterAdd: true
             }//add
-    );
-
+    ).navButtonAdd('#page_block_content_pictures', { title: '新增', caption: '新增', onClickButton: function () {
+                picture_new();
+            }, position: "first"});
+    function picture_new(){
+        $.ajax({
+            url: "/block_contents/save_pic",
+            type: 'post',
+            data: {
+                block_id: <%= @page_block.id %>
+            },
+            async: false,
+            success: function (data) {
+                $("#rightContent").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('操作失败!');
+            }
+        });
+    }
+    function save_content(){
+        $.ajax({
+            url: "/block_contents/save_content_to_block",
+            type: 'post',
+            data: {
+                block_id: <%= @page_block.id %>
+            },
+            async: false,
+            success: function (data) {
+                $("#rightContent").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('区块添加失败!');
+            }
+        });
+    }
 </script>

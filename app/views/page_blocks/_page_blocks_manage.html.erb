@@ -128,8 +128,15 @@
         if (!id) {
             alert('请选择编辑项！');
         }else{
-            var href = '/page_blocks/' + id + '/edit';
-            window.location.replace(href);
+            $.ajax({
+                url: '/page_blocks/' + id + '/edit',
+                type: 'get',
+                success: function (data) {
+                    $('#rightContent').html(data)
+                }
+            })
+           /* var href = '/page_blocks/' + id + '/edit';
+            window.location.replace(href);*/
         }
     }
         function view_page_block(){

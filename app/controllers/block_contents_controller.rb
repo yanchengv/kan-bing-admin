@@ -85,10 +85,10 @@ class BlockContentsController < ApplicationController
         end
         pc = content.scan('头像').length
         for j in 0..(pc-1) do
-          if j >= urls.size
-            doc = Doctor.find(urls[j-urls.size*(pc / urls.size)])
+          if j >= ids.count
+            doc = Doctor.find(ids[j-ids.size*(pc / ids.size)])
           else
-            doc = Doctor.find(urls[j])
+            doc = Doctor.find(ids[j])
           end
           if doc.photo
             photo_url = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doc.photo}"
@@ -109,15 +109,13 @@ class BlockContentsController < ApplicationController
         cs = @block_contents.count
         if content.include? 'title_list'
           ts = content.scan('标题内容').length
-          puts "==========ts =#{ts}"
           content = content.sub!('more', '')
-          for j in 0..(ts-1) do
-            if j >= cs
-              puts "=======#{j-cs.size*(ts / cs.size)}======"
-              block_content = @block_contents[j-cs.size*(ts / cs.size)]
+          for m in 0..(ts-1) do
+            if m >= cs
+              block_content = @block_contents[m-cs*(ts / cs)]
               content = content.sub!('<a>', "<a href='#{block_content.url}'").sub!('标题内容', block_content.title).sub!('时间', block_content.create_date.to_s)
             else
-              block_content = @block_contents[0]
+              block_content = @block_contents[m]
               content = content.sub!('<a>', "<a href='#{block_content.url}'").sub!('标题内容', block_content.title).sub!('时间', block_content.create_date.to_s)
             end
           end
@@ -136,7 +134,7 @@ class BlockContentsController < ApplicationController
           len = content.scan('图片').length
           for i in 0..(len-1) do
             if i >= cs
-              block_content = @block_contents[i-cs.size*(len / cs.size)]
+              block_content = @block_contents[i-cs*(len / cs)]
               content = content.sub!('图片', "<img src='#{block_content.url}' />").sub!('名称', block_content.title).sub!('内容', block_content.content)
             else
               block_content = @block_contents[i]
@@ -167,6 +165,27 @@ class BlockContentsController < ApplicationController
     #    format.json { render json: @block_content.errors, status: :unprocessable_entity }
     #  end
     #end
+  end
+
+
+  def save_pic
+    @page_block = PageBlock.find(params[:block_id])
+    render :partial => 'block_contents/save_pic'
+  end
+
+  def save_pic_content
+    para={}
+    para[:title]=params[:title]
+    para[:content]=params[:content]
+    para[:url]=params[:url]
+    para[:block_id]=params[:block_id]
+
+    @page_block=PageBlock.new(para)
+    if @page_block.save
+      render :partial => 'block_contents/picture_list_manage',:block_id => params[:block_id]
+    else
+      render :partial => 'block_contents/save_pic'
+    end
   end
 
   # DELETE /block_contents/1

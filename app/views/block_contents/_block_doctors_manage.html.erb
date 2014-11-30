@@ -3,6 +3,10 @@
     <table id="block_doctor_list"></table>
     <div id="page_block_doctor"></div>
   </div>
+  <br>
+  <div>
+    <button class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="save_content()">保存内容到对应的区块</button>
+  </div>
 </div>
 <script type="text/javascript">
     jQuery("#block_doctor_list").jqGrid({
@@ -82,5 +86,27 @@
                 closeAfterAdd: true
             }//add
              );
+    function save_content(){
+        var ids = $('#block_doctor_list').jqGrid('getGridParam', 'selarrrow');
+        if (ids.length == 0) {
+            alert('请选择操作项！');
+        } else {
+            $.ajax({
+                url: "/block_contents/save_content_to_block",
+                type: 'post',
+                data: {
+                    block_id: <%= @page_block.id %> ,
+                    ids:ids
+                },
+                async: false,
+                success: function (data) {
+                    $("#rightContent").html(data);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('区块添加失败!');
+                }
+            });
+        }
+    }
 
 </script>

@@ -46,15 +46,19 @@ class PageBlocksController < ApplicationController
   # GET /page_blocks/new
   def new
     @page_block = PageBlock.new
-    @home_pages = HomePage.all
     render :partial => 'page_blocks/new'
   end
 
   # GET /page_blocks/1/edit
   def edit
-    @kindeditor=true
-    menu_list
-    @home_pages = HomePage.all
+      if @page_block.content.include? 'title_list' || (@page_block.content.include? 'block_text')
+        render :partial => 'block_contents/block_contents_manage', :object => @page_block
+
+      elsif @page_block.content.include? 'picture_list' || (@page_block.content.include? 'show_list')
+        render :partial => 'block_contents/picture_list_manage', :object => @page_block
+      else
+        render :partial => 'block_contents/block_doctors_manage', :object => @page_block
+      end
   end
 
   def page_blocks_manage
