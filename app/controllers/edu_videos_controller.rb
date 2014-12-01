@@ -1,5 +1,6 @@
 class EduVideosController < ApplicationController
-  before_filter :signed_in_user
+  before_filter :signed_in_user,:except => [:upload_video2]
+  skip_before_filter :verify_authenticity_token , :only => [:upload_video2]
   require 'rubygems'
   require 'mini_magick'
   require 'curb'
@@ -87,6 +88,18 @@ class EduVideosController < ApplicationController
   #上传视频
   def upload_video
     file=params[:edu_video].nil? ? params[:video] : params[:edu_video][:video]
+    p file.original_filename
+    tmpfile = getFileName(file.original_filename.to_s)
+    uuid = upload_video_img_bucket(file)
+    if true
+      render :json => {flag: true, url: uuid}
+    else
+      render :json => {flag: false, url: ''}
+    end
+  end
+
+  def upload_video2
+    file=params[:video]
     p file.original_filename
     tmpfile = getFileName(file.original_filename.to_s)
     uuid = upload_video_img_bucket(file)

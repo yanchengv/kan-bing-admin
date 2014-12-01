@@ -41,7 +41,15 @@ class MenusController < ApplicationController
           parent_name = menu.parent_menu.name
         end
         # @menu = {id:menu.id,name:menu.name,parent_name:parent_name,priorities:@per_names,uri:menu.uri}
-        @menu = {id:menu.id,name:menu.name,parent_name:parent_name,uri:menu.uri}
+        dep_flag='否'
+        hos_flag='否'
+        if menu.hos_admin_show
+          dep_flag='是'
+        end
+        if menu.dep_admin_show
+          hos_flag='是'
+        end
+        @menu = {id:menu.id,name:menu.name,parent_id:parent_name,uri:menu.uri,dep_admin_show:dep_flag,hos_admin_show:hos_flag}
         @menus.push(@menu)
       end
     end
@@ -381,11 +389,13 @@ class MenusController < ApplicationController
   def create
     name=params[:name]
     parent_id = params[:parent_id]
+    dep_admin_show = params[:dep_admin_show]
+    hos_admin_show = params[:hos_admin_show]
     @parent_menus = Menu.where(name:name,parent_id:parent_id)
     if name != ''
       if @parent_menus.empty?
         uri = params[:uri]
-        @menu = Menu.create(name:name,parent_id:parent_id,uri:uri)
+        @menu = Menu.create(name:name,parent_id:parent_id,uri:uri,dep_admin_show:dep_admin_show,hos_admin_show:hos_admin_show)
         @menu = {id:@menu.id,name:@menu.name,pId:@menu.parent_id,uri:@menu.uri}
         render :json => {success:true,data:@menu}
       else
@@ -483,29 +493,30 @@ class MenusController < ApplicationController
   # PATCH/PUT /menus/1.json
   def update
     @menu = Menu.find_by(id:params[:id])
-    name=params[:name]
-    hospital_id = params[:hospital_id]
-    department_id = params[:department_id]
-    parent_menu = Menu.where(id:params[:parent_name].to_i).first
-    if !parent_menu.nil?
-      parent_id = parent_menu.id
-    end
-    uri = params[:uri]
-    priority_ids  = params[:priorities].split(',')
-    if !@menu.nil?
-      @menu.update(name:name,parent_id:parent_id,uri:uri)
-      @menu_permissions = MenuPermission.where(menu_id: params[:id])
-      if !@menu_permissions.empty?
-        @menu_permissions.each do |menu_permission|
-          hospital_id = menu_permission.hospital_id
-          department_id = menu_permission.department_id
-          menu_permission.destroy
-        end
-      end
-      priority_ids.each do |priority_id|
-        MenuPermission.create(menu_id:@menu.id,hospital_id:hospital_id,department_id:department_id,priority_id:priority_id)
-      end
-    end
+    @menu.update(menu_params)
+    # name=params[:name]
+    # hospital_id = params[:hospital_id]
+    # department_id = params[:department_id]
+    # parent_menu = Menu.where(id:params[:parent_name].to_i).first
+    # if !parent_menu.nil?
+    #   parent_id = parent_menu.id
+    # end
+    # uri = params[:uri]
+    # priority_ids  = params[:priorities].split(',')
+    # if !@menu.nil?
+    #   @menu.update(name:name,parent_id:parent_id,uri:uri)
+    #   @menu_permissions = MenuPermission.where(menu_id: params[:id])
+    #   if !@menu_permissions.empty?
+    #     @menu_permissions.each do |menu_permission|
+    #       hospital_id = menu_permission.hospital_id
+    #       department_id = menu_permission.department_id
+    #       menu_permission.destroy
+    #     end
+    #   end
+    #   priority_ids.each do |priority_id|
+    #     MenuPermission.create(menu_id:@menu.id,hospital_id:hospital_id,department_id:department_id,priority_id:priority_id)
+    #   end
+    # end
     render :json => {:success => true}
     # if @menu.update(menu_params)
     #   render :json => {:success => true}
@@ -581,6 +592,6 @@ class MenusController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def menu_params
-      params.permit(:name, :parent_id,:uri, :table_name, :model_class)
+      params.permit(:name, :parent_id,:uri, :table_name, :model_class,:dep_admin_show,:hos_admin_show)
     end
 end
