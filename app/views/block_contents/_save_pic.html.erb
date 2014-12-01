@@ -14,11 +14,15 @@
         /*box-sizing: border-box;*/
     }
 </style>
+<br>
+<br>
+<br>
+<br>
     <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
     <input type=" text" name="image_url"  id='image_path' style='visibility:hidden;' >
     <table class="EditTable" style="margin-top: -80px;">
       <tr class="FormData">
-        <td class="CaptionTD">图片标题:</td>  <input type="hidden" id='block_id' name="block_id" value="<%= @page_block.id%>">
+        <td class="CaptionTD">图片标题:</td>  <input type="hidden" id='block_id' name="block_id" value="<%= @page_block.id %>">
         <td class="DataTD"><input type="text" id="title" name='title' class='FormElement ui-widget-content ui-corner-all'></td>
       </tr>
       <tr class="FormData">
@@ -87,7 +91,7 @@
             data: { title: $('#title').val(),
                     content:$('#content').val(),
                     url:$('#image_path').val(),
-                    block_id:$('#video_type_id').val()
+                    block_id:$('#block_id').val()
             },
             async: false,
             success: function (data) {

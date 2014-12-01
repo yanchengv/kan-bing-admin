@@ -54,6 +54,7 @@ Rails.application.routes.draw do
       post 'batch_delete', to: 'block_contents#batch_delete'
       post 'save_content_to_block', to: 'block_contents#save_content_to_block'
       post 'save_pic', to: 'block_contents#save_pic'
+      post 'save_pic_content', to: 'block_contents#save_pic_content'
     end
   end
   resources :edu_videos do
