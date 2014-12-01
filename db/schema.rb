@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141111071032) do
+ActiveRecord::Schema.define(version: 20141201071655) do
 
   create_table "admin2_menus", force: true do |t|
     t.integer  "admin2_id"
@@ -212,6 +212,27 @@ ActiveRecord::Schema.define(version: 20141111071032) do
     t.datetime "measure_time"
     t.string   "mdevice"
     t.boolean  "is_true"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "block_contents", force: true do |t|
+    t.string   "block_name"
+    t.string   "title"
+    t.text     "content"
+    t.string   "url"
+    t.string   "block_type"
+    t.date     "create_date"
+    t.integer  "block_id",    limit: 8
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "block_models", force: true do |t|
+    t.string   "title"
+    t.text     "content"
+    t.string   "desc"
+    t.text     "example"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -567,6 +588,15 @@ ActiveRecord::Schema.define(version: 20141111071032) do
     t.string   "path"
     t.string   "type"
     t.string   "stage",      default: "pre-operation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "domains", force: true do |t|
+    t.string   "name"
+    t.integer  "hospital_id",   limit: 8
+    t.integer  "department_id", limit: 8
+    t.string   "introduction"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
