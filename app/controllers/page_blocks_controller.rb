@@ -93,10 +93,13 @@ class PageBlocksController < ApplicationController
         if @page_block.content.include? 'user_login'
           redirect_to :action => :show, :id => @page_block.id
         else
-          if @page_block.content.include? 'title_list' || (@page_block.content.include? 'block_text')
+          if @page_block.content.include? 'title_list'
             render :partial => 'block_contents/block_contents_manage', :object => @page_block
-
-          elsif @page_block.content.include? 'picture_list' || (@page_block.content.include? 'show_list')
+          elsif @page_block.content.include? 'block_text'
+            render :partial => 'block_contents/block_contents_manage', :object => @page_block
+          elsif @page_block.content.include? 'picture_list'
+            render :partial => 'block_contents/picture_list_manage', :object => @page_block
+          elsif @page_block.content.include? 'show_list'
             render :partial => 'block_contents/picture_list_manage', :object => @page_block
           else
            render :partial => 'block_contents/block_doctors_manage', :object => @page_block

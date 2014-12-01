@@ -67,8 +67,8 @@ class BlockContentsController < ApplicationController
   def save_content_to_block
     @page_block = PageBlock.find(params[:block_id])
     if @page_block
-      ids = params[:ids]
       content = @page_block.content
+      ids = params[:ids]
       if content.include? 'doctor_list_d'
         @doctor = Doctor.find(ids[0])
         if @doctor
@@ -81,15 +81,10 @@ class BlockContentsController < ApplicationController
           .sub!('医生姓名', @doctor.name)
           .sub!('所属医院', @doctor.hospital.nil? ? '' : @doctor.hospital.name)
           .sub!('所属科室', @doctor.department.nil? ? '' : @doctor.department.name)
-          .sub!('医生简介', @doctor.introduction)
+          .sub!('医生简介', @doctor.introduction.nil? ? '' : @doctor.introduction)
         end
-        pc = content.scan('头像').length
-        for j in 0..(pc-1) do
-          if j >= ids.count
-            doc = Doctor.find(ids[j-ids.size*(pc / ids.size)])
-          else
-            doc = Doctor.find(ids[j])
-          end
+        ids.each do |id|
+          doc = Doctor.find(id)
           if doc.photo
             photo_url = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doc.photo}"
           else
@@ -103,49 +98,31 @@ class BlockContentsController < ApplicationController
               '#{doc.department.nil? ? '' : doc.department.name}',
               #{doc.id});return false;\" src='#{photo_url}' title='#{doc.name}'></a>")
         end
-
       else
         @block_contents = BlockContent.where(:block_id => @page_block.id)
-        cs = @block_contents.count
         if content.include? 'title_list'
-          ts = content.scan('标题内容').length
-          content = content.sub!('more', '')
-          for m in 0..(ts-1) do
-            if m >= cs
-              block_content = @block_contents[m-cs*(ts / cs)]
-              content = content.sub!('<a>', "<a href='#{block_content.url}'").sub!('标题内容', block_content.title).sub!('时间', block_content.create_date.to_s)
-            else
-              block_content = @block_contents[m]
-              content = content.sub!('<a>', "<a href='#{block_content.url}'").sub!('标题内容', block_content.title).sub!('时间', block_content.create_date.to_s)
-            end
+          content = content.sub!('more', ' ')
+          @block_contents.each do |block_content|
+            content = content.sub!('<a>', '<a href="'<<block_content.url<<'" >').sub!('标题内容', block_content.title).sub!('时间', block_content.create_date.to_s)
           end
-        elsif @page_block.content.include? 'block_text'
-          content = content.sub!('more', '').sub!('内容编辑区', @block_contents.first.content )
+        elsif content.include? 'block_text'
+          content = content.sub!('more', ' ').sub!('内容编辑区', @block_contents.first.content )
         elsif @page_block.content.include? 'picture_list'
-          len = content.scan('图片').length
-          for i in 0..(len-1) do
-            if i >= cs
-              content = content.sub!('图片', "<img src='#{@block_contents[i-cs.size*(len / cs.size)].url}' />")
-            else
-              content = content.sub!('图片', "<img src='#{@block_contents[i]}' />")
-            end
+          @block_contents.each do |block_content|
+            content = content.sub!('图片', '<img src="'<<block_content.url<<'"/>')
           end
         elsif @page_block.content.include? 'show_list'
-          len = content.scan('图片').length
-          for i in 0..(len-1) do
-            if i >= cs
-              block_content = @block_contents[i-cs*(len / cs)]
-              content = content.sub!('图片', "<img src='#{block_content.url}' />").sub!('名称', block_content.title).sub!('内容', block_content.content)
-            else
-              block_content = @block_contents[i]
-              content = content.sub!('图片', "<img src='#{block_content.url}' />").sub!('名称', block_content.title).sub!('内容', block_content.content)
-            end
+          @block_contents.each do |block_content|
+            content = content.sub!('图片', '<img src="'<<block_content.url<<'" />').sub!('名称', block_content.title).sub!('内容', block_content.content)
           end
         end
       end
-      @page_block.update_attributes(:content => str)
+      sql = ActiveRecord::Base.connection()
+      sql.update "update page_blocks set content = '#{content}' where id = #{@page_block.id}"
+      redirect_to :action => :show, :controller => 'page_blocks', :id => @page_block.id
+    else
+      redirect_to :action => :show, :controller => 'page_blocks', :id => @page_block.id
     end
-    redirect_to :action => :show, :controller => 'page_blocks', :id => @page_block.id
   end
 
   # PATCH/PUT /block_contents/1
@@ -180,8 +157,9 @@ class BlockContentsController < ApplicationController
     para[:url]=params[:url]
     para[:block_id]=params[:block_id]
 
-    @page_block=PageBlock.new(para)
-    if @page_block.save
+    @block_content=BlockContent.new(para)
+    @page_block = PageBlock.find(params[:block_id])
+    if @block_content.save
       render :partial => 'block_contents/picture_list_manage',:block_id => params[:block_id]
     else
       render :partial => 'block_contents/save_pic'
