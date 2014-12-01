@@ -292,6 +292,17 @@ Rails.application.routes.draw do
     end
   end
 
+  resource :domain do
+    collection do
+        post 'create',to:'domain#create'
+        get 'destroy',to:'domain#destroy'
+        post 'update',to:'domain#update'
+       get 'show',to:'domain#show'
+      get 'domain_list',to:'domain#domain_list'
+      post 'oper_action',to:'domain#oper_action'
+    end
+  end
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

@@ -1,0 +1,195 @@
+<div style="width: 100%">
+  <div style="margin-left: 20px;">
+    <table id="list_domain"></table>
+    <div id="domain_block"></div>
+
+  </div>
+</div>
+
+<!--添加域名彈出框-->
+<div id="domain_consoleDlg">
+  <div id="domain_form" >
+      <input type="text" name="name" id="domainName">
+    <div id="domain_blank"></div>
+  </div>
+</div>
+
+<!--修改域名彈出框-->
+<div id="domain_update_consoleDlg">
+  <div id="domain_update_form" >
+    <input type="text" name="name" id="domainUpdateName">
+    <div id="domain_update_blank"></div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  //添加
+      $("#domain_consoleDlg").dialog({    //初始化对话框
+          autoOpen: false,
+          modal: false,    // 设置对话框为模态（modal）对话框
+          resizable: true,
+          width: 250,
+          position: {
+              my: "center",
+              at: "center",
+              of: window,
+              collision: "fit",
+              // Ensure the titlebar is always visible
+              using: function( pos ) {
+                  console.log(pos.top)
+                  var topOffset = $( this ).css( pos ).offset().top;
+                  console.log(topOffset)
+                  if ( topOffset < 0 ) {
+                      $( this ).css( "top", pos.top - topOffset );
+                  }else {
+                      $( this ).css( "top", 100 );
+                  }
+              }
+          },
+          buttons: {  // 为对话框添加按钮
+              "确定": create,
+              "取消": function() {$("#domain_consoleDlg").dialog("close")}
+          }
+      });
+//修改
+  $("#domain_update_consoleDlg").dialog({    //初始化对话框
+      autoOpen: false,
+      modal: false,    // 设置对话框为模态（modal）对话框
+      resizable: true,
+      width: 250,
+      position: {
+          my: "center",
+          at: "center",
+          of: window,
+          collision: "fit",
+          // Ensure the titlebar is always visible
+          using: function( pos ) {
+              console.log(pos.top)
+              var topOffset = $( this ).css( pos ).offset().top;
+              console.log(topOffset)
+              if ( topOffset < 0 ) {
+                  $( this ).css( "top", pos.top - topOffset );
+              }else {
+                  $( this ).css( "top", 100 );
+              }
+          }
+      },
+      buttons: {  // 为对话框添加按钮
+          "确定": updateDomain,
+          "取消": function() {$("#domain_update_consoleDlg").dialog("close")}
+      }
+  });
+
+
+      function create(){
+         var domainName= $("#domainName").val();
+          if  (domainName==""){
+                 alert("不能为空")
+          }else{
+              $.ajax({
+                  url:'domain/create',
+                  data:{name:domainName},
+                  type:'post',
+                  success:function(data){
+                      $("#domainName").val("")
+                      $("#domain_consoleDlg").dialog("close")
+                      jQuery("#list_domain").jqGrid('setGridParam', {url: "/domain/domain_list" }).trigger("reloadGrid")
+
+                  }
+              })
+          }
+
+      };
+
+      function updateDomain(){
+          var id = jQuery("#list_domain").jqGrid('getGridParam', 'selrow');
+          var domainName= $("#domainUpdateName").val();
+          if  (domainName==""){
+              alert("不能为空")
+          }else{
+              $.ajax({
+                  url:'domain/update',
+                  data:{name:domainName,id:id},
+                  type:'post',
+                  success:function(data){
+                      $("#domainUpdateName").val("")
+                      $("#domain_update_consoleDlg").dialog("close")
+                      jQuery("#list_domain").jqGrid('setGridParam', {url: "/domain/domain_list" }).trigger("reloadGrid")
+                  }
+              })
+          }
+      }
+
+//  table list
+    jQuery("#list_domain").jqGrid({
+        url: '/domain/domain_list',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: ['ID', '域名',  '医院', '科室'],
+        colModel: [
+            {name: 'id', index: 'id', align: "center", hidden: true},
+            {name: 'name', index: 'name', align: "center"},
+            {name: 'hospital_id', index: 'hospital_id', align: "center", hidden: true},
+            {name: 'department_id', index: 'department_id', align: "center", hidden: true}
+        ],
+        rowList: [10, 20, 30],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        rownumbers: true,
+        page: 1,
+        jsonReader: {
+            root: "data",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: '/domain/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#domain_block'),
+        multiselect: false,
+        rowNum: 20,
+        altclass: 'altRowsColour',
+        height: 'auto',
+        caption: "域名管理"
+    }).navGrid('#domain_block', {
+                cloneToTop: true, add: false, edit: false,
+                deltext: "删除", deltitle: "删除", view: false, search: false, refreshtext: "刷新", refreshtitle: "刷新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//a
+    ).navButtonAdd('#domain_block', { title: '编辑', buttonicon: "ui-icon-pencil", caption: '编辑', onClickButton: function () {
+                var domain_update_consoleDlg = $("#domain_update_consoleDlg");
+                domain_update_consoleDlg.dialog("option", "title", "修改域名").dialog("open");
+                var id = jQuery("#list_domain").jqGrid('getGridParam', 'selrow');
+                var name = $('#list_domain').jqGrid('getRowData', id).name
+                $("#domainUpdateName").val(name);
+            }, position: "first"}
+    ).navButtonAdd('#domain_block', { title: '添加', caption: '添加', buttonicon: "ui-icon-plus", onClickButton: function () {
+                var domain_consoleDlg = $("#domain_consoleDlg");
+                domain_consoleDlg.dialog("option", "title", "添加域名").dialog("open");
+
+            }, position: "first"});
+
+
+
+
+
+
+</script>
