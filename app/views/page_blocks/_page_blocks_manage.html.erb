@@ -3,6 +3,8 @@
     <table id="list_page_block"></table>
     <div id="page_block"></div>
   </div>
+
+  <!--<input type="button" value="保存" id="block_tem">-->
 </div>
 
 <script type="text/javascript">
@@ -148,4 +150,29 @@
                 window.location.replace(href);
             }
         }
+</script>
+
+
+<script>
+ /*   $("#block_tem").click(function(){
+        $.ajax({
+            type:'get',
+            url:'page_blocks/get_template',
+//            dataType:'json',
+            success:function(data,response){
+                alert(data)
+                $.ajax({
+                    type:'post',
+                    url:'page_blocks/save_template',
+                    data:{data:data},
+                    dataType:'json',
+                    success:function(data,response){
+                         alert("suceess")
+                    }
+                })
+            }
+        })
+    })
+*/
+
 </script>

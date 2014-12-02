@@ -1,0 +1,174 @@
+
+<!--title_list-->
+ <% if !@block_content.nil?%>
+<div class="index_model_box_3_1">
+  <div class="index_model_title">
+    <h3 class="fl"><%=@block_contents.first.block_name%></h3>
+    <span class="fr index_model_more">more</span>
+  </div>
+  <!--文章列表-->
+  <ul class="index_model_article">
+    <% @block_contents.each do |block_content|%>
+    <li>
+      <!--<a href=#{block_content.url}>-->
+      <a>
+        <span class="fr index_model_date"><%= block_content.create_date%></span>
+        <span class="fl index_model_blue_dot"><%=block_content.content %></span>
+      </a>
+    </li>
+    <div style="clear:both;"></div>
+
+     <%end%>
+
+
+  </ul>
+</div>
+ <%else%>
+    <!--空模版-->
+    <div class="index_model_box_3_1">
+      <div class="index_model_title">
+        <h3 class="fl">区块名称</h3>
+        <span class="fr index_model_more">more</span>
+      </div>
+      <!--文章列表-->
+      <ul class="index_model_article">
+        <li>
+          <a>
+            <span class="fr index_model_date">时间</span>
+            <span class="fl index_model_blue_dot">标题内容</span>
+          </a>
+        </li>
+        <div style="clear:both;"></div>
+      </ul>
+    </div>
+ <%end%>
+<style>
+    .index_model_box_3_1 {
+        width: 388px;
+        height: 222px;
+        overflow: hidden;
+        border: 1px solid #e8e8e8;
+        background: #fff;
+        padding: 15px;
+        margin: 5px;
+        float: left;
+    }
+
+    /*屏幕尺寸大于1200px */
+    @media (min-width: 1200px) {
+
+        .index_model_box_3_1 {
+            width: 388px;
+            min-height: 222px;
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            padding: 15px;
+            margin: 5px;
+            float: left;
+        }
+    }
+
+    /*屏幕尺寸小于960px*/
+    @media (max-width: 960px) {
+
+        .index_model_box_3_1 {
+            width: 33%;
+            height: 222px;
+            overflow: hidden;
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            padding: 15px;
+            margin: 5px;
+            float: left;
+        }
+    }
+
+    /*屏幕尺寸小于480px*/
+    @media (max-width: 683px) {
+        .index_model_box_3_1 {
+            width: 100%;
+            overflow: hidden;
+            height: 222px;
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            padding: 15px;
+            margin: 5px;
+            float: left;
+        }
+    }
+    /*文章列表*/
+    .index_model_article a .index_model_blue_dot{
+        background: url('http://note-upload.oss-cn-beijing.aliyuncs.com/eb981130-ae1c-46d0-b9ed-7881f12f2ab6.png') no-repeat left center;
+        padding-left: 15px;
+        width: 80%;
+        font-size: 13px;
+        color: #666;
+        font-family: "Microsoft YaHei", Arial;
+    }
+
+    .index_model_article a .index_model_blue_dot:hover {
+        background: url('http://note-upload.oss-cn-beijing.aliyuncs.com/85f0bf6d-20fe-4527-a6f0-f19f63373a82.png') no-repeat left center;
+        padding-left: 15px;
+        font-family: "Microsoft YaHei", Arial;
+    }
+
+    .index_model_article {
+        margin-top: 10px;
+    }
+
+    .index_model_article li {
+        line-height: 30px;
+        font-size: 13px;
+    }
+
+    .index_model_article li a {
+        font-size: 13px;
+    }
+
+    .index_model_article a .index_model_date {
+        color: #999999;
+        font-size: 12px;
+        font-family: "Microsoft YaHei", Arial;
+    }
+
+    /*模块标题*/
+    .index_model_title {
+        height: 30px;
+        line-height: 30px;
+        border-bottom: 1px dotted #e4e9f0;
+    }
+
+    .index_model_title h3 {
+        height: 30px;
+        line-height: 30px;
+        font-family: "Microsoft YaHei", Arial;
+        font-size: 20px;
+        font-weight: bold;
+        color:#000;
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+        border-bottom: 2px solid #1fa0d8;
+    }
+
+    .index_model_more {
+        color: #666;
+    }
+
+    ul li {
+        list-style: none;
+    }
+
+    ul, li, div {
+        margin: 0;
+        padding: 0;
+    }
+
+    .fr {
+        float: right;
+    }
+
+    .fl {
+        float: left;
+    }
+</style>
