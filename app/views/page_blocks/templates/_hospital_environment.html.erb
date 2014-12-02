@@ -1,0 +1,111 @@
+<!--show_list-->
+<% if !@block_contents.nil?%>
+<div class="index_model_box_1_1">
+  <% @block_contents.each do |block_content|%>
+      <dl class="index_img_box">
+        <dt><img src=<%=block_content.url %></dt>
+        <dd><b><%=block_content.title %></b><br/>
+          <%=block_content.content %>
+        </dd>
+      </dl>
+  <%end%>
+</div>
+<%else%>
+    <div class="index_model_box_1_1">
+      <dl class="index_img_box">
+        <dt>图片</dt>
+        <dd><b>名称</b><br/>
+          内容
+        </dd>
+      </dl>
+
+      <dl class="index_img_box">
+        <dt>图片</dt>
+        <dd><b>名称</b><br/>
+          内容
+        </dd>
+      </dl>
+
+      <dl class="index_img_box">
+        <dt>图片</dt>
+        <dd><b>名称</b><br/>
+          内容
+        </dd>
+      </dl>
+    </div>
+    <%end%>
+
+<style>
+    .index_model_box_1_1 {
+        width: 1188px;
+        height: 300px;
+        overflow: hidden;
+        border: 1px solid #e8e8e8;
+        background: #fff;
+        padding: 15px;
+        margin: 5px;
+        float: left;
+    }
+
+    @media (min-width: 1200px) {
+        .index_model_box_1_1 {
+            width: 1188px;
+            min-height: 300px;
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            padding: 15px;
+            margin: 5px;
+            float: left;
+        }
+    }
+
+    @media (max-width: 960px) {
+        .index_model_box_1_1 {
+            width: 98%;
+            height: 300px;
+            overflow: hidden;
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            padding: 15px;
+            margin: 5px;
+            float: left;
+        }
+    }
+
+    @media (max-width: 683px) {
+        .index_model_box_1_1 {
+            width: 100%;
+            overflow: hidden;
+            height: auto;
+            min-height: 222px;
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            padding: 15px;
+            margin: 5px;
+            float: left;
+        }
+    }
+    .index_img_box {
+        width: 33%;
+        float: left;
+        padding: 5px;
+    }
+
+    .index_img_box dd {
+        font-family: "Microsoft YaHei", verdana, Arial;
+        color: #666;
+    }
+
+    .index_img_box dd b {
+        font-family: "Microsoft YaHei", verdana, Arial;
+        font-weight: bold;
+        color: #666;
+    }
+
+    .index_img_box dt img {
+        width: 100% !important;
+        height: auto;
+    }
+</style>
+</body>
+</html>

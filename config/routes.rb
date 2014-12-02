@@ -97,6 +97,9 @@ Rails.application.routes.draw do
       post 'update_position',to:'page_blocks#update_position'
       get 'page_blocks_setting',to:'page_blocks#page_blocks_setting'
       post 'change_is_show', to: 'page_blocks#change_is_show'
+      get 'get_template',to:'page_blocks#get_template'
+      get 'add_content',to:'page_blocks#add_content_template'
+      post 'save_template',to:'page_blocks#add_content_template'
     end
   end
   resources :apk_versions do

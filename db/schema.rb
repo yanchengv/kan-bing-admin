@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141201071655) do
+ActiveRecord::Schema.define(version: 20141202053932) do
 
   create_table "admin2_menus", force: true do |t|
     t.integer  "admin2_id"
@@ -43,10 +43,10 @@ ActiveRecord::Schema.define(version: 20141201071655) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "photo"
+    t.string   "email"
     t.integer  "hospital_id",            limit: 8
     t.integer  "department_id",          limit: 8
     t.string   "admin_type"
-    t.string   "email"
   end
 
   add_index "admin2s", ["confirmation_token"], name: "index_admin2s_on_confirmation_token", unique: true, using: :btree
@@ -60,31 +60,6 @@ ActiveRecord::Schema.define(version: 20141201071655) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "admins", force: true do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
-    t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "admins", ["email"], name: "index_admins_on_email", unique: true, using: :btree
-  add_index "admins", ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true, using: :btree
-
-  create_table "admins_roles", id: false, force: true do |t|
-    t.integer "admin_id"
-    t.integer "role_id"
-  end
-
-  add_index "admins_roles", ["admin_id", "role_id"], name: "index_admins_roles_on_admin_id_and_role_id", using: :btree
 
   create_table "apk_versions", force: true do |t|
     t.string   "version_num"
@@ -705,6 +680,8 @@ ActiveRecord::Schema.define(version: 20141201071655) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "video_type_id"
+    t.integer  "hospital_id",   limit: 8
+    t.integer  "department_id", limit: 8
   end
 
   add_index "edu_videos", ["video_type_id"], name: "index_edu_videos_on_video_type_id", using: :btree
@@ -754,6 +731,27 @@ ActiveRecord::Schema.define(version: 20141201071655) do
     t.string   "action"
     t.boolean  "disabled",     default: false
     t.integer  "viewpanel_id",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "group_users", force: true do |t|
+    t.integer  "group_id",             null: false
+    t.integer  "user_id",    limit: 8, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "groups", force: true do |t|
+    t.string   "name"
+    t.string   "desc"
+    t.string   "photo"
+    t.string   "web_site"
+    t.integer  "create_user_id", limit: 8
+    t.string   "create_user"
+    t.integer  "expert_count"
+    t.integer  "hospital_id",    limit: 8
+    t.integer  "sort"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -923,6 +921,25 @@ ActiveRecord::Schema.define(version: 20141201071655) do
     t.text     "study_body"
   end
 
+  create_table "item_users", force: true do |t|
+    t.integer  "user_id",    limit: 8
+    t.integer  "item_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "items", force: true do |t|
+    t.string   "name"
+    t.text     "desc"
+    t.string   "photo"
+    t.integer  "user_id"
+    t.string   "create_user"
+    t.integer  "group_id"
+    t.string   "group_name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "kindeditor_assets", force: true do |t|
     t.string   "asset"
     t.integer  "file_size"
@@ -1061,6 +1078,8 @@ ActiveRecord::Schema.define(version: 20141201071655) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_show"
+    t.boolean  "dep_admin_show"
+    t.boolean  "hos_admin_show"
   end
 
   create_table "message_likes", force: true do |t|
@@ -1356,6 +1375,7 @@ ActiveRecord::Schema.define(version: 20141201071655) do
     t.datetime "updated_at"
     t.integer  "position",                  default: 0
     t.boolean  "is_show",                   default: false
+    t.string   "block_type"
   end
 
   create_table "patient_surgery_risks", force: true do |t|
@@ -1429,16 +1449,6 @@ ActiveRecord::Schema.define(version: 20141201071655) do
     t.datetime "updated_at"
   end
 
-  create_table "permissions", force: true do |t|
-    t.string   "action"
-    t.string   "subject_class"
-    t.integer  "role_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "permissions", ["action", "subject_class", "role_id"], name: "index_permissions_on_action_and_subject_class_and_role_id", using: :btree
-
   create_table "pregnancy_knowledges", force: true do |t|
     t.integer  "parent_id"
     t.string   "title"
@@ -1510,17 +1520,6 @@ ActiveRecord::Schema.define(version: 20141201071655) do
     t.integer "role2_id"
     t.integer "menu_permission_id"
   end
-
-  create_table "roles", force: true do |t|
-    t.string   "name"
-    t.integer  "resource_id"
-    t.string   "resource_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
-  add_index "roles", ["name"], name: "index_roles_on_name", using: :btree
 
   create_table "schedule_templates", force: true do |t|
     t.integer  "doctor_id",  limit: 8
@@ -1614,7 +1613,7 @@ ActiveRecord::Schema.define(version: 20141201071655) do
     t.string   "assistant_doctor_id"
     t.boolean  "is_emgency"
     t.integer  "doctor_advice_id",          limit: 8
-    t.datetime "apply_time",                                                   default: '2014-11-26 14:01:30'
+    t.datetime "apply_time",                                                   default: '2014-12-02 13:53:40'
     t.integer  "apply_doctor_id",           limit: 8
     t.text     "notes"
     t.integer  "arranger_doctor_id",        limit: 8

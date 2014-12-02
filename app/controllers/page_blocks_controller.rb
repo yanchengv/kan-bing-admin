@@ -37,6 +37,24 @@ class PageBlocksController < ApplicationController
     end
   end
 
+
+  def get_template
+    # block_name=params[:block_name]
+    block_name='anlizongshu'
+    render partial: "page_blocks/templates/#{block_name}"
+  end
+
+  def add_content_template
+    @block_contents=BlockContent.all
+    render partial: 'page_blocks/templates/anlizongshu'
+  end
+
+  def save_template
+    data= params[:data]
+    @page_block=PageBlock.new(name:'test',content:data)
+    @page_block.save
+    render json:'success'
+  end
   # GET /page_blocks/1
   # GET /page_blocks/1.json
   def show
