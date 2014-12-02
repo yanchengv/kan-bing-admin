@@ -83,7 +83,7 @@ class PageBlocksController < ApplicationController
     elsif block_type == 'hospital_environment'
       render :partial => 'block_contents/picture_list_manage'
     elsif block_type == 'jianjie'
-      render :partial => 'block_contents/picture_list_manage'
+      render :partial => 'block_contents/block_contents_manage'
     end
   end
   # GET /page_blocks/1
