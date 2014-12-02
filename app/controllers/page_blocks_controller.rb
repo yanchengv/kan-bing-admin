@@ -48,8 +48,6 @@ class PageBlocksController < ApplicationController
     @page_block=PageBlock.where(id:page_block_id).first
     block_type=@page_block.block_type #block_type必须是模版的名称
     @block_contents=BlockContent.where(block_id:page_block_id)
-    p 888888888888888888888
-    p @block_contents.nil?
     render partial: "page_blocks/templates/#{block_type}"
   end
 
@@ -70,7 +68,9 @@ class PageBlocksController < ApplicationController
     name=params[:name]
     block_type=params[:type]
     content= params[:content]
-    @page_block=PageBlock.new(name:name,block_type:block_type,content:content)
+    hospital_id=current_user.hospital_id
+    department_id=current_user.department_id
+    @page_block=PageBlock.new(name:name,block_type:block_type,content:content,hospital_id:hospital_id,department_id:department_id)
     @page_block.save
     if block_type == 'login'
 
