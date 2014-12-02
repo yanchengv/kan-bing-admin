@@ -140,6 +140,7 @@ Rails.application.routes.draw do
       delete 'remove_nodes2', to: 'menus#remove_nodes2'
       post 'drag2', to:'menus#drag2'
       get 'left_menu',to:'menus#left_menu'
+      get 'set_menus_show',to:'menus#set_menus_show'
     end
   end
 

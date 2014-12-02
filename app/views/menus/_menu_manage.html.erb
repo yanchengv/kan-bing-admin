@@ -9,7 +9,7 @@
             url: '/menus/show_index',
             datatype: "json",
             mtype: 'GET',
-            colNames: ['ID', '菜单名称','父菜单','URI','是否为科室管理员菜单','是否为医院管理员菜单'],
+            colNames: ['ID', '菜单名称','父菜单','URI','是否为科室管理员菜单','是否为医院管理员菜单','科室管理员菜单','医院管理员菜单'],
             colModel: [
                 { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
@@ -25,9 +25,29 @@
                         $(element).select2();
                     },
                     style: "width:147px",
-                    value:"/:'/'<% if !@menu_uris.empty? %><% @menu_uris.each do |uri|%>;<%= uri.menu_uri %>:<%= uri.menu_uri %><% end %><% end %>"}},
-                { name: 'dep_admin_show', index: 'dep_admin_show', width: 100, align: "center", editable: true,edittype:"select",editoptions:{maxlength:20,value:"0:否;1:是"}},
-                { name: 'hos_admin_show', index: 'hos_admin_show', width: 100, align: "center", editable: true,edittype:"select",editoptions:{maxlength:20,value:"0:否;1:是"}}
+                    value:"/:/<% if !@menu_uris.empty? %><% @menu_uris.each do |uri|%>;<%= uri.menu_uri %>:<%= uri.menu_uri %><% end %><% end %>"}},
+                { name: 'dep_admin_show', index: 'dep_admin_show', width: 100, align: "center",editable: true,hidden:true,editrules: {edithidden: true},edittype:"select",editoptions:{maxlength:20,value:"0:否;1:是"}},
+                { name: 'hos_admin_show', index: 'hos_admin_show', width: 100, align: "center",editable: true,hidden:true,editrules: {edithidden: true},edittype:"select",editoptions:{maxlength:20,value:"0:否;1:是"}},
+                { name: 'dep_admin_show', index: 'dep_admin_show', width: 100, align: "center", editable: false,edittype: 'custom',
+                    formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                        var value = colpos.dep_admin_show;
+                        if (value == '是') {
+                            return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'false','dep_admin')\">显示</button>";
+                        } else {
+                            return "<button style=\"background-color: #ddd;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'true','dep_admin')\">不显示</button>";
+                        }
+                    }
+                },
+                { name: 'hos_admin_show', index: 'hos_admin_show', width: 100, align: "center", editable: false,
+                    formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                        var value = colpos.hos_admin_show;
+                        if (value == '是') {
+                            return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'false','hos_admin')\">显示</button>";
+                        } else {
+                            return "<button style=\"background-color: #ddd;text-align: center;width:100%\"onclick=\"setState(" + colpos.id + ", 'true','hos_admin')\">不显示</button>";
+                        }
+                    }
+                }
             ],
             rowList: [10, 20, 30],
             sortname: 'id',
@@ -98,6 +118,20 @@
         )
 
     });
+
+    function setState(menu_id,flag,admin_type) {
+        $.ajax({
+            type:'get',
+            url:'/menus/set_menus_show?menu_id='+menu_id+'&flag='+flag+'&admin_type='+admin_type,
+            success:function(data){
+                if (data.success == true) {
+                    jQuery("#list").jqGrid('setGridParam', {url: "/menus/show_index"}).trigger("reloadGrid");
+                } else {
+                    alert('操作失败！');
+                }
+            }
+        })
+    }
 
     $( "#create_menu" ).button().on( "click", function() {
         $.ajax({
