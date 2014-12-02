@@ -51,9 +51,9 @@ class PageBlocksController < ApplicationController
 
   def save_template
     name=params[:name]
-    type=params[:type]
+    block_type=params[:type]
     content= params[:content]
-    @page_block=PageBlock.new(name:name,type:type,content:content)
+    @page_block=PageBlock.new(name:name,block_type:block_type,content:content)
     @page_block.save
     render json:'success'
   end
@@ -277,7 +277,7 @@ class PageBlocksController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def page_block_params
-    params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id, :position, :is_show)
+    params[:page_block].permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name, :page_id, :position, :is_show,:block_type)
   end
 end
 
