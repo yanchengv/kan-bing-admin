@@ -1,15 +1,21 @@
+<div id="block_console">
+  <div id="create_video_div">
+    <input type="hidden" name="model_name" id="model_name">
+    <label>区块名称</label><input type="text" name="block_name" id="block_name">
+  </div>
+</div>
 <div class="m_add_box">
   <p class="m_title">添加模块</p>
 <ul class="m_box">
-  <li><a><%=image_tag "m1.jpg" %></a><br />登陆模块（1/3）</li>
-  <li><a><%=image_tag "m2.jpg" %></a><br />图片轮播（1/1）</li>
-  <li><a><%=image_tag "m3.jpg" %></a><br />文章列表（1/3）</li>
-  <li><a><%=image_tag "m4.jpg" %></a><br />医生列表（2/3）</li>
-  <li><a><%=image_tag "m5.jpg" %></a><br />科室环境（1/1）</li>
-  <li><a><%=image_tag "m6.jpg" %></a><br />科室简介（1/3）</li>
+  <li><a href="#" onclick="check_model('login')"><%=image_tag "m1.jpg" %></a><br />登陆模块（1/3）</li>
+  <li><a href="#" onclick="check_model('slides')"><%=image_tag "m2.jpg" %></a><br />图片轮播（1/1）</li>
+  <li><a href="#" onclick="check_model('anlizongshu')"><%=image_tag "m3.jpg" %></a><br />文章列表（1/3）</li>
+  <li><a href="#" onclick="check_model('doctor_list')"><%=image_tag "m4.jpg" %></a><br />医生列表（2/3）</li>
+  <li><a href="#" onclick="check_model('hospital_environment')"><%=image_tag "m5.jpg" %></a><br />科室环境（1/1）</li>
+  <li><a href="#" onclick="check_model('jianjie')"><%=image_tag "m6.jpg" %></a><br />科室简介（1/3）</li>
   <div style="clear:both;"></div>
 </ul>
-  <button class="m_save_btn">保存</button>
+  <!--<button class="m_save_btn">保存</button>-->
   <div style="clear:both;"></div>
 </div>
 <style>
@@ -19,69 +25,128 @@
   .m_title{font-weight:bold;padding:0 15px;margin:0px;height:34px;line-height:34px;color:#fff;background: #787a83;font-family:"Microsoft YaHei",Verdana;}
   .m_save_btn{float:right;width:120px;margin:20px;height:34px;line-height:34px;text-align:center;font-family:"Microsoft YaHei",Verdana;font-weight:bold;color:#fff;background:#48ab00;border:1px solid #3e9200;}
 </style>
-
-
-
-
-
-
-
-
-
-
-<p>
-  <style>.btn a {
-      color: #ffffff;
-  }</style>
-  <!--<span class="pull-right btn btn-primary" style="margin-top:4px;margin-right:15px;"><%#= link_to '返回', notes_path %></span>-->
-  <strong class="ui-jqdialog-title" >添加区块</strong></p>
-<div class="EditTable">
-      <div class="field pull-left font-yahei" style="margin-bottom:15px;margin-top:15px;margin-right:15px;">
-        <label class="CaptionTD">区块名称</label>
-        <input type="text" name="name" id="name" class="FormElement ui-widget-content ui-corner-all">
-      </div>
-      <div class="field" style="margin-bottom:15px;">
-        <label class="CaptionTD">模版样式</label>
-        <div class="clear"></div>
-        <input type="radio" name="content" value="<%= BlockModel.find_by_title('登录').content%>">
-        <%= image_tag 'user_login.jpg'%>
-        <input type="radio" name="content" value="<%= BlockModel.find_by_title('标题列表').content %>">
-        <%= image_tag 'title_list.jpg' %>
-        <input type="radio" name="content" value="<%= BlockModel.find_by_title('文本显示').content %>">
-        <%= image_tag 'show_text.jpg' %>
-        <div class="clear"></div>
-        <input type="radio" name="content" value="<%= BlockModel.find_by_title('图片展示').content %>">
-        <%= image_tag 'show_pictures.jpg' %>
-        <div class="clear"></div>
-        <input type="radio" name="content" value="<%= BlockModel.find_by_title('医生展示').content %>">
-        <%= image_tag 'doctor_list.jpg' %>
-        <div class="clear"></div>
-        <input type="radio" name="content" value="<%= BlockModel.find_by_title('多院展示').content %>">
-        <%= image_tag 'show_hospitals.jpg' %>
-      </div>
-      <div class="clear"></div>
-      <div class="actions">
-        <button type="button" class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="submit_new()">保存</button>
-      </div>
-</div>
 <script>
-    function submit_new() {
-        $.ajax({
-            url: "/page_blocks",
-            type: 'post',
-            data: {
-                page_block:{
-                    name: $('#name').val(),
-                    content: $('input[name="content"]:checked').val()
+    $("#block_console").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: false,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function (pos) {
+                var topOffset = $(this).css(pos).offset().top;
+                if (topOffset < 0) {
+                    $(this).css("top", pos.top - topOffset);
+                } else {
+                    $(this).css("top", 100);
                 }
-            },
-            async: false,
-            success: function (data) {
-                $("#rightContent").html(data);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert('区块添加失败!');
             }
-        });
+        },
+        buttons: {  // 为对话框添加按钮
+            "保存": save_block,
+            "取消": function () {
+                $("#block_console").dialog("close")
+            }
+        }
+    });
+  function check_model(str){
+
+      var block_console = $("#block_console");
+      var dialogButtonPanel = block_console.siblings(".ui-dialog-buttonpane");
+      dialogButtonPanel.find("button:contains('保存')").show();
+      block_console.dialog("option", "width", "540");
+      block_console.dialog("option", "title", "新建区块").dialog("open");
+      $('#model_name').val(str);
+  }
+    function save_block() {   //保存视频信息
+        var type = $('#model_name').val();
+        var name = $('#block_name').val();
+        $.ajax({
+            type: 'get',
+            url: 'page_blocks/get_template',
+            data: {type: type},
+            success: function (data, response) {
+                $.ajax({
+                    type: 'post',
+                    url: 'page_blocks/save_template',
+                    data: {content: data, type: type, name: name},
+                    dataType: 'json',
+                    success: function (data, response) {
+                        alert("suceess");
+                    }
+                });
+            }
+        })
     }
 </script>
+
+
+
+
+
+
+
+
+
+
+
+<!--<p>-->
+  <!--<style>.btn a {-->
+      <!--color: #ffffff;-->
+  <!--}</style>-->
+  <!--<span class="pull-right btn btn-primary" style="margin-top:4px;margin-right:15px;"><%#= link_to '返回', notes_path %></span>-->
+  <!--<strong class="ui-jqdialog-title" >添加区块</strong></p>-->
+<!--<div class="EditTable">-->
+      <!--<div class="field pull-left font-yahei" style="margin-bottom:15px;margin-top:15px;margin-right:15px;">-->
+        <!--<label class="CaptionTD">区块名称</label>-->
+        <!--<input type="text" name="name" id="name" class="FormElement ui-widget-content ui-corner-all">-->
+      <!--</div>-->
+      <!--<div class="field" style="margin-bottom:15px;">-->
+        <!--<label class="CaptionTD">模版样式</label>-->
+        <!--<div class="clear"></div>-->
+        <!--<input type="radio" name="content" value="<%#= BlockModel.find_by_title('登录').content%>">-->
+        <!--<%#= image_tag 'user_login.jpg'%>-->
+        <!--<input type="radio" name="content" value="<%#= BlockModel.find_by_title('标题列表').content %>">-->
+        <!--<%#= image_tag 'title_list.jpg' %>-->
+        <!--<input type="radio" name="content" value="<%#= BlockModel.find_by_title('文本显示').content %>">-->
+        <!--<%#= image_tag 'show_text.jpg' %>-->
+        <!--<div class="clear"></div>-->
+        <!--<input type="radio" name="content" value="<%#= BlockModel.find_by_title('图片展示').content %>">-->
+        <!--<%#= image_tag 'show_pictures.jpg' %>-->
+        <!--<div class="clear"></div>-->
+        <!--<input type="radio" name="content" value="<%#= BlockModel.find_by_title('医生展示').content %>">-->
+        <!--<%#= image_tag 'doctor_list.jpg' %>-->
+        <!--<div class="clear"></div>-->
+        <!--<input type="radio" name="content" value="<%#= BlockModel.find_by_title('多院展示').content %>">-->
+        <!--<%#= image_tag 'show_hospitals.jpg' %>-->
+      <!--</div>-->
+      <!--<div class="clear"></div>-->
+      <!--<div class="actions">-->
+        <!--<button type="button" class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="submit_new()">保存</button>-->
+      <!--</div>-->
+<!--</div>-->
+<!--<script>-->
+    <!--function submit_new() {-->
+        <!--$.ajax({-->
+            <!--url: "/page_blocks",-->
+            <!--type: 'post',-->
+            <!--data: {-->
+                <!--page_block:{-->
+                    <!--name: $('#name').val(),-->
+                    <!--content: $('input[name="content"]:checked').val()-->
+                <!--}-->
+            <!--},-->
+            <!--async: false,-->
+            <!--success: function (data) {-->
+                <!--$("#rightContent").html(data);-->
+            <!--},-->
+            <!--error: function (XMLHttpRequest, textStatus, errorThrown) {-->
+                <!--alert('区块添加失败!');-->
+            <!--}-->
+        <!--});-->
+    <!--}-->
+<!--</script>-->
