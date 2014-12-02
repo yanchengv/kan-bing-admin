@@ -73,7 +73,7 @@ class PageBlocksController < ApplicationController
     @page_block=PageBlock.new(name:name,block_type:block_type,content:content)
     @page_block.save
     if block_type == 'login'
-
+      render :partial => 'page_blocks/show'
     elsif block_type == 'slides'
       render :partial => 'block_contents/picture_list_manage'
     elsif block_type == 'anlizongshu'
@@ -100,10 +100,10 @@ class PageBlocksController < ApplicationController
 
   # GET /page_blocks/1/edit
   def edit
-      if @page_block.content.include? 'title_list' || (@page_block.content.include? 'block_text')
+      if @page_block.block_type == 'anlizongshu' || (@page_block.block_type == 'jianjie')
         render :partial => 'block_contents/block_contents_manage', :object => @page_block
 
-      elsif @page_block.content.include? 'picture_list' || (@page_block.content.include? 'show_list')
+      elsif @page_block.block_type == 'hospital_environment' || (block_type == 'slides')
         render :partial => 'block_contents/picture_list_manage', :object => @page_block
       else
         render :partial => 'block_contents/block_doctors_manage', :object => @page_block

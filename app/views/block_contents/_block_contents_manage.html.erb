@@ -69,11 +69,11 @@
                 refreshtext: "更新", refreshtitle: "更新"},
             {
                 closeAfterEdit: true,
-                afterSubmit: save_content
+                afterSubmit: save_content_model
             },//edit
             {
                 closeAfterAdd: true,
-                afterSubmit: save_content
+                afterSubmit: save_content_model
             }//add
              );
 
@@ -93,7 +93,7 @@
              }
          });
      }
-        function save_content(){
+        function save_content_model(){
             $.ajax({
                 type: 'get',
                 url: 'page_blocks/add_content',
