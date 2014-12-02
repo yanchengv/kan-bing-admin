@@ -100,7 +100,7 @@ Rails.application.routes.draw do
       get 'get_template',to:'page_blocks#get_template'
       get 'add_content',to:'page_blocks#add_content_template'
       post 'save_template',to:'page_blocks#save_template'
-      post 'update_tempalte',to:'page_blocks#update_tempalte'
+      post 'update_template',to:'page_blocks#update_template'
     end
   end
   resources :apk_versions do

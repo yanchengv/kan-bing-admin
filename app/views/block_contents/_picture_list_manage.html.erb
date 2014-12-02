@@ -5,7 +5,7 @@
   </div>
   <br>
   <div>
-    <button class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="save_content()">保存内容到对应的区块</button>
+
   </div>
 </div>
 <script type="text/javascript">
@@ -62,10 +62,12 @@
                 deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
-                closeAfterEdit: true
+                closeAfterEdit: true,
+                afterSubmit: save_block_content
             },//edit
             {
-                closeAfterAdd: true
+                closeAfterAdd: true,
+                afterSubmit: save_block_content
             }//add
     ).navButtonAdd('#page_block_content_pictures', { title: '新增', caption: '新增', onClickButton: function () {
                 picture_new();
@@ -101,5 +103,22 @@
                 alert('区块添加失败!');
             }
         });
+    }
+    function save_block_content() {
+        $.ajax({
+            type: 'get',
+            url: 'page_blocks/add_content',
+            data: {page_block_id: <%= @page_block.id%>},
+            success: function (data, response) {
+                $.ajax({
+                    type: 'post',
+                    url: 'page_blocks/update_template',
+                    data: {content: data, page_block_id: <%= @page_block.id%>},
+                    success: function (data) {
+                        $("#rightContent").html(data);
+                    }
+                })
+            }
+        })
     }
 </script>

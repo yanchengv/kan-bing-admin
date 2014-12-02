@@ -1,6 +1,7 @@
 
 <!--title_list-->
- <% if !@block_content.nil?%>
+
+ <% if !@block_contents.nil?%>
 <div class="index_model_box_3_1">
   <div class="index_model_title">
     <h3 class="fl"><%=@block_contents.first.block_name%></h3>
@@ -98,7 +99,6 @@
     }
     /*文章列表*/
     .index_model_article a .index_model_blue_dot{
-        background: url('http://note-upload.oss-cn-beijing.aliyuncs.com/eb981130-ae1c-46d0-b9ed-7881f12f2ab6.png') no-repeat left center;
         padding-left: 15px;
         width: 80%;
         font-size: 13px;
@@ -107,7 +107,6 @@
     }
 
     .index_model_article a .index_model_blue_dot:hover {
-        background: url('http://note-upload.oss-cn-beijing.aliyuncs.com/85f0bf6d-20fe-4527-a6f0-f19f63373a82.png') no-repeat left center;
         padding-left: 15px;
         font-family: "Microsoft YaHei", Arial;
     }

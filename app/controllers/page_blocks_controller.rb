@@ -48,15 +48,21 @@ class PageBlocksController < ApplicationController
     @page_block=PageBlock.where(id:page_block_id).first
     block_type=@page_block.block_type #block_type必须是模版的名称
     @block_contents=BlockContent.where(block_id:page_block_id)
+    p 888888888888888888888
+    p @block_contents.nil?
     render partial: "page_blocks/templates/#{block_type}"
   end
 
 
-  def update_tempalte
+  def update_template
     page_block_id=params[:page_block_id]
-    @page_block=PageBlock.where(id:page_block_id).first
-    @page_block.update_attributes(content:content)
-    render json:"success"
+    content = params[:content]
+    page_block=PageBlock.where(id:page_block_id).first
+    sql = ActiveRecord::Base.connection()
+    sql.update "update page_blocks set content = '#{content}' where id = #{page_block.id}"
+   #@page_block.update_attributes(content:content)
+    @page_block=PageBlock.find(page_block.id)
+    render :partial => 'page_blocks/show'#, :id => @page_block.id
   end
 
 
