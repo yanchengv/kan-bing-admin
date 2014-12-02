@@ -43,10 +43,10 @@ class MenusController < ApplicationController
         # @menu = {id:menu.id,name:menu.name,parent_name:parent_name,priorities:@per_names,uri:menu.uri}
         dep_flag='否'
         hos_flag='否'
-        if menu.hos_admin_show
+        if menu.dep_admin_show
           dep_flag='是'
         end
-        if menu.dep_admin_show
+        if menu.hos_admin_show
           hos_flag='是'
         end
         @menu = {id:menu.id,name:menu.name,parent_id:parent_name,uri:menu.uri,dep_admin_show:dep_flag,hos_admin_show:hos_flag}
@@ -584,6 +584,18 @@ class MenusController < ApplicationController
     admin_id=params[:admin_id]
     Menu.new.left_menu admin_id
   end
+
+  def set_menus_show
+    @menu = Menu.where(id:params[:menu_id]).first
+    if params[:admin_type] == 'dep_admin'
+      @menu.update(dep_admin_show: params[:flag])
+    end
+    if params[:admin_type] == 'hos_admin'
+      @menu.update(hos_admin_show:params[:flag])
+    end
+    render json:{success:true}
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_menu
