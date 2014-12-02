@@ -37,10 +37,10 @@ class PageBlocksController < ApplicationController
     end
   end
 
-
+  # 获取模版
   def get_template
-    # block_name=params[:block_name]
-    block_name='anlizongshu'
+     block_name=params[:type]
+    # block_name='anlizongshu'
     render partial: "page_blocks/templates/#{block_name}"
   end
 
@@ -50,8 +50,10 @@ class PageBlocksController < ApplicationController
   end
 
   def save_template
-    data= params[:data]
-    @page_block=PageBlock.new(name:'test',content:data)
+    name=params[:name]
+    type=params[:type]
+    content= params[:content]
+    @page_block=PageBlock.new(name:name,type:type,content:content)
     @page_block.save
     render json:'success'
   end
