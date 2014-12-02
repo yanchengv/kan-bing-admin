@@ -44,9 +44,21 @@ class PageBlocksController < ApplicationController
   end
 
   def add_content_template
-    @block_contents=BlockContent.all
-    render partial: 'page_blocks/templates/anlizongshu'
+    page_block_id=params[:page_block_id]
+    @page_block=PageBlock.where(id:page_block_id).first
+    block_type=@page_block.block_type #block_type必须是模版的名称
+    @block_contents=BlockContent.where(block_id:page_block_id)
+    render partial: "page_blocks/templates/#{block_type}"
   end
+
+
+  def update_tempalte
+    page_block_id=params[:page_block_id]
+    @page_block=PageBlock.where(id:page_block_id).first
+    @page_block.update_attributes(content:content)
+    render json:"success"
+  end
+
 
   def save_template
     name=params[:name]
