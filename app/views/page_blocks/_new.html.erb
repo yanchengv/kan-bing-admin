@@ -70,13 +70,13 @@
             url: 'page_blocks/get_template',
             data: {type: type},
             success: function (data, response) {
+                window.parent.$("#block_console").dialog("close");
                 $.ajax({
                     type: 'post',
                     url: 'page_blocks/save_template',
                     data: {content: data, type: type, name: name},
-                    dataType: 'json',
-                    success: function (data, response) {
-                        alert("suceess");
+                    success: function (data) {
+                        $("#rightContent").html(data);
                     }
                 });
             }

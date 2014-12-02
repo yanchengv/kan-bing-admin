@@ -40,7 +40,6 @@ class PageBlocksController < ApplicationController
   # 获取模版
   def get_template
      block_name=params[:type]
-    # block_name='anlizongshu'
     render partial: "page_blocks/templates/#{block_name}"
   end
 
@@ -55,7 +54,19 @@ class PageBlocksController < ApplicationController
     content= params[:content]
     @page_block=PageBlock.new(name:name,block_type:block_type,content:content)
     @page_block.save
-    render json:'success'
+    if block_type == 'login'
+
+    elsif block_type == 'slides'
+      render :partial => 'block_contents/picture_list_manage'
+    elsif block_type == 'anlizongshu'
+      render :partial => 'block_contents/block_contents_manage'
+    elsif block_type == 'doctor_list'
+      render :partial => 'block_contents/block_doctors_manage'
+    elsif block_type == 'hospital_environment'
+      render :partial => 'block_contents/picture_list_manage'
+    elsif block_type == 'jianjie'
+      render :partial => 'block_contents/picture_list_manage'
+    end
   end
   # GET /page_blocks/1
   # GET /page_blocks/1.json
