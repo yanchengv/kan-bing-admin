@@ -14,7 +14,7 @@
       <!--<a href=#{block_content.url}>-->
       <a>
         <span class="fr index_model_date"><%= block_content.create_date%></span>
-        <span class="fl index_model_blue_dot"><%=block_content.content %></span>
+        <span class="fl index_model_blue_dot"><%=block_content.title %></span>
       </a>
     </li>
     <div style="clear:both;"></div>
@@ -99,6 +99,7 @@
     }
     /*文章列表*/
     .index_model_article a .index_model_blue_dot{
+        background: url("dot_blue_light.png") no-repeat left center;
         padding-left: 15px;
         width: 80%;
         font-size: 13px;
@@ -107,6 +108,7 @@
     }
 
     .index_model_article a .index_model_blue_dot:hover {
+        background: url("dot_blue.png") no-repeat left center;
         padding-left: 15px;
         font-family: "Microsoft YaHei", Arial;
     }

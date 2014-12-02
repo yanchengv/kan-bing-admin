@@ -159,8 +159,9 @@ class BlockContentsController < ApplicationController
 
     @block_content=BlockContent.new(para)
     @page_block = PageBlock.find(params[:block_id])
+    @block_contents = BlockContent.where(:block_id => params[:block_id])
     if @block_content.save
-      render :partial => 'block_contents/picture_list_manage',:block_id => params[:block_id]
+      render partial: "page_blocks/templates/#{@page_block.block_type}"
     else
       render :partial => 'block_contents/save_pic'
     end
