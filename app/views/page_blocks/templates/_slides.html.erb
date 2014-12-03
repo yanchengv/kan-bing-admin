@@ -1,3 +1,4 @@
+<%= javascript_include_tag 'http://code.jquery.com/jquery-1.9.1.min.js' %>
 <script>
     $(function () {
 
@@ -22,7 +23,7 @@
 <div class="index_model_box_p_1">
 <div id="slides2">
   <%@block_contents.each do |block_content|%>
-      <img src=<%= block_content.url%>>
+      <img src="http://dev-mimas.oss-cn-beijing.aliyuncs.com/<%= block_content.url%>">
 
   <%end%>
 

@@ -100,10 +100,10 @@ class PageBlocksController < ApplicationController
 
   # GET /page_blocks/1/edit
   def edit
-      if @page_block.block_type == 'anlizongshu' || (@page_block.block_type == 'jianjie')
+      if @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
         render :partial => 'block_contents/block_contents_manage', :object => @page_block
 
-      elsif @page_block.block_type == 'hospital_environment' || (block_type == 'slides')
+      elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
         render :partial => 'block_contents/picture_list_manage', :object => @page_block
       else
         render :partial => 'block_contents/block_doctors_manage', :object => @page_block
