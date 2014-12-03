@@ -169,12 +169,12 @@ class BlockContentsController < ApplicationController
 
   def save_doctors
     para={}
-    para[:content]=params[:content]
+    para[:content]=params[:content].to_s.gsub('[', '').gsub(']', '')
     para[:block_id]=params[:block_id]
     @block_content=BlockContent.new(para)
     @page_block = PageBlock.find(params[:block_id])
     if @block_content.save
-      @doctors = Doctor.where("id in #{@block_content.content.to_s.gsub('[', '(').gsub(']', ')')}")
+      @doctors = Doctor.where("id in (#{@block_content.content})")
       @doctor = @doctors[0]
       render partial: "page_blocks/templates/#{@page_block.block_type}"
     else
