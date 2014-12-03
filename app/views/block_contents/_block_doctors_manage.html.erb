@@ -5,7 +5,8 @@
   </div>
   <br>
   <div>
-    <button class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="save_content()">保存内容到对应的区块</button>
+    <input type="hidden" id="block_id_d" value="<%= @page_block.id %>">
+    <button class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="save_content()">保存到区块</button>
   </div>
 </div>
 <script type="text/javascript">
@@ -92,10 +93,28 @@
             alert('请选择操作项！');
         } else {
             $.ajax({
+                type: 'post',
+                url: '/block_contents/save_doctors',
+                data: {
+                    content: ids,
+                    block_id: $('#block_id_d').val()
+                },
+                success: function (data) {
+                    $.ajax({
+                        type: 'post',
+                        url: 'page_blocks/update_template',
+                        data: {content: data, page_block_id: $('#block_id_d').val()},
+                        success: function (data) {
+                            $("#rightContent").html(data);
+                        }
+                    })
+                }
+            })
+           /* $.ajax({
                 url: "/block_contents/save_content_to_block",
                 type: 'post',
                 data: {
-                    block_id: <%= @page_block.id %> ,
+                    block_id: <%#= @page_block.id %> ,
                     ids:ids
                 },
                 async: false,
@@ -105,7 +124,7 @@
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert('区块添加失败!');
                 }
-            });
+            });*/
         }
     }
 

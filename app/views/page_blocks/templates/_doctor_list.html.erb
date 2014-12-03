@@ -1,41 +1,99 @@
 <div class="index_model_box_2_3">
-  <dl class="doctor_list_box">
-    <dt style="width:75px;height:99px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></dt>
-    <dd><b class="doctor_list_name" id="md_doc_name">医生姓名xxx</b></dd>
-    <dd><input id="doctor_id" type="hidden">
-      <b>医院</b>
-      <span style="margin-right:10px;" id="md_doc_hospital_name">xxxx医院</span>
-      <b>科室</b><span style="margin-right:10px;" id="md_doc_department_name">xxxx科室</span>
-    </dd>
-    <dd><b>简介</b><span style="margin-right:10px;" id="md_doc_description">医生简介 xxxxxxxxxxxxxxxxxxxxxxxx</span>
-    </dd>
-  </dl>
+  <% if !@doctor.nil? %>
+      <dl class="doctor_list_box">
+        <dt style="width:75px;height:99px">
+          <input type="hidden" name="block_id" id="block_id" value="<%= @page_block.id %>">
+          <%
+             if !@doctor.photo.nil?&&@doctor.photo!='' %>
+              <%= link_to image_tag("http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{@doctor.photo}", size: "75x105", alt: @doctor.name, class: "img-responsive index_doc_photo", id: 'img_url'),
+                          '#', :onclick => "showDoctorPage(#{@doctor.id}, 'str');return false;" %>
+
+          <% else %>
+              <%= link_to image_tag("default.png", size: "75x105", alt: @doctor.name, class: "img-responsive index_doc_photo", id: 'img_url'),
+                          '#', :onclick => "showDoctorPage(#{@doctor.id}, 'str');return false;" %>
+          <% end %></dt>
+        <dd><b class="doctor_list_name" id="md_doc_name"><%= @doctor.name %></b></dd>
+        <dd><input id="doctor_id" type="hidden">
+          <b>医院</b>
+          <span style="margin-right:10px;" id="md_doc_hospital_name"><%= @doctor.hospital.name unless (@doctor.hospital_id.nil? || @doctor.hospital_id == '') %></span>
+          <b>科室</b><span style="margin-right:10px;" id="md_doc_department_name"><%= @doctor.department.name unless (@doctor.department_id.nil? || @doctor.department_id == '') %></span>
+        </dd>
+        <dd><b>简介</b><span style="margin-right:10px;" id="md_doc_description"><%= @doctor.introduction %></span>
+        </dd>
+      </dl>
+  <% end %>
   <div style="clear:both"></div>
   <ul class="doctor_list_lists" id="doctor_list">
-    <li style="width:55px;height:77px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
-    <li style="width:55px;height:77px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
-    <li style="width:55px;height:77px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
-    <li style="width:55px;height:77px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
-    <li style="width:55px;height:77px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
-    <li style="width:55px;height:77px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
-    <li style="width:55px;height:77px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
-    <li style="width:55px;height:77px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
-    <li style="width:55px;height:77px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
-    <li style="width:55px;height:77px"><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
+    <% if !@doctors.nil? && !@doctors.empty? %>
+        <% @doctors.each do |doctor| %>
+            <li style="width:55px;height:77px">
+              <% if !doctor.photo.nil?&&doctor.photo!='' %>
+                  <%= link_to image_tag("http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doctor.photo}",
+                                        id: 'img_url',
+                                        src: doctor.photo,
+                                        size: "55x77",
+                                        title: doctor.name,
+                                        alt: doctor.name,
+                                        class: "img-responsive index_doc_photo",
+                                        onclick: "showDoctorPage(#{doctor.id}, '')",
+                                        onmouseover: "change_doctor(
+                                            'http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doctor.photo}',
+                                            '#{doctor.introduction}',
+                                            '#{doctor.name}',
+                                            '#{doctor.hospital.name unless (doctor.hospital.nil? || doctor.hospital_id.nil? || doctor.hospital_id == '')}',
+                                            '#{doctor.department.name unless (doctor.department.nil? || doctor.department_id.nil? || doctor.department_id == '')}',
+                                            #{doctor.id})"
+                              ),
+                              '#',
+                              :class => "pl"
+                  %>
+              <% else %>
+                  <%= link_to image_tag("default.png",
+                                        id: "img_url",
+                                        src: doctor.photo,
+                                        size: "55x77",
+                                        title: doctor.name,
+                                        alt: doctor.name,
+                                        class: "img-responsive index_doc_photo",
+                                        onclick: "showDoctorPage(#{doctor.id}, '')",
+                                        onmouseover: "change_doctor(
+                                            'default.png',
+                                            '#{doctor.introduction}',
+                                            '#{doctor.name}',
+                                            '#{doctor.hospital.name unless (doctor.hospital.nil? || doctor.hospital_id.nil? || doctor.hospital_id == '')}',
+                                            '#{doctor.department.name unless (doctor.department.nil? || doctor.department_id.nil? || doctor.department_id == '')}',
+                                            #{doctor.id})"
+                              ),
+                              '#',
+                              :class => "pl"
+                  %>
+              <% end %>
+            </li>
+        <% end %>
+    <% else %>
+        <li style="width:55px;height:77px">头像</li>
+        <li style="width:55px;height:77px">头像</li>
+        <li style="width:55px;height:77px">头像</li>
+        <li style="width:55px;height:77px">头像</li>
+        <li style="width:55px;height:77px">头像</li>
+        <li style="width:55px;height:77px">头像</li>
+        <li style="width:55px;height:77px">头像</li>
+        <li style="width:55px;height:77px">头像</li>
+        <li style="width:55px;height:77px">头像</li>
+    <% end %>
     <div style="clear:both"></div>
   </ul>
 </div>
 <script>
     function change_doctor(img_url, introduction, name, hospital, department, id) {
-        document.getElementById('img_url').src = img_url;
-        document.getElementById('img_url').alt = name;
-        document.getElementById('img_url').title = name;
-        document.getElementById('md_doc_description').innerHTML = introduction.substr(0, 95);
-        document.getElementById('md_doc_name').innerHTML = name;
-        document.getElementById('md_doc_hospital_name').innerHTML = hospital;
-        document.getElementById('md_doc_description').innerHTML = department;
-        document.getElementById('doctor_id').value = id;
-        //  document.getElementById('href_img').href='/doctors/show_doctor?id='+id;
+        document.getElementById("img_url").src = img_url;
+        document.getElementById("img_url").alt = name;
+        document.getElementById("img_url").title = name;
+        document.getElementById("md_doc_description").innerHTML = introduction.substr(0, 95);
+        document.getElementById("md_doc_name").innerHTML = name;
+        document.getElementById("md_doc_hospital_name").innerHTML = hospital;
+        document.getElementById("md_doc_description").innerHTML = department;
+        document.getElementById("doctor_id").value = id;
     }
 
 </script>

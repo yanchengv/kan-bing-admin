@@ -77,12 +77,12 @@
             }//add
              );
 
-     function save_content(){
+   /*  function save_content(){
          $.ajax({
              url: "/block_contents/save_content_to_block",
              type: 'post',
              data: {
-                 block_id: <%= @page_block.id %>
+                 block_id: <%#= @page_block.id %>
              },
              async: false,
              success: function (data) {
@@ -92,7 +92,7 @@
                  alert('区块添加失败!');
              }
          });
-     }
+     }*/
         function save_content_model(){
             $.ajax({
                 type: 'get',

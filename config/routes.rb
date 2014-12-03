@@ -52,9 +52,10 @@ Rails.application.routes.draw do
       get 'index_show', to: 'block_contents#show_index'
       post 'oper_action', to: 'block_contents#oper_action'
       post 'batch_delete', to: 'block_contents#batch_delete'
-      post 'save_content_to_block', to: 'block_contents#save_content_to_block'
+     # post 'save_content_to_block', to: 'block_contents#save_content_to_block'
       post 'save_pic', to: 'block_contents#save_pic'
       post 'save_pic_content', to: 'block_contents#save_pic_content'
+      post 'save_doctors', to: 'block_contents#save_doctors'
     end
   end
   resources :edu_videos do
