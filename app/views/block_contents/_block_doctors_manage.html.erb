@@ -5,8 +5,8 @@
   </div>
   <br>
   <div>
-    <input type="hidden" id="block_id_d" value="<%= @page_block.id %>"><input type="text" id="doctor_ids" value="<%= @ids %>">
-    <button class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="save_content()">保存到区块</button>
+    <input type="hidden" id="block_id_d" value="<%= @page_block.id %>"><input type="hidden" id="doctor_ids" value="<%= @ids %>">
+    <!--<button class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="save_content()">保存到区块</button>-->
   </div>
 </div>
 <script type="text/javascript">
@@ -49,12 +49,21 @@
         viewrecords: true,
         sortorder: "desc",
         autowidth: true,
-        gridComplete: function () {
-            var sid = $('#doctor_ids').val();
-            if (sid) {
-                $(this).jqGrid("setSelection", Array(sid));
-            }
-        },
+//        loadComplete: function () {
+//            var sid = $('#doctor_ids').val();
+//            if (Cts.indexOf("Text") >= 0) {
+//                alert('Cts中包含Text字符串');
+//            }
+//            //  alert(sid);
+//            if (sid) {
+//                for(var i=0; i < sid.length; i ++){
+//                 //   $("#block_doctor_list").jqGrid('setSelection', sid[i]);
+//                    alert(sid[i]);
+//                    $("#block_doctor_list").jqGrid('setSelection', sid[i]);
+//                   // jQuery('#block_doctor_list').jqGrid('getCell', sid[i], 'NIF');
+//                }
+//            }
+//        },
         jsonReader: {
             root: "doctors",
             total: "totalpages",
@@ -83,8 +92,7 @@
         caption: "区块医生管理"
     });
     jQuery("#block_doctor_list").jqGrid('navGrid', '#page_block_doctor', {
-                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
-                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                cloneToTop: true, add:false, edit:false, del: false,view: false, search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
                 closeAfterEdit: true
@@ -92,7 +100,10 @@
             {
                 closeAfterAdd: true
             }//add
-             );
+             ).navButtonAdd('#page_block_doctor', { title: '确定', caption: '确定', onClickButton: function () {
+                save_content();
+            }, position: "first"
+    });
     function save_content(){
         var ids = $('#block_doctor_list').jqGrid('getGridParam', 'selarrrow');
         if (ids.length == 0) {

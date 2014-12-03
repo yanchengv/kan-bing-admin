@@ -98,7 +98,7 @@
                 type: 'get',
                 url: 'page_blocks/add_content',
                 data: {page_block_id: <%= @page_block.id%>},
-                success: function (data, response) {
+                success: function (data) {
                     $.ajax({
                         type: 'post',
                         url: 'page_blocks/update_template',

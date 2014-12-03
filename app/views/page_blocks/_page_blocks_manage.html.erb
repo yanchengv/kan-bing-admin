@@ -146,8 +146,13 @@
             if (!id) {
                 alert('请选择查看项！');
             }else{
-                var href = "/page_blocks/" + id;
-                window.location.replace(href);
+                $.ajax({
+                    type: 'get',
+                    url: "/page_blocks/" + id,
+                    success: function (data) {
+                         $("#rightContent").html(data);
+                    }
+                });
             }
         }
 </script>

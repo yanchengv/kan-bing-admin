@@ -106,7 +106,10 @@ class PageBlocksController < ApplicationController
       elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
         render :partial => 'block_contents/picture_list_manage', :object => @page_block
       else
-        @ids = @page_block.block_contents.first.content
+        @block_contents = @page_block.block_contents
+        if !@block_contents.empty?
+          @ids = @block_contents.first.content
+        end
         render :partial => 'block_contents/block_doctors_manage', :object => @page_block
       end
   end
