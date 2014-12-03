@@ -1,6 +1,6 @@
 class PageBlocksController < ApplicationController
   before_action :set_page_block, only: [:show, :edit, :update, :destroy]
-
+  skip_before_filter :verify_authenticity_token ,:update_position
   # GET /page_blocks
   # GET /page_blocks.json
   def index
