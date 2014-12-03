@@ -5,7 +5,7 @@
   </div>
   <br>
   <div>
-    <input type="hidden" id="block_id_d" value="<%= @page_block.id %>">
+    <input type="hidden" id="block_id_d" value="<%= @page_block.id %>"><input type="text" id="doctor_ids" value="<%= @ids %>">
     <button class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="save_content()">保存到区块</button>
   </div>
 </div>
@@ -49,6 +49,12 @@
         viewrecords: true,
         sortorder: "desc",
         autowidth: true,
+        gridComplete: function () {
+            var sid = $('#doctor_ids').val();
+            if (sid) {
+                $(this).jqGrid("setSelection", Array(sid));
+            }
+        },
         jsonReader: {
             root: "doctors",
             total: "totalpages",
