@@ -181,7 +181,7 @@ class PageBlocksController < ApplicationController
   # 展现界面排版的页面
   def page_blocks_setting
     hospital_id=current_user.hospital_id
-    department_id=current_user.hospital_id
+    department_id=current_user.department_id
     @page_block=PageBlock.where('hospital_id=? AND department_id=? AND is_show=?', hospital_id, department_id, true).order(position: :asc)
     @hospital_id=hospital_id
     @department_id=department_id
