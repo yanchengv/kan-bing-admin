@@ -12,7 +12,7 @@
     <% @block_contents.each do |block_content|%>
     <li>
       <!--<a href=#{block_content.url}>-->
-      <a>
+      <a href=<%=block_content.url%>>
         <span class="fr index_model_date"><%= block_content.create_date%></span>
         <span class="fl index_model_blue_dot"><%=block_content.title %></span>
       </a>
