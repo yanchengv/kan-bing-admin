@@ -9,15 +9,15 @@ class PageBlocksController < ApplicationController
 
   def show_index
     sql = 'true'
-    #hos_id = current_user.hospital_id
-    #dep_id = current_user.department_id
-    #if !hos_id.nil? && hos_id != ''
-    #  if !dep_id.nil? && dep_id != ''
-    #    sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
-    #  else
-    #    sql << " and hospital_id=#{hos_id}"
-    #  end
-    #end
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    if !hos_id.nil? && hos_id != ''
+      if !dep_id.nil? && dep_id != ''
+        sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
+      else
+        sql << " and hospital_id=#{hos_id}"
+      end
+    end
     @page_blocks = PageBlock.where(sql).order('created_at desc')
     count = @page_blocks.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
@@ -60,7 +60,7 @@ class PageBlocksController < ApplicationController
     sql.update "update page_blocks set content = '#{content}' where id = #{page_block.id}"
    #@page_block.update_attributes(content:content)
     @page_block=PageBlock.find(page_block.id)
-    render :partial => 'page_blocks/show'#, :id => @page_block.id
+    render :partial => 'page_blocks/page_blocks_manage'
   end
 
 
@@ -106,6 +106,7 @@ class PageBlocksController < ApplicationController
       elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
         render :partial => 'block_contents/picture_list_manage', :object => @page_block
       else
+        @ids = @page_block.block_contents.first.content
         render :partial => 'block_contents/block_doctors_manage', :object => @page_block
       end
   end
@@ -241,6 +242,7 @@ class PageBlocksController < ApplicationController
     end
   end
 
+=begin
   #动态样式的添加
   def dynamic_style(content, urls)
     str = content
@@ -297,6 +299,7 @@ class PageBlocksController < ApplicationController
 
     return str
   end
+=end
 
   private
   # Use callbacks to share common setup or constraints between actions.
