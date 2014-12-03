@@ -51,7 +51,7 @@
         float: left;
     }
 
-    /*屏幕尺寸大于1200px */
+        /*屏幕尺寸大于1200px */
     @media (min-width: 1200px) {
 
         .index_model_box_2_3 {
@@ -65,7 +65,7 @@
         }
     }
 
-    /*屏幕尺寸小于960px*/
+        /*屏幕尺寸小于960px*/
     @media (max-width: 960px) {
         .index_model_box_2_3 {
             width: 64%;
@@ -80,7 +80,7 @@
 
     }
 
-    /*屏幕尺寸小于480px*/
+        /*屏幕尺寸小于480px*/
     @media (max-width: 683px) {
         .index_model_box_2_3 {
             width: 100%;
@@ -97,6 +97,8 @@
         width: 98%;
         margin: 0 auto;
         line-height: 30px;
+        -webkit-margin-before: 0em;
+        -webkit-margin-after: 0em;
     }
 
     .doctor_list_box dt {
@@ -110,6 +112,11 @@
         float: left;
         width: 87%;
         font-family: "Microsoft YaHei", Arial;
+        -webkit-margin-start: 0px !important;
+    }
+    .doctor_list_box dt img{
+        width:100% !important;
+        height:auto;
     }
 
     @media (max-width: 960px) {
@@ -118,6 +125,7 @@
             float: left;
             width: 80%;
             font-family: "Microsoft YaHei", Arial;
+            -webkit-margin-start: 0px !important;
         }
     }
 
@@ -150,5 +158,9 @@
     .doctor_list_lists li {
         float: left;
         margin: 10px;
+    }
+    .doctor_list_lists li img{
+        width:100% !important;
+        height:auto;
     }
 </style>
