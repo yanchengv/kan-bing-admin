@@ -1,43 +1,3 @@
-<%= javascript_include_tag 'http://code.jquery.com/jquery-1.9.1.min.js' %>
-<script>
-    $(function () {
-
-        /*
-         To have multiple slideshows on the same page
-         they just need to have separate IDs
-         */
-        $("#slides2").slidesjs({
-            width: 1200,
-            height: 300,
-            navigation: false,
-            start: 3,
-            play: {
-                auto: true
-            }
-        });
-
-
-    });
-</script>
-<% if !@block_contents.nil?%>
-<div class="index_model_box_p_1">
-<div id="slides2">
-  <%@block_contents.each do |block_content|%>
-      <img src="http://dev-mimas.oss-cn-beijing.aliyuncs.com/<%= block_content.url%>">
-
-  <%end%>
-
-</div>
-</div>
- <%else%>
-    <div class="index_model_box_p_1">
-      <div id="slides2">
-        <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo1.jpg">
-        <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo2.jpg">
-        <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo3.jpg">
-      </div>
-    </div>
-<%end%>
 <style>
     .index_model_box_p_1 {
         width: 1188px;
@@ -85,7 +45,7 @@
             float: left;
         }
     }
-      #slides2{
+    #slides2{
         position: relative;
     }
 
@@ -157,7 +117,7 @@
     .navbar {
         overflow: hidden
     }
-     #slides {
+    #slides {
         display: none
     }
 
@@ -199,3 +159,44 @@
     }
 
 </style>
+<% if !@block_contents.nil?%>
+<div class="index_model_box_p_1">
+<div id="slides2">
+  <%@block_contents.each do |block_content|%>
+      <img src="http://dev-mimas.oss-cn-beijing.aliyuncs.com/<%= block_content.url%>">
+
+  <%end%>
+
+</div>
+</div>
+ <%else%>
+    <div class="index_model_box_p_1">
+      <div id="slides2">
+        <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo1.jpg">
+        <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo2.jpg">
+        <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo3.jpg">
+      </div>
+    </div>
+<%end%>
+
+
+<script>
+    $(function () {
+
+        /*
+         To have multiple slideshows on the same page
+         they just need to have separate IDs
+         */
+        $("#slides2").slidesjs({
+            width: 1200,
+            height: 300,
+            navigation: false,
+            start: 3,
+            play: {
+                auto: true
+            }
+        });
+
+
+    });
+</script>
