@@ -21,12 +21,11 @@
         colNames: [ 'ID', '区块名称', '标题', '图片路径', '内容', '区块ID'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-            { name: 'block_name', index: 'block_name', align: "center", editable: true, editoptions: { defaultValue: "<%= @page_block.name%>", readonly: 'readonly'}},
+            { name: 'block_name', index: 'block_name', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.name%>", readonly: 'readonly'}},
             { name: 'title', index: 'title', align: "center", editable: true},
             { name: 'url', index: 'url', align: "center", editable: true},
-            { name: 'content', index: 'content', align: "center", editable: true},
-
-            { name: 'block_id', index: 'block_id', align: "center", editable: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
+            { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+            { name: 'block_id', index: 'block_id', align: "center", hidden: true, editable: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
         ],
         rownumbers: true,
         page: 1,

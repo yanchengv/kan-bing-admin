@@ -1,5 +1,5 @@
 class PageBlock < ActiveRecord::Base
-  has_many :block_contents, :dependent => :destroy, :foreign_key => :block_id
+  has_many :block_contents, :foreign_key => :block_id, :dependent => :destroy
   include SessionsHelper
   before_create :set_pk_code
   # before_save :set_default_value

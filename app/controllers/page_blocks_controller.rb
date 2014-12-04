@@ -114,21 +114,6 @@ class PageBlocksController < ApplicationController
       end
   end
 
-  def page_blocks_manage
-    @menus=current_user.admin2_menus
-    admin_id=current_user.id
-    @kindeditor=true
-    @page_block = PageBlock.new
-    @home_pages = HomePage.all
-    if current_user.admin_type == '医院管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
-    elsif current_user.admin_type == '科室管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/home_pages"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
-    else
-      @left_menus=Menu.new.left_menu admin_id
-    end
-  end
-
   # POST /page_blocks
   # POST /page_blocks.json
   def create
@@ -214,24 +199,6 @@ class PageBlocksController < ApplicationController
     if @page_block.destroy
       render :json => {:success => true}
     end
-    #@page_block.destroy
-    #respond_to do |format|
-    #  format.html { redirect_to page_blocks_url, notice: 'PageBlock was successfully destroyed.' }
-    #  format.json { head :no_content }
-    #end
-  end
-
-  def menu_list
-    @menus=current_user.admin2_menus
-    admin_id=current_user.id
-    @kindeditor=true
-    if current_user.admin_type == '医院管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "管理员管理", uri: "/admin2s"}, {name: "医院管理", uri: "/hospitals"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/page_blocks/page_blocks_setting"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
-    elsif current_user.admin_type == '科室管理员'
-      @left_menus=[{name: "医生管理", uri: "/doctors"}, {name: "患者管理", uri: "/patients"}, {name: "用户管理", uri: "/users"}, {name: "教育视频管理", uri: "/edu_videos"}, {name: "留言管理", uri: "/consult_accuses"}, {name: "首页管理", uri: "", children: [{name: "首界面管理", uri: "/page_blocks/page_blocks_setting"}, {name: "首界面区块管理", uri: "/page_blocks"}]}]
-    else
-      @left_menus=Menu.new.left_menu admin_id
-    end
   end
 
   #修改是否显示的状态
@@ -245,64 +212,6 @@ class PageBlocksController < ApplicationController
     end
   end
 
-=begin
-  #动态样式的添加
-  def dynamic_style(content, urls)
-    str = content
-    if !urls.nil? && !urls.empty? && urls != ''
-      urls = urls.split(',')
-      if content.include? 'picture_list'
-        len = content.scan('图片').length
-        for i in 0..(len-1) do
-          if i >= urls.size
-            str = str.sub!('图片', "<img src='#{urls[i-urls.size*(len / urls.size)]}' />")
-          else
-            str = str.sub!('图片', "<img src='#{urls[i]}' />")
-          end
-        end
-      elsif content.include? 'doctor_list_d'
-        @doctor = Doctor.find(urls[0])
-        if @doctor
-          if @doctor.photo
-            photo_url = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{@doctor.photo}"
-          else
-            photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
-          end
-          str = content.sub!('医生照片', "<a href='#' onclick='showDoctorPage(#{@doctor.id}, \"str\");return false;' target='_blank'><img alt='#{@doctor.name}' style='width:75px;height:99px' id='img_url' src='#{photo_url}' title='#{@doctor.name}'></a>")
-          .sub!('医生姓名', @doctor.name)
-          .sub!('所属医院', @doctor.hospital.nil? ? '' : @doctor.hospital.name)
-          .sub!('所属科室', @doctor.department.nil? ? '' : @doctor.department.name)
-          .sub!('医生简介', @doctor.introduction)
-        end
-
-        pc = content.scan('头像').length
-        for j in 0..(pc-1) do
-          if j >= urls.size
-            doc = Doctor.find(urls[j-urls.size*(pc / urls.size)])
-          else
-            doc = Doctor.find(urls[j])
-          end
-          if doc.photo
-            photo_url = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doc.photo}"
-          else
-            photo_url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/f181f3be-f34c-40c2-8c7e-3546567ce42d.png"
-          end
-          str = str.sub!('头像', "<a class='pl' href='#' onclick='showDoctorPage(#{doc.id}, \"\");return false;' target='_blank'><img alt='#{doc.name}' style='width:55px;height:77 px' onmouseover=\"change_doctor(
-          '#{photo_url}',
-              '#{doc.introduction}',
-              '#{doc.name}',
-              '#{doc.hospital.nil? ? '' : doc.hospital.name}',
-              '#{doc.department.nil? ? '' : doc.department.name}',
-              #{doc.id});return false;\" src='#{photo_url}' title='#{doc.name}'></a>")
-        end
-      else
-        str = content
-      end
-    end
-
-    return str
-  end
-=end
 
   private
   # Use callbacks to share common setup or constraints between actions.
