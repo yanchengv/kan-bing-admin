@@ -191,7 +191,7 @@
             width: 1200,
             height: 300,
             navigation: false,
-            start: 3,
+            start: <%= @block_contents.nil? ? 3 : @block_contents.count %>,
             play: {
                 auto: true
             }

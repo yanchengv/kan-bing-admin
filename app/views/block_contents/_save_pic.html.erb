@@ -14,10 +14,6 @@
         /*box-sizing: border-box;*/
     }
 </style>
-<br>
-<br>
-<br>
-<br>
     <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
     <input type=" text" name="image_url"  id='image_path' style='visibility:hidden;' >
     <table class="EditTable" style="margin-top: -80px;">
@@ -36,13 +32,13 @@
          </td>
       </tr>
 
-      <tr class="FormData">
+    <!--  <tr class="FormData">
         <td colspan="2">
           <div id="progress2">
             <input type="button" value="保存" onclick="submit_pic()">
           </div>
         </td>
-      </tr>
+      </tr>-->
     </table>
 <script>
 
@@ -84,37 +80,6 @@
                 }
             }
         });
-    function submit_pic(){
-        $.ajax({
-            url: "/block_contents/save_pic_content",
-            type: 'post',
-            data: { title: $('#title').val(),
-                    content:$('#content').val(),
-                    url:$('#image_path').val(),
-                    block_id:$('#block_id').val()
-            },
-            async: false,
-            success: function (data) {
-                $.ajax({
-                    type: 'get',
-                    url: 'page_blocks/add_content',
-                    data: {page_block_id: <%= @page_block.id%>},
-                    success: function (data) {
-                        $.ajax({
-                            type: 'post',
-                            url: 'page_blocks/update_template',
-                            data: {content: data, page_block_id: <%= @page_block.id%>},
-                            success: function (data) {
-                                $("#rightContent").html(data);
-                            }
-                        })
-                    }
-                })
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert('图片失败!');
-            }
-        });
-    }
+
 
 </script>
