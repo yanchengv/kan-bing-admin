@@ -60,7 +60,8 @@ class PageBlocksController < ApplicationController
     sql.update "update page_blocks set content = '#{content}' where id = #{page_block.id}"
    #@page_block.update_attributes(content:content)
     @page_block=PageBlock.find(page_block.id)
-    render :partial => 'page_blocks/page_blocks_manage'
+    @block_contents = @page_block.block_contents
+    render :partial => 'block_contents/block_contents_manage'
   end
 
 
@@ -73,16 +74,10 @@ class PageBlocksController < ApplicationController
     @page_block=PageBlock.new(name:name,block_type:block_type,content:content,hospital_id:hospital_id,department_id:department_id)
     @page_block.save
     if block_type == 'login'
-      render :partial => 'page_blocks/show'
-    elsif block_type == 'slides'
-      render :partial => 'block_contents/picture_list_manage'
-    elsif block_type == 'anlizongshu'
-      render :partial => 'block_contents/block_contents_manage'
+      redirect_to :action => :index, :controller => 'block_contents'
     elsif block_type == 'doctor_list'
       render :partial => 'block_contents/block_doctors_manage'
-    elsif block_type == 'hospital_environment'
-      render :partial => 'block_contents/picture_list_manage'
-    elsif block_type == 'jianjie'
+    else
       render :partial => 'block_contents/block_contents_manage'
     end
   end
@@ -100,18 +95,27 @@ class PageBlocksController < ApplicationController
 
   # GET /page_blocks/1/edit
   def edit
-      if @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
-        render :partial => 'block_contents/block_contents_manage', :object => @page_block
-
-      elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
-        render :partial => 'block_contents/picture_list_manage', :object => @page_block
-      else
-        @block_contents = @page_block.block_contents
+    if  @page_block.block_type == 'doctor_list'
+      @block_contents = @page_block.block_contents
         if !@block_contents.empty?
           @ids = @block_contents.first.content
         end
         render :partial => 'block_contents/block_doctors_manage', :object => @page_block
-      end
+    else
+      render :partial => 'block_contents/block_contents_manage', :object => @page_block
+    end
+      #if @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
+      #  render :partial => 'block_contents/block_contents_manage', :object => @page_block
+      #
+      #elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
+      #  render :partial => 'block_contents/block_contents_manage', :object => @page_block
+      #else
+      #  @block_contents = @page_block.block_contents
+      #  if !@block_contents.empty?
+      #    @ids = @block_contents.first.content
+      #  end
+      #  render :partial => 'block_contents/block_doctors_manage', :object => @page_block
+      #end
   end
 
   # POST /page_blocks
@@ -128,23 +132,9 @@ class PageBlocksController < ApplicationController
         @page_block.content = @page_block.content.sub!('区块名称', @page_block.name)
       end
       if @page_block.save
-        if @page_block.content.include? 'user_login'
-          redirect_to :action => :show, :id => @page_block.id
-        else
-          if @page_block.content.include? 'title_list'
-            render :partial => 'block_contents/block_contents_manage', :object => @page_block
-          elsif @page_block.content.include? 'block_text'
-            render :partial => 'block_contents/block_contents_manage', :object => @page_block
-          elsif @page_block.content.include? 'picture_list'
-            render :partial => 'block_contents/picture_list_manage', :object => @page_block
-          elsif @page_block.content.include? 'show_list'
-            render :partial => 'block_contents/picture_list_manage', :object => @page_block
-          else
-           render :partial => 'block_contents/block_doctors_manage', :object => @page_block
-          end
-        end
+        render :json => {:success => true}
       else
-        redirect_to :action => :new
+        render :json => {:success => false, :errors => '添加失败！'}
       end
   end
 
@@ -155,14 +145,10 @@ class PageBlocksController < ApplicationController
       @page_block.updated_id = current_user.id
       @page_block.updated_name = current_user.name
     end
-    respond_to do |format|
-      if @page_block.update(page_block_params)
-        format.html { redirect_to @page_block, notice: 'PageBlock was successfully updated.' }
-        format.json { render :show, status: :ok, location: @page_block }
-      else
-        format.html { render :edit }
-        format.json { render json: @page_block.errors, status: :unprocessable_entity }
-      end
+    if @page_block.update(page_block_params)
+      render :json => {:success => true}
+    else
+      render :json => {:success => false, :errors => '修改失败！'}
     end
   end
 
