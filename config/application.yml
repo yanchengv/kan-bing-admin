@@ -1,38 +1,9 @@
 defaults: &defaults
 
-  cis: 'http://192.168.1.239/3003/'
-
-  videoServerIp: 'http://192.168.174.63/'
   mimas: 'http://fitark.org'
-#  pic: 'http://pic.greenhealth.mobi:7500/files/'
-  pic: 'http://pic.kanbing365.com/files/'
-  files: 'http://fitark.org:7500/files/'
-  files_mount: '/dfs/'
-  xml_path: '/dfs/xml/'
-  Phoebe:
-    host: 'demo.kanbing365.com'
-    port: '8082'
-    dfs: 'services/dfs'
-
-  jsdicom: 'http://www.kanbing365.com:9002/dicom/show/'
-  #通过settings  获取server机器的ip  video_palyer video_rest 是相同的host port
-  # FILESURL 通过 services/dfs  获取 dfs文件服务器内部地址
-  video_palyer: 'http://fitark.org:8082/'
-
-  video_rest: 'http://fitark.org:8082/'
-
-  video_ip: 'fitark.org'
-
-  ct: 'http://fitark.org:8080/'
-
+  block_content: '/block_content/show'
   hospital_code:
     yuquan: '00001'
-
-
-# :server => 'oss.aliyuncs.com', #可不填,默认为此项
-#          :access_key_id => 'h17xgVZatOgQ6IeJ',
-#          :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
-
 
   aliyunOSS:
       server: 'oss.aliyuncs.com'
@@ -41,35 +12,15 @@ defaults: &defaults
       default_bucket: 'mimas-open'
       video_bucket: 'dev-mimas'
       oss_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
+
+
 development:
   <<: *defaults
 
 production:
-  videoServerIp: 'http://192.168.174.63/'
-
-  pic: 'http://pic.kanbing365.com/files/'
-
-  files: 'http://www.kanbing365.com:7500/files/'
+  block_content: '/block_content/show'
   files_mount: '/dfs/'
-  xml_path: '/dfs/xml/'
   mimas: 'http://www.kanbing365.com'
-#  mimas: 'http://fitark.org:9001/'
-  #服务接口所在的主机 就是video
-
-  Phoebe:
-      host: 'www.kanbing365.com'
-      port: '8082'
-      dfs: 'services/dfs'
-  #通过settings  获取server机器的ip  video_palyer video_rest 是相同的host port
-  # FILESURL 通过 services/dfs  获取 dfs文件服务器内部地址
-  video_palyer: 'http://fitark.org:8082/'
-
-  video_rest: 'http://fitark.org:8082/'
-
-  video_ip: 'fitark.org'
-
-  ct: 'http://fitark.org:8080/'
-  jsdicom: 'http://www.kanbing365.com:9002/dicom/show/'
   hospital_code:
     yuquan: '00001'
 
