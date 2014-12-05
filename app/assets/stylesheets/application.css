@@ -18,9 +18,10 @@
  *= require select2
  *= require ui.jqgrid
  *= require jquery.datetimepicker
-  *= require zTreeStyle
+ *= require zTreeStyle
  *= require_self
-   *= require admin2s_role2s
+ *= require admin2s_role2s
+ *= require block_contents
 
  */
 .ui-jqdialog-content .DataTD {
