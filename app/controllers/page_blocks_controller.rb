@@ -59,9 +59,18 @@ class PageBlocksController < ApplicationController
     sql = ActiveRecord::Base.connection()
     sql.update "update page_blocks set content = '#{content}' where id = #{page_block.id}"
    #@page_block.update_attributes(content:content)
-    @page_block=PageBlock.find(page_block.id)
+    @page_block=PageBlock.find(page_block_id)
     @block_contents = @page_block.block_contents
-    render :partial => 'block_contents/block_contents_manage'
+    #render :partial => 'block_contents/block_contents_manage'
+    if @page_block.block_type == 'login'
+      render :partial => 'page_blocks/show'
+    elsif @page_block.block_type == 'doctor_list'
+      render :partial => 'block_contents/block_doctors_manage'
+    elsif @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
+      render :partial => 'block_contents/block_contents_manage'
+    elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
+      render :partial => 'block_contents/picture_list_manage', :object => @page_block
+    end
   end
 
 
@@ -73,9 +82,9 @@ class PageBlocksController < ApplicationController
     department_id=current_user.department_id
     @page_block=PageBlock.new(name:name,block_type:block_type,content:content,hospital_id:hospital_id,department_id:department_id)
     @page_block.save
-    if block_type == 'login'
-      redirect_to :action => :index, :controller => 'block_contents'
-    elsif block_type == 'doctor_list'
+    if @page_block.block_type == 'login'
+      render :partial => 'page_blocks/show'
+    elsif @page_block.block_type == 'doctor_list'
       render :partial => 'block_contents/block_doctors_manage'
     elsif @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
       render :partial => 'block_contents/block_contents_manage'
@@ -106,9 +115,10 @@ class PageBlocksController < ApplicationController
     #else
     #  render :partial => 'block_contents/block_contents_manage', :object => @page_block
     #end
-      if @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
+      if @page_block.block_type == 'login'
+        render :partial => 'page_blocks/show'
+      elsif @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
         render :partial => 'block_contents/block_contents_manage', :object => @page_block
-
       elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
         render :partial => 'block_contents/picture_list_manage', :object => @page_block
       elsif @page_block.block_type == 'doctor_list'
