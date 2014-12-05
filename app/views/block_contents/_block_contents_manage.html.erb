@@ -63,7 +63,7 @@
       { name: 'title', index: 'title', align: "center", editable: true},
 
       { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px" }},
-      { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
+      { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: {  defaultValue: new Date().format("yyyy-MM-dd") ,dataInit: function (element) {
           $(element).datetimepicker({
               lang: 'ch',
               timepicker: false,
