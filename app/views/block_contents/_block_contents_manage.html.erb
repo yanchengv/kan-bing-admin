@@ -52,7 +52,7 @@
   var mods = [
       { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
       { name: 'title', index: 'title', align: "center", editable: true},
-      { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+      { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea',  editoptions: {rows: 5, style: "width:200px"}},
       { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
   ];
   <% end %>
@@ -62,7 +62,7 @@
       { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
       { name: 'title', index: 'title', align: "center", editable: true},
 
-      { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+      { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px" }},
       { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
           $(element).datetimepicker({
               lang: 'ch',
@@ -117,25 +117,20 @@
                 cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
                 deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
-            {
-                afterShowForm:showKindEditor,
-                width:800,
-                height:700
-            },
-            {
-                afterShowForm:showKindEditor
-            },
+
             {
                 afterSubmit: save_content_model,
+                afterShowForm: showKindEditor,
                 closeAfterEdit: true,
                 width:800,
-                height:700
+                height:400
             },//edit
             {
                 afterSubmit: save_content_model,
+                afterShowForm: showKindEditor,
                 closeAfterAdd: true,
                 width:800,
-                height:700
+                height:400
             }//add
              );
 
@@ -160,7 +155,11 @@
         }
          function showKindEditor(){
              KindEditor.ready(function(K) {
-                 window.editor = K.create('#content');
+                 window.editor = K.create('#content',{
+                     afterBlur: function () {
+                         this.sync();
+                     }
+                 });
              });
          }
 </script>
