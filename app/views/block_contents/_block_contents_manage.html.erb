@@ -1,79 +1,65 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
     <table id="block_content_list"></table>
-    <div id="page_block_content"></div>
+    <div id="page_block_content">
+
+    </div>
   </div>
   <br>
   <div>
-
   </div>
 </div>
 <script type="text/javascript">
-  <% if @page_block.block_type == 'hospital_environment' %>
-  var cols = [ 'ID', '标题', '内容', '图片','区块ID'];
-  var mods = [
-      { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-      { name: 'title', index: 'title', align: "center", editable: true},
-      { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
-      { name: 'url', index: 'url', align: "center", editable: true},
-      { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
-  ];
-  <% end %>
-  <% if @page_block.block_type == 'jianjie' %>
-  var cols = [ 'ID', '标题', '内容','区块ID'];
-  var mods = [
-      { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-      { name: 'title', index: 'title', align: "center", editable: true},
-      { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
-      { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
-  ];
-  <% end %>
-  <% if @page_block.block_type == 'anlizongshu' %>
-  var cols = [ 'ID', '标题', '时间', '连接路径', '区块ID'];
-  var mods = [
-      { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-      { name: 'title', index: 'title', align: "center", editable: true},
-      { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
-          $(element).datetimepicker({
-              lang: 'ch',
-              timepicker: false,
-              format: 'Y-m-d'
-          })
-      } }},
-      { name: 'url', index: 'url', align: "center", editable: true},
-      { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
-  ];
-  <% end %>
-  <% if @page_block.block_type == 'slides' %>
-  var cols = [ 'ID','图片路径', '区块ID'];
-  var mods = [
-      { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-      { name: 'url', index: 'url', align: "center", editable: true},
-      { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
-  ];
-  <% end %>
+    <% if @page_block.block_type == 'hospital_environment' %>
+    var cols = [ 'ID', '标题', '内容', '图片','区块ID'];
+    var mods = [
+        { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+        { name: 'title', index: 'title', align: "center", editable: true},
+        { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+        { name: 'url', index: 'url', align: "center", editable: true},
+        { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
+    ];
+    <% end %>
+    <% if @page_block.block_type == 'jianjie' %>
+    var cols = [ 'ID', '标题', '内容','区块ID'];
+    var mods = [
+        { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+        { name: 'title', index: 'title', align: "center", editable: true},
+        { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+        { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
+    ];
+    <% end %>
+    <% if @page_block.block_type == 'anlizongshu' %>
+    var cols = [ 'ID', '标题', '时间', '连接路径','内容', '区块ID'];
+    var mods = [
+        { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+        { name: 'title', index: 'title', align: "center", editable: true},
+        { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
+            $(element).datetimepicker({
+                lang: 'ch',
+                timepicker: false,
+                format: 'Y-m-d'
+            })
+        } }},
+        { name: 'url', index: 'url', align: "center", editable: true},
+        { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+        { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
+    ];
+    <% end %>
+    <% if @page_block.block_type == 'slides' %>
+    var cols = [ 'ID','图片路径', '区块ID'];
+    var mods = [
+        { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+        { name: 'url', index: 'url', align: "center", editable: true},
+        { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
+    ];
+    <% end %>
     jQuery("#block_content_list").jqGrid({
         url: '/block_contents/index_show?block_id=<%= @page_block.id%>',
         datatype: "json",
         mtype: 'GET',
         colNames: cols,
         colModel: mods,
-       /* colNames: [ 'ID', '区块名称', '标题', '连接路径','日期', '内容', '区块ID'],
-        colModel: [
-            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-            { name: 'block_name', index: 'block_name', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%#= @page_block.name%>", readonly: 'readonly'}},
-            { name: 'title', index: 'title', align: "center", editable: true},
-            { name: 'url', index: 'url', align: "center", editable: true},
-            { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
-                $(element).datetimepicker({
-                    lang: 'ch',
-                    timepicker: false,
-                    format: 'Y-m-d'
-                })
-            } }},
-            { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
-            { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%#= @page_block.id%>", readonly: 'readonly'}}
-        ],*/
         rownumbers: true,
         page:1,
         rowList: [10, 15, 20],
@@ -112,6 +98,22 @@
                 cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
                 deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
+//            编辑form的初始化
+            {
+                afterShowForm:function(){
+                    KindEditor.ready(function(K) {
+                        window.editor = K.create('#content');
+                    });
+                }
+            },
+//            新增form初始化
+            {
+                afterShowForm:function(){
+                    KindEditor.ready(function(K) {
+                        window.editor = K.create('#content');
+                    });
+                }
+            },
             {
                 afterSubmit: save_content_model,
                 closeAfterEdit: true
@@ -120,24 +122,24 @@
                 afterSubmit: save_content_model,
                 closeAfterAdd: true
             }//add
-             );
+    );
 
-        function save_content_model(){
-            $.ajax({
-                type: 'get',
-                url: 'page_blocks/add_content',
-                data: {page_block_id: <%= @page_block.id%>},
-                success: function (data) {
-                    $.ajax({
-                        type: 'post',
-                        url: 'page_blocks/update_template',
-                        data: {content: data, page_block_id: <%= @page_block.id%>},
-                        success: function (data) {
-                            $("#rightContent").html(data);
-                        }
-                    })
-                }
-            })
-        }
+    function save_content_model(){
+        $.ajax({
+            type: 'get',
+            url: 'page_blocks/add_content',
+            data: {page_block_id: <%= @page_block.id%>},
+            success: function (data) {
+                $.ajax({
+                    type: 'post',
+                    url: 'page_blocks/update_template',
+                    data: {content: data, page_block_id: <%= @page_block.id%>},
+                    success: function (data) {
+                        $("#rightContent").html(data);
+                    }
+                })
+            }
+        })
+    }
 
 </script>
