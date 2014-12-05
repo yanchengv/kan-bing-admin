@@ -1,20 +1,22 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
+    <div class="warning_box">
     <table class="EditTable">
       <tr class="FormData" style="display: block;" id="show_name">
-        <td class="CaptionTD">区块名称:<%= @page_block.name %></td>
+        <td class="CaptionTD"><b>区块名称:</b><%= @page_block.name %></td>
         <td class="DataTD">
-          <button type="button" onclick="update_name()">修改</button>
+          <button type="button" class="btn" onclick="update_name()">修改</button>
         </td>
       </tr>
       <tr class="FormData" style="display: none;" id="edit_name">
-        <td class="CaptionTD"><input type="text" name="name" value="<%= @page_block.name %>" id="block_name"></td>
+        <td class="CaptionTD"><input type="text" class="text_input" name="name" value="<%= @page_block.name %>" id="block_name"></td>
         <td class="DataTD">
-          <button type="button" onclick="cel_type()">取消</button>
-          <button type="button" onclick="update_block()">保存</button>
+          <button type="button" class="btn" onclick="cel_type()">取消</button>
+          <button type="button" class="btn" onclick="update_block()">保存</button>
         </td>
       </tr>
     </table>
+    </div>
   </div>
   <div style="margin-left: 20px;margin-right: 20px;">
     <table id="block_doctor_list"></table>

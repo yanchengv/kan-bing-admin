@@ -1,101 +1,104 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <table class="EditTable">
-      <tr class="FormData" style="display: block;" id="show_name">
-        <td class="CaptionTD">区块名称:<%= @page_block.name %></td>
-        <td class="DataTD">
-          <button type="button" onclick="update_name()">修改</button>
-        </td>
-      </tr>
-      <tr class="FormData" style="display: none;" id="edit_name">
-            <td class="CaptionTD"><input type="text" name="name" value="<%= @page_block.name %>" id="block_name"></td>
-            <td class="DataTD">
-              <button type="button" onclick="cel_type()">取消</button>
-              <button type="button" onclick="update_block()">保存</button>
-            </td>
-      </tr>
-    </table>
+    <div class="warning_box">
+      <table class="EditTable">
+        <tr class="FormData" style="display: block;" id="show_name">
+          <td class="CaptionTD"><b>区块名称:</b><%= @page_block.name %></td>
+          <td class="DataTD">
+            <button type="button" class="btn" onclick="update_name()">修改</button>
+          </td>
+        </tr>
+        <tr class="FormData" style="display: none;" id="edit_name">
+          <td class="CaptionTD"><input type="text" class="text_input" name="name" value="<%= @page_block.name %>" id="block_name"></td>
+          <td class="DataTD">
+            <button type="button" class="btn" onclick="cel_type()">取消</button>
+            <button type="button" class="btn" onclick="update_block()">保存</button>
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
   <div style="margin-left: 20px;margin-right: 20px;">
     <table id="block_content_list"></table>
     <div id="page_block_content"></div>
   </div>
   <br>
+
   <div>
 
   </div>
 </div>
 <script type="text/javascript">
-  function update_block(){
-      $.ajax({
-          type: 'put',
-          url: 'page_blocks/' + <%= @page_block.id%>,
-          data: {page_block:{
-              name: $('#block_name').val()
-          }},
-          success: function (data) {
-              $("#rightContent").html(data);
-          }
-      })
-  }
-  function update_name(){
-      $('#edit_name').show();
-      $('#show_name').hide();
+    function update_block() {
+        $.ajax({
+            type: 'put',
+            url: 'page_blocks/' + <%= @page_block.id%>,
+            data: {page_block: {
+                name: $('#block_name').val()
+            }},
+            success: function (data) {
+                $("#rightContent").html(data);
+            }
+        })
+    }
+    function update_name() {
+        $('#edit_name').show();
+        $('#show_name').hide();
 
-  }
-  function cel_type(){
-      $('#edit_name').hide();
-      $('#show_name').show();
-  }
-  <% if @page_block.block_type == 'jianjie' %>
-  var cols = [ 'ID', '标题', '内容','区块ID'];
-  var mods = [
-      { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-      { name: 'title', index: 'title', align: "center", editable: true},
-      { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
-      { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
-  ];
-  <% end %>
-  <% if @page_block.block_type == 'anlizongshu' %>
-  var cols = [ 'ID', '标题', '时间', '连接路径', '区块ID'];
-  var mods = [
-      { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-      { name: 'title', index: 'title', align: "center", editable: true},
-      { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
-          $(element).datetimepicker({
-              lang: 'ch',
-              timepicker: false,
-              format: 'Y-m-d'
-          })
-      } }},
-      { name: 'url', index: 'url', align: "center", editable: true},
-      { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
-  ];
-  <% end %>
+    }
+    function cel_type() {
+        $('#edit_name').hide();
+        $('#show_name').show();
+    }
+    <% if @page_block.block_type == 'jianjie' %>
+    var cols = [ 'ID', '标题', '内容', '区块ID'];
+    var mods = [
+        { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+        { name: 'title', index: 'title', align: "center", editable: true},
+        { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+        { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
+    ];
+    <% end %>
+    <% if @page_block.block_type == 'anlizongshu' %>
+    var cols = [ 'ID', '标题', '时间', '连接路径', '区块ID'];
+    var mods = [
+        { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+        { name: 'title', index: 'title', align: "center", editable: true},
+        { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
+            $(element).datetimepicker({
+                lang: 'ch',
+                timepicker: false,
+                format: 'Y-m-d'
+            })
+        } }},
+        { name: 'url', index: 'url', align: "center", editable: true},
+        { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
+    ];
+    <% end %>
     jQuery("#block_content_list").jqGrid({
         url: '/block_contents/index_show?block_id=<%= @page_block.id%>',
         datatype: "json",
         mtype: 'GET',
         colNames: cols,
         colModel: mods,
-       /* colNames: [ 'ID', '区块名称', '标题', '连接路径','日期', '内容', '区块ID'],
-        colModel: [
-            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-            { name: 'block_name', index: 'block_name', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%#= @page_block.name%>", readonly: 'readonly'}},
-            { name: 'title', index: 'title', align: "center", editable: true},
-            { name: 'url', index: 'url', align: "center", editable: true},
-            { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
-                $(element).datetimepicker({
-                    lang: 'ch',
-                    timepicker: false,
-                    format: 'Y-m-d'
-                })
-            } }},
-            { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
-            { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%#= @page_block.id%>", readonly: 'readonly'}}
-        ],*/
+        /* colNames: [ 'ID', '区块名称', '标题', '连接路径','日期', '内容', '区块ID'],
+         colModel: [
+         { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+         { name: 'block_name', index: 'block_name', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%#= @page_block.name%>", readonly: 'readonly'}},
+         { name: 'title', index: 'title', align: "center", editable: true},
+         { name: 'url', index: 'url', align: "center", editable: true},
+         { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
+         $(element).datetimepicker({
+         lang: 'ch',
+         timepicker: false,
+         format: 'Y-m-d'
+         })
+         } }},
+         { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+         { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%#= @page_block.id%>", readonly: 'readonly'}}
+         ],*/
         rownumbers: true,
-        page:1,
+        page: 1,
         rowList: [10, 15, 20],
         sortname: 'id',
         viewrecords: true,
@@ -130,7 +133,7 @@
     });
     jQuery("#block_content_list").jqGrid('navGrid', '#page_block_content', {
                 cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
-                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
                 afterSubmit: save_content_model,
@@ -140,26 +143,26 @@
                 afterSubmit: save_content_model,
                 closeAfterAdd: true
             }//add
-             );
+    );
 
-        function save_content_model(){
-            $.ajax({
-                type: 'get',
-                url: 'page_blocks/add_content',
-                data: {page_block_id: <%= @page_block.id%>},
-                success: function (data) {
-                    $.ajax({
-                        type: 'post',
-                        url: 'page_blocks/update_template',
-                        data: {content: data, page_block_id: <%= @page_block.id%>},
-                        success: function (data) {
-                            $("#rightContent").html(data);
-                        }
-                    })
-                }
-            })
-            jQuery('.ui-jqdialog-titlebar-close').click();
+    function save_content_model() {
+        $.ajax({
+            type: 'get',
+            url: 'page_blocks/add_content',
+            data: {page_block_id: <%= @page_block.id%>},
+            success: function (data) {
+                $.ajax({
+                    type: 'post',
+                    url: 'page_blocks/update_template',
+                    data: {content: data, page_block_id: <%= @page_block.id%>},
+                    success: function (data) {
+                        $("#rightContent").html(data);
+                    }
+                })
+            }
+        })
+        jQuery('.ui-jqdialog-titlebar-close').click();
 
-        }
+    }
 
 </script>
