@@ -59,19 +59,20 @@
   ];
   <% end %>
   <% if @page_block.block_type == 'anlizongshu' %>
-  var year = data.getFullYear();  //获取年
-  var month = data.getMonth() + 1;    //获取月
-  var day = data.getDate(); //获取日
+  var currentDate = new Date();
+  var year = currentDate.getFullYear();  //获取年
+  var month = currentDate.getMonth() + 1;    //获取月
+  var day = currentDate.getDate(); //获取日
 //  var hours = data.getHours();
 //  var minutes = data.getMinutes();
-  var contentDate= time = year + "-" + month + "-" + day;
+  var currentDate= time = year + "-" + month + "-" + day;
   var cols = [ 'ID', '标题',  '内容', '时间','区块ID'];
   var mods = [
       { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
       { name: 'title', index: 'title', align: "center", editable: true},
 
       { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px" }},
-      { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: {defaultValue: contentDate,dataInit: function (element) {
+      { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: {defaultValue: currentDate,dataInit: function (element) {
           $(element).datetimepicker({
               lang: 'ch',
               timepicker: false,
