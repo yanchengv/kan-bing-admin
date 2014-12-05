@@ -15,6 +15,7 @@
     }
 </style>
 <br>
+<br>
     <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
     <input type=" text" name="image_url"  id='image_path' style='visibility:hidden;' >
     <input type="hidden" id='content_id' name="content_id" value="<%= @block_content.id %>">
@@ -49,7 +50,15 @@
       </tr>-->
     </table>
 <script>
-
+    $(function () {
+        KindEditor.ready(function (K) {
+            window.editor = K.create('#content', {
+                afterBlur: function () {
+                    this.sync();
+                }
+            });
+        });
+    });
     function getFileName(obj)
     {
         var pos = obj.value.lastIndexOf("/")*1;

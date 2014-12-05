@@ -41,11 +41,10 @@
         url: '/page_blocks/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: ['ID', '标题', '界面ID', '排版顺序', '状态', '是否显示'],
+        colNames: ['ID', '标题', '排版顺序', '状态', '是否显示'],
         colModel: [
             {name: 'id', index: 'id', align: "center", hidden: true},
             {name: 'name', index: 'name', align: "center"},
-            {name: 'page_id', index: 'page_id', align: "center"},
             {name: 'position', index: 'position', align: "center"},
             { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
                 var value = colpos.is_show;
