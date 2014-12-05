@@ -26,3 +26,5 @@
 //= require jquery.fileupload
 //= require kindeditor
 //= require jquery.slides.min
+//= require jquery.form.min
+//= require jquery.Jcrop
