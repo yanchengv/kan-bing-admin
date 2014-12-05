@@ -13,6 +13,14 @@
 <div style="font-size: 12px;">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项,手机号和电子邮箱至少填写一个.</div>
 <hr style="margin: 10px 0px;"/>
 <div>
+  <%= render 'patients/photo_form' %>
+  <% if params[:id] %>
+      <button id="upload_button" style="width:90px;" onclick="select_photo()">修改头像</button>
+  <% else %>
+      <button id="upload_button" style="width:90px;" onclick="select_photo()">上传头像</button>
+  <% end %>
+</div>
+<div>
 <%= form_for(@patient,remote:true,html:{id:'pat_form'}) do |f| %>
     <% if @patient.errors.any? %>
         <div id="error_explanation">
@@ -26,6 +34,7 @@
         </div>
     <% end %>
     <div class="">
+      <input type="hidden" name="patient[photo]" id="pat_photo_image">
       <div style="display:inline-block;width:49%"><%= f.label '姓名' %><span style="color:red"><b>*</b></span><br>
         <%= f.text_field :name ,class:"form-control",onblur:"check_name(this.value,'true')"%>
       </div>
@@ -281,8 +290,8 @@
     <div class="actions" style="display: none;">
       <%= f.submit id:'new_or_edit_patient' %>
     </div>
-    </div>
 <% end %>
+</div>
 <script>
     function showBirthday(val)
     {

@@ -16,10 +16,10 @@
         mtype: 'GET',
         colNames: [ 'ID', '名称', '编码',  '描述'],
         colModel: [
-            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-            { name: 'name', index: 'name', align: "center", editable: true},
-            { name: 'code', index: 'code', align: "center", editable: true},
-            { name: 'description', index: 'description', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}}
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true,editoptions:{style: "width:156px"}},
+            { name: 'name', index: 'name', align: "center", editable: true,editoptions:{style: "width:156px"}},
+            { name: 'code', index: 'code', align: "center", editable: true,editoptions:{style: "width:156px"}},
+            { name: 'description', index: 'description', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:300px"}}
         ],
         rowList: [10, 20, 30],
         sortname: 'id',
@@ -81,12 +81,12 @@
         mtype: 'GET',
         colNames: ['ID', '名称', '编码', '类型ID', '类型', '描述'],
         colModel: [
-            { name: 'id', index: 'id', align: "left", key: 'id',hidden:true},
-            { name: 'name', index: 'name', align: "center", editable: true},
-            { name: 'code', index: 'code', align: "center", editable: true},
+            { name: 'id', index: 'id', align: "left", key: 'id',hidden:true,editoptions:{style: "width:156px"}},
+            { name: 'name', index: 'name', align: "center", editable: true,editoptions:{style: "width:156px"}},
+            { name: 'code', index: 'code', align: "center", editable: true,editoptions:{style: "width:156px"}},
             { name: 'dictionary_type_id', index: 'dictionary_type_id',hidden: true, editable: true, editrules: {custom: true, custom_func: check_type, require: true}},
-            { name: 'dictionary_type_name', index: 'dictionary_type_name',editable: true, hidden: true, jsonmap: 'dictionary_type.name', editrules: {edithidden: true}, editoptions: { readonly: 'readonly'}},
-            { name: 'description', index: 'description', align: "center", editable: true, edittype: 'textarea', editoptions:{rows: 5, style: "width:200px"}}
+            { name: 'dictionary_type_name', index: 'dictionary_type_name',editable: true, hidden: true, jsonmap: 'dictionary_type.name', editrules: {edithidden: true}, editoptions: { readonly: 'readonly'},editoptions:{style: "width:156px"}},
+            { name: 'description', index: 'description', align: "center", editable: true, edittype: 'textarea', editoptions:{rows: 5, style: "width:300px"}}
         ],
         rowList: [10, 20, 30],
         sortname: 'id',

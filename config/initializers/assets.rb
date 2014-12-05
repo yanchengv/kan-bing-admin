@@ -9,3 +9,5 @@ Rails.application.config.assets.version = '1.0'
 Rails.application.config.assets.precompile += %w( ui-dialog.css )
 Rails.application.config.assets.precompile += %w( dialog-min.js )
 Rails.application.config.assets.precompile += %w( update_password.js )
+Rails.application.config.assets.precompile += %w( ajax_image_crop_upload.js )
+Rails.application.config.assets.precompile += %w( pat_ajax_image_crop_upload.js )

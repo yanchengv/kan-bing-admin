@@ -12,6 +12,7 @@
  *
  *require_tree .
  *= require login.css
+ *=require jquery.Jcrop
  *= require header.css
  *= require jquery-ui
  *= require select2
