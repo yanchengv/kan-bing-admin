@@ -77,8 +77,10 @@ class PageBlocksController < ApplicationController
       redirect_to :action => :index, :controller => 'block_contents'
     elsif block_type == 'doctor_list'
       render :partial => 'block_contents/block_doctors_manage'
-    else
+    elsif @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
       render :partial => 'block_contents/block_contents_manage'
+    elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
+      render :partial => 'block_contents/picture_list_manage', :object => @page_block
     end
   end
   # GET /page_blocks/1
@@ -95,27 +97,25 @@ class PageBlocksController < ApplicationController
 
   # GET /page_blocks/1/edit
   def edit
-    if  @page_block.block_type == 'doctor_list'
-      @block_contents = @page_block.block_contents
-        if !@block_contents.empty?
-          @ids = @block_contents.first.content
-        end
+    #if  @page_block.block_type == 'doctor_list'
+    #  @block_contents = @page_block.block_contents
+    #    if !@block_contents.empty?
+    #      @ids = @block_contents.first.content
+    #    end
+    #    render :partial => 'block_contents/block_doctors_manage', :object => @page_block
+    #else
+    #  render :partial => 'block_contents/block_contents_manage', :object => @page_block
+    #end
+      if @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
+        render :partial => 'block_contents/block_contents_manage', :object => @page_block
+
+      elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
+        render :partial => 'block_contents/picture_list_manage', :object => @page_block
+      elsif @page_block.block_type == 'doctor_list'
         render :partial => 'block_contents/block_doctors_manage', :object => @page_block
-    else
-      render :partial => 'block_contents/block_contents_manage', :object => @page_block
-    end
-      #if @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
-      #  render :partial => 'block_contents/block_contents_manage', :object => @page_block
-      #
-      #elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
-      #  render :partial => 'block_contents/block_contents_manage', :object => @page_block
-      #else
-      #  @block_contents = @page_block.block_contents
-      #  if !@block_contents.empty?
-      #    @ids = @block_contents.first.content
-      #  end
-      #  render :partial => 'block_contents/block_doctors_manage', :object => @page_block
-      #end
+      else
+        render :partial => 'page_blocks/show'
+      end
   end
 
   # POST /page_blocks
@@ -146,7 +146,16 @@ class PageBlocksController < ApplicationController
       @page_block.updated_name = current_user.name
     end
     if @page_block.update(page_block_params)
-      render :json => {:success => true}
+      if @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
+        render :partial => 'block_contents/block_contents_manage', :object => @page_block
+
+      elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
+        render :partial => 'block_contents/picture_list_manage', :object => @page_block
+      elsif @page_block.block_type == 'doctor_list'
+        render :partial => 'block_contents/block_doctors_manage', :object => @page_block
+      else
+        render :partial => 'page_blocks/show'
+      end
     else
       render :json => {:success => false, :errors => '修改失败！'}
     end

@@ -17,26 +17,26 @@
 <br>
     <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
     <input type=" text" name="image_url"  id='image_path' style='visibility:hidden;' >
-    <input type="hidden" id='block_id' name="block_id" value="<%= @page_block.id %>">
+    <input type="hidden" id='content_id' name="content_id" value="<%= @block_content.id %>">
     <table class="EditTable" style="margin-top: -80px;">
       <% if @page_block.block_type == 'hospital_environment'%>
           <tr class="FormData">
             <td class="CaptionTD">图片标题:</td>
             <td class="DataTD">
-              <input type="text" id="title" name='title' class='FormElement ui-widget-content ui-corner-all'></td>
+              <input type="text" id="title" name='title' value="<%= @block_content.title %>" class='FormElement ui-widget-content ui-corner-all'></td>
           </tr>
           <% end %>
       <tr class="FormData">
         <td class="CaptionTD">图片路径:</td>
         <td class="DataTD">
-          <input id="image_path2" type="text" disabled="disabled" class='FormElement ui-widget-content ui-corner-all' style="display:inline"/><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
+          <input id="image_path2" type="text" disabled="disabled" value="<%= @block_content.url %>" class='FormElement ui-widget-content ui-corner-all' style="display:inline"/><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
          </td>
       </tr>
       <% if @page_block.block_type == 'hospital_environment' %>
       <tr class="FormData">
         <td class="CaptionTD">内容:</td>
         <td class="DataTD">
-          <textarea name='content' rows="5" id="content" style="width: 300px;" class='FormElement ui-widget-content ui-corner-all'></textarea>
+          <textarea name='content' rows="5" id="content" style="width: 300px;" class='FormElement ui-widget-content ui-corner-all'><%= @block_content.content %></textarea>
         </td>
       </tr>
       <% end %>

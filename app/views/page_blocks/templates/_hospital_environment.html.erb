@@ -3,7 +3,7 @@
 <div class="index_model_box_1_1">
   <% @block_contents.each do |block_content|%>
       <dl class="index_img_box">
-        <dt><%= image_tag 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'<<block_content.url%></dt>
+        <dt><%= image_tag block_content.url%></dt>
         <dd><b><%=block_content.title %></b><br/>
           <%=block_content.content %>
         </dd>

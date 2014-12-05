@@ -1,5 +1,22 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
+    <table class="EditTable">
+      <tr class="FormData" style="display: block;" id="show_name">
+        <td class="CaptionTD">区块名称:<%= @page_block.name %></td>
+        <td class="DataTD">
+          <button type="button" onclick="update_name()">修改</button>
+        </td>
+      </tr>
+      <tr class="FormData" style="display: none;" id="edit_name">
+        <td class="CaptionTD"><input type="text" name="name" value="<%= @page_block.name %>" id="block_name"></td>
+        <td class="DataTD">
+          <button type="button" onclick="cel_type()">取消</button>
+          <button type="button" onclick="update_block()">保存</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div style="margin-left: 20px;margin-right: 20px;">
     <table id="block_doctor_list"></table>
     <div id="page_block_doctor"></div>
   </div>
@@ -10,6 +27,27 @@
   </div>
 </div>
 <script type="text/javascript">
+    function update_block() {
+        $.ajax({
+            type: 'put',
+            url: 'page_blocks/' + <%= @page_block.id%>,
+            data: {page_block: {
+                name: $('#block_name').val()
+            }},
+            success: function (data) {
+                $("#rightContent").html(data);
+            }
+        })
+    }
+    function update_name() {
+        $('#edit_name').show();
+        $('#show_name').hide();
+
+    }
+    function cel_type() {
+        $('#edit_name').hide();
+        $('#show_name').show();
+    }
     jQuery("#block_doctor_list").jqGrid({
         url: '/doctors/show_index',
         datatype: "json",

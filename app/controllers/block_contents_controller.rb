@@ -40,6 +40,8 @@ class BlockContentsController < ApplicationController
 
   # GET /block_contents/1/edit
   def edit
+    @page_block = PageBlock.find(@block_content.block_id)
+    render :partial => 'block_contents/edit_pic'
   end
 
   # POST /block_contents
@@ -64,10 +66,16 @@ class BlockContentsController < ApplicationController
   end
 
   def update
-    if @block_content.update(block_content_params)
-      render :json => {:success => true}
+    para={}
+    para[:title]=params[:title]
+    para[:content]=params[:content]
+    para[:url]=params[:url]
+    if @block_content.update(para)
+      @page_block = PageBlock.find(@block_content.block_id)
+      @block_contents = BlockContent.where(:block_id => params[:block_id])
+      render partial: "page_blocks/templates/#{@page_block.block_type}"
     else
-      render :json => {:success => false, :errors => '修改失败！'}
+      render :partial => 'block_contents/edit_pic'
     end
     #respond_to do |format|
     #  if @block_content.update(block_content_params)
@@ -80,6 +88,19 @@ class BlockContentsController < ApplicationController
     #end
   end
 
+  #上传图片
+  def upload_image
+
+    file=params[:edu_video].nil? ? params[:image] : params[:edu_video][:image]
+    tmpfile = getFileName(file.original_filename.to_s)
+    uuid = upload_video_img_bucket(file)
+    url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/" << uuid
+    if true
+      render :json => {flag: true, url: url}
+    else
+      render :json => {flag: false, url: ''}
+    end
+  end
 
   def save_pic
     @page_block = PageBlock.find(params[:block_id])
@@ -122,6 +143,11 @@ class BlockContentsController < ApplicationController
   # DELETE /block_contents/1.json
   def destroy
     if @block_content.destroy
+      if @block_content.block_type == 'hospital_environment' || @block_content.block_type == 'slides'
+        if !@block_content.url.nil? && @block_content.url != ''
+          delte_file_from_aliyun(@block_content.url[@block_content.url.rindex('/')+1, @block_content.url.length])
+        end
+      end
       render :json => {:success => true}
     end
     #respond_to do |format|
