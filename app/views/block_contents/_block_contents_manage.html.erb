@@ -57,10 +57,12 @@
   ];
   <% end %>
   <% if @page_block.block_type == 'anlizongshu' %>
-  var cols = [ 'ID', '标题', '时间', '连接路径', '区块ID'];
+  var cols = [ 'ID', '标题',  '内容', '时间','区块ID'];
   var mods = [
       { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
       { name: 'title', index: 'title', align: "center", editable: true},
+
+      { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
       { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
           $(element).datetimepicker({
               lang: 'ch',
@@ -68,7 +70,6 @@
               format: 'Y-m-d'
           })
       } }},
-      { name: 'url', index: 'url', align: "center", editable: true},
       { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
   ];
   <% end %>
@@ -78,22 +79,6 @@
         mtype: 'GET',
         colNames: cols,
         colModel: mods,
-       /* colNames: [ 'ID', '区块名称', '标题', '连接路径','日期', '内容', '区块ID'],
-        colModel: [
-            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-            { name: 'block_name', index: 'block_name', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%#= @page_block.name%>", readonly: 'readonly'}},
-            { name: 'title', index: 'title', align: "center", editable: true},
-            { name: 'url', index: 'url', align: "center", editable: true},
-            { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
-                $(element).datetimepicker({
-                    lang: 'ch',
-                    timepicker: false,
-                    format: 'Y-m-d'
-                })
-            } }},
-            { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
-            { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%#= @page_block.id%>", readonly: 'readonly'}}
-        ],*/
         rownumbers: true,
         page:1,
         rowList: [10, 15, 20],
@@ -133,12 +118,24 @@
                 deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
+                afterShowForm:showKindEditor,
+                width:800,
+                height:700
+            },
+            {
+                afterShowForm:showKindEditor
+            },
+            {
                 afterSubmit: save_content_model,
-                closeAfterEdit: true
+                closeAfterEdit: true,
+                width:800,
+                height:700
             },//edit
             {
                 afterSubmit: save_content_model,
-                closeAfterAdd: true
+                closeAfterAdd: true,
+                width:800,
+                height:700
             }//add
              );
 
@@ -161,5 +158,9 @@
             jQuery('.ui-jqdialog-titlebar-close').click();
 
         }
-
+         function showKindEditor(){
+             KindEditor.ready(function(K) {
+                 window.editor = K.create('#content');
+             });
+         }
 </script>
