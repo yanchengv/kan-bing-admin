@@ -59,7 +59,7 @@ class PageBlocksController < ApplicationController
     sql = ActiveRecord::Base.connection()
     sql.update "update page_blocks set content = '#{content}' where id = #{page_block.id}"
    #@page_block.update_attributes(content:content)
-    @page_block=PageBlock.find(page_block_id)
+    @page_block=PageBlock.find(page_block.id)
     @block_contents = @page_block.block_contents
     #render :partial => 'block_contents/block_contents_manage'
     if @page_block.block_type == 'login'

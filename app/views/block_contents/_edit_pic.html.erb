@@ -19,6 +19,7 @@
     <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
     <input type=" text" name="image_url"  id='image_path' style='visibility:hidden;' >
     <input type="hidden" id='content_id' name="content_id" value="<%= @block_content.id %>">
+    <input type="hidden" id="block_id" name="block_id" value="<%= @block_content.block_id %>">
     <table class="EditTable" style="margin-top: -80px;">
       <% if @page_block.block_type == 'hospital_environment'%>
           <tr class="FormData">
@@ -53,6 +54,9 @@
     $(function () {
         KindEditor.ready(function (K) {
             window.editor = K.create('#content', {
+                resizeType: 0,
+                width: 600,
+                height: 400,
                 afterBlur: function () {
                     this.sync();
                 }
@@ -90,10 +94,9 @@
             },
 
             done: function (e, data) {
-                alert('上传成功!');
                 if (data.result.flag){
                    $('#image_path').val(data.result.url);
-                   $('#image_path2').val(data.result.url);
+                   $('#image_path2').val('上传成功!');
                 }
             }
         });

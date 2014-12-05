@@ -7,7 +7,7 @@
   </div>
   <p class="index_modle_text">
     <%@block_contents.each do |block_content|%>
-       <%= block_content.content%>
+       <%= block_content.content.html_safe %>
     <%end%>
   </p>
 </div>

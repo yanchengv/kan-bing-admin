@@ -5,7 +5,7 @@
       <dl class="index_img_box">
         <dt><%= image_tag block_content.url%></dt>
         <dd><b><%=block_content.title %></b><br/>
-          <%=block_content.content %>
+          <%=block_content.content.html_safe %>
         </dd>
       </dl>
   <%end%>

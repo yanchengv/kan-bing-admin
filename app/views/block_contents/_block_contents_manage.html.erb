@@ -125,14 +125,14 @@
                 afterShowForm: showKindEditor,
                 closeAfterEdit: true,
                 width:800,
-                height:400
+                height:600
             },//edit
             {
                 afterSubmit: save_content_model,
                 afterShowForm: showKindEditor,
                 closeAfterAdd: true,
                 width:800,
-                height:400
+                height:600
             }//add
              );
 
@@ -158,6 +158,9 @@
          function showKindEditor(){
              KindEditor.ready(function(K) {
                  window.editor = K.create('#content',{
+                     resizeType:0,
+                     width: 600,
+                     height: 400,
                      afterBlur: function () {
                          this.sync();
                      }
