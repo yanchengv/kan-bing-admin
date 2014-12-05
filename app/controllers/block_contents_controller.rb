@@ -1,7 +1,7 @@
 class BlockContentsController < ApplicationController
   before_filter :signed_in_user
   before_action :set_block_content, only: [:show, :edit, :update, :destroy]
-
+  skip_before_filter :oper_action
   # GET /block_contents
   # GET /block_contents.json
   def index

@@ -48,6 +48,7 @@ class PageBlocksController < ApplicationController
     @page_block=PageBlock.where(id:page_block_id).first
     block_type=@page_block.block_type #block_type必须是模版的名称
     @block_contents=BlockContent.where(block_id:page_block_id)
+    p  @block_contents.count
     render partial: "page_blocks/templates/#{block_type}"
   end
 
@@ -106,23 +107,15 @@ class PageBlocksController < ApplicationController
 
   # GET /page_blocks/1/edit
   def edit
-    #if  @page_block.block_type == 'doctor_list'
-    #  @block_contents = @page_block.block_contents
-    #    if !@block_contents.empty?
-    #      @ids = @block_contents.first.content
-    #    end
-    #    render :partial => 'block_contents/block_doctors_manage', :object => @page_block
-    #else
-    #  render :partial => 'block_contents/block_contents_manage', :object => @page_block
-    #end
+     @page_block
       if @page_block.block_type == 'login'
         render :partial => 'page_blocks/show'
       elsif @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
         render :partial => 'block_contents/block_contents_manage', :object => @page_block
       elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
-        render :partial => 'block_contents/picture_list_manage', :object => @page_block
+        render :partial => 'block_contents/picture_list_manage'
       elsif @page_block.block_type == 'doctor_list'
-        render :partial => 'block_contents/block_doctors_manage', :object => @page_block
+        render :partial => 'block_contents/block_doctors_manage'
       else
         render :partial => 'page_blocks/show'
       end
