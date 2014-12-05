@@ -7,7 +7,7 @@
 <% end %>
 <script>
   $(function(){
-      <% if !params[:id].nil? %>
+      <% if !params[:id].nil? && params[:id] !='' %>
       <% if params[:type]== 'doc' %>
           <% doc = Doctor.find_by(id:params[:id]) %>
           $('#s2id_doctor_nationality').children('.select2-choice').children('.select2-chosen').html('<%=doc.nationality%>')

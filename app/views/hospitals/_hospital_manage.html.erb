@@ -1,3 +1,8 @@
+<style>
+    #editmodhospital_list {
+        width:500px;
+    }
+</style>
 <div style="width: 100%">
   <div style="hight: 48%;margin-left: 20px;margin-right: 20px;">
     <div style="margin-bottom: 10px;">省：<select id="province_search_id" style="width: 139px;">
@@ -15,9 +20,9 @@
     <table id="hospital_list"></table>
     <div id="page_hos"></div>
   </div>
-  <div style="hight: 48%;margin-top: 10px;margin-left: 20px;margin-right: 20px;">
+  <div style="height: 48%;margin-top: 10px;margin-left: 20px;margin-right: 20px;">
     <div style="margin-bottom: 10px;">
-      科室名称：<input type="text" id="dept_name_search">&nbsp;&nbsp;<a id="search_dept_btn" class="btn btn-default btn-sm" role="button">搜索</a>&nbsp;<a id="clear_dept_btn" class="btn btn-default btn-sm" role="button">清空</a>
+      科室名称：<input type="text" id="dept_name_search">&nbsp;&nbsp;<button id="search_dept_btn" class="btn btn-default btn-sm" role="button">搜索</button>&nbsp;<button id="clear_dept_btn" class="btn btn-default btn-sm" role="button">清空</button>
     </div>
     <table id="department_list"></table>
     <div id="page_dept"></div>
@@ -49,8 +54,8 @@
         colNames: [ 'ID', '名称', '简称', '省份', '省份', '城市', '城市', '地址', '等级', '邮箱', '运营模式', '网址', '传真', '特色科室', '描述'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-            { name: 'name', index: 'name', align: "center", editable: true},
-            { name: 'short_name', index: 'short_name', align: "center", editable: true},
+            { name: 'name', index: 'name', align: "center", editable: true,editoptions:{style: "width:156px"}},
+            { name: 'short_name', index: 'short_name', align: "center", editable: true,editoptions:{style: "width:156px"}},
             { name: 'province_name', index: 'province_name', align: "center", editable: false},
             { name: 'province_id', index: 'province_id', align: "center", jsonmap:'province.id',editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
                 editoptions: {
@@ -116,7 +121,7 @@
                 }
             },
             { name: 'city_name', index: 'city_name', align: "center", editable:  false},
-            { name: 'address', index: 'address', align: "center", editable: true},
+            { name: 'address', index: 'address', align: "center", editable: true,editoptions:{style: "width:156px"}},
             { name: 'rank', index: 'rank', align: "center", editable: true, edittype: 'select', formatter: 'select',
                 editoptions: {
                     style: "width:166px",
@@ -135,12 +140,12 @@
                         return positions;
                     }
                 }},
-            { name: 'email', index: 'email', align: "center", editable: true, editrules: {email: true, required: false}},
+            { name: 'email', index: 'email', align: "center", editable: true, editrules: {email: true, required: false},editoptions:{style: "width:156px"}},
             { name: 'operation_mode', index: 'operation_mode', align: "center", editable: true, edittype: 'select', editoptions:{value:"国有:国有;民营:民营", style: "width:166px"}},
-            { name: 'hospital_site', index: 'hospital_site', align: "center", editable: true, editrules: {url: true, required: false}},
-            { name: 'fax_number', index: 'fax_number', align: "center", editable: true},
-            { name: 'key_departments', index: 'key_departments', align: "center", editable: true},
-            { name: 'description', index: 'description', align: "center", hidden: true, editrules: {edithidden: true}, editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}}
+            { name: 'hospital_site', index: 'hospital_site', align: "center", editable: true, editrules: {url: true, required: false},editoptions:{style: "width:156px"}},
+            { name: 'fax_number', index: 'fax_number', align: "center", editable: true,editoptions:{style: "width:156px"}},
+            { name: 'key_departments', index: 'key_departments', align: "center", editable: true,editoptions:{style: "width:156px"}},
+            { name: 'description', index: 'description', align: "center", hidden: true, editrules: {edithidden: true}, editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:300px"}}
         ],
         rowList: [10, 15, 20],
         sortname: 'id',
@@ -203,15 +208,15 @@
         colNames: ['ID', '名称', '简称', '电话', '医院ID', '医院', '状态', '描述'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id',hidden:true},
-            { name: 'name', index: 'name', align: "center", editable: true},
-            { name: 'short_name', index: 'short_name', align: "center", editable: true},
-            { name: 'phone_number', index: 'phone_number', align: "center", editable: true, editrules: {custom: true, required: false, custom_func: check_phone}},
-            { name: 'hospital_id', index: 'hospital_id', align: "center", editable: true, hidden: true, editrules: {custom: true, custom_func: check_hos, require:true}},
-            { name: 'hospital_name', index: 'hospital_name', align: "center", editable: true, hidden: true, jsonmap: 'hospital.name', editrules: {edithidden: true}, editoptions: { readonly: 'readonly'}},
+            { name: 'name', index: 'name', align: "center", editable: true,editoptions:{style: "width:156px"}},
+            { name: 'short_name', index: 'short_name', align: "center", editable: true,editoptions:{style: "width:156px"}},
+            { name: 'phone_number', index: 'phone_number', align: "center", editable: true, editrules: {custom: true, required: false, custom_func: check_phone},editoptions:{style: "width:156px"}},
+            { name: 'hospital_id', index: 'hospital_id', align: "center", editable: true, hidden: true, editrules: {custom: true, custom_func: check_hos, require:true},editoptions:{style: "width:156px"}},
+            { name: 'hospital_name', index: 'hospital_name', align: "center", editable: true, hidden: true, jsonmap: 'hospital.name', editrules: {edithidden: true}, editoptions: { readonly: 'readonly'},editoptions:{style: "width:156px"}},
 //            { name: 'department_type', index: 'department_type', align: "center", editable: true, edittype: 'select', editoptions: {value: {0:'门诊部', 1: '住院部', 2: '急诊部', 3: '药房', 4: '化验室'}, style: "width:166px"} },
             { name: 'state', index: 'state', align: "center", editable: true, hidden:true },
             //  { name: 'sort', index: 'sort', align: "center", editable: true},
-            { name: 'description', index: 'description', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'textarea', editoptions:{rows: 5, style: "width:200px"}}
+            { name: 'description', index: 'description', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'textarea', editoptions:{rows: 5, style: "width:300px"}}
         ],
         rowList: [10, 15, 20],
         sortname: 'id',

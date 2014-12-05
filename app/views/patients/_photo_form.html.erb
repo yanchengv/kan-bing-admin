@@ -1,0 +1,59 @@
+<style>
+    .white_content {
+    display: none;
+    position: fixed  ;
+    top: 15%;
+    left: 35%;
+    width: 30%;
+    background-color:#ffffff;
+
+    border: 5px solid #D6E9F1;
+    z-index:1002;
+}
+.black_overlay {
+    display: none;
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    background-color:#000000;
+    z-index:1001;
+    -moz-opacity: 0.5;
+    opacity:.50;
+    filter: alpha(opacity=50);
+}
+.con {
+    text-indent:1.5pc;
+    line-height:21px
+}
+</style>
+<%# if params[:id] %>
+<img id="pat_myPhoto" src="<%= @my_photo %>" class="img_bg img-responsive" style="width:90px;height:120px;border-radius: 3px;border:1px solid #e5e5e5;" onclick="pat_select_photo()">
+<%# end %>
+<%= form_for :photo, url: {action: 'create', controller: 'photos'}, method: 'post', html: {multipart: true, id: 'pat_photo_upload_form'} do |f| %>
+    <div class="div1" id="div1_photo">
+      <!--<div class="div2">更换头像</div>-->
+      <%# if params[:id] %>
+        <%= f.file_field :photo, onchange: 'pat_upload(this)', id: 'pat_input_photo', style: "display:none" %>
+      <%# else %>
+       <!--<div style="width:150px;height: 200px;line-height: 200px;align-content: center; border-radius: 3px;border:1px solid #e5e5e5;" >-->
+        <%#= f.file_field :photo, onchange: 'upload(this)', id: 'input_photo',text:'上传头像',style:'width:85px;'%>
+       <!--</div>-->
+      <%# end %>
+    </div>
+    <div id="pat_photoModal" class="white_content">
+      <div id="pat_preview_photo" class="">
+
+      </div>
+      <div style="float:right;margin:5px;">
+        <%= f.submit "确定", id:'pat_upload_image', class:"ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" %>
+        <div  style="width:73px;height: 38px;line-height: 38px;" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" onclick="pat_hide('pat_photoModal')">取消</div>
+      </div>
+    </div>
+<% end %>
+
+
+<div id="fade" class="black_overlay"></div>
+<%= javascript_include_tag 'pat_ajax_image_crop_upload' %>
+

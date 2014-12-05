@@ -309,6 +309,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resource :photos
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

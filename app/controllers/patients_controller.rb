@@ -329,6 +329,14 @@ class PatientsController < ApplicationController
       @hospitals = Hospital.all
     end
     @patient = Patient.new
+    photo=@patient.photo
+    default_access_url_prefix = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/"
+    if photo.nil?||photo==''
+      photo='/default.png'
+    else
+      photo= default_access_url_prefix + photo
+    end
+    @my_photo = photo
     render partial: 'patients/patient_form'
   end
 
@@ -383,6 +391,14 @@ class PatientsController < ApplicationController
       @hospitals = Hospital.all
     end
     @patient = Patient.where(id:params[:id]).first
+    photo=@patient.photo
+    default_access_url_prefix = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/"
+    if photo.nil?||photo==''
+      photo='/default.png'
+    else
+      photo= default_access_url_prefix + photo
+    end
+    @my_photo = photo
     render partial: 'patients/patient_form'
   end
 

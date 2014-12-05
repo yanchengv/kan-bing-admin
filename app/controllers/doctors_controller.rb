@@ -486,6 +486,14 @@ class DoctorsController < ApplicationController
       @hospitals = Hospital.all
     end
     @doctor = Doctor.new
+    photo=@doctor.photo
+    default_access_url_prefix = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/"
+    if photo.nil?||photo==''
+      photo='/default.png'
+    else
+      photo= default_access_url_prefix + photo
+    end
+    @my_photo = photo
     render partial: 'doctors/doctor_form'
   end
 
@@ -567,6 +575,15 @@ class DoctorsController < ApplicationController
       @hospitals = Hospital.all
     end
     @doctor = Doctor.where(id:params[:id]).first
+    photo=@doctor.photo
+    default_access_url_prefix = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/"
+    if photo.nil?||photo==''
+      photo='/default.png'
+    else
+      photo= default_access_url_prefix + photo
+    end
+    @my_photo = photo
+    p @my_photo
     render partial: 'doctors/doctor_form'
   end
 

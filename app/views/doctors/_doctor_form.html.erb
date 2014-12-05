@@ -14,8 +14,16 @@
 </style>
 <div style="font-size: 12px">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项,手机号和电子邮箱至少填写一个.</div>
 <hr style="margin: 10px 0px;"/>
-<div>
-<%= form_for(@doctor,remote:true,html:{id:'doc_form'}) do |f| %>
+<div style="" >
+  <%= render 'photos/photo_form' %>
+  <% if params[:id] %>
+      <button id="upload_button" style="width:90px;" onclick="select_photo()">修改头像</button>
+  <% else %>
+      <button id="upload_button" style="width:90px;" onclick="select_photo()">上传头像</button>
+  <% end %>
+</div>
+<div style="">
+<%= form_for(@doctor,remote:true,html:{id:'doc_form',name:'doc_form'}) do |f| %>
     <% if @doctor.errors.any? %>
         <div id="error_explanation">
           <h2><%= pluralize(@doctor.errors.count, "error") %> prohibited this doctor from being saved:</h2>
@@ -28,6 +36,7 @@
         </div>
     <% end %>
     <div>
+      <input type="hidden" name="doctor[photo]" id="user_photo_image">
       <div style="display:inline-block;width:49%">
         <%= f.label '姓名' %><span style="color:red"><b>*</b></span><br>
         <%= f.text_field :name ,class:"form-control",onblur:"check_name(this.value,'true')" %>
@@ -302,8 +311,8 @@
       <%= f.submit id:'new_or_edit_doctor'%>
     </div>
 
-    </div>
 <% end %>
+</div>
 <script>
     function create_or_update(){
         var data = $('#doc_form').serialize()

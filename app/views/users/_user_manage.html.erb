@@ -303,7 +303,7 @@
             height: 'auto',
             caption: "非用户医生",
             onSelectRow: function (rowid) {
-                jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?doctor_id=" + rowid }).trigger("reloadGrid");
+//                jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?doctor_id=" + rowid }).trigger("reloadGrid");
                 var myGrid = $('#doc_list');
                 var id = myGrid.jqGrid('getGridParam', 'selrow');
                 var name = myGrid.jqGrid('getCell', id, 'name');
@@ -361,7 +361,7 @@
             height: 'auto',
             caption: "非用户患者",
             onSelectRow: function (rowid) {
-                jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?patient_id=" + rowid }).trigger("reloadGrid");
+//                jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?patient_id=" + rowid }).trigger("reloadGrid");
 
                 var myGrid = $('#pat_list');
                 var id = myGrid.jqGrid('getGridParam', 'selrow');
