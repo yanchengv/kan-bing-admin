@@ -28,9 +28,9 @@
           </tr>
           <% end %>
       <tr class="FormData">
-        <td class="CaptionTD">图片路径:</td>
+        <td class="CaptionTD"></td>
         <td class="DataTD">
-          <input id="image_path2" type="text" disabled="disabled" class='FormElement ui-widget-content ui-corner-all' style="display:inline"/><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
+          <label id="image_path2"></label><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
          </td>
       </tr>
       <% if @page_block.block_type == 'hospital_environment' %>
@@ -95,7 +95,7 @@
             done: function (e, data) {
                 if (data.result.flag){
                    $('#image_path').val(data.result.url);
-                   $('#image_path2').val('上传成功!');
+                   $('#image_path2').html('上传成功!');
                 }
             }
         });
