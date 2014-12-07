@@ -113,6 +113,7 @@ class BlockContentsController < ApplicationController
     para[:content]=params[:content]
     para[:url]=params[:url]
     para[:block_id]=params[:block_id]
+    para[:block_type] = params[:type]
 
     @block_content=BlockContent.new(para)
     @page_block = PageBlock.find(params[:block_id])

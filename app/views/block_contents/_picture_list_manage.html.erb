@@ -55,12 +55,30 @@
         $('#edit_name').hide();
         $('#show_name').show();
     }
+    function myelem(value, options) {
+        var el = document.createElement("label");
+        el.innerHTML = value;
+        return el;
+    }
+
+    function myvalue(elem, operation, value) {
+        if (operation === 'get') {
+            return $(elem).html();
+        } else if (operation === 'set') {
+            $('label', elem).innerHTML = value;
+        }
+    }
     <% if @page_block.block_type == 'hospital_environment' %>
-    var cols = [ 'ID', '标题', '内容', '图片', '区块ID'];
+    var cols = [ 'ID', '标题', '内容详情','内容', '图片', '区块ID'];
     var mods = [
         { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
         { name: 'title', index: 'title', align: "center", editable: true},
-        { name: 'content', index: 'content', align: "center", editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+        { name: 'content', index: 'content', align: "center",hidden:true,  editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+        { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
+            var value = colpos.content;
+            return value.replace(/<[^>]+>/g, '');
+        }
+        },
         { name: 'url', index: 'url', align: "center", editable: true},
         { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
     ];
@@ -197,7 +215,8 @@
             data: { title: $('#title').val(),
                 content: $('#content').val(),
                 url: $('#image_path').val(),
-                block_id: $('#block_id').val()
+                block_id: $('#block_id').val(),
+                type: '<%= @page_block.block_type %>'
             },
             async: false,
             success: function (data) {

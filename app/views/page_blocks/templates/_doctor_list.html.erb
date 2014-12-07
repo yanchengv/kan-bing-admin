@@ -19,7 +19,7 @@
           <span style="margin-right:10px;" id="md_doc_hospital_name"><%= @doctor.hospital.name unless @doctor.hospital.nil? %></span>
           <b>科室</b><span style="margin-right:10px;" id="md_doc_department_name"><%= @doctor.department.name unless @doctor.department.nil? %></span>
         </dd>
-        <dd><b>简介</b><span style="margin-right:10px;" id="md_doc_description"><%= @doctor.introduction %></span>
+        <dd><b>简介</b><span style="margin-right:10px;" id="md_doc_description"><%= @doctor.introduction.nil? ? '' : @doctor.introduction[0,50]<<'...' %></span>
         </dd>
       </dl>
       <% end %>
@@ -39,7 +39,7 @@
                                             onclick: "showDoctorPage(#{doctor.id}, '')",
                                             onmouseover: "change_doctor(
                                             'http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doctor.photo}',
-                                            '#{doctor.introduction}',
+                                            '#{doctor.introduction.nil? ? '' : doctor.introduction[0,50]<<'...'}',
                                             '#{doctor.name}',
                                             '#{doctor.hospital.name unless (doctor.hospital.nil? || doctor.hospital_id.nil? || doctor.hospital_id == '')}',
                                             '#{doctor.department.name unless (doctor.department.nil? || doctor.department_id.nil? || doctor.department_id == '')}',
@@ -59,7 +59,7 @@
                                             onclick: "showDoctorPage(#{doctor.id}, '')",
                                             onmouseover: "change_doctor(
                                             'default.png',
-                                            '#{doctor.introduction}',
+                                            '#{doctor.introduction.nil? ? '' : doctor.introduction[0,50]<<'...'}',
                                             '#{doctor.name}',
                                             '#{doctor.hospital.name unless (doctor.hospital.nil? || doctor.hospital_id.nil? || doctor.hospital_id == '')}',
                                             '#{doctor.department.name unless (doctor.department.nil? || doctor.department_id.nil? || doctor.department_id == '')}',
