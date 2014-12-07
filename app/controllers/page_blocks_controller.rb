@@ -48,7 +48,6 @@ class PageBlocksController < ApplicationController
     @page_block=PageBlock.where(id:page_block_id).first
     block_type=@page_block.block_type #block_type必须是模版的名称
     @block_contents=BlockContent.where(block_id:page_block_id)
-    p  @block_contents.count
     render partial: "page_blocks/templates/#{block_type}"
   end
 
@@ -57,8 +56,9 @@ class PageBlocksController < ApplicationController
     page_block_id=params[:page_block_id]
     content = params[:content]
     page_block=PageBlock.where(id:page_block_id).first
-    sql = ActiveRecord::Base.connection()
-    sql.update "update page_blocks set content = '#{content}' where id = #{page_block.id}"
+    page_block.update_attributes(content:content)
+    # sql = ActiveRecord::Base.connection()
+    # sql.update "update page_blocks set content = '#{content}' where id = #{page_block.id}"
    #@page_block.update_attributes(content:content)
     @page_block=PageBlock.find(page_block_id)
     @block_contents = @page_block.block_contents

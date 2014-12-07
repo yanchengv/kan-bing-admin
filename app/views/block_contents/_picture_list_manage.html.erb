@@ -43,6 +43,7 @@
             }},
             success: function (data) {
                 $("#rightContent").html(data);
+
             }
         })
     }
@@ -220,21 +221,8 @@
             },
             async: false,
             success: function (data) {
-                $.ajax({
-                    type: 'get',
-                    url: 'page_blocks/add_content',
-                    data: {page_block_id: <%= @page_block.id%>},
-                    success: function (data) {
-                        $.ajax({
-                            type: 'post',
-                            url: 'page_blocks/update_template',
-                            data: {content: data, page_block_id: <%= @page_block.id%>},
-                            success: function (data) {
-                                $("#rightContent").html(data);
-                            }
-                        })
-                    }
-                })
+                var pageBlockId=data["page_block_id"];
+                saveTempalte(pageBlockId);
                 $("#picture_console").dialog("close");
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -253,21 +241,8 @@
                 },
                 async: false,
                 success: function (data) {
-                    $.ajax({
-                        type: 'get',
-                        url: 'page_blocks/add_content',
-                        data: {page_block_id: <%= @page_block.id%>},
-                        success: function (data) {
-                            $.ajax({
-                                type: 'post',
-                                url: 'page_blocks/update_template',
-                                data: {content: data, page_block_id: <%= @page_block.id%>},
-                                success: function (data) {
-                                    $("#rightContent").html(data);
-                                }
-                            })
-                        }
-                    })
+                    var pageBlockId=data["page_block_id"];
+                    saveTempalte(pageBlockId);
                     $("#picture_console").dialog("close");
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -275,4 +250,21 @@
                 }
             });
         }
+     function saveTempalte(pageBlockId){
+         $.ajax({
+             type: 'get',
+             url: 'page_blocks/add_content',
+             data: {page_block_id: pageBlockId},
+             success: function (data) {
+                 $.ajax({
+                     type: 'post',
+                     url: 'page_blocks/update_template',
+                     data: {content: data, page_block_id: pageBlockId},
+                     success: function (data) {
+                         $("#rightContent").html(data);
+                     }
+                 })
+             }
+         })
+     }
 </script>

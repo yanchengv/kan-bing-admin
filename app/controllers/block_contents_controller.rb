@@ -73,7 +73,8 @@ class BlockContentsController < ApplicationController
     if @block_content.update(para)
       @page_block = PageBlock.find(@block_content.block_id)
       @block_contents = BlockContent.where(:block_id => params[:block_id])
-      render partial: "page_blocks/templates/#{@page_block.block_type}"
+      render json:{page_block_id:@page_block.id}
+      # render partial: "page_blocks/templates/#{@page_block.block_type}"
     else
       render :partial => 'block_contents/edit_pic'
     end
@@ -90,7 +91,6 @@ class BlockContentsController < ApplicationController
 
   #上传图片
   def upload_image
-
     file=params[:edu_video].nil? ? params[:image] : params[:edu_video][:image]
     tmpfile = getFileName(file.original_filename.to_s)
     uuid = upload_video_img_bucket(file)
@@ -119,7 +119,8 @@ class BlockContentsController < ApplicationController
     @page_block = PageBlock.find(params[:block_id])
     @block_contents = BlockContent.where(:block_id => params[:block_id])
     if @block_content.save
-      render partial: "page_blocks/templates/#{@page_block.block_type}"
+      render json:{page_block_id:@page_block.id}
+      # render partial: "page_blocks/templates/#{@page_block.block_type}"
     else
       render :partial => 'block_contents/save_pic'
     end
