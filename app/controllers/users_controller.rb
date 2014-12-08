@@ -85,6 +85,12 @@ class UsersController < ApplicationController
       @user.password = '123456'
     end
     if @user.save
+      if @user.doctor
+        @user.doctor.update(is_public:true)
+      end
+      if @user.patient
+        @user.patient.update(is_public:true)
+      end
       render :json => {:success => true}
     else
       render :json => {:success => false, :errors => '添加失败！'}
@@ -163,7 +169,7 @@ class UsersController < ApplicationController
     render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
-  #护士
+  #患者
   def get_patients
     sql="id not in (select patient_id from users where patient_id is not null)"
     hos_id = current_user.hospital_id

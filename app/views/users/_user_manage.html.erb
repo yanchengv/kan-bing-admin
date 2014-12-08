@@ -319,6 +319,15 @@
                 grid.setColProp("verification_code", { editoptions: { defaultValue: ids} });
             }
         });
+    $("#doc_list").jqGrid("navGrid", "#doc_page", {
+        edittext: '添加为用户',
+        editfunc: add_doc_to_user ,
+        add:false,
+        view:false,
+        del:false,
+        search:false,
+        refreshtext:'刷新'
+    })
     //患者
         jQuery("#pat_list").jqGrid({
             url: '/users/get_patients',
@@ -378,7 +387,28 @@
                 grid.setColProp("verification_code", { editoptions: { defaultValue: ids} });
             }
         })
+    $("#pat_list").jqGrid("navGrid", "#pat_page", {
+        edittext: '添加为用户',
+        editfunc: add_pat_to_user,
+        add:false,
+        view:false,
+        del:false,
+        search:false,
+        refreshtext:'刷新'
+    })
+    function add_to_user() {
+        console.log('')
+       $('#add_user_list').click()
+    }
+
+    function add_doc_to_user(){
+       $('#add_user_list').click()
+    }
+    function add_pat_to_user(){
+       $('#add_user_list').click()
+    }
     $(function(){
         click_btn('doctor')
+//        $('#add_user_list').css('display', 'none');
     })
 </script>

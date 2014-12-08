@@ -55,6 +55,7 @@ class PatientsController < ApplicationController
     end
     p dep_id
     is_activated = params[:is_activated]
+    is_public = params[:is_public]
     noOfRows = params[:rows]
     page = params[:page]
     @patients_all = nil
@@ -91,6 +92,12 @@ class PatientsController < ApplicationController
     if is_activated=='1'
       @patients_all =  @patients_all.where.not(is_activated:0)
     end
+    if is_public=='0'
+      @patients_all =  @patients_all.where(is_public:0)
+    end
+    if is_public=='1'
+      @patients_all =  @patients_all.where.not(is_public:0)
+    end
     @patients_all = @patients_all.order("#{params[:sidx]} #{params[:sord]}")
     records=0
     @total=0
@@ -106,17 +113,18 @@ class PatientsController < ApplicationController
         end
       end
       @rows=[]
-      @patients.each do |pat|
-        @province=Province.where(id:pat.province_id).first
-        @city=City.where(id:pat.city_id).first
-        @hospital=Hospital.where(id:pat.hospital_id).first
-        @department=Department.where(id:pat.department_id).first
-
-
-        @province.nil? ? province_name='':province_name=@province.name
-        @city.nil? ? city_name='':city_name=@city.name
-        @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
-        @department.nil? ? department_name='':department_name=@department.name
+      @rows=@patients.as_json(:include => [{:hospital => {:only => [:id,:name]}},{:department => {:only => [:id,:name]}}])
+      # @patients.each do |pat|
+      #   @province=Province.where(id:pat.province_id).first
+      #   @city=City.where(id:pat.city_id).first
+      #   @hospital=Hospital.where(id:pat.hospital_id).first
+      #   @department=Department.where(id:pat.department_id).first
+      #
+      #
+      #   @province.nil? ? province_name='':province_name=@province.name
+      #   @city.nil? ? city_name='':city_name=@city.name
+      #   @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
+      #   @department.nil? ? department_name='':department_name=@department.name
         # a={id:pat.id,
         #    cell:[
         #        pat.id,
@@ -145,14 +153,14 @@ class PatientsController < ApplicationController
         #        pat.introduction
         #    ]
         # }
-        a = {id:pat.id,name:pat.name,spell_code:pat.spell_code,credential_type:pat.credential_type,credential_type_number:pat.credential_type_number,
-             gender:pat.gender,birthday:pat.birthday,birthplace:pat.birthplace,marriage:pat.marriage,province_id:pat.province_id,city_id:pat.city_id,
-             hospital_id:pat.hospital_id,department_id:pat.department_id,province_name:province_name,city_name:city_name,citizenship:pat.citizenship,
-             nationality:pat.nationality,mobile_phone:pat.mobile_phone,email:pat.email,education:pat.education,last_treat_time:pat.last_treat_time,
-             introduction:pat.introduction,hospital_name:hospital_name,department_name:department_name
-        }
-        @rows.push(a)
-      end
+      #   a = {id:pat.id,name:pat.name,spell_code:pat.spell_code,credential_type:pat.credential_type,credential_type_number:pat.credential_type_number,
+      #        gender:pat.gender,birthday:pat.birthday,birthplace:pat.birthplace,marriage:pat.marriage,province_id:pat.province_id,city_id:pat.city_id,
+      #        hospital_id:pat.hospital_id,department_id:pat.department_id,province_name:province_name,city_name:city_name,citizenship:pat.citizenship,
+      #        nationality:pat.nationality,mobile_phone:pat.mobile_phone,email:pat.email,education:pat.education,last_treat_time:pat.last_treat_time,
+      #        introduction:pat.introduction,hospital_name:hospital_name,department_name:department_name,is_public:pat.is_public
+      #   }
+      #   @rows.push(a)
+      # end
     end
     # @objJSON = {total:@total,rows:@rows,page:page,records:records}
     @objJSON = {total:@total,patients:@rows,page:page,records:records}

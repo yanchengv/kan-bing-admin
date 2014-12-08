@@ -15,9 +15,9 @@
 <div>
   <%= render 'patients/photo_form' %>
   <% if params[:id] %>
-      <button id="upload_button" style="width:90px;" onclick="select_photo()">修改头像</button>
+      <button id="upload_button" style="width:90px;" onclick="pat_select_photo()">修改头像</button>
   <% else %>
-      <button id="upload_button" style="width:90px;" onclick="select_photo()">上传头像</button>
+      <button id="upload_button" style="width:90px;" onclick="pat_select_photo()">上传头像</button>
   <% end %>
 </div>
 <div>
@@ -108,7 +108,7 @@
           <% @citizenships = NationalInformation.where(parent_id:nil) %>
           <% if !@citizenships.empty? %>
               <% @citizenships.each do |citizenship| %>
-                  <option id="<%= citizenship.name %>" value="<%= citizenship.name %>"><%= citizenship.name %></option>
+                  <option id="pat_<%= citizenship.name %>" value="<%= citizenship.name %>"><%= citizenship.name %></option>
               <% end %>
           <% end %>
         </select>
@@ -439,8 +439,9 @@
             document.getElementById('<%=pat.education%>').setAttribute('selected', 'selected')
         }
         $('#s2id_patient_citizenship').children('.select2-choice').children('.select2-chosen').html('<%=pat.citizenship%>')
-        if (document.getElementById('<%=pat.citizenship%>')!=null) {
-            document.getElementById('<%=pat.citizenship%>').setAttribute('selected', 'selected')
+        console.log(document.getElementById('<%=pat.citizenship%>'))
+        if (document.getElementById('pat_<%=pat.citizenship%>')!=null) {
+            document.getElementById('pat_<%=pat.citizenship%>').setAttribute('selected', 'selected')
         }
         get_nationality()
         $('#s2id_patient_nationality').children('.select2-choice').children('.select2-chosen').html('<%=pat.nationality%>')

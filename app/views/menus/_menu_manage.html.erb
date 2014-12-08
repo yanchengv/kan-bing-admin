@@ -26,9 +26,9 @@
                     },
                     style: "width:147px",
                     value:"/:/<% if !@menu_uris.empty? %><% @menu_uris.each do |uri|%>;<%= uri.menu_uri %>:<%= uri.menu_uri %><% end %><% end %>"}},
-                { name: 'dep_admin_show', index: 'dep_admin_show', width: 100, align: "center",editable: true,hidden:true,editrules: {edithidden: true},edittype:"select",editoptions:{maxlength:20,value:"0:否;1:是"}},
-                { name: 'hos_admin_show', index: 'hos_admin_show', width: 100, align: "center",editable: true,hidden:true,editrules: {edithidden: true},edittype:"select",editoptions:{maxlength:20,value:"0:否;1:是"}},
-                { name: 'dep_admin_show', index: 'dep_admin_show', width: 100, align: "center", editable: false,edittype: 'custom',
+                { name: 'dep_admin_show', index: 'dep_admin_show', width: 100, align: "center",editable: true,viewable:false,hidden:true,editrules: {edithidden: true},edittype:"select",editoptions:{maxlength:20,value:"0:否;1:是"}},
+                { name: 'hos_admin_show', index: 'hos_admin_show', width: 100, align: "center",editable: true,viewable:false,hidden:true,editrules: {edithidden: true},edittype:"select",editoptions:{maxlength:20,value:"0:否;1:是"}},
+                { name: 'dep_admin', index: 'dep_admin', width: 100, align: "center",viewable:false, editable: false,edittype: 'custom',
                     formatter: function (rowId, cellval, colpos, rwdat, _act) {
                         var value = colpos.dep_admin_show;
                         if (value == '是') {
@@ -38,7 +38,7 @@
                         }
                     }
                 },
-                { name: 'hos_admin_show', index: 'hos_admin_show', width: 100, align: "center", editable: false,
+                { name: 'hos_admin', index: 'hos_admin', width: 100, align: "center",viewable:false, editable: false,
                     formatter: function (rowId, cellval, colpos, rwdat, _act) {
                         var value = colpos.hos_admin_show;
                         if (value == '是') {
