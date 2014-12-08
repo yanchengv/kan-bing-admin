@@ -38,6 +38,12 @@
   <option value="1">已经激活</option>
   <option value="0">未激活</option>
 </select>
+<!--</select></span>-->
+  <!--是否激活为公网用户:<select id="is_public" onchange="search_public()">-->
+  <!--<option value="">全部</option>-->
+  <!--<option value="1">公网用户</option>-->
+  <!--<option value="0">非公网用户</option>-->
+<!--</select>-->
 
   <div style="margin-top: 10px;">
     姓名：<input type="text" id="search_name" onkeydown="entersearch1(event)"> 证件号码：<input type="text" id="search_number" onkeydown="entersearch1(event)">
@@ -111,18 +117,18 @@
             {name:'id',index:'id', width:120, sorttype:"int", hidden:true,search:false },
             {name:'spell_code',index:'spell_code', width:120, search:true , hidden:true,searchoptions: {searchhidden:true, sopt: ['in']}},
             {name:'name',index:'name', width:55, editable: true ,searchoptions: { sopt: ['in']}},
-            {name:'credential_type',index:'credential_type', width:100, editable: true ,edittype:"select",editoptions:{value:"身份证:身份证;其他:其他"},search:false },
-            {name:'credential_type_number',index:'credential_type_number', width:180, editable: true ,searchoptions: { sopt: ['in']}},
-            {name:'gender',index:'gender', width:40, editable: true ,search:false },
+            {name:'credential_type',index:'credential_type', width:80, editable: true ,edittype:"select",editoptions:{value:"身份证:身份证;其他:其他"},search:false },
+            {name:'credential_type_number',index:'credential_type_number', width:150, editable: true ,searchoptions: { sopt: ['in']}},
+            {name:'gender',index:'gender', width:30, editable: true ,search:false },
             {name:'birthday',index:'birthday', width:90, editable: true ,search:false },
-            {name:'birthplace',index:'birthplace', width:80, editable: true ,search:false },
+            {name:'birthplace',index:'birthplace', width:100, editable: true ,search:false },
             {name:'marriage',index:'marriage', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
             {name:'province_name',index:'province_name', width:100, hidden:true, editable: true,search:false  },
             {name:'city_name',index:'city_name', width:100, hidden:true, editable: true ,search:false },
-            {name:'hospital_name',index:'hospital_name', width:100, editable: true,search:false  },
-            {name:'department_name',index:'department_name', width:100, editable: true,search:false  },
-            {name:'citizenship',index:'citizenship', width:100,search:false },
-            {name:'nationality',index:'nationality', width:100,search:false },
+            {name:'hospital.name',index:'hospital.name', width:100, editable: true,search:false  },
+            {name:'department.name',index:'department.name', width:100, editable: true,search:false  },
+            {name:'citizenship',index:'citizenship', width:50,search:false },
+            {name:'nationality',index:'nationality', width:50,search:false },
             {name:'mobile_phone',index:'mobile_phone', width:100, align:"right", editable: true,searchoptions: { sopt: ['in']} },
             {name:'email',index:'email', width:130, align:"right", editable: true ,searchoptions: { sopt: ['in']}},
             {name:'professional_title',index:'professional_title', width:80,align:"right",editable: true,search:false },
@@ -131,6 +137,17 @@
             {name:'expertise',index:'expertise', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
             {name:'graduated_from',index:'graduated_from', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
             {name:'graduated_at',index:'graduated_at', width:80,search:false ,hidden:true,editrules:{edithidden:true}}
+//            ,
+//            {name:'is_public',index:'is_public', width:80,search:false,viewable:false,
+//                formatter: function (rowId, cellval, colpos, rwdat, _act) {
+//                    var value = colpos.is_public;
+//                    if (value == 1) {
+//                        return "<button style=\"background-color: lawngreen;text-align: center;width:100%\">是</button>";
+//                    } else {
+//                        return "<button style=\"background-color: #ddd;text-align: center;width:100%\">否</button>";
+//                    }
+//                }
+//            }
 //            {name:'introduction',index:'introduction', width:260, sortable:false}
         ],
         pager: jQuery('#pager12'),
@@ -555,20 +572,24 @@
                 $('#search_dep_id').html(data)
             }
         })
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val() }).trigger("reloadGrid")
     }
     function doc_search_dep(){
         $('#searchString').val('')
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val() }).trigger("reloadGrid")
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()   + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
     }
     function search_activated(){
         $('#searchString').val('')
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()}).trigger("reloadGrid")
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
+    }
+    function search_public() {
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
     }
     $(function() {
         $("#doctor_hos_id").select2();
         $("#doctor_dep").select2();
         $("#is_activated").select2();
+        $("#is_public").select2();
         $("#searchField").select2();
         $('#searchString').attr('disabled','disabled')
     })

@@ -33,7 +33,6 @@
 <%# end %>
 <%= form_for :photo, url: {action: 'create', controller: 'photos'}, method: 'post', html: {multipart: true, id: 'pat_photo_upload_form'} do |f| %>
     <div class="div1" id="div1_photo">
-      <!--<div class="div2">更换头像</div>-->
       <%# if params[:id] %>
         <%= f.file_field :photo, onchange: 'pat_upload(this)', id: 'pat_input_photo', style: "display:none" %>
       <%# else %>
