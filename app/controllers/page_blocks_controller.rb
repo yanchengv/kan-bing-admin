@@ -39,8 +39,9 @@ class PageBlocksController < ApplicationController
 
   # 获取模版
   def get_template
-     block_name=params[:type]
-    render partial: "page_blocks/templates/#{block_name}"
+     block_type=params[:type]
+     @block_name=params[:name]
+    render partial: "page_blocks/templates/#{block_type}"
   end
 
   def add_content_template
