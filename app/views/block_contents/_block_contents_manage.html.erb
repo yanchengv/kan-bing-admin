@@ -165,7 +165,13 @@
                 closeAfterAdd: true,
                 width:800,
                 height:600
-            }//add
+            },//add
+            {
+                afterComplete: function (response, data) {
+                    var pageBlockId = JSON.parse(response.responseText)['block_id'];
+                    save_content_model(pageBlockId);
+                }
+            }
              );
 // 更新保存模板
         function save_content_model(pageBlockId){

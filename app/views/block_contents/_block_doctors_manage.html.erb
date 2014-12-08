@@ -24,7 +24,7 @@
   </div>
   <br>
   <div>
-    <input type="hidden" id="block_id_d" value="<%= @page_block.id %>"><input type="hidden" id="doctor_ids" value="<%= @ids %>">
+    <input type="hidden" id="block_id_d" value="<%= @page_block.id %>"><input type="hidden" id="doctor_ids" value="<%= @page_block.block_contents.first.content if !@page_block.block_contents.first.nil? %>">
     <!--<button class="fm-button ui-state-default ui-corner-all fm-button-icon-left" onclick="save_content()">保存到区块</button>-->
   </div>
 </div>
@@ -89,21 +89,6 @@
         viewrecords: true,
         sortorder: "desc",
         autowidth: true,
-//        loadComplete: function () {
-//            var sid = $('#doctor_ids').val();
-//            if (Cts.indexOf("Text") >= 0) {
-//                alert('Cts中包含Text字符串');
-//            }
-//            //  alert(sid);
-//            if (sid) {
-//                for(var i=0; i < sid.length; i ++){
-//                 //   $("#block_doctor_list").jqGrid('setSelection', sid[i]);
-//                    alert(sid[i]);
-//                    $("#block_doctor_list").jqGrid('setSelection', sid[i]);
-//                   // jQuery('#block_doctor_list').jqGrid('getCell', sid[i], 'NIF');
-//                }
-//            }
-//        },
         jsonReader: {
             root: "doctors",
             total: "totalpages",
@@ -125,6 +110,17 @@
         closeAfterAdd: true,
         pager: jQuery('#page_block_doctor'),
         multiselect: true,
+        multiboxonly: true,
+        gridComplete: function () {
+            var rowIds = $('#doctor_ids').val();
+            if(rowIds){
+                rowIds = rowIds.replace(/\"/g, "").split(',');
+                console.log(rowIds);
+                for (var k = 0; k < rowIds.length; k++) {
+                    $("#block_doctor_list").find("input[id='jqg_block_doctor_list_" + rowIds[k].replace(/(^\s*)|(\s*$)/g, "") + "']").attr("checked", true);
+                }
+            }
+        },
         rowNum: 15,
         altclass: 'altRowsColour',
         width: '500',

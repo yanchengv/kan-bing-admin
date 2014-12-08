@@ -66,6 +66,7 @@ class PageBlocksController < ApplicationController
     if @page_block.block_type == 'login'
       render :partial => 'page_blocks/show'
     elsif @page_block.block_type == 'doctor_list'
+      @ids = @block_contents.first.content
       render :partial => 'block_contents/block_doctors_manage'
     elsif @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
       render :partial => 'block_contents/block_contents_manage'

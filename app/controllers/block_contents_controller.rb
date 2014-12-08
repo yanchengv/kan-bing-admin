@@ -144,13 +144,14 @@ class BlockContentsController < ApplicationController
   # DELETE /block_contents/1
   # DELETE /block_contents/1.json
   def destroy
+    block_id = @block_content.block_id
     if @block_content.destroy
       if @block_content.block_type == 'hospital_environment' || @block_content.block_type == 'slides'
         if !@block_content.url.nil? && @block_content.url != ''
           delte_file_from_aliyun(@block_content.url[@block_content.url.rindex('/')+1, @block_content.url.length])
         end
       end
-      render :json => {:success => true}
+      render :json => {:success => true, :block_id => block_id}
     end
     #respond_to do |format|
     #  format.html { redirect_to block_contents_url, notice: 'Admin was successfully destroyed.' }

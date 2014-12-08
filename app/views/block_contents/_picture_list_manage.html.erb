@@ -139,7 +139,17 @@
     jQuery("#block_content_pictures_list").jqGrid('navGrid', '#page_block_content_pictures', {
                 cloneToTop: true, add: false, edit:false,
                 deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
-                refreshtext: "更新", refreshtitle: "更新"}
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+            },//edit
+            {
+            },//add
+            {
+                afterComplete: function (response, data) {
+                    var pageBlockId = JSON.parse(response.responseText)['block_id'];
+                    saveTempalte(pageBlockId);
+                }
+            }
     ).navButtonAdd('#page_block_content_pictures', { title: '修改', caption: '修改', onClickButton: function () {
                 picture_edit();
             }, position: "first"}).navButtonAdd('#page_block_content_pictures', { title: '上传', caption: '上传', onClickButton: function () {
@@ -220,8 +230,7 @@
             data: { title: $('#title').val(),
                 content: $('#content').val(),
                 url: $('#image_path').val(),
-                block_id: $('#block_id').val(),
-                type: '<%= @page_block.block_type %>'
+                block_id: $('#block_id').val()
             },
             async: false,
             success: function (data) {
