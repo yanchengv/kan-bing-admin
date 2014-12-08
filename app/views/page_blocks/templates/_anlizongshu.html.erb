@@ -14,7 +14,7 @@
       <!--<a href=#{block_content.url}>-->
       <a href=<%=Settings.block_content+"/?content_id=#{block_content.id}"%>>
         <span class="fr index_model_date"><%= block_content.create_date%></span>
-        <span class="fl index_model_blue_dot"><%= block_content.title.length > 20 ? block_content.title[0,25] << '...' : block_content.title  %></span>
+        <span class="fl index_model_blue_dot"><%= block_content.title.length > 20 ? block_content.title[0,20] << '...' : block_content.title  %></span>
       </a>
     </li>
     <div style="clear:both;"></div>
