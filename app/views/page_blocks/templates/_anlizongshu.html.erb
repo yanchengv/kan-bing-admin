@@ -5,16 +5,16 @@
 <div class="index_model_box_3_1">
   <div class="index_model_title">
     <h3 class="fl"><%= @page_block.name if !@page_block.nil? %></h3>
-    <span class="fr index_model_more"><a href=<%=Settings.block_content_list+"/?page_block=#{@page_block.id}"%>>more</a></span>
+    <span class="fr index_model_more"><a href=<%=Settings.block_content_list+"/?page_block=#{@page_block.id}"%> target="_blank">more</a></span>
   </div>
   <!--文章列表-->
   <ul class="index_model_article">
     <% @block_contents.each do |block_content|%>
     <li>
       <!--<a href=#{block_content.url}>-->
-      <a href=<%=Settings.block_content+"/?content_id=#{block_content.id}"%>>
+      <a href=<%=Settings.block_content+"/?content_id=#{block_content.id}"%> target="_blank">
         <span class="fr index_model_date"><%= block_content.create_date%></span>
-        <span class="fl index_model_blue_dot"><%= block_content.title.length > 20 ? block_content.title[0,20] << '...' : block_content.title  %></span>
+        <span class="fl index_model_blue_dot"><%= block_content.title.length > 17 ? block_content.title[0,17] << '...' : block_content.title  %></span>
       </a>
     </li>
     <div style="clear:both;"></div>
