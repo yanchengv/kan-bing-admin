@@ -57,16 +57,17 @@
         $('#show_name').show();
     }
     function myelem(value, options) {
-        var el = document.createElement("label");
-        el.innerHTML = value;
+        var el = document.createElement("input");
+        el.type = "text";
+        el.value = value;
         return el;
     }
 
     function myvalue(elem, operation, value) {
         if (operation === 'get') {
-            return $(elem).html();
+            return $(elem).val();
         } else if (operation === 'set') {
-            $('label', elem).innerHTML = value;
+            $('input', elem).val(value);
         }
     }
     <% if @page_block.block_type == 'hospital_environment' %>
@@ -74,7 +75,7 @@
     var mods = [
         { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
         { name: 'title', index: 'title', align: "center", editable: true},
-        { name: 'content', index: 'content', align: "center",hidden:true,  editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px"}},
+        { name: 'content', index: 'content', align: "center",hidden:true,  editable: true, edittype: 'textarea', editrules: {edithidden: true}, editoptions: {rows: 5, style: "width:200px"}},
         { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
             var value = colpos.content;
             return value.replace(/<[^>]+>/g, '');
@@ -121,6 +122,9 @@
             editoper: "edit", // 当在edit模式中提交数据时，操作的名称
             addoper: "add", // 当在add模式中提交数据时，操作的名称
             deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        gridComplete: function () {
+            jQuery("#block_content_pictures_list").jqGrid('setGridParam', {url: '/block_contents/index_show?block_id=<%= @page_block.id%>'}).trigger("reloadGrid");
         },
         editurl: '/block_contents/oper_action',
         closeAfterAdd: true,

@@ -51,19 +51,19 @@
       $('#show_name').show();
   }
   <% if @page_block.block_type == 'jianjie' %>
-//  var cols = [ 'ID', '标题', '内容详情', '内容','区块ID'];
-  var cols = [ 'ID', '标题', '内容', '区块ID'];
+  var cols = [ 'ID', '标题', '内容详情', '内容','区块ID'];
+ // var cols = [ 'ID', '标题', '内容', '区块ID'];
   var mods = [
       { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
       { name: 'title', index: 'title', align: "center", editable: true},
-      { name: 'content', index: 'content', align: "center", editable: true,edittype: 'textarea',  editoptions: {rows: 5, style: "width:200px"}},
+    //  { name: 'content', index: 'content', align: "center", editable: true,edittype: 'textarea',  editoptions: {rows: 5, style: "width:200px"}},
 
-//      { name: 'content', index: 'content', align: "center", editable: true, hidden:true, edittype: 'textarea',  editoptions: {rows: 5, style: "width:200px"}},
-//      { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
-//          var value = colpos.content;
-//          return value.replace(/<[^>]+>/g, '');
-//      }
-//      },
+      { name: 'content', index: 'content', align: "center", editable: true, hidden:true, editrules: {edithidden: true}, edittype: 'textarea',  editoptions: {rows: 5, style: "width:200px"}},
+      { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
+          var value = colpos.content;
+          return value.replace(/<[^>]+>/g, '');
+      }
+      },
       { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
   ];
   <% end %>
@@ -75,19 +75,19 @@
 //  var hours = data.getHours();
 //  var minutes = data.getMinutes();
   var currentDate= time = year + "-" + month + "-" + day;
-//  var cols = [ 'ID', '标题',  '内容详情','内容', '时间','区块ID'];
-  var cols = [ 'ID', '标题', '内容', '时间','区块ID'];
+  var cols = [ 'ID', '标题',  '内容详情','内容', '时间','区块ID'];
+//  var cols = [ 'ID', '标题', '内容', '时间','区块ID'];
   var mods = [
       { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
       { name: 'title', index: 'title', align: "center", editable: true},
-      { name: 'content', index: 'content', align: "center", editable: true,edittype: 'textarea',  editoptions: {rows: 5, style: "width:200px"}},
+     // { name: 'content', index: 'content', align: "center", editable: true,edittype: 'textarea',  editoptions: {rows: 5, style: "width:200px"}},
 
-//      { name: 'content', index: 'content', align: "center",hidden: true, editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px" }},
-//      { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
-//          var value = colpos.content;
-//          return value.replace(/<[^>]+>/g, '');
-//      }
-//      },
+      { name: 'content', index: 'content', align: "center",hidden: true, editable: true, editrules: {edithidden: true}, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px" }},
+      { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
+          var value = colpos.content;
+          return value.replace(/<[^>]+>/g, '');
+      }
+      },
       { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: {defaultValue: currentDate,dataInit: function (element) {
           $(element).datetimepicker({
               lang: 'ch',
@@ -127,6 +127,9 @@
             editoper: "edit", // 当在edit模式中提交数据时，操作的名称
             addoper: "add", // 当在add模式中提交数据时，操作的名称
             deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        gridComplete: function () {
+            jQuery("#block_content_list").jqGrid('setGridParam', {url: '/block_contents/index_show?block_id=<%= @page_block.id%>'}).trigger("reloadGrid");
         },
         editurl: '/block_contents/oper_action',
         closeAfterAdd: true,
@@ -176,12 +179,12 @@
                         url: 'page_blocks/update_template',
                         data: {content: data, page_block_id: pageBlockId},
                         success: function (data) {
-                            jQuery('.ui-jqdialog-titlebar-close').click();
                             $("#rightContent").html(data);
                         }
                     })
                 }
             })
+            jQuery('.ui-jqdialog-titlebar-close').click();
         }
          function showKindEditor(){
              KindEditor.ready(function(K) {
@@ -196,16 +199,17 @@
              });
          }
   function myelem(value, options) {
-      var el = document.createElement("label");
-      el.innerHTML = value;
+      var el = document.createElement("input");
+      el.type = "text";
+      el.value = value;
       return el;
   }
 
   function myvalue(elem, operation, value) {
       if (operation === 'get') {
-          return $(elem).html();
+          return $(elem).val();
       } else if (operation === 'set') {
-          $('label', elem).innerHTML = value;
+          $('input', elem).val(value);
       }
   }
 </script>
