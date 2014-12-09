@@ -67,7 +67,22 @@ class PageBlocksController < ApplicationController
     if @page_block.block_type == 'login'
       render :partial => 'page_blocks/show'
     elsif @page_block.block_type == 'doctor_list'
-      @ids = @block_contents.first.content
+      @doctors_select = Doctor.where('1 != 1')
+      if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
+        @content = @page_block.block_contents.first.content
+        if !@content.nil? && @content != ''
+          if !current_user.nil?
+            sql = 'true'
+            if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+              sql << " and hospital_id = #{current_user.hospital_id}"
+            end
+            if !current_user.department_id.nil? && !current_user.department_id != ''
+              sql << " and department_id = #{current_user.department_id}"
+            end
+            @doctors_select = Doctor.where(sql)
+          end
+        end
+      end
       render :partial => 'block_contents/block_doctors_manage'
     elsif @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
       render :partial => 'block_contents/block_contents_manage'
@@ -88,6 +103,22 @@ class PageBlocksController < ApplicationController
     if block_type == 'login'
       render :partial => 'page_blocks/show'
     elsif block_type == 'doctor_list'
+      sql = 'true'
+      if !current_user.nil?
+        if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+          sql << " and hospital_id = #{current_user.hospital_id}"
+        end
+        if !current_user.department_id.nil? && !current_user.department_id != ''
+          sql << " and department_id = #{current_user.department_id}"
+        end
+      end
+      if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
+        @content = @page_block.block_contents.first.content
+        if !@content.nil? && @content != ''
+          sql << " and id not in (#{@content})"
+        end
+      end
+      @doctors_select = Doctor.where(sql)
       render :partial => 'block_contents/block_doctors_manage'
     elsif block_type == 'anlizongshu' || block_type == 'jianjie'
       render :partial => 'block_contents/block_contents_manage'
@@ -117,6 +148,22 @@ class PageBlocksController < ApplicationController
       elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
         render :partial => 'block_contents/picture_list_manage'
       elsif @page_block.block_type == 'doctor_list'
+        sql = 'true'
+        if !current_user.nil?
+          if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+            sql << " and hospital_id = #{current_user.hospital_id}"
+          end
+          if !current_user.department_id.nil? && !current_user.department_id != ''
+            sql << " and department_id = #{current_user.department_id}"
+          end
+        end
+        if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
+          @content = @page_block.block_contents.first.content
+          if !@content.nil? && @content != ''
+            sql << " and id not in (#{@content})"
+          end
+        end
+        @doctors_select = Doctor.where(sql)
         render :partial => 'block_contents/block_doctors_manage'
       else
         render :partial => 'page_blocks/show'
@@ -157,6 +204,22 @@ class PageBlocksController < ApplicationController
       elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
         render :partial => 'block_contents/picture_list_manage', :object => @page_block
       elsif @page_block.block_type == 'doctor_list'
+        sql = 'true'
+        if !current_user.nil?
+          if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+            sql << " and hospital_id = #{current_user.hospital_id}"
+          end
+          if !current_user.department_id.nil? && !current_user.department_id != ''
+            sql << " and department_id = #{current_user.department_id}"
+          end
+        end
+        if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
+          @content = @page_block.block_contents.first.content
+          if !@content.nil? && @content != ''
+            sql << " and id not in (#{@content})"
+          end
+        end
+        @doctors_select = Doctor.where(sql)
         render :partial => 'block_contents/block_doctors_manage', :object => @page_block
       else
         render :partial => 'page_blocks/show'

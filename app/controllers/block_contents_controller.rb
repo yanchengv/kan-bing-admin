@@ -16,6 +16,30 @@ class BlockContentsController < ApplicationController
     render :json => {:block_contents => @block_contents.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
+  #获取医生列表中的医生
+  def get_doctors
+
+    @page_block = PageBlock.find(params[:block_id])
+    if !@page_block.nil?
+      @block_content = @page_block.block_contents.first
+      if !@block_content.nil?
+        if !@block_content.content.nil? && @block_content.content != ''
+          @doctors = Doctor.where("id in (#{@block_content.content})")
+        else
+          @doctors = Doctor.where('1 != 1')
+        end
+      else
+        @doctors = Doctor.where('1 != 1')
+      end
+    else
+      @doctors = Doctor.where('1 != 1')
+    end
+    count = @doctors.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @doctors = @doctors.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
   def oper_action
     if params[:oper] == 'add'
       create
@@ -125,21 +149,70 @@ class BlockContentsController < ApplicationController
       render :partial => 'block_contents/save_pic'
     end
   end
-
+  #保存医生
   def save_doctors
-    para={}
-    para[:content]=params[:content].to_s.gsub('[', '').gsub(']', '')
-    para[:block_id]=params[:block_id]
-    @block_content=BlockContent.new(para)
     @page_block = PageBlock.find(params[:block_id])
-    if @block_content.save
+    if @page_block.block_contents.nil? || @page_block.block_contents.empty?
+      @block_content=BlockContent.new()
+      @block_content.content = params[:content]
+      @block_content.block_id = params[:block_id]
+      @block_content.save
+    else
+      @block_content = @page_block.block_contents.first
+      if @block_content.content.nil? || @block_content.content == ''
+        content = params[:content]
+      else
+        content = @block_content.content << ",#{params[:content]}"
+      end
+      sql = ActiveRecord::Base.connection()
+      sql.update "update block_contents set content = '#{content}' where id = #{@block_content.id}"
+    end
+    if !@block_content.content.nil? && @block_content.content != ''
       @doctors = Doctor.where("id in (#{@block_content.content})")
       @doctor = @doctors[0]
-      render partial: "page_blocks/templates/#{@page_block.block_type}"
-    else
-      render :partial => 'block_contents/save_pic'
     end
+    render partial: "page_blocks/templates/#{@page_block.block_type}"
   end
+  #删除医生
+  def delete_doctor
+    doctor_id = params[:id]
+    block_id = params[:block_id]
+    @page_block = PageBlock.find(block_id)
+    if !@page_block.nil?
+      if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
+        @block_content = @page_block.block_contents.first
+        if !@block_content.nil?
+          if !@block_content.content.nil? && @block_content.content != ''
+            content = @block_content.content.split(',')
+            puts "====================content====#{content}"
+            content.delete(doctor_id)
+            puts "====================content====#{content}"
+            sql = ActiveRecord::Base.connection()
+            sql.update "update block_contents set content = '#{content.join(",")}' where id = #{@block_content.id}"
+          end
+        end
+      end
+    end
+    @doctors = Doctor.where("id in (#{@block_content.content})")
+    @doctor = @doctors[0]
+    render partial: "page_blocks/templates/#{@page_block.block_type}"
+  end
+
+  #def save_doctors
+  #  para={}
+  #  para[:content]=params[:content].to_s.gsub('[', '').gsub(']', '')
+  #  para[:block_id]=params[:block_id]
+  #  @block_content=BlockContent.new(para)
+  #  @page_block = PageBlock.find(params[:block_id])
+  #  if @block_content.save
+  #    @doctors = Doctor.where("id in (#{@block_content.content})")
+  #    @doctor = @doctors[0]
+  #    render partial: "page_blocks/templates/#{@page_block.block_type}"
+  #  else
+  #    render :partial => 'block_contents/save_pic'
+  #  end
+  #end
+
 
   # DELETE /block_contents/1
   # DELETE /block_contents/1.json
