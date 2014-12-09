@@ -232,6 +232,17 @@ class DoctorsController < ApplicationController
     render :json => @objJSON.as_json
   end
 
+  #获取首页面上医生的显示信息
+  def get_doctor_to_page
+    @doctor = Doctor.find(params[:id])
+    if @doctor
+      render :json => {:success => true, :doctor => @doctor.as_json(:include => [{:hospital => {:only => [:id, :name]}}, {:department => {:only => [:id, :name]}}])}
+    else
+      render :json => {:success => false}
+    end
+
+  end
+
   def show_index2  #含增删改查权限的 ############　删　################
       # @doctor = Doctor.new
       # @doctors = Doctor.all

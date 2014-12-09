@@ -282,6 +282,7 @@ Rails.application.routes.draw do
       get 'check_credential_type_number', to:'doctors#check_credential_type_number'
       get 'get_hospitals', to:'doctors#get_hospitals'
       get 'get_departments', to:'doctors#get_departments'
+      get 'get_doctor_to_page', to: 'doctors#get_doctor_to_page'
     end
   end
 

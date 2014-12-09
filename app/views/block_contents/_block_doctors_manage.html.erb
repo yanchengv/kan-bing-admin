@@ -2,8 +2,8 @@
   <div id="create_doctor_div">
     <div class="FormData">
       <div class="CaptionTD">选择医生:</div>
-      <div class="DataTD">
-        <select id="doctor_select">
+      <div class="DataTD" style="float: left">
+        <select id="doctor_select" style="float: left">
           <option value="0">---请选择---</option>
           <% @doctors_select.each do |doc|%>
           <option value="<%= doc.id %>"><%= doc.name%></option>
