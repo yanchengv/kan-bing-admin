@@ -183,18 +183,24 @@ class BlockContentsController < ApplicationController
         @block_content = @page_block.block_contents.first
         if !@block_content.nil?
           if !@block_content.content.nil? && @block_content.content != ''
-            content = @block_content.content.split(',')
-            puts "====================content====#{content}"
-            content.delete(doctor_id)
-            puts "====================content====#{content}"
+            if @block_content.content.include?(',')
+              content = @block_content.content.split(',')
+              content.delete(doctor_id)
+              content = content.join(",")
+            else
+              content = ''
+            end
+
             sql = ActiveRecord::Base.connection()
-            sql.update "update block_contents set content = '#{content.join(",")}' where id = #{@block_content.id}"
+            sql.update "update block_contents set content = '#{content}' where id = #{@block_content.id}"
           end
         end
       end
     end
-    @doctors = Doctor.where("id in (#{@block_content.content})")
-    @doctor = @doctors[0]
+    if !content.nil? && content != ''
+      @doctors = Doctor.where("id in (#{content})")
+      @doctor = @doctors[0]
+    end
     render partial: "page_blocks/templates/#{@page_block.block_type}"
   end
 
