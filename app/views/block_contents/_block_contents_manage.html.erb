@@ -10,29 +10,6 @@
   </div>
 </div>
 <script type="text/javascript">
-  function update_block(){
-      $.ajax({
-          type: 'put',
-          url: 'page_blocks/' + <%= @page_block.id%>,
-          data: {page_block:{
-              name: $('#block_name').val()
-          }},
-          success: function (data) {
-              $("#rightContent").html(data);
-              var pageBlockId=<%= @page_block.id%>
-              save_content_model(pageBlockId)
-          }
-      })
-  }
-  function update_name(){
-      $('#edit_name').show();
-      $('#show_name').hide();
-
-  }
-  function cel_type(){
-      $('#edit_name').hide();
-      $('#show_name').show();
-  }
   <% if @page_block.block_type == 'jianjie' %>
   var cols = [ 'ID', '标题', '内容详情', '内容','区块ID'];
  // var cols = [ 'ID', '标题', '内容', '区块ID'];
