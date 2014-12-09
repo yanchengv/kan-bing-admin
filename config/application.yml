@@ -20,6 +20,7 @@ development:
 
 production:
   block_content: '/block_content/show'
+  block_content_list: '/block_content/list'
   files_mount: '/dfs/'
   mimas: 'http://www.kanbing365.com'
   hospital_code:
