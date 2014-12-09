@@ -93,6 +93,8 @@ class PageBlocksController < ApplicationController
       render :partial => 'block_contents/block_contents_manage'
     elsif block_type == 'hospital_environment' || block_type == 'slides'
       render :partial => 'block_contents/picture_list_manage'
+    elsif block_type=='pic_text1'
+         render partial: 'block_contents/pic_text1'
     end
   end
   # GET /page_blocks/1
@@ -118,6 +120,8 @@ class PageBlocksController < ApplicationController
         render :partial => 'block_contents/picture_list_manage'
       elsif @page_block.block_type == 'doctor_list'
         render :partial => 'block_contents/block_doctors_manage'
+      elsif  @page_block.block_type=='pic_text1'
+        render partial: 'block_contents/pic_text1'
       else
         render :partial => 'page_blocks/show'
       end
@@ -158,6 +162,8 @@ class PageBlocksController < ApplicationController
         render :partial => 'block_contents/picture_list_manage', :object => @page_block
       elsif @page_block.block_type == 'doctor_list'
         render :partial => 'block_contents/block_doctors_manage', :object => @page_block
+      elsif @page_block.block_type=='pic_text1'
+        render partial: 'block_contents/pic_text1'
       else
         render :partial => 'page_blocks/show'
       end
