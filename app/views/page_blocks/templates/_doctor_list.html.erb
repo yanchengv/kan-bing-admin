@@ -116,7 +116,7 @@
             dataType: 'json',
             success: function (data) {
                 if(data['success'] == true){
-                    document.getElementById("img_url").src = data['doctor'].photo;
+                    document.getElementById("img_url").src = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/" + data['doctor'].photo;
                     document.getElementById("img_url").alt = data['doctor'].name;
                     document.getElementById("img_url").title = data['doctor'].name;
                     document.getElementById("md_doc_description").innerHTML = data['doctor'].introduction.substr(0, 95);
