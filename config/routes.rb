@@ -58,6 +58,8 @@ Rails.application.routes.draw do
       post 'save_doctors', to: 'block_contents#save_doctors'
       post 'edit_pic', to: 'block_contents#edit_pic'
       post 'upload_image', to: 'block_contents#upload_image'
+      get 'get_doctors', to: 'block_contents#get_doctors'
+      post 'delete_doctor', to:'block_contents#delete_doctor'
     end
   end
   resources :edu_videos do
