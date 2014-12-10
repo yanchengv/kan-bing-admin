@@ -1,5 +1,5 @@
 <% @province = Province.all %>
-<select id="doctor_province_id" name="doctor[province_id]"  onchange="search_city()" >
+<select id="doctor_province" name="doctor[province_id]"  onchange="search_city()" >
     <option value="">---请选择---</option>
   <% @province.each do |pro| %>
       <option id='pro_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
@@ -9,18 +9,18 @@
 <!--<a class="btn btn-info update disabled" data-link="/admin/province/__ID__/edit?modal=true" href="#" style="margin-left:10px"><i class="icon-pencil icon-white"></i> 编辑这个Province</a>-->
 <script>
     $(function() {
-        $("#doctor_province_id").select2();
+        $("#doctor_province").select2();
         <% if !params[:id].nil? %>
         <% pro_id = Doctor.find_by(id:params[:id]).province_id %>
-        <% province = Doctor.find_by(id:params[:id]).province %>
+        <% province = Doctor.find_by(id:params[:id]).province2 %>
         <% if !pro_id.nil? && pro_id != '' && !province.nil?%>
-        $('#s2id_doctor_province_id').children('.select2-choice').children('.select2-chosen').html('<%=province.name%>');
+        $('#s2id_doctor_province').children('.select2-choice').children('.select2-chosen').html('<%=province.name%>');
         document.getElementById('pro_<%= pro_id %>').setAttribute('selected','selected');
         <% end %>
         <% end %>
     })
     function search_city() {
-        var pro_id = $("#doctor_province_id").val();
+        var pro_id = $("#doctor_province").val();
         change_city(pro_id)
         change_hospital(pro_id)
         change_department(pro_id)

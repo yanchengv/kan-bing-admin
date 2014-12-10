@@ -14,19 +14,35 @@
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
 <% else %>
 <div id="search_div" style="margin-bottom: 10px">
-  医院：<select  id="doctor_hos_id" name="doctor_hos_id" onchange="doc_search_hos()" >
+  省：<select  id="doctor_pro_id" name="doctor_pro_id" onchange="doc_search_pro()" >
+  <option value="">---请选择---</option>
+  <% if !@provinces.nil? && !@provinces.empty? %>
+      <% @provinces.each do |pro| %>
+          <option id='serch_pro_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
+      <% end %>
+  <% end %>
+</select>
+  市：<span id="search_city_id"><select id="doctor_city_id" name="doctor[city_id]" onchange="doc_search_city()" >
+  <option value="all">---请选择---</option>
+  <% if !@cities.nil? && !@cities.empty? %>
+      <% @cities.each do |city| %>
+          <option id='serch_city_<%= city.id %>' value="<%= city.id %>"><%= city.name %></option>
+      <% end %>
+  <% end %>
+</select></span>
+  医院：<span id="search_hos_id"><select  id="doctor_hos_id" name="doctor_hos_id" onchange="doc_search_hos()" >
   <option value="">---请选择---</option>
   <% if !@hospitals.nil? && !@hospitals.empty? %>
       <% @hospitals.each do |hos| %>
           <option id='serch_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
       <% end %>
   <% end %>
-</select>
+</select></span>
   科室：<span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" onchange="doc_search_dep()" >
     <option value="all">---请选择---</option>
   <% if !@departments.nil? && !@departments.empty? %>
-      <% @departments.each do |hos| %>
-          <option id='serch_dep_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+      <% @departments.each do |dep| %>
+          <option id='serch_dep_<%= dep.id %>' value="<%= dep.id %>"><%= dep.name %></option>
       <% end %>
   <% end %>
 </select></span>
@@ -68,7 +84,7 @@
           var email = $('#search_email').val();
           var tel = $('#search_tel').val();
           var number = $('#search_number').val();
-          var url= "/doctors/show_index?name=" + name + "&email=" + email + "&mobile_phone=" + tel+ "&credential_type_number=" + number + '&hos_id=' + $('#patient_hos_id').val() + '&dep_id=' + $('#patient_dep').val()
+          var url= "/doctors/show_index?name=" + name + "&email=" + email + "&mobile_phone=" + tel+ "&credential_type_number=" + number + '&hos_id=' + $('#patient_hos_id').val() + '&dep_id=' + $('#patient_dep').val() + '&pro_id=' + $('#doctor_pro_id').val() + '&city_id=' + $('#doctor_city_id').val()
           url = encodeURI(url)  //处理 ｕｒｌ中文问题
           jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
       };
@@ -120,8 +136,8 @@
             {name:'birthday',index:'birthday', width:90, editable: true ,search:false },
             {name:'birthplace',index:'birthplace', width:100, editable: true ,search:false },
             {name:'marriage',index:'marriage', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
-            {name:'province_name',index:'province_name', width:100, hidden:true, editable: true,search:false  },
-            {name:'city_name',index:'city_name', width:100, hidden:true, editable: true ,search:false },
+            {name:'province_name',index:'province_name', width:100,  editable: true,search:false  },
+            {name:'city_name',index:'city_name', width:100,  editable: true ,search:false },
             {name:'hospital.name',index:'hospital.name', width:100, editable: true,search:false  },
             {name:'department.name',index:'department.name', width:100, editable: true,search:false  },
             {name:'citizenship',index:'citizenship', width:50,search:false },
@@ -237,6 +253,7 @@
 //        consoleDlg.find("input").removeAttr("disabled").val("");
                 dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                 dialogButtonPanel.find("button:contains('创建')").show();
+                consoleDlg.dialog("option", "height", "800");
                 consoleDlg.dialog("option", "width", "540");
                 consoleDlg.dialog("option", "title", "创建").dialog("open");
             }
@@ -255,6 +272,7 @@
 //        consoleDlg.find("input").removeAttr("disabled");
                     dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                     dialogButtonPanel.find("button:contains('保存')").show();
+                    consoleDlg.dialog("option", "height", "800");
                     consoleDlg.dialog("option", "width", "540");
                     consoleDlg.dialog("option", "title", "修改").dialog("open");
                 }
@@ -276,6 +294,7 @@
 //        consoleDlg.find("input").removeAttr("disabled").val("");
         dialogButtonPanel.find("button:not(:contains('取消'))").hide();
         dialogButtonPanel.find("button:contains('删除')").show();
+        consoleDlg.dialog("option", "height", "180");
         consoleDlg.dialog("option", "width", "260");
         consoleDlg.dialog("option", "title", "删除").dialog("open");
     }
@@ -558,6 +577,36 @@
         }
     };
 
+    function doc_search_pro() {
+        var pro_id = $('#doctor_pro_id').val()
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_city?pro_id='+pro_id,
+            success: function (data) {
+                $('#search_city_id').html(data)
+            }
+        })
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_hospital?pro_id='+pro_id,
+            success: function (data) {
+                $('#search_hos_id').html(data)
+            }
+        })
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?pro_id=" + pro_id  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val() }).trigger("reloadGrid")
+    }
+    function doc_search_city() {
+        var pro_id = $('#doctor_pro_id').val()
+        var city_id = $('#doctor_city_id').val()
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_hospital?pro_id='+pro_id+'&city_id='+city_id,
+            success: function (data) {
+                $('#search_hos_id').html(data)
+            }
+        })
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?pro_id=" + pro_id + "&city_id=" + city_id  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val() }).trigger("reloadGrid")
+    }
 
     function doc_search_hos(){
         $('#searchString').val('')
@@ -585,6 +634,8 @@
     $(function() {
         $("#doctor_hos_id").select2();
         $("#doctor_dep").select2();
+        $('#doctor_pro_id').select2();
+        $('#doctor_city_id').select2();
         $("#is_activated").select2();
         $("#is_public").select2();
         $("#searchField").select2();

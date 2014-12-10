@@ -92,33 +92,16 @@
         <%#= f.text_field :marriage,class:"form-control" %>
       </div>
     </div>
-    <!--<div class="row">-->
-    <!--<div class="col-md-6 field">-->
-    <!--<%#= f.label :选择省 %>-->
-    <!--<div id="doc_province"><%#= render partial: 'doctors/province_partial' %></div>-->
-    <!--<%#= f.text_field :province_id %>-->
-    <!--</div>-->
-    <!--<div class="col-md-6 field">-->
-    <!--<%#= f.label :选择市 %>-->
-    <!--<div id="doc_city"><%#= render partial: 'doctors/city_partial' %></div>-->
-    <!--<%#= f.number_field :city_id %>-->
-    <!--</div>-->
-    <!--<div class="col-md-6 field">-->
-    <%#= f.label :省名称 %>
-    <%#= f.text_field :province_name,class:"form-control" %>
-    <!--</div>-->
-    <!--</div>-->
-    <!--<div class="row">-->
-    <!--<div class="col-md-6 field">-->
-    <%#= f.label :选择市 %>
-    <!--<div id="doc_city"><%#= render partial: 'doctors/city_partial' %></div>-->
-    <%#= f.number_field :city_id %>
-    <!--</div>-->
-    <!--<div class="col-md-6 field">-->
-    <%#= f.label :市名称 %>
-    <%#= f.text_field :city_name ,class:"form-control"%>
-    <!--</div>-->
-    <!--</div>-->
+    <div>
+      <div style="display:inline-block;width:49%">
+        <%= f.label :选择省 %><br>
+        <div id="doc_province"><%= render partial: 'doctors/province_partial' %></div>
+      </div>
+      <div style="display:inline-block;width:49%">
+        <%= f.label :选择市 %><br>
+        <div id="doc_city"><%= render partial: 'doctors/city_partial' %></div>
+      </div>
+    </div>
     <div>
       <div style="display:inline-block;width:49%">
         <%= f.label :选择医院 %><br>
@@ -307,6 +290,10 @@
     </div>
    </div>
   -->
+    <div class="">
+      <%= f.label :说明 %><br>
+      <%= f.text_area :introduction, cols:"47", rows:"6" %>
+    </div>
     <div class="actions" style="display:none;">
       <%= f.submit id:'new_or_edit_doctor'%>
     </div>

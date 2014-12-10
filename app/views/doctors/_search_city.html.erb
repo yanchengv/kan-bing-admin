@@ -1,0 +1,14 @@
+<select id="doctor_city_id" name="doctor[city_id]" onchange="doc_search_city()" ><option value="">---请选择---</option>
+<% if !@cities.nil? %>
+    <% if !@cities.empty? %>
+        <% @cities.each do |city| %>
+            <option id="serch_city_<%= city.id %>" value="<%= city.id %>"><%= city.name %></option>
+        <% end %>
+    <% end %>
+<% end %>
+</select>
+<script>
+    $(function() {
+        $("#doctor_city_id").select2()
+    })
+</script>

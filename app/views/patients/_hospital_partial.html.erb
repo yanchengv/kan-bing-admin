@@ -1,5 +1,7 @@
   <select  id="patient_hospital_id" name="patient[hospital_id]" onchange="search()" >
-  <!--<option value="">---请选择---</option>-->
+    <% if current_user.admin_type != '医院管理员' && current_user.admin_type != '科室管理员' %>
+        <option value="">---请选择---</option>
+    <% end %>
 <% if !@hospitals.nil? && !@hospitals.empty? %>
 
      <% @hospitals.each do |hos| %>

@@ -1,0 +1,14 @@
+<select id="doctor_hos" name="doctor[hospital_id]" onchange="doc_search_hos()" ><option value="all">---请选择---</option>
+<% if !@hospitals.nil? %>
+    <% if !@hospitals.empty? %>
+        <% @hospitals.each do |hos| %>
+            <option id="serch_hos_<%= hos.id %>" value="<%= hos.id %>"><%= hos.name %></option>
+        <% end %>
+    <% end %>
+<% end %>
+</select>
+<script>
+    $(function() {
+        $("#doctor_hos").select2()
+    })
+</script>

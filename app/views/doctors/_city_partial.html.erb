@@ -1,4 +1,4 @@
-  <select  id="doctor_city_id" name="doctor[city_id]" onchange="search_hos()">
+  <select id="doctor_city" name="doctor[city_id]" onchange="search_hos()">
   <option value="">---请选择---</option>
   <% if @city.nil? %>
       <% @city = City.all %>
@@ -12,19 +12,19 @@
 </select>
 <script>
     $(function() {
-        $("#doctor_city_id").select2();
+        $("#doctor_city").select2();
         <% if !params[:id].nil? %>
         <% city_id = Doctor.find_by(id:params[:id]).city_id %>
         <% city = Doctor.find_by(id:params[:id]).city %>
         <% if !city_id.nil? && city_id != '' && !city.nil?%>
-//        $('#s2id_doctor_city_id').children('.select2-choice').children('.select2-chosen').html('<%=city.name%>')
+        $('#s2id_doctor_city').children('.select2-choice').children('.select2-chosen').html('<%=city.name%>')
         document.getElementById('city_<%= city_id %>').setAttribute('selected','selected')
         <% end %>
         <% end %>
     })
     function search_hos() {
         var pro_id = $("#doctor_province").val();
-        var city_id = $("#doctor_city_id").val();
+        var city_id = $("#doctor_city").val();
         get_hospital(pro_id,city_id)
         get_department(pro_id,city_id)
 

@@ -20,6 +20,8 @@ class DoctorsController < ApplicationController
     else
       @hospitals = Hospital.all
     end
+    @provinces = Province.all
+    @cities = City.all
     render partial: 'doctors/doctor_manage'
   end
   def index2
@@ -116,6 +118,12 @@ class DoctorsController < ApplicationController
   def show_index
     hos_id = current_user.hospital_id
     dep_id = current_user.department_id
+    if !params[:pro_id].nil? && params[:pro_id] != '' && params[:pro_id] != 'undefined'
+      pro_id = params[:pro_id]
+    end
+    if !params[:city_id].nil? && params[:city_id] != '' && params[:city_id] != 'undefined'
+      city_id = params[:city_id]
+    end
     if !params[:hos_id].nil? && params[:hos_id] != '' && params[:hos_id] != 'undefined'
       hos_id = params[:hos_id]
     end
@@ -132,6 +140,11 @@ class DoctorsController < ApplicationController
       sql << " and hospital_id = #{hos_id} and department_id=#{dep_id}"
     elsif !hos_id.nil? && hos_id != ''
       sql << " and hospital_id = #{hos_id}"
+    end
+    if !pro_id.nil? && pro_id != '' && !city_id.nil? && city_id != ''
+      sql << " and province_id = #{pro_id} and city_id=#{city_id}"
+    elsif !pro_id.nil? && pro_id != ''
+      sql << " and province_id = #{pro_id}"
     end
     # field = params[:searchField]
     # p params[:searchOper]
@@ -544,6 +557,7 @@ class DoctorsController < ApplicationController
       end
     else
       @hospitals = Hospital.all
+      @departments = Department.all
     end
     @doctor = Doctor.where(id:params[:id]).first
     photo=@doctor.photo
@@ -774,18 +788,17 @@ class DoctorsController < ApplicationController
   end
 
   def get_hospital
-    @hospital = Hospital.all
     if !params[:province_id].nil? && params[:province_id] != '' && params[:province_id]!='undefined'
       if !params[:city_id].nil? && params[:city_id] != '' && params[:city_id]!='undefined'
-        @hospital = Hospital.where(province_id:params[:province_id],city_id:params[:city_id])
+        @hospitals = Hospital.where(province_id:params[:province_id],city_id:params[:city_id])
       else
-        @hospital = Hospital.where(province_id:params[:province_id])
+        @hospitals = Hospital.where(province_id:params[:province_id])
       end
     else
       if !params[:city_id].nil? && params[:city_id] != '' && params[:city_id]!='undefined'
-        @hospital = Hospital.where(city_id:params[:city_id])
+        @hospitals = Hospital.where(city_id:params[:city_id])
       else
-        @hospital = Hospital.all
+        @hospitals = Hospital.all
       end
     end
     if params[:model_class] == 'department'
@@ -1050,6 +1063,24 @@ class DoctorsController < ApplicationController
       @departments = Department.where(id:current_user.department_id)
     end
     render partial: 'doctors/search_department'
+  end
+
+  def search_hospital
+    if !params[:pro_id].nil? && params[:pro_id] != ''
+      if !params[:city_id].nil? && params[:city_id] != ''
+        @hospitals = Hospital.where(province_id:params[:pro_id],city_id:params[:city_id])
+      else
+        @hospitals = Hospital.where(province_id:params[:pro_id])
+      end
+    end
+    render partial: 'doctors/search_hospital'
+  end
+
+  def search_city
+    if !params[:pro_id].nil? && params[:pro_id] != ''
+      @cities = City.where(province_id:params[:pro_id])
+    end
+    render partial: 'doctors/search_city'
   end
 
   def search_department2    #含增删改查权限的 ############　删　################

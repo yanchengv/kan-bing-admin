@@ -3,7 +3,9 @@
 <% end %>
 
   <select  id="doctor_hospital_id" name="doctor[hospital_id]" onchange="search()" >
-  <!--<option value="">---请选择---</option>-->
+    <% if current_user.admin_type != '医院管理员' && current_user.admin_type != '科室管理员' %>
+        <option value="">---请选择---</option>
+    <% end %>
 <% if !@hospitals.empty? %>
 
      <% @hospitals.each do |hos| %>
@@ -25,7 +27,7 @@
         }
         <% end %>
         <% end %>
-        search()
+//        search()
     })
     function search() {
         var hos = $("#doctor_hospital_id").val();
@@ -34,7 +36,7 @@
     function change_department(hos_id, select_id){
         $.ajax({
                     type: "get",
-                    url: '/doctors/get_department?menu_id=<%=@menu_id%>&hospital_id=' + hos_id,
+                    url: '/doctors/get_department?hospital_id=' + hos_id,
                     data: 'text',
                     success: function (data) {
                         $("#doc_department").html(data);

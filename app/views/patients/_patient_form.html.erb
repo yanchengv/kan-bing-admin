@@ -160,6 +160,16 @@
         <%#= f.text_field :education,class:"form-control" %>
       </div>
     </div>
+    <!--<div>-->
+      <!--<div style="display:inline-block;width:49%">-->
+        <!--<%#= f.label :省 %><br>
+        <!--<%#= f.text_field :province,class:"form-control" %>-->
+      <!--</div>-->
+      <!--<div style="display:inline-block;width:49%">-->
+          <!--<%#= f.label :市 %><br>
+          <!--<%#= f.text_field :county,class:"form-control" %>-->
+      <!--</div>-->
+    <!--</div>-->
     <!--<div class="row">-->
     <!--<div class="col-md-6 field">-->
     <%#= f.label :保险类型 %>
@@ -287,6 +297,10 @@
           <%#= f.text_field :verify_code,class:"form-control"  %>
         </div>
       </div>-->
+    <div class="">
+      <%= f.label :说明 %><br>
+      <%= f.text_area :introduction, cols:"47", rows:"6" %>
+    </div>
     <div class="actions" style="display: none;">
       <%= f.submit id:'new_or_edit_patient' %>
     </div>

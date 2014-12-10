@@ -1,5 +1,7 @@
 <select id="doctor_department_id" name="doctor[department_id]" >
-<!--<option value="">---请选择---</option>-->
+  <% if current_user.admin_type != '科室管理员' %>
+<option value="">---请选择---</option>
+  <% end %>
   <%# if @departments.nil? %>
       <%# @departments = Department.all %>
   <%# end %>

@@ -211,6 +211,7 @@
 //        consoleDlg2.find("input").removeAttr("disabled").val("");
                 dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                 dialogButtonPanel.find("button:contains('创建')").show();
+                consoleDlg2.dialog("option", "height", "800");
                 consoleDlg2.dialog("option", "width", "540");
                 consoleDlg2.dialog("option", "title", "创建").dialog("open");
 
@@ -230,6 +231,7 @@
 //        consoleDlg2.find("input").removeAttr("disabled").val("");
                     dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                     dialogButtonPanel.find("button:contains('保存')").show();
+                    consoleDlg2.dialog("option", "height", "800");
                     consoleDlg2.dialog("option", "width", "540");
                     consoleDlg2.dialog("option", "title", "修改").dialog("open");
                 }
@@ -246,6 +248,7 @@
 //        consoleDlg2.find("input").removeAttr("disabled").val("");
         dialogButtonPanel.find("button:not(:contains('取消'))").hide();
         dialogButtonPanel.find("button:contains('删除')").show();
+        consoleDlg2.dialog("option", "height", "180");
         consoleDlg2.dialog("option", "width", "260");
         consoleDlg2.dialog("option", "title", "删除").dialog("open");
     }

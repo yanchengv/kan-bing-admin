@@ -283,6 +283,8 @@ Rails.application.routes.draw do
       get 'get_hospitals', to:'doctors#get_hospitals'
       get 'get_departments', to:'doctors#get_departments'
       get 'get_doctor_to_page', to: 'doctors#get_doctor_to_page'
+      get 'search_city', to:'doctors#search_city'
+      get 'search_hospital', to:'doctors#search_hospital'
     end
   end
 
