@@ -1,0 +1,251 @@
+<div id="picture_console">
+  <div id="create_picture_div">
+
+  </div>
+</div>
+<div style="width: 100%">
+  <%= render partial: 'block_contents/update_block_name' %>
+  <div style="margin-left: 20px;margin-right: 20px;">
+    <table id="environment_list"></table>
+    <div id="environment_page"></div>
+  </div>
+  <br>
+</div>
+<script type="text/javascript">
+    function update_block() {
+        $.ajax({
+            type: 'put',
+            url: 'page_blocks/' + <%= @page_block.id%>,
+            data: {page_block: {
+                name: $('#block_name').val()
+            }},
+            success: function (data) {
+                $("#rightContent").html(data);
+
+            }
+        })
+    }
+    function update_name() {
+        $('#edit_name').show();
+        $('#show_name').hide();
+
+    }
+    function cel_type() {
+        $('#edit_name').hide();
+        $('#show_name').show();
+    }
+    function myelem(value, options) {
+        var el = document.createElement("input");
+        el.type = "text";
+        el.value = value;
+        return el;
+    }
+
+    function myvalue(elem, operation, value) {
+        if (operation === 'get') {
+            return $(elem).val();
+        } else if (operation === 'set') {
+            $('input', elem).val(value);
+        }
+    }
+    var cols = [ 'ID', '标题', '内容详情','内容', '图片', '区块ID'];
+    var mods = [
+        { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+        { name: 'title', index: 'title', align: "center", editable: true},
+        { name: 'content', index: 'content', align: "center",hidden:true,  editable: true, edittype: 'textarea', editrules: {edithidden: true}, editoptions: {rows: 5, style: "width:200px"}},
+        { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
+            var value = colpos.content;
+            return value.replace(/<[^>]+>/g, '');
+        }
+        },
+        { name: 'url', index: 'url', align: "center", editable: true},
+        { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
+    ];
+    jQuery("#environment_list").jqGrid({
+        url: '/block_contents/index_show?block_id=<%= @page_block.id%>',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: cols,
+        colModel: mods,
+        rownumbers: true,
+        page: 1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "block_contents",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        gridComplete: function () {
+            jQuery("#environment_list").jqGrid('setGridParam', {url: '/block_contents/index_show?block_id=<%= @page_block.id%>'}).trigger("reloadGrid");
+        },
+        editurl: '/block_contents/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#environment_page'),
+        multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "<%= @page_block.name%>管理"
+    });
+    jQuery("#environment_list").jqGrid('navGrid', '#environment_page', {
+                cloneToTop: true, add: false, edit:false,
+                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+            },//edit
+            {
+            },//add
+            {
+                afterComplete: function (response, data) {
+                    var pageBlockId = JSON.parse(response.responseText)['block_id'];
+                    saveTempalte(pageBlockId);
+                }
+            }
+    ).navButtonAdd('#environment_page', { title: '修改', caption: '修改', onClickButton: function () {
+                picture_edit();
+            }, position: "first"}).navButtonAdd('#environment_page', { title: '上传', caption: '上传', onClickButton: function () {
+                picture_new();
+            }, position: "first"});
+
+    $("#picture_console").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: false,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function (pos) {
+                var topOffset = $(this).css(pos).offset().top;
+                if (topOffset < 0) {
+                    $(this).css("top", pos.top - topOffset);
+                } else {
+                    $(this).css("top", 100);
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "保存": submit_pic,
+            "修改": update_pic,
+            "取消": function () {
+                $("#picture_console").dialog("close")
+            }
+        }
+    });
+    function picture_new() {
+        $.ajax({
+            url: "/block_contents/save_pic",
+            type: 'post',
+            data: {
+                block_id: <%= @page_block.id %>
+            },
+            success: function (data) {
+                $("#create_picture_div").html(data);
+                var video_consoleDlg = $("#picture_console");
+                var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                dialogButtonPanel.find("button:contains('保存')").show();
+                video_consoleDlg.dialog("option", "width", "800");
+                video_consoleDlg.dialog("option", "title", "上传图片").dialog("open");
+            }
+        });
+    }
+    function picture_edit(){
+        var id = jQuery("#environment_list").jqGrid('getGridParam', 'selrow');
+        if (id) {
+            $.ajax({
+                url: '/block_contents/'+id+'/edit',
+                type: 'get',
+                data: {id: id},
+                success: function (data) {
+                    $("#create_picture_div").html(data);
+                    var video_consoleDlg = $("#picture_console");
+                    var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                    dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                    dialogButtonPanel.find("button:contains('修改')").show();
+                    video_consoleDlg.dialog("option", "width", "800");
+                    video_consoleDlg.dialog("option", "title", "修改图片").dialog("open");
+                }
+            })
+        } else {
+            alert('请选择需要进行修改的图片!');
+        }
+    }
+    function submit_pic() {
+        $.ajax({
+            url: "/block_contents/save_pic_content",
+            type: 'post',
+            data: { title: $('#title').val(),
+                content: $('#content').val(),
+                url: $('#image_path').val(),
+                block_id: $('#block_id').val()
+            },
+            async: false,
+            success: function (data) {
+                var pageBlockId=data["page_block_id"];
+                saveTempalte(pageBlockId);
+                $("#picture_console").dialog("close");
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('图片失败!');
+            }
+        });
+    }
+        function update_pic(){
+            $.ajax({
+                url: "/block_contents/" + $('#content_id').val(),
+                type: 'put',
+                data: { title: $('#title').val(),
+                    content: $('#content').val(),
+                    url: $('#image_path').val(),
+                    block_id: $('#block_id').val()
+                },
+                async: false,
+                success: function (data) {
+                    var pageBlockId=data["page_block_id"];
+                    saveTempalte(pageBlockId);
+                    $("#picture_console").dialog("close");
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('图片失败!');
+                }
+            });
+        }
+     function saveTempalte(pageBlockId){
+         $.ajax({
+             type: 'get',
+             url: 'page_blocks/add_content',
+             data: {page_block_id: pageBlockId},
+             success: function (data) {
+                 $.ajax({
+                     type: 'post',
+                     url: 'page_blocks/update_template',
+                     data: {content: data, page_block_id: pageBlockId},
+                     success: function (data) {
+                         $("#rightContent").html(data);
+                     }
+                 })
+             }
+         })
+     }
+</script>

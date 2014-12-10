@@ -6,9 +6,7 @@
     <span class="fr index_model_more"><a href=<%=Settings.block_content+"/?content_id=#{@block_contents.first.id}"%> target="_blank">more</a></span>
   </div>
   <p class="index_modle_text">
-    <%@block_contents.each do |block_content|%>
-       <%= block_content.content.gsub(/<\/?.*?>/, "")[0,150] %>......
-    <%end%>
+       <%= @block_contents.last.content.gsub(/<\/?.*?>/, "")[0,150] %>......
   </p>
 </div>
  <%else%>

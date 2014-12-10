@@ -41,7 +41,28 @@ class PageBlocksController < ApplicationController
   def get_template
      block_type=params[:type]
      @block_name=params[:name]
+     #添加的区块为医生列表时,默认本科室的所有医生(10条)
+     if block_type == 'doctor_list'
+       @doctors = doctors_default
+       @doctor = @doctors[0]
+     end
     render partial: "page_blocks/templates/#{block_type}"
+  end
+
+  #获取科室或医院的前十条医生信息
+  def doctors_default
+    if !current_user.nil?
+      sql = 'true'
+      if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+        sql << " and hospital_id = #{current_user.hospital_id}"
+      end
+      if !current_user.department_id.nil? && !current_user.department_id != ''
+        sql << " and department_id = #{current_user.department_id}"
+      end
+      return Doctor.where(sql).limit(10)
+    else
+      return Doctor.where('1 != 1')
+    end
   end
 
   def add_content_template
@@ -66,28 +87,8 @@ class PageBlocksController < ApplicationController
     #render :partial => 'block_contents/block_contents_manage'
     if @page_block.block_type == 'login'
       render :partial => 'page_blocks/show'
-    elsif @page_block.block_type == 'doctor_list'
-      @doctors_select = Doctor.where('1 != 1')
-      if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
-        @content = @page_block.block_contents.first.content
-        if !@content.nil? && @content != ''
-          if !current_user.nil?
-            sql = 'true'
-            if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-              sql << " and hospital_id = #{current_user.hospital_id}"
-            end
-            if !current_user.department_id.nil? && !current_user.department_id != ''
-              sql << " and department_id = #{current_user.department_id}"
-            end
-            @doctors_select = Doctor.where(sql)
-          end
-        end
-      end
-      render :partial => 'block_contents/block_doctors_manage'
-    elsif @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
-      render :partial => 'block_contents/block_contents_manage'
-    elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
-      render :partial => 'block_contents/picture_list_manage', :object => @page_block
+    else
+      render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
     end
   end
 
@@ -102,30 +103,17 @@ class PageBlocksController < ApplicationController
     @page_block.save
     if block_type == 'login'
       render :partial => 'page_blocks/show'
-    elsif block_type == 'doctor_list'
-      sql = 'true'
-      if !current_user.nil?
-        if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-          sql << " and hospital_id = #{current_user.hospital_id}"
+    else
+      if block_type == 'doctor_list'
+        doctor_ids = []
+        @docs = doctors_default
+        @docs.each do |doc|
+          doctor_ids.push(doc.id)
         end
-        if !current_user.department_id.nil? && !current_user.department_id != ''
-          sql << " and department_id = #{current_user.department_id}"
-        end
+        @block_content = BlockContent.new(block_id: @page_block.id, content: doctor_ids.join(","))
+        @block_content.save
       end
-      if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
-        @content = @page_block.block_contents.first.content
-        if !@content.nil? && @content != ''
-          sql << " and id not in (#{@content})"
-        end
-      end
-      @doctors_select = Doctor.where(sql)
-      render :partial => 'block_contents/block_doctors_manage'
-    elsif block_type == 'anlizongshu' || block_type == 'jianjie'
-      render :partial => 'block_contents/block_contents_manage'
-    elsif block_type == 'hospital_environment' || block_type == 'slides'
-      render :partial => 'block_contents/picture_list_manage'
-    elsif block_type=='pic_text1'
-         render partial: 'block_contents/pic_text1'
+      render partial: "block_contents/#{block_type}_manage"
     end
   end
   # GET /page_blocks/1
@@ -145,32 +133,8 @@ class PageBlocksController < ApplicationController
      @page_block
       if @page_block.block_type == 'login'
         render :partial => 'page_blocks/show'
-      elsif @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
-        render :partial => 'block_contents/block_contents_manage', :object => @page_block
-      elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
-        render :partial => 'block_contents/picture_list_manage'
-      elsif @page_block.block_type == 'doctor_list'
-        sql = 'true'
-        if !current_user.nil?
-          if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-            sql << " and hospital_id = #{current_user.hospital_id}"
-          end
-          if !current_user.department_id.nil? && !current_user.department_id != ''
-            sql << " and department_id = #{current_user.department_id}"
-          end
-        end
-        if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
-          @content = @page_block.block_contents.first.content
-          if !@content.nil? && @content != ''
-            sql << " and id not in (#{@content})"
-          end
-        end
-        @doctors_select = Doctor.where(sql)
-        render :partial => 'block_contents/block_doctors_manage'
-      elsif  @page_block.block_type=='pic_text1'
-        render partial: 'block_contents/pic_text1'
       else
-        render :partial => 'page_blocks/show'
+        render :partial => "block_contents/#{@page_block.block_type}_manage"
       end
   end
 
@@ -202,33 +166,10 @@ class PageBlocksController < ApplicationController
       @page_block.updated_name = current_user.name
     end
     if @page_block.update(page_block_params)
-      if @page_block.block_type == 'anlizongshu' || @page_block.block_type == 'jianjie'
-        render :partial => 'block_contents/block_contents_manage', :object => @page_block
-
-      elsif @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'slides'
-        render :partial => 'block_contents/picture_list_manage', :object => @page_block
-      elsif @page_block.block_type == 'doctor_list'
-        sql = 'true'
-        if !current_user.nil?
-          if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-            sql << " and hospital_id = #{current_user.hospital_id}"
-          end
-          if !current_user.department_id.nil? && !current_user.department_id != ''
-            sql << " and department_id = #{current_user.department_id}"
-          end
-        end
-        if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
-          @content = @page_block.block_contents.first.content
-          if !@content.nil? && @content != ''
-            sql << " and id not in (#{@content})"
-          end
-        end
-        @doctors_select = Doctor.where(sql)
-        render :partial => 'block_contents/block_doctors_manage', :object => @page_block
-      elsif @page_block.block_type=='pic_text1'
-        render partial: 'block_contents/pic_text1'
-      else
+      if @page_block.block_type == 'login'
         render :partial => 'page_blocks/show'
+      else
+        render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
       end
     else
       render :json => {:success => false, :errors => '修改失败！'}
