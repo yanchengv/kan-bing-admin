@@ -1,4 +1,4 @@
-<select id="doctor_hos" name="doctor[hospital_id]" onchange="doc_search_hos()" ><option value="all">---请选择---</option>
+<select id="doctor_hos_id" name="doctor[hospital_id]" onchange="doc_search_hos()" ><option value="">---请选择---</option>
 <% if !@hospitals.nil? %>
     <% if !@hospitals.empty? %>
         <% @hospitals.each do |hos| %>
@@ -9,6 +9,6 @@
 </select>
 <script>
     $(function() {
-        $("#doctor_hos").select2()
+        $("#doctor_hos_id").select2()
     })
 </script>
