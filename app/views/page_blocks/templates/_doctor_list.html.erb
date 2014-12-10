@@ -19,7 +19,7 @@
           <span style="margin-right:10px;" id="md_doc_hospital_name"><%= @doctor.hospital.name unless @doctor.hospital.nil? %></span>
           <b>科室</b><span style="margin-right:10px;" id="md_doc_department_name"><%= @doctor.department.name unless @doctor.department.nil? %></span>
         </dd>
-        <dd><b>简介</b><span style="margin-right:10px;" id="md_doc_description"><%= @doctor.introduction.nil? ? '' : @doctor.introduction[0,80]<<'...'.gsub(/\t|\r|\n/, '').squeeze(' ') %></span>
+        <dd><b>简介</b><span style="margin-right:10px;" id="md_doc_description"><%= @doctor.introduction.nil? ? '' : @doctor.introduction[0,60]<<'...'.gsub(/\t|\r|\n/, '').squeeze(' ') %></span>
         </dd>
       </dl>
       <% end %>
@@ -124,7 +124,7 @@
                     if(data['doctor'].introduction == null || data['doctor'].introduction == ''){
                         introduction = ''
                     }else{
-                        introduction = data['doctor'].introduction.substr(0, 80).replace(/[\r\n]/g, "")+'...';
+                        introduction = data['doctor'].introduction.substr(0, 95).replace(/[\r\n]/g, "")
                     }
                     document.getElementById("md_doc_description").innerHTML = introduction;
                     document.getElementById("md_doc_name").innerHTML = data['doctor'].name;
