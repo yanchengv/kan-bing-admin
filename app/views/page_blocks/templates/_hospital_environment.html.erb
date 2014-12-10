@@ -3,9 +3,9 @@
 <div class="index_model_box_1_1">
   <% @block_contents.each do |block_content|%>
       <dl class="index_img_box">
-        <dt><%= image_tag block_content.url%></dt>
+        <dt><a href=<%=Settings.block_content+"/?content_id=#{block_content.id}"%> target="_blank"><%= image_tag block_content.url%></a></dt>
         <dd><b><%=block_content.title %></b><br/>
-          <%=block_content.content.html_safe %>
+          <%=block_content.content.content.gsub(/<\/?.*?>/, "")[0,45] %> ...
         </dd>
       </dl>
   <%end%>
