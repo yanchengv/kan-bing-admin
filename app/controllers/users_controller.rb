@@ -140,7 +140,7 @@ class UsersController < ApplicationController
 
   def batch_delete
     if params[:ids]
-      @users = User.where("id in #{params[:ids].to_s.gsub('[', '(').gsub(']', ')')}")
+      @users = User.where("id in #{params[:ids].join(',')}")
       if @users.delete_all
         render :json => {:success => true}
       end
@@ -189,7 +189,7 @@ class UsersController < ApplicationController
 #修改状态
   def change_state
     if params[:ids]
-      @users = User.where("id in #{params[:ids].to_s.gsub('[', '(').gsub(']', ')')}")
+      @users = User.where("id in #{params[:ids].join(',')}")
       @users.each do |user|
         user.update_attribute(:is_enabled, params[:is_enabled])
       end

@@ -1,8 +1,8 @@
 <div style="width: 100%">
   <%= render partial: 'block_contents/update_block_name'%>
   <div style="margin-left: 20px;margin-right: 20px;">
-    <table id="block_content_list"></table>
-    <div id="page_block_content"></div>
+    <table id="anlizongshu_content_list"></table>
+    <div id="page_anlizongshu"></div>
   </div>
   <br>
   <div>
@@ -10,33 +10,13 @@
   </div>
 </div>
 <script type="text/javascript">
-  <% if @page_block.block_type == 'jianjie' %>
-  var cols = [ 'ID', '标题', '内容详情', '内容','区块ID'];
- // var cols = [ 'ID', '标题', '内容', '区块ID'];
-  var mods = [
-      { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-      { name: 'title', index: 'title', align: "center", editable: true},
-    //  { name: 'content', index: 'content', align: "center", editable: true,edittype: 'textarea',  editoptions: {rows: 5, style: "width:200px"}},
 
-      { name: 'content', index: 'content', align: "center", editable: true, hidden:true, editrules: {edithidden: true}, edittype: 'textarea',  editoptions: {rows: 5, style: "width:200px"}},
-      { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
-          var value = colpos.content;
-          return value.replace(/<[^>]+>/g, '');
-      }
-      },
-      { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
-  ];
-  <% end %>
-  <% if @page_block.block_type == 'anlizongshu' %>
   var currentDate = new Date();
   var year = currentDate.getFullYear();  //获取年
   var month = currentDate.getMonth() + 1;    //获取月
   var day = currentDate.getDate(); //获取日
-//  var hours = data.getHours();
-//  var minutes = data.getMinutes();
   var currentDate= time = year + "-" + month + "-" + day;
   var cols = [ 'ID', '标题',  '内容详情','内容', '时间','区块ID'];
-//  var cols = [ 'ID', '标题', '内容', '时间','区块ID'];
   var mods = [
       { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
       { name: 'title', index: 'title', align: "center", editable: true},
@@ -57,8 +37,7 @@
       } }},
       { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
   ];
-  <% end %>
-    jQuery("#block_content_list").jqGrid({
+    jQuery("#anlizongshu_content_list").jqGrid({
         url: '/block_contents/index_show?block_id=<%= @page_block.id%>',
         datatype: "json",
         mtype: 'GET',
@@ -88,12 +67,9 @@
             addoper: "add", // 当在add模式中提交数据时，操作的名称
             deloper: "del" // 当在delete模式中提交数据时，操作的名称
         },
-        gridComplete: function () {
-            jQuery("#block_content_list").jqGrid('setGridParam', {url: '/block_contents/index_show?block_id=<%= @page_block.id%>'}).trigger("reloadGrid");
-        },
         editurl: '/block_contents/oper_action',
         closeAfterAdd: true,
-        pager: jQuery('#page_block_content'),
+        pager: jQuery('#page_anlizongshu'),
         multiselect: true,
         rowNum: 15,
         altclass: 'altRowsColour',
@@ -101,7 +77,7 @@
         height: 'auto',
         caption: "<%= @page_block.name%>管理"
     });
-    jQuery("#block_content_list").jqGrid('navGrid', '#page_block_content', {
+    jQuery("#anlizongshu_content_list").jqGrid('navGrid', '#page_anlizongshu', {
                 cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
                 deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},

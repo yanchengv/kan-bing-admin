@@ -118,7 +118,7 @@ class DoctorFriendshipsController < ApplicationController
     #批量删除
     def batch_delete
       if params[:ids]
-        @doctor_friendships = DoctorFriendship.where("id in #{params[:ids].to_s.gsub('[', '(').gsub(']', ')')}")
+        @doctor_friendships = DoctorFriendship.where("id in #{params[:ids].join(',')}")
         if @doctor_friendships.delete_all
           render :json => {:success => true}
         end

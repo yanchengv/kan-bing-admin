@@ -3,7 +3,7 @@
       <% if !@doctor.nil? %>
       <dl class="doctor_list_box">
         <dt style="width:75px;height:99px">
-          <input type="hidden" name="block_id" id="block_id" value="<%= @page_block.id %>">
+          <input type="hidden" name="block_id" id="block_id" value="<%= @page_block.id if !@page_block.nil? %>">
           <%
              if !@doctor.photo.nil?&&@doctor.photo!='' %>
               <%= link_to image_tag("http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{@doctor.photo}", size: "75x105", alt: @doctor.name, class: "img-responsive index_doc_photo", id: 'img_url'),
@@ -19,7 +19,7 @@
           <span style="margin-right:10px;" id="md_doc_hospital_name"><%= @doctor.hospital.name unless @doctor.hospital.nil? %></span>
           <b>科室</b><span style="margin-right:10px;" id="md_doc_department_name"><%= @doctor.department.name unless @doctor.department.nil? %></span>
         </dd>
-        <dd><b>简介</b><span style="margin-right:10px;" id="md_doc_description"><%= @doctor.introduction.nil? ? '' : @doctor.introduction[0,60]<<'...' %></span>
+        <dd><b>简介</b><span style="margin-right:10px;" id="md_doc_description"><%= @doctor.introduction.nil? ? '' : @doctor.introduction[0,60]<<'...'.gsub(/\t|\r|\n/, '').squeeze(' ') %></span>
         </dd>
       </dl>
       <% end %>
@@ -69,7 +69,7 @@
         <dt style="width:75px;height:99px">
           <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></dt>
         <dd><b class="doctor_list_name" id="md_doc_name">医生姓名xxx</b></dd>
-        <dd><input id="doctor_id" type="hidden">
+        <dd>
           <b>医院</b>
           <span style="margin-right:10px;" id="md_doc_hospital_name">xxxx医院</span>
           <b>科室</b><span style="margin-right:10px;" id="md_doc_department_name">xxxx科室</span>
@@ -116,13 +116,32 @@
             dataType: 'json',
             success: function (data) {
                 if(data['success'] == true){
+                    console.log(data['doctor']);
                     document.getElementById("img_url").src = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/" + data['doctor'].photo;
                     document.getElementById("img_url").alt = data['doctor'].name;
                     document.getElementById("img_url").title = data['doctor'].name;
-                    document.getElementById("md_doc_description").innerHTML = data['doctor'].introduction.substr(0, 95);
+                    var introduction;
+                    if(data['doctor'].introduction == null || data['doctor'].introduction == ''){
+                        introduction = ''
+                    }else{
+                        introduction = data['doctor'].introduction.substr(0, 95).replace(/[\r\n]/g, "")
+                    }
+                    document.getElementById("md_doc_description").innerHTML = introduction;
                     document.getElementById("md_doc_name").innerHTML = data['doctor'].name;
-                    document.getElementById("md_doc_hospital_name").innerHTML = data['doctor'].hospital.name;
-                    document.getElementById("md_doc_description").innerHTML = data['doctor'].department.name;
+                    var hospital_name ;
+                    if(data['doctor'] != null && data['doctor'].hospital != null){
+                        hospital_name = data['doctor'].hospital.name;
+                    }else{
+                        hospital_name = '';
+                    }
+                    document.getElementById("md_doc_hospital_name").innerHTML = hospital_name;
+                    var department_name;
+                    if (data['doctor'] != null && data['doctor'].department != null) {
+                        department_name = data['doctor'].department.name;
+                    } else {
+                        department_name = '';
+                    }
+                    document.getElementById("md_doc_department_name").innerHTML = department_name;
                     document.getElementById("doctor_id").value = data['doctor'].id;
                 }else{
                     alert('信息获取失败!');
@@ -132,7 +151,33 @@
         })
 
     }
-
+  function showDoctorPage(id, str) {
+      if (str == 'str') {
+          id = $('#doctor_id').val();
+      }
+      $.ajax({
+                  type: 'get',
+                  url: '/doctors/show_doctor',
+                  data: {
+                      id: id
+                  },
+                  success: function (data) {
+                      var is_use;
+                      is_use = data['success'];
+                      console.log(is_use);
+                      if (is_use == true) {
+                          window.location.href = "/doctors/doctor_index?id=" + id
+                      } else {
+                          $('#content').html("<div class='modal fade' id='myModal' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true' data-backdrop='false'><div class='modal-dialog'><div class='alert alert-danger'>目前该医生尚未对外提供服务</div></div></div>");
+                          $('#myModal').modal('show');
+                          setTimeout(function () {
+                              $('#myModal').modal('hide');
+                          }, 1500);
+                      }
+                  }
+              }
+      )
+  }
 </script>
 <style>
     .index_model_box_2_3 {

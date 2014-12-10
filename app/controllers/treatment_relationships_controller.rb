@@ -129,7 +129,7 @@ class TreatmentRelationshipsController < ApplicationController
     #批量删除
     def batch_delete
       if params[:ids]
-        @treatment_relationships = TreatmentRelationship.where("id in #{params[:ids].to_s.gsub('[', '(').gsub(']', ')')}")
+        @treatment_relationships = TreatmentRelationship.where("id in #{params[:ids].join(',')}")
         if @treatment_relationships.delete_all
           render :json => {:success => true}
         end

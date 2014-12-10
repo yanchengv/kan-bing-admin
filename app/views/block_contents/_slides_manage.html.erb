@@ -4,34 +4,12 @@
   </div>
 </div>
 <div style="width: 100%">
+  <%= render partial: 'block_contents/update_block_name' %>
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div class="warning_box">
-      <table class="EditTable">
-        <tr class="FormData" style="display: block;" id="show_name">
-          <td class="CaptionTD"><b>区块名称:</b><%= @page_block.name %></td>
-          <td class="DataTD">
-            <button type="button" class="btn" onclick="update_name()">修改</button>
-          </td>
-        </tr>
-        <tr class="FormData" style="display: none;" id="edit_name">
-          <td class="CaptionTD"><input type="text" name="name" class="text_input" value="<%= @page_block.name %>" id="block_name"></td>
-          <td class="DataTD">
-            <button type="button" class="btn" onclick="cel_type()">取消</button>
-            <button type="button" class="btn" onclick="update_block()">保存</button>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </div>
-  <div style="margin-left: 20px;margin-right: 20px;">
-    <table id="block_content_pictures_list"></table>
-    <div id="page_block_content_pictures"></div>
+    <table id="slides_list"></table>
+    <div id="page_slides"></div>
   </div>
   <br>
-
-  <div>
-
-  </div>
 </div>
 <script type="text/javascript">
     function update_block() {
@@ -99,7 +77,7 @@
         { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
     ];
     <% end %>
-    jQuery("#block_content_pictures_list").jqGrid({
+    jQuery("#slides_list").jqGrid({
         url: '/block_contents/index_show?block_id=<%= @page_block.id%>',
         datatype: "json",
         mtype: 'GET',
@@ -130,11 +108,11 @@
             deloper: "del" // 当在delete模式中提交数据时，操作的名称
         },
         gridComplete: function () {
-            jQuery("#block_content_pictures_list").jqGrid('setGridParam', {url: '/block_contents/index_show?block_id=<%= @page_block.id%>'}).trigger("reloadGrid");
+            jQuery("#slides_list").jqGrid('setGridParam', {url: '/block_contents/index_show?block_id=<%= @page_block.id%>'}).trigger("reloadGrid");
         },
         editurl: '/block_contents/oper_action',
         closeAfterAdd: true,
-        pager: jQuery('#page_block_content_pictures'),
+        pager: jQuery('#page_slides'),
         multiselect: true,
         rowNum: 15,
         altclass: 'altRowsColour',
@@ -142,7 +120,7 @@
         height: 'auto',
         caption: "<%= @page_block.name%>管理"
     });
-    jQuery("#block_content_pictures_list").jqGrid('navGrid', '#page_block_content_pictures', {
+    jQuery("#slides_list").jqGrid('navGrid', '#page_slides', {
                 cloneToTop: true, add: false, edit:false,
                 deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
@@ -156,9 +134,9 @@
                     saveTempalte(pageBlockId);
                 }
             }
-    ).navButtonAdd('#page_block_content_pictures', { title: '修改', caption: '修改', onClickButton: function () {
+    ).navButtonAdd('#page_slides', { title: '修改', caption: '修改', onClickButton: function () {
                 picture_edit();
-            }, position: "first"}).navButtonAdd('#page_block_content_pictures', { title: '上传', caption: '上传', onClickButton: function () {
+            }, position: "first"}).navButtonAdd('#page_slides', { title: '上传', caption: '上传', onClickButton: function () {
                 picture_new();
             }, position: "first"});
 
@@ -209,7 +187,7 @@
         });
     }
     function picture_edit(){
-        var id = jQuery("#block_content_pictures_list").jqGrid('getGridParam', 'selrow');
+        var id = jQuery("#slides_list").jqGrid('getGridParam', 'selrow');
         if (id) {
             $.ajax({
                 url: '/block_contents/'+id+'/edit',

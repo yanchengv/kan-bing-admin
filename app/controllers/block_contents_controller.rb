@@ -5,7 +5,7 @@ class BlockContentsController < ApplicationController
   # GET /block_contents
   # GET /block_contents.json
   def index
-    render :partial => 'block_contents/block_contents_manage'
+    render :partial => 'block_contents/anlizongshu_manage'
   end
 
   def show_index
@@ -240,7 +240,7 @@ class BlockContentsController < ApplicationController
 
   def batch_delete
     if params[:ids]
-      @block_contents = BlockContent.where("id in #{params[:ids].to_s.gsub('[', '(').gsub(']', ')')}")
+      @block_contents = BlockContent.where("id in #{params[:ids].join(',')}")
       if @block_contents.delete_all
         render :json => {:success => true}
       end

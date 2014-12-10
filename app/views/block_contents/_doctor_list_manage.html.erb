@@ -3,6 +3,25 @@
     <div class="FormData">
       <div class="CaptionTD">选择医生:</div>
       <div class="DataTD" style="float: left">
+        <%
+           if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
+             @content = @page_block.block_contents.first.content
+             if !@content.nil? && @content != ''
+               if !current_user.nil?
+                 sql = 'true'
+                 if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+                   sql << " and hospital_id = #{current_user.hospital_id}"
+                 end
+                 if !current_user.department_id.nil? && !current_user.department_id != ''
+                   sql << " and department_id = #{current_user.department_id}"
+                 end
+               end
+              else
+                sql << " and id not in (#{@content})"
+             end
+             @doctors_select = Doctor.where(sql)
+           end
+        %>
         <select id="doctor_select" style="float: left">
           <option value="0">---请选择---</option>
           <% @doctors_select.each do |doc|%>
@@ -124,18 +143,6 @@
         editurl: '/doctors/oper_action',
         closeAfterAdd: true,
         pager: jQuery('#page_block_doctor'),
-//        multiselect: true,
-//        multiboxonly: true,
-//        gridComplete: function () {
-//            var rowIds = $('#doctor_ids').val();
-//            if(rowIds){
-//                rowIds = rowIds.replace(/\"/g, "").split(',');
-//                console.log(rowIds);
-//                for (var k = 0; k < rowIds.length; k++) {
-//                    $("#block_doctor_list").find("input[id='jqg_block_doctor_list_" + rowIds[k].replace(/(^\s*)|(\s*$)/g, "") + "']").attr("checked", true);
-//                }
-//            }
-//        },
         rowNum: 20,
         altclass: 'altRowsColour',
         width: '500',
@@ -250,30 +257,5 @@
             })
         }
     }
-   /* function save_content(){
-        var ids = $('#block_doctor_list').jqGrid('getGridParam', 'selarrrow');
-        if (ids.length == 0) {
-            alert('请选择操作项！');
-        } else {
-            $.ajax({
-                type: 'post',
-                url: '/block_contents/save_doctors',
-                data: {
-                    content: ids,
-                    block_id: $('#block_id_d').val()
-                },
-                success: function (data) {
-                    $.ajax({
-                        type: 'post',
-                        url: 'page_blocks/update_template',
-                        data: {content: data, page_block_id: $('#block_id_d').val()},
-                        success: function (data) {
-                            $("#rightContent").html(data);
-                        }
-                    })
-                }
-            })
-        }
-    }*/
 
 </script>
