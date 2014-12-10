@@ -3,7 +3,7 @@
 <div class="index_model_box_3_1">
   <div class="index_model_title">
     <h3 class="fl"><%= @page_block.name if !@page_block.nil?  %></h3>
-    <span class="fr index_model_more"><a href=<%=Settings.block_content+"/?content_id=#{@block_contents.first.id}"%> target="_blank">more</a></span>
+    <span class="fr index_model_more"><a href=<%=Settings.block_content+"/?content_id=#{@block_contents.last.id}"%> target="_blank">more</a></span>
   </div>
   <p class="index_modle_text">
        <%= @block_contents.last.content.gsub(/<\/?.*?>/, "")[0,150] %>......
