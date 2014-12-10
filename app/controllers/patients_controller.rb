@@ -59,22 +59,21 @@ class PatientsController < ApplicationController
     noOfRows = params[:rows]
     page = params[:page]
     @patients_all = nil
-    if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
-      @patients_all = Patient.where(hospital_id:hos_id,department_id:dep_id)
-    elsif !hos_id.nil? && hos_id != ''
-      @patients_all = Patient.where(hospital_id:hos_id)
-    else
-      @patients_all = Patient.all
-    end
-    field = params[:searchField]
-    p params[:searchOper]
-    value = params[:searchString]
-    if !field.nil? && field!='' && !value.nil?
-      @patients_all =  @patients_all.where("#{field} like ?", "%#{value}%")
-    end
     sql = 'true'
+    if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
+      sql << " and hospital_id = #{hos_id} and department_id=#{dep_id}"
+    elsif !hos_id.nil? && hos_id != ''
+      sql << " and hospital_id = #{hos_id}"
+    end
+    # field = params[:searchField]
+    # p params[:searchOper]
+    # value = params[:searchString]
+    # if !field.nil? && field!='' && !value.nil?
+    #   sql << "#{field} like ''%#{value}%''")
+    # end
+    # sql = 'true'
     if params[:name] && params[:name] != ''
-      sql << " and name like '%#{params[:name]}%'"
+      sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
     end
     if params[:email] && params[:email] != ''
       sql << " and email like '%#{params[:email]}%'"
@@ -85,26 +84,23 @@ class PatientsController < ApplicationController
     if params[:credential_type_number] && params[:credential_type_number] != ''
       sql << " and credential_type_number like '%#{params[:credential_type_number]}%'"
     end
-    @patients_all =  @patients_all.where(sql)
     if is_activated=='0'
-      @patients_all =  @patients_all.where(is_activated:0)
+      sql << " and is_activated=0"
     end
     if is_activated=='1'
-      @patients_all =  @patients_all.where.not(is_activated:0)
+      sql << " and is_activated not in (0)"
     end
     if is_public=='0'
-      @patients_all =  @patients_all.where(is_public:0)
+      sql << " and is_public=0"
     end
     if is_public=='1'
-      @patients_all =  @patients_all.where.not(is_public:0)
+      sql << " and is_public=1"
     end
-    @patients_all = @patients_all.order("#{params[:sidx]} #{params[:sord]}")
+    @patients = Patient.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
     records=0
     @total=0
-    if !@patients_all.nil? && !@patients_all.empty?
-      # "searchField"=>"name", "searchString"=>"张", "searchOper"=>"bw", "filters"=>""
-      records = @patients_all.length
-      @patients = @patients_all.paginate(:per_page => noOfRows, :page => page)
+    records = Patient.select("count(id) as rows_count").where(sql)
+    records = records[0].rows_count
       if !noOfRows.nil?
         if records%noOfRows.to_i == 0
           @total = records/noOfRows.to_i
@@ -114,55 +110,6 @@ class PatientsController < ApplicationController
       end
       @rows=[]
       @rows=@patients.as_json(:include => [{:hospital => {:only => [:id,:name]}},{:department => {:only => [:id,:name]}}])
-      # @patients.each do |pat|
-      #   @province=Province.where(id:pat.province_id).first
-      #   @city=City.where(id:pat.city_id).first
-      #   @hospital=Hospital.where(id:pat.hospital_id).first
-      #   @department=Department.where(id:pat.department_id).first
-      #
-      #
-      #   @province.nil? ? province_name='':province_name=@province.name
-      #   @city.nil? ? city_name='':city_name=@city.name
-      #   @hospital.nil? ? hospital_name='':hospital_name=@hospital.name
-      #   @department.nil? ? department_name='':department_name=@department.name
-        # a={id:pat.id,
-        #    cell:[
-        #        pat.id,
-        #        pat.name,
-        #        pat.spell_code,
-        #        pat.credential_type,
-        #        pat.credential_type_number,
-        #        pat.gender,
-        #        pat.birthday,
-        #        pat.birthplace,
-        #        pat.marriage,
-        #        # pat.province_id,
-        #        # pat.city_id,
-        #        # pat.hospital_id,
-        #        # pat.department_id,
-        #        province_name,
-        #        city_name,
-        #        hospital_name,
-        #        department_name,
-        #        pat.citizenship,
-        #        pat.nationality,
-        #        pat.mobile_phone,
-        #        pat.email,
-        #        pat.education,
-        #        pat.last_treat_time,
-        #        pat.introduction
-        #    ]
-        # }
-      #   a = {id:pat.id,name:pat.name,spell_code:pat.spell_code,credential_type:pat.credential_type,credential_type_number:pat.credential_type_number,
-      #        gender:pat.gender,birthday:pat.birthday,birthplace:pat.birthplace,marriage:pat.marriage,province_id:pat.province_id,city_id:pat.city_id,
-      #        hospital_id:pat.hospital_id,department_id:pat.department_id,province_name:province_name,city_name:city_name,citizenship:pat.citizenship,
-      #        nationality:pat.nationality,mobile_phone:pat.mobile_phone,email:pat.email,education:pat.education,last_treat_time:pat.last_treat_time,
-      #        introduction:pat.introduction,hospital_name:hospital_name,department_name:department_name,is_public:pat.is_public
-      #   }
-      #   @rows.push(a)
-      # end
-    end
-    # @objJSON = {total:@total,rows:@rows,page:page,records:records}
     @objJSON = {total:@total,patients:@rows,page:page,records:records}
     render :json => @objJSON.as_json
   end
