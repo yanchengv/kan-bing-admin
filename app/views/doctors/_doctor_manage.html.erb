@@ -215,6 +215,7 @@
             "创建": addContact,
             "保存": updateContact,
             "删除": deleteContact,
+            "确定": forDoctor,
             "取消": function() {$("#consoleDlg").dialog("close")}
         }
     });
@@ -610,6 +611,8 @@
 
     function doc_search_hos(){
         $('#searchString').val('')
+        var pro_id = $('#doctor_pro_id').val()
+        var city_id = $('#doctor_city_id').val()
         var hos_id = $('#doctor_hos_id').val()
         $.ajax({
             type: 'get',
@@ -618,15 +621,19 @@
                 $('#search_dep_id').html(data)
             }
         })
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val() }).trigger("reloadGrid")
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()  + "&pro_id=" + pro_id + "&city_id=" + city_id + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val() }).trigger("reloadGrid")
     }
     function doc_search_dep(){
+        var pro_id = $('#doctor_pro_id').val()
+        var city_id = $('#doctor_city_id').val()
         $('#searchString').val('')
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()   + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&pro_id=" + pro_id + "&city_id=" + city_id + "&is_activated=" + $('#is_activated').val()   + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
     }
     function search_activated(){
+        var pro_id = $('#doctor_pro_id').val()
+        var city_id = $('#doctor_city_id').val()
         $('#searchString').val('')
-        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()  + "&pro_id=" + pro_id + "&city_id=" + city_id + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
     }
     function search_public() {
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
