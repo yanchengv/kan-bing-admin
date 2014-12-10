@@ -86,10 +86,16 @@
     ];
     <% end %>
     <% if @page_block.block_type == 'slides' %>
-    var cols = [ 'ID', '图片路径', '区块ID'];
+    var cols = [ 'ID', '图片路径', '内容详情', '内容', '区块ID'];
     var mods = [
         { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
         { name: 'url', index: 'url', align: "center", editable: true},
+        { name: 'content', index: 'content', align: "center", hidden: true, editable: true, edittype: 'textarea', editrules: {edithidden: true}, editoptions: {rows: 5, style: "width:200px"}},
+        { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
+            var value = colpos.content;
+            return value.replace(/<[^>]+>/g, '');
+        }
+        },
         { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
     ];
     <% end %>

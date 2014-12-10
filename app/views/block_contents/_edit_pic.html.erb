@@ -34,14 +34,12 @@
           <label id="image_path2" ></label><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
          </td>
       </tr>
-      <% if @page_block.block_type == 'hospital_environment' %>
       <tr class="FormData">
         <td class="CaptionTD">内容:</td>
         <td class="DataTD">
           <textarea name='content' rows="5" id="content" style="width: 300px;" class='FormElement ui-widget-content ui-corner-all'><%= @block_content.content %></textarea>
         </td>
       </tr>
-      <% end %>
     <!--  <tr class="FormData">
         <td colspan="2">
           <div id="progress2">
