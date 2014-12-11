@@ -3,24 +3,6 @@
     <div class="FormData">
       <div class="CaptionTD">选择医生:</div>
       <div class="DataTD" style="float: left">
-        <%
-           if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
-             @content = @page_block.block_contents.first.content
-             sql = 'true'
-             if !current_user.nil?
-               if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-                 sql << " and hospital_id = #{current_user.hospital_id}"
-               end
-               if !current_user.department_id.nil? && !current_user.department_id != ''
-                 sql << " and department_id = #{current_user.department_id}"
-               end
-             end
-             if !@content.nil? && @content != ''
-               sql << " and id not in (#{@content})"
-             end
-             @doctors_select = Doctor.where(sql)
-           end
-        %>
         <select id="doctor_select" style="float: left">
           <option value="0">---请选择---</option>
           <% @doctors_select.each do |doc|%>
