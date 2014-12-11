@@ -6,7 +6,13 @@
     <span class="fr index_model_more"><a href=<%=Settings.block_content+"/?content_id=#{@block_contents.last.id}"%> target="_blank">more</a></span>
   </div>
   <p class="index_modle_text">
-       <%= @block_contents.last.content.gsub(/<\/?.*?>/, "")[0,150] %>......
+    <% if !@block_contents.last.content.nil? && @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ').length > 180
+         @content = @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ')[0, 180] << '...'
+       else
+         @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ')
+       end
+    %>
+       <%= @content %>
   </p>
 </div>
  <%else%>

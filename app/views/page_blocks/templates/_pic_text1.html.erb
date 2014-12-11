@@ -3,14 +3,20 @@
       <div class="index_model_title">
         <!--<h3 class="fl">区块名称</h3>-->
         <h3 class="fl"><%= @page_block.name if !@page_block.nil? %></h3>
-        <span class="fr index_model_more"><a href="<%= Settings.block_content+"/?content_id=#{@block_contents.last.id}" %>">more</a></span>
+        <span class="fr index_model_more"><a href="<%= @block_contents.last.url+"/?content_id=#{@block_contents.last.id}" %>">more</a></span>
       </div>
       <div style="clear:both;"></div>
       <div class="environment_img">
         <img alt="医院环境" src="<%= @block_contents.last.url %>" title="医院环境" height="100px">
       </div>
       <p class="in_index_modle_text">
-        <%= @block_contents.last.content.gsub(/<\/?.*?>/, "")[0, 150] %>
+        <% if !@block_contents.last.content.nil? && @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ').length > 110
+             @content = @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ')[0, 110] << '...'
+           else
+             @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ')
+           end
+        %>
+        <%= @content %>
       </p>
     </div>
 <% else %>

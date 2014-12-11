@@ -29,15 +29,30 @@
           </tr>
           <% end %>
       <tr class="FormData">
-        <td class="CaptionTD">图片路径:</td>
+        <td class="CaptionTD">上传图片:</td>
         <td class="DataTD">
-          <label id="image_path2" ></label><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
-         </td>
+          <label id="image_path2"></label><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
+        </td>
       </tr>
       <tr class="FormData">
-        <td class="CaptionTD">内容:</td>
+        <td class="CaptionTD">访问方式:</td>
+        <td class="DataTD" style="padding-left: 30px;">
+          <input type="radio" name="radio_url" class="radio_url" value="1" checked=true onchange="showContent(this.value)"/>链接
+          <input type="radio" name="radio_url" class="radio_url" onchange="showContent(this.value)" value="2" style="margin-left: 30px;"/>文本
+        </td>
+      </tr>
+
+      <tr class="FormData" id="textareaContent" style="display:none;">
+        <td class="CaptionTD">文本内容:</td>
         <td class="DataTD">
-          <textarea name='content' rows="5" id="content" style="width: 300px;" class='FormElement ui-widget-content ui-corner-all'><%= @block_content.content %></textarea>
+          <textarea name='content' rows="5" id="content" style="width: 300px; " class='FormElement ui-widget-content ui-corner-all'><%= @block_content.content %></textarea>
+        </td>
+      </tr>
+
+      <tr class="FormData" id="contentUrl">
+        <td class="CaptionTD">链接路径:</td>
+        <td class="DataTD">
+          <input type="text" size="60" name="contentUrl" id="content_url" placeholder="这里输入图片链接地址" value="<%= @block_content.content_url %>" />
         </td>
       </tr>
     <!--  <tr class="FormData">
@@ -98,6 +113,24 @@
                 }
             }
         });
+
+
+    //控制弹出框的radio显示富文本或者超链接输入框
+    function showContent(value) {
+        if (value == '1') {
+            $("#content_url").val("")
+            $("#content_url").attr("placeholder", "这里输入图片链接地址")
+//            $("#content_url").val("这里输入图片链接地址")
+            document.getElementById("textareaContent").style.display = "none"
+            document.getElementById("contentUrl").style.display = ""
+        } else {
+            document.getElementById("contentUrl").style.display = "none"
+            document.getElementById("textareaContent").style.display = ""
+            <%#= Settings.block_content%>
+            $("#content_url").val("<%= Settings.block_content%>")
+
+        }
+    }
 
 
 </script>

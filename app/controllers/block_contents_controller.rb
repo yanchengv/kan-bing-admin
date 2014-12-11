@@ -132,13 +132,14 @@ class BlockContentsController < ApplicationController
   end
 
   def save_pic_content
+    # Settings.block_content+"/?content_id=#{block_content.id}
     para={}
     para[:title]=params[:title]
     para[:content]=params[:content]
     para[:url]=params[:url]
     para[:block_id]=params[:block_id]
     para[:block_type] = params[:type]
-
+    para[:content_url]=params[:content_url]
     @block_content=BlockContent.new(para)
     @page_block = PageBlock.find(params[:block_id])
     @block_contents = BlockContent.where(:block_id => params[:block_id])
@@ -240,7 +241,7 @@ class BlockContentsController < ApplicationController
 
   def batch_delete
     if params[:ids]
-      @block_contents = BlockContent.where("id in #{params[:ids].join(',')}")
+      @block_contents = BlockContent.where("id in (#{params[:ids].join(',')})")
       if @block_contents.delete_all
         render :json => {:success => true}
       end
@@ -259,6 +260,6 @@ class BlockContentsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def block_content_params
-    params.permit(:block_name, :title, :content, :url, :block_type, :create_date, :block_id)
+    params.permit(:block_name, :title, :content, :url,:content_url, :block_type, :create_date, :block_id)
   end
 end
