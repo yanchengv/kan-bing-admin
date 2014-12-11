@@ -9,7 +9,7 @@
   </div>
   <!--文章列表-->
   <ul class="index_model_article">
-    <% @block_contents.limit(6).each do |block_content|%>
+    <% @block_contents.limit(5).each do |block_content|%>
     <li>
       <!--<a href=#{block_content.url}>-->
       <a href=<%=Settings.block_content+"/?content_id=#{block_content.id}"%> target="_blank">

@@ -18,8 +18,8 @@
           <b>医院</b>
           <span style="margin-right:10px;" id="md_doc_hospital_name"><%= @doctor.hospital.name unless @doctor.hospital.nil? %></span>
           <b>科室</b><span style="margin-right:10px;" id="md_doc_department_name"><%= @doctor.department.name unless @doctor.department.nil? %></span>
-        </dd><% if !@doctor.introduction.nil? && @doctor.introduction.gsub(/\t|\r|\n/, '').squeeze(' ').length > 85
-                      @introduction = @doctor.introduction.gsub(/\t|\r|\n/, '').squeeze(' ')[0, 85] << '...'
+        </dd><% if !@doctor.introduction.nil? && @doctor.introduction.gsub(/\t|\r|\n/, '').squeeze(' ').length > 80
+                      @introduction = @doctor.introduction.gsub(/\t|\r|\n/, '').squeeze(' ')[0, 80] << '...'
                   else
                       @introduction = @doctor.introduction.nil? ? '' : @doctor.introduction.gsub(/\t|\r|\n/, '').squeeze(' ')
                   end
@@ -130,9 +130,9 @@
                     }else{
                         introduction = data['doctor'].introduction
                         if (introduction.length > 80){
-                            introduction = introduction.replace(/[\r\n]/g, "").substr(0, 85) + '...'
+                            introduction = introduction.replace(/[\r\n]/g, "").substr(0, 80) + '...'
                         }else{
-                            introduction = introduction.replace(/[\r\n]/g, "").substr(0, 85)
+                            introduction = introduction.replace(/[\r\n]/g, "").substr(0, 80)
                         }
                     }
                     document.getElementById("md_doc_description").innerHTML = introduction;
