@@ -1,7 +1,7 @@
 <!--show_list-->
 <% if !@block_contents.nil?%>
 <div class="index_model_box_1_1">
-  <% @block_contents.each do |block_content|%>
+  <% @block_contents.limit(3).each do |block_content|%>
       <dl class="index_img_box">
         <dt><%= image_tag block_content.url%></dt>
         <dd><b><%=block_content.title %></b><br/>

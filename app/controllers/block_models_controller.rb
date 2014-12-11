@@ -100,7 +100,7 @@ class BlockModelsController < ApplicationController
 
   def batch_delete
     if params[:ids]
-      @block_models = BlockModel.where("id in #{params[:ids].join(',')}")
+      @block_models = BlockModel.where("id in (#{params[:ids].join(',')})")
       if @block_models.delete_all
         render :json => {:success => true}
       end
