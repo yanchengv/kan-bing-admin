@@ -166,7 +166,7 @@
   <% else %>
       <div id="slides2">
         <% @block_contents.each do |block_content| %>
-           <a href=<%=block_content.content_url+"/?content_id=#{block_content.id}"%> target="_blank">> <img src=<%= block_content.url %>></a>
+           <a href=<%=block_content.content_url<<"/?content_id=#{block_content.id}"%> target="_blank">> <img src=<%= block_content.url %>></a>
         <% end %>
       </div>
   <% end %>
