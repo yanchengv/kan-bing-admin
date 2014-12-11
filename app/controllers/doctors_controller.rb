@@ -139,18 +139,18 @@ class DoctorsController < ApplicationController
     if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
       @hos = Hospital.find(hos_id)
       @dep = Department.find(dep_id)
-      sql << " and (hospital_id = #{hos_id} or hospital_name = '#{@hos.name}') and (department_id=#{dep_id} or department_name = '#{@dep.name}')"
+      sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%') and (department_id=#{dep_id} or department_name like '%#{@dep.name}%')"
     elsif !hos_id.nil? && hos_id != ''
       @hos = Hospital.find(hos_id)
-      sql << " and (hospital_id = #{hos_id} or hospital_name = '#{@hos.name}')"
+      sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%')"
     end
     if !pro_id.nil? && pro_id != '' && !city_id.nil? && city_id != ''
       @pro = Province.find(pro_id)
       @city = City.find(city_id)
-      sql << " and (province_id = #{pro_id} or province_name = '#{@pro.name}') and (city_id=#{city_id} or city_name='#{@city.name}')"
+      sql << " and (province_id = #{pro_id} or province_name like '%#{@pro.name}%') and (city_id=#{city_id} or city_name like '%#{@city.name}%')"
     elsif !pro_id.nil? && pro_id != ''
       @pro = Province.find(pro_id)
-      sql << " and (province_id = #{pro_id} or province_name = '#{@pro.name}')"
+      sql << " and (province_id = #{pro_id} or province_name like '%#{@pro.name}%')"
     end
     # field = params[:searchField]
     # p params[:searchOper]
