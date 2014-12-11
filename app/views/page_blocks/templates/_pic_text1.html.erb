@@ -10,8 +10,8 @@
         <img alt="医院环境" src="<%= @block_contents.last.url %>" title="医院环境" height="100px">
       </div>
       <p class="in_index_modle_text">
-        <% if !@block_contents.last.content.nil? && @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ').length > 150
-             @content = @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ')[0, 150] << '...'
+        <% if !@block_contents.last.content.nil? && @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ').length > 110
+             @content = @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ')[0, 110] << '...'
            else
              @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/\t|\r|\n/, '').squeeze(' ')
            end
