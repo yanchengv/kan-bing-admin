@@ -18,15 +18,20 @@
           <b>医院</b>
           <span style="margin-right:10px;" id="md_doc_hospital_name"><%= @doctor.hospital.name unless @doctor.hospital.nil? %></span>
           <b>科室</b><span style="margin-right:10px;" id="md_doc_department_name"><%= @doctor.department.name unless @doctor.department.nil? %></span>
-        </dd>
-        <dd><b>简介</b><span style="margin-right:10px;" id="md_doc_description"><%= @doctor.introduction.nil? ? '' : @doctor.introduction[0,60]<<'...'.gsub(/\t|\r|\n/, '').squeeze(' ') %></span>
+        </dd><% if !@doctor.introduction.nil? && @doctor.introduction.gsub(/\t|\r|\n/, '').squeeze(' ').length > 80
+                      @introduction = @doctor.introduction.gsub(/\t|\r|\n/, '').squeeze(' ')[0, 80] << '...'
+                  else
+                      @introduction = @doctor.introduction.nil? ? '' : @doctor.introduction.gsub(/\t|\r|\n/, '').squeeze(' ')
+                  end
+             %>
+        <dd><b>简介</b><span style="margin-right:10px;" id="md_doc_description"><%= @introduction %></span>
         </dd>
       </dl>
       <% end %>
       <div style="clear:both"></div>
       <ul class="doctor_list_lists" id="doctor_list">
         <% if !@doctors.nil? && !@doctors.empty? %>
-            <% @doctors.each do |doctor| %>
+            <% @doctors.limit(10).each do |doctor| %>
                 <li style="width:55px;height:77px">
                   <% if !doctor.photo.nil?&&doctor.photo!='' %>
                       <%= link_to image_tag("http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doctor.photo}",
@@ -116,7 +121,6 @@
             dataType: 'json',
             success: function (data) {
                 if(data['success'] == true){
-                    console.log(data['doctor']);
                     document.getElementById("img_url").src = "http://mimas-open.oss-cn-hangzhou.aliyuncs.com/" + data['doctor'].photo;
                     document.getElementById("img_url").alt = data['doctor'].name;
                     document.getElementById("img_url").title = data['doctor'].name;
@@ -124,7 +128,12 @@
                     if(data['doctor'].introduction == null || data['doctor'].introduction == ''){
                         introduction = ''
                     }else{
-                        introduction = data['doctor'].introduction.substr(0, 95).replace(/[\r\n]/g, "")
+                        introduction = data['doctor'].introduction
+                        if (introduction.length > 80){
+                            introduction = introduction.replace(/[\r\n]/g, "").substr(0, 80) + '...'
+                        }else{
+                            introduction = introduction.replace(/[\r\n]/g, "").substr(0, 80)
+                        }
                     }
                     document.getElementById("md_doc_description").innerHTML = introduction;
                     document.getElementById("md_doc_name").innerHTML = data['doctor'].name;

@@ -100,7 +100,7 @@ class ApkVersionsController < ApplicationController
 
   def batch_delete
     if params[:ids]
-      @apk_versions = ApkVersion.where("id in #{params[:ids].join(',')}")
+      @apk_versions = ApkVersion.where("id in (#{params[:ids].join(',')})")
       if @apk_versions.delete_all
         render :json => {:success => true}
       end
