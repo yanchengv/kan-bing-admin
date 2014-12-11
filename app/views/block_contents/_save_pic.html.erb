@@ -33,12 +33,28 @@
           <label id="image_path2"></label><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
          </td>
       </tr>
+
       <tr class="FormData">
-        <td class="CaptionTD">内容:</td>
+        <td class="CaptionTD"></td>
         <td class="DataTD">
-          <textarea name='content' rows="5" id="content" style="width: 300px;" class='FormElement ui-widget-content ui-corner-all'></textarea>
+          链接方式：<input type="radio" name="radio_url" class="radio_url"  value="1" checked=true onchange="showContent(this.value)" /> 文本方式：<input type="radio" name="radio_url" class="radio_url"  onchange="showContent(this.value)" value="2"/>
         </td>
       </tr>
+
+      <tr class="FormData" id="textareaContent" style="display:none      "  >
+        <td class="CaptionTD">内容:
+        <td class="DataTD">
+          <textarea name='content' rows="5" id="content" style="width: 300px; " class='FormElement ui-widget-content ui-corner-all'></textarea>
+        </td>
+      </tr>
+
+      <tr class="FormData" id="contentUrl" >
+        <td class="CaptionTD"></td>
+        <td class="DataTD"  >
+          <input  type="text" size="70" name="contentUrl" id="content_url"  placeholder="这里输入图片链接地址"/>
+        </td>
+      </tr>
+
     </table>
 <script>
     $(function () {
@@ -90,6 +106,20 @@
                 }
             }
         });
+//控制弹出框的radio显示富文本或者超链接输入框
+    function showContent(value){
+        if (value=='1'){
+            $("#content_url").val("")
+            $("#content_url").attr("placeholder","这里输入图片链接地址")
+//            $("#content_url").val("这里输入图片链接地址")
+            document.getElementById("textareaContent").style.display="none"
+            document.getElementById("contentUrl").style.display=""
+        }else{
+            document.getElementById("contentUrl").style.display="none"
+            document.getElementById("textareaContent").style.display=""
+            <%#= Settings.block_content%>
+            $("#content_url").val("<%= Settings.block_content%>")
 
-
+        }
+    }
 </script>

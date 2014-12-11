@@ -3,7 +3,7 @@
       <div class="index_model_title">
         <!--<h3 class="fl">区块名称</h3>-->
         <h3 class="fl"><%= @page_block.name if !@page_block.nil? %></h3>
-        <span class="fr index_model_more"><a href="<%= Settings.block_content+"/?content_id=#{@block_contents.last.id}" %>">more</a></span>
+        <span class="fr index_model_more"><a href="<%= @block_contents.url+"/?content_id=#{@block_contents.last.id}" %>">more</a></span>
       </div>
       <div style="clear:both;"></div>
       <div class="environment_img">

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141201075011) do
+ActiveRecord::Schema.define(version: 20141211020122) do
 
   create_table "admin2_menus", force: true do |t|
     t.integer  "admin2_id"
@@ -226,6 +226,7 @@ ActiveRecord::Schema.define(version: 20141201075011) do
     t.integer  "block_id",    limit: 8
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "content_url"
   end
 
   create_table "block_models", force: true do |t|
@@ -1398,6 +1399,7 @@ ActiveRecord::Schema.define(version: 20141201075011) do
     t.datetime "updated_at"
     t.integer  "position",                  default: 0
     t.boolean  "is_show",                   default: false
+    t.string   "block_type"
   end
 
   create_table "patient_surgery_risks", force: true do |t|
