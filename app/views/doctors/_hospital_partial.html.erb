@@ -25,9 +25,9 @@
         if (document.getElementById('hos_<%= hos_id %>') != null) {
             document.getElementById('hos_<%= hos_id %>').setAttribute('selected', 'selected')
         }
+        search()
         <% end %>
         <% end %>
-//        search()
     })
     function search() {
         var hos = $("#doctor_hospital_id").val();
@@ -36,7 +36,7 @@
     function change_department(hos_id, select_id){
         $.ajax({
                     type: "get",
-                    url: '/doctors/get_department?hospital_id=' + hos_id,
+                    url: '/doctors/get_department?id=<%=params[:id]%>&hospital_id=' + hos_id,
                     data: 'text',
                     success: function (data) {
                         $("#doc_department").html(data);

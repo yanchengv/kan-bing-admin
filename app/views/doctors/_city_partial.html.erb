@@ -19,6 +19,7 @@
         <% if !city_id.nil? && city_id != '' && !city.nil?%>
         $('#s2id_doctor_city').children('.select2-choice').children('.select2-chosen').html('<%=city.name%>')
         document.getElementById('city_<%= city_id %>').setAttribute('selected','selected')
+        search_hos()
         <% end %>
         <% end %>
     })
@@ -32,7 +33,7 @@
     function get_hospital(pro_id,city_id){
         $.ajax({
                     type: "get",
-                    url: '/doctors/get_hospital?province_id=' + pro_id +'&city_id='+city_id,
+                    url: '/doctors/get_hospital?id=<%=params[:id]%>&province_id=' + pro_id +'&city_id='+city_id,
                     data: 'text',
                     success: function (data) {
                         $("#doc_hospital").html(data);
@@ -44,7 +45,7 @@
      function get_department(pro_id,city_id){
          $.ajax({
                      type: "get",
-                     url: '/doctors/get_department?province_id=' + pro_id +'&city_id='+city_id,
+                     url: '/doctors/get_department?id=<%=params[:id]%>&province_id=' + pro_id +'&city_id='+city_id,
                      data: 'text',
                      success: function (data) {
                          $("#doc_department").html(data);
