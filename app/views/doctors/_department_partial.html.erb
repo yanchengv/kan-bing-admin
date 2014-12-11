@@ -15,7 +15,7 @@
 <script>
     $(function() {
        $("#doctor_department_id").select2();
-        <% if !params[:id].nil? %>
+        <% if !params[:id].nil? && params[:id] != '' %>
         <% dep_id = Doctor.find_by(id:params[:id]).department_id %>
         <% department = Doctor.find_by(id:params[:id]).department %>
         <% if !dep_id.nil? && dep_id != '' && !department.nil?%>

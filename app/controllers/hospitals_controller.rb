@@ -5,9 +5,9 @@ class HospitalsController < ApplicationController
   # GET /hospitals
   # GET /hospitals.json
   def index
-    @add_flag=true
+    @opr_flag=true
     if current_user.admin_type == '医院管理员'
-      @add_flag=false
+      @opr_flag=false
     end
     @provinces = Province.all
     @cities = City.all

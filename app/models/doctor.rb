@@ -2,7 +2,7 @@ include SessionsHelper
 class Doctor < ActiveRecord::Base
   before_create :set_pk_code,:pinyin,:set_default_value
   before_update :update_default_value
-  after_save :save_patient
+  after_create :save_patient
   has_one :user, :dependent => :destroy
   # belongs_to :patient, :dependent => :destroy, :foreign_key => :patient_id
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id

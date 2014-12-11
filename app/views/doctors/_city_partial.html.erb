@@ -13,7 +13,7 @@
 <script>
     $(function() {
         $("#doctor_city").select2();
-        <% if !params[:id].nil? %>
+        <% if !params[:id].nil? && params[:id] != ''%>
         <% city_id = Doctor.find_by(id:params[:id]).city_id %>
         <% city = Doctor.find_by(id:params[:id]).city %>
         <% if !city_id.nil? && city_id != '' && !city.nil?%>

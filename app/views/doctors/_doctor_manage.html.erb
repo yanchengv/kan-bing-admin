@@ -58,6 +58,7 @@
   <!--<option value="0">非公网用户</option>-->
 <!--</select>-->
 
+  <!--<input id='doctor_pro_name' type="hidden"/><input id='doctor_city_name' type="hidden"/><input id='doctor_hos_name' type="hidden"/><input id='doctor_dep_name' type="hidden"/>-->
   <div style="margin-top: 10px;">
     姓名：<input type="text" id="search_name" onkeydown="entersearch1(event)"> 证件号码：<input type="text" id="search_number" onkeydown="entersearch1(event)">
     邮箱：<input type="text" id="search_email" onkeydown="entersearch1(event)"> 手机号：<input type="text" id="search_tel" onkeydown="entersearch1(event)">
@@ -117,7 +118,7 @@
 <div id="pager12"></div>
 </div>
 <script>
-    var lastSel = 0
+    var lastSel;
     var row_id;
     var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
     jQuery("#list12").jqGrid({
@@ -138,8 +139,8 @@
             {name:'marriage',index:'marriage', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
             {name:'province_name',index:'province_name', width:100,  editable: true,search:false  },
             {name:'city_name',index:'city_name', width:100,  editable: true ,search:false },
-            {name:'hospital.name',index:'hospital.name', width:100, editable: true,search:false  },
-            {name:'department.name',index:'department.name', width:100, editable: true,search:false  },
+            {name:'hospital_name',index:'hospital_name', width:100, editable: true,search:false  },
+            {name:'department_name',index:'department_name', width:100, editable: true,search:false  },
             {name:'citizenship',index:'citizenship', width:50,search:false },
             {name:'nationality',index:'nationality', width:50,search:false },
             {name:'mobile_phone',index:'mobile_phone', width:100, align:"right", editable: true,searchoptions: { sopt: ['in']} },
@@ -150,7 +151,7 @@
             {name:'expertise',index:'expertise', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
             {name:'graduated_from',index:'graduated_from', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
             {name:'graduated_at',index:'graduated_at', width:80,search:false ,hidden:true,editrules:{edithidden:true}}
-//            ,
+//          '1213国家公'  ,
 //            {name:'is_public',index:'is_public', width:80,search:false,viewable:false,
 //                formatter: function (rowId, cellval, colpos, rwdat, _act) {
 //                    var value = colpos.is_public;
@@ -581,18 +582,22 @@
         var pro_id = $('#doctor_pro_id').val()
         $.ajax({
             type: 'get',
-            url: '/doctors/search_city?pro_id='+pro_id,
+            url: '/doctors/search_city?pro_id=' + pro_id,
             success: function (data) {
                 $('#search_city_id').html(data)
             }
         })
         $.ajax({
             type: 'get',
-            url: '/doctors/search_hospital?pro_id='+pro_id,
+            url: '/doctors/search_hospital?pro_id=' + pro_id,
             success: function (data) {
                 $('#search_hos_id').html(data)
             }
         })
+//        var pro_name = $('#s2id_doctor_pro_id').children('.select2-choice').children('.select2-chosen').html()
+//        if (pro_name.indexOf('请选择')>0){
+//            $('#doctor_pro_name').val(pro_name)
+//        }
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?pro_id=" + pro_id  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val() }).trigger("reloadGrid")
     }
     function doc_search_city() {

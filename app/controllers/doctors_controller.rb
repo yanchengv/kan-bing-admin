@@ -137,14 +137,20 @@ class DoctorsController < ApplicationController
     @doctors_all = nil
     sql = "true"
     if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
-      sql << " and hospital_id = #{hos_id} and department_id=#{dep_id}"
+      @hos = Hospital.find(hos_id)
+      @dep = Department.find(dep_id)
+      sql << " and (hospital_id = #{hos_id} or hospital_name = '#{@hos.name}') and (department_id=#{dep_id} or department_name = '#{@dep.name}')"
     elsif !hos_id.nil? && hos_id != ''
-      sql << " and hospital_id = #{hos_id}"
+      @hos = Hospital.find(hos_id)
+      sql << " and (hospital_id = #{hos_id} or hospital_name = '#{@hos.name}')"
     end
     if !pro_id.nil? && pro_id != '' && !city_id.nil? && city_id != ''
-      sql << " and province_id = #{pro_id} and city_id=#{city_id}"
+      @pro = Province.find(pro_id)
+      @city = City.find(city_id)
+      sql << " and (province_id = #{pro_id} or province_name = '#{@pro.name}') and (city_id=#{city_id} or city_name='#{@city.name}')"
     elsif !pro_id.nil? && pro_id != ''
-      sql << " and province_id = #{pro_id}"
+      @pro = Province.find(pro_id)
+      sql << " and (province_id = #{pro_id} or province_name = '#{@pro.name}')"
     end
     # field = params[:searchField]
     # p params[:searchOper]
@@ -191,7 +197,23 @@ class DoctorsController < ApplicationController
           @total = (records/noOfRows.to_i)+1
         end
       end
-      @rows=@doctors.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}}])
+    if !@doctors.empty?
+      @doctors.each do |doc|
+        if (doc.province_name.nil? || doc.province_name == '') && !doc.province2.nil?
+          doc.update(province_name:doc.province2.name)
+        end
+        if (doc.city_name.nil? || doc.city_name == '') && !doc.city.nil?
+          doc.update(city_name:doc.city.name)
+        end
+        if (doc.hospital_name.nil? || doc.hospital_name == '' )&& !doc.hospital.nil?
+          doc.update(hospital_name:doc.hospital.name)
+        end
+        if (doc.department_name.nil? || doc.department_name == '') && !doc.department.nil?
+          doc.update(department_name:doc.department.name)
+        end
+      end
+    end
+    @rows=@doctors#.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}}])
     @objJSON = {total:@total,doctors:@rows,page:page,records:records}
 
     render :json => @objJSON.as_json
@@ -654,6 +676,22 @@ class DoctorsController < ApplicationController
   # POST /doctors
   # POST /doctors.json
   def create
+    @hospital = Hospital.where(id:params[:doctor][:hospital_id]).first
+    @department = Department.where(id:params[:doctor][:department_id]).first
+    @province = Province.where(id:params[:doctor][:province_id]).first
+    @city = City.where(id:params[:doctor][:city_id]).first
+    if !@hospital.nil?
+      params[:doctor][:hospital_name] = @hospital.name
+    end
+    if !@department.nil?
+      params[:doctor][:department_name] = @department.name
+    end
+    if !@province.nil?
+      params[:doctor][:province_name] = @province.name
+    end
+    if !@city.nil?
+      params[:doctor][:city_name] = @city.name
+    end
     @doctor = Doctor.new(doctor_params)
     if @doctor.save
       render json:{success:'true',data:@doctor}
