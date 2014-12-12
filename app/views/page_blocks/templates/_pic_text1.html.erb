@@ -1,4 +1,4 @@
-<% if !@block_contents.nil? %>
+<% if !@block_contents.nil? && !@block_contents.empty? %>
     <div class="index_model_box_3_1">
       <div class="index_model_title">
         <!--<h3 class="fl">区块名称</h3>-->
@@ -11,16 +11,8 @@
       </div>
       <p class="in_index_modle_text">
         <% @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
-           if @content.length > 180
-             @content = @content[0, 180] << '...'
-           else
-             @content = @content
-           end
-        %>
-        <%= @content %>
-        <% @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
-           if @content.length > 110
-             @content = @content[0, 110] << '...'
+           if @content.length > 85
+             @content = @content[0, 85] << '...'
            else
              @content = @content
            end

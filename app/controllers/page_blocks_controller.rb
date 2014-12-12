@@ -69,6 +69,7 @@ class PageBlocksController < ApplicationController
     page_block_id=params[:page_block_id]
     @page_block=PageBlock.where(id:page_block_id).first
     block_type=@page_block.block_type #block_type必须是模版的名称
+    @block_contents = nil
     @block_contents=BlockContent.where(block_id:page_block_id)
     render partial: "page_blocks/templates/#{block_type}"
   end
@@ -85,49 +86,30 @@ class PageBlocksController < ApplicationController
     @page_block=PageBlock.find(page_block_id)
     @block_contents = @page_block.block_contents
     #render :partial => 'block_contents/block_contents_manage'
-    if @page_block.block_type == 'doctor_list'
-      if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
-        @content = @page_block.block_contents.first.content
-        sql = 'true'
-        if !current_user.nil?
-          if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-            sql << " and hospital_id = #{current_user.hospital_id}"
-          end
-          if !current_user.department_id.nil? && !current_user.department_id != ''
-            sql << " and department_id = #{current_user.department_id}"
-          end
-        end
-        if !@content.nil? && @content != ''
-          sql << " and id not in (#{@content})"
-        end
-        @doctors_select = Doctor.where(sql)
-      end
-    end
     if @page_block.block_type == 'login'
       render :partial => 'page_blocks/show'
     else
-      if @page_block.block_type == 'doctor_list'
-        if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
-          @content = @page_block.block_contents.first.content
-          sql = 'true'
-          if !current_user.nil?
-            if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-              sql << " and hospital_id = #{current_user.hospital_id}"
-            end
-            if !current_user.department_id.nil? && !current_user.department_id != ''
-              sql << " and department_id = #{current_user.department_id}"
-            end
-          end
-          if !@content.nil? && @content != ''
-            sql << " and id not in (#{@content})"
-          end
-          @doctors_select = Doctor.where(sql)
-        end
-      end
       render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
     end
   end
-
+#获取用户所管理的非在首界面的医生列表中显示的医生
+  def get_doctor_not_in_content
+      sql = 'true'
+      if !current_user.nil?
+        if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+          sql << " and hospital_id = #{current_user.hospital_id}"
+        end
+        if !current_user.department_id.nil? && !current_user.department_id != ''
+          sql << " and department_id = #{current_user.department_id}"
+        end
+      end
+      content = params[:content]
+      if !content.nil? && content != ''
+        sql << " and id not in (#{content})"
+      end
+      @doctors_select = Doctor.where(sql)
+      render :json => {:doctors => @doctors_select.as_json(:only => [:id, :name])}
+  end
 
   def save_template
     name=params[:name]
@@ -148,22 +130,6 @@ class PageBlocksController < ApplicationController
         end
         @block_content = BlockContent.new(block_id: @page_block.id, content: doctor_ids.join(","))
         @block_content.save
-        if !@block_content.nil?
-          @content = @block_content.content
-          sql = 'true'
-          if !current_user.nil?
-            if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-              sql << " and hospital_id = #{current_user.hospital_id}"
-            end
-            if !current_user.department_id.nil? && !current_user.department_id != ''
-              sql << " and department_id = #{current_user.department_id}"
-            end
-          end
-          if !@content.nil? && @content != ''
-            sql << " and id not in (#{@content})"
-          end
-          @doctors_select = Doctor.where(sql)
-        end
       end
       render partial: "block_contents/#{block_type}_manage"
     end
@@ -186,22 +152,6 @@ class PageBlocksController < ApplicationController
       if @page_block.block_type == 'login'
         render :partial => 'page_blocks/show'
       else
-        if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
-          @content = @page_block.block_contents.first.content
-          sql = 'true'
-          if !current_user.nil?
-            if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-              sql << " and hospital_id = #{current_user.hospital_id}"
-            end
-            if !current_user.department_id.nil? && !current_user.department_id != ''
-              sql << " and department_id = #{current_user.department_id}"
-            end
-          end
-          if !@content.nil? && @content != ''
-            sql << " and id not in (#{@content})"
-          end
-          @doctors_select = Doctor.where(sql)
-        end
         render :partial => "block_contents/#{@page_block.block_type}_manage"
       end
   end
@@ -237,22 +187,6 @@ class PageBlocksController < ApplicationController
       if @page_block.block_type == 'login'
         render :partial => 'page_blocks/show'
       else
-        if !@page_block.block_contents.nil? && !@page_block.block_contents.empty?
-          @content = @page_block.block_contents.first.content
-          sql = 'true'
-          if !current_user.nil?
-            if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-              sql << " and hospital_id = #{current_user.hospital_id}"
-            end
-            if !current_user.department_id.nil? && !current_user.department_id != ''
-              sql << " and department_id = #{current_user.department_id}"
-            end
-          end
-          if !@content.nil? && @content != ''
-            sql << " and id not in (#{@content})"
-          end
-          @doctors_select = Doctor.where(sql)
-        end
         render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
       end
     else
