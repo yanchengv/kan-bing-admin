@@ -25,7 +25,7 @@
       { name: 'content', index: 'content', align: "center",hidden: true, editable: true, editrules: {edithidden: true}, edittype: 'textarea', editoptions: {rows: 5, style: "width:200px" }},
       { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
           var value = colpos.content;
-          return value.replace(/<[^>]+>/g, '');
+          return value.replace(/<[^>]+>|\s|&nbsp;/g, '');
       }
       },
       { name: 'create_date', index: 'create_date', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: {defaultValue: currentDate,dataInit: function (element) {

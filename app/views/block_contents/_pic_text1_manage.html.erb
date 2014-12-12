@@ -55,7 +55,7 @@
         { name: 'content', index: 'content', align: "center", hidden: true, editable: true, edittype: 'textarea', editrules: {edithidden: true}, editoptions: {rows: 5, style: "width:200px"}},
         { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
             var value = colpos.content;
-            return value.replace(/<[^>]+>/g, '');
+            return value.replace(/<[^>]+>|\s|&nbsp;/g, '');
         }
         },
         { name: 'url', index: 'url', align: "center", editable: true},
