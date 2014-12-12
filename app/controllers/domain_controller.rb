@@ -15,15 +15,34 @@ class DomainController < ApplicationController
     domain[:name]= params[:name]
     domain[:hospital_id]=current_user.hospital_id
     domain[:department_id]=current_user.department_id
-    @domain=Domain.new(domain)
-    @domain.save
-    render json:{flag:"sucess"}
+    is_domain=Domain.where(name:domain[:name])
+    if is_domain.empty?
+      @flag="sucess"
+      @domain=Domain.new(domain)
+      @domain.save
+
+    else
+      @flag="false"
+    end
+
+    render json:{flag:@flag}
   end
 
   def update
     @domain=Domain.find(params[:id])
-    @domain.update_attributes(name:params[:name])
-    render json:{flag:"sucess"}
+    name=params[:name]
+    if name!=@domain.name
+      is_domain=Domain.where(name:name)
+      if is_domain.empty?
+        @domain.update_attributes(name:name)
+        @flag="sucess"
+      else
+        @flag="false"
+      end
+    else
+      @flag="sucess"
+    end
+    render json:{flag:@flag}
   end
 
   def destroy

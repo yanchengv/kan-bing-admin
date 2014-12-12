@@ -92,6 +92,9 @@
                   data:{name:domainName},
                   type:'post',
                   success:function(data){
+                      if (data["flag"]=='false'){
+                            alert("您输入的域名已经被占用！")
+                      }
                       $("#domainName").val("")
                       $("#domain_consoleDlg").dialog("close")
                       jQuery("#list_domain").jqGrid('setGridParam', {url: "/domain/domain_list" }).trigger("reloadGrid")
@@ -101,7 +104,7 @@
           }
 
       };
-
+//域名修改
       function updateDomain(){
           var id = jQuery("#list_domain").jqGrid('getGridParam', 'selrow');
           var domainName= $("#domainUpdateName").val();
@@ -113,6 +116,9 @@
                   data:{name:domainName,id:id},
                   type:'post',
                   success:function(data){
+                      if (data["flag"]=='false'){
+                          alert("您输入的域名已经被占用！")
+                      }
                       $("#domainUpdateName").val("")
                       $("#domain_update_consoleDlg").dialog("close")
                       jQuery("#list_domain").jqGrid('setGridParam', {url: "/domain/domain_list" }).trigger("reloadGrid")
