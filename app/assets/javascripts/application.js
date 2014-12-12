@@ -13,8 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
-//= require underscore
-//= require backbone
 //= require web_admin
 //= require select2
 //= require jquery.datetimepicker
