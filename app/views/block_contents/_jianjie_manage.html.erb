@@ -18,7 +18,7 @@
       { name: 'content', index: 'content', align: "center", editable: true, hidden:true, editrules: {edithidden: true}, edittype: 'textarea',  editoptions: {rows: 5, style: "width:200px"}},
       { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
           var value = colpos.content;
-          return value.replace(/<[^>]+>/g, '');
+          return value.replace(/<[^>]+>|\s|&nbsp;/g, '');
       }
       },
       { name: 'block_id', index: 'block_id', align: "center", editable: true, hidden: true, editoptions: { defaultValue: "<%= @page_block.id%>", readonly: 'readonly'}}
