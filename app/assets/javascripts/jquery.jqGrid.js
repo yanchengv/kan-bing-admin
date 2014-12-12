@@ -7508,7 +7508,7 @@ $.jgrid.extend({
 		p = $.extend(true, {
 			top : 0,
 			left: 0,
-			width: 400,
+			width: 450,
 			datawidth: 'auto',
 			height: 'auto',
 			dataheight: 'auto',
@@ -8377,7 +8377,7 @@ $.jgrid.extend({
 		p = $.extend(true, {
 			top : 0,
 			left: 0,
-			width: 0,
+			width: 400,
 			datawidth: 'auto',
 			height: 'auto',
 			dataheight: 'auto',
