@@ -159,7 +159,7 @@
     }
 
 </style>
-<% if !@block_contents.nil?%>
+<% if !@block_contents.nil? && !@block_contents.empty? %>
 <div class="index_model_box_p_1">
   <% if @block_contents.count == 1 %>
       <a href=<%= @block_contents.first.content_url.nil? ? '' : @block_contents.first.content_url+"/?content_id=#{@block_contents.first.id}"%> target="_blank">> <img src=<%= @block_contents.first.url %>></a>

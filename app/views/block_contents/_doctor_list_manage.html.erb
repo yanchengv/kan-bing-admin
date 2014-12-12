@@ -7,7 +7,7 @@
           <option value="0">---请选择---</option>
           <% @doctors_select.each do |doc|%>
           <option value="<%= doc.id %>"><%= doc.name%></option>
-              <% end %>
+              <% end if !@doctors_select.nil? && !@doctors_select.empty? %>
         </select>
       </div>
     </div>
@@ -104,6 +104,25 @@
         viewrecords: true,
         sortorder: "desc",
         autowidth: true,
+        gridComplete:function(){
+            $.ajax({
+                    url: "/page_blocks/get_doctors?content=<%= @page_block.block_contents.first.content.nil? ? '' :  @page_block.block_contents.first.content %>",
+                    async: false,
+                    type: 'get',
+                    datatype: 'json',
+                    success: function (data) {
+                       var positions = data['doctors'];
+                        $("#doctor_select").html("");
+                        $("#doctor_select").prepend("<option value=''>请选择</option>");
+                        for(var i = 0; i < data['doctors'].length; i ++){
+                            jQuery("#doctor_select").append("<option value="+ data['doctors'][i].id+">"+ data['doctors'][i].name+"</option>")
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                    }
+                });
+        },
         jsonReader: {
             root: "doctors",
             total: "totalpages",

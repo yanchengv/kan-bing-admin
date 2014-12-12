@@ -96,6 +96,7 @@ class BlockContentsController < ApplicationController
     para[:url]=params[:url]
     if @block_content.update(para)
       @page_block = PageBlock.find(@block_content.block_id)
+      @block_contents = nil
       @block_contents = BlockContent.where(:block_id => params[:block_id])
       render json:{page_block_id:@page_block.id}
       # render partial: "page_blocks/templates/#{@page_block.block_type}"
@@ -142,6 +143,7 @@ class BlockContentsController < ApplicationController
     para[:content_url]=params[:content_url]
     @block_content=BlockContent.new(para)
     @page_block = PageBlock.find(params[:block_id])
+    @block_contents = nil
     @block_contents = BlockContent.where(:block_id => params[:block_id])
     if @block_content.save
       render json:{page_block_id:@page_block.id}

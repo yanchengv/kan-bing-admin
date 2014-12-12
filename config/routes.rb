@@ -106,6 +106,7 @@ Rails.application.routes.draw do
       get 'add_content',to:'page_blocks#add_content_template'
       post 'save_template',to:'page_blocks#save_template'
       post 'update_template',to:'page_blocks#update_template'
+      get 'get_doctors', to:'page_blocks#get_doctor_not_in_content'
     end
   end
   resources :apk_versions do
