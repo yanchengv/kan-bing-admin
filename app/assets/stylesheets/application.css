@@ -14,8 +14,7 @@
  *= require login.css
  *=require jquery.Jcrop
  *= require header.css
- *= require jquery-ui-custom.min
- * require jquery-ui
+ *= require jquery-ui
  *= require select2
  *= require ui.jqgrid
  *= require jquery.datetimepicker
