@@ -1,5 +1,5 @@
 class DomainController < ApplicationController
-
+   # after_filter :get_template,only: :create
   def show
     render partial: 'page_blocks/domain_manage'
   end
@@ -16,15 +16,21 @@ class DomainController < ApplicationController
     domain[:hospital_id]=current_user.hospital_id
     domain[:department_id]=current_user.department_id
     is_domain=Domain.where(name:domain[:name])
-    if is_domain.empty?
+    hos_dept=Domain.where(hospital_id:domain[:hospital_id],department_id:domain[:department_id])
+
+    if is_domain.empty? && hos_dept.empty?
       @flag="sucess"
       @domain=Domain.new(domain)
       @domain.save
-
+      @domain.init_template  #如果医院科室第一次添加域名则默认首页面模板
+    elsif is_domain.empty? && !hos_dept.empty?
+      @flag="sucess"
+      @domain=Domain.new(domain)
+      @domain.save
     else
+
       @flag="false"
     end
-
     render json:{flag:@flag}
   end
 
@@ -58,7 +64,49 @@ class DomainController < ApplicationController
     end
   end
 
+   # 获取模版
+   def init_template
+     block_type='jianjie'
+     @block_name="科室简介"
+     #添加的区块为医生列表时,默认本科室的所有医生(10条)
+     if block_type == 'doctor_list'
+       @doctors = doctors_default
+       @doctor = @doctors[0]
+     end
+     @template=ApplicationController.new.render_to_string(:partial => "page_blocks/templates/#{block_type}")
+     pra={}
+     pra[:name]=block_type
+     pra[:block_type]="科室简介"
+     pra[:content]= @template
+     pra[:hospital_id]=current_user.hospital_id
+     pra[:department_id]=current_user.department_id
+     @page_block=PageBlock.new(pra)
+     @page_block.save
+   end
 
+   def save_template
+     name=params[:name]
+     block_type=params[:type]
+     content= params[:content]
+     hospital_id=current_user.hospital_id
+     department_id=current_user.department_id
+     @page_block=PageBlock.new(name:name,block_type:block_type,content:content,hospital_id:hospital_id,department_id:department_id)
+     @page_block.save
+     if block_type == 'login'
+       render :partial => 'page_blocks/show'
+     else
+       if block_type == 'doctor_list'
+         doctor_ids = []
+         @docs = doctors_default
+         @docs.each do |doc|
+           doctor_ids.push(doc.id)
+         end
+         @block_content = BlockContent.new(block_id: @page_block.id, content: doctor_ids.join(","))
+         @block_content.save
+       end
+       render partial: "block_contents/#{block_type}_manage"
+     end
+   end
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_domain
