@@ -15,25 +15,54 @@ class Domain < ActiveRecord::Base
         sym_type=type.to_sym
         @block_name=block_name[sym_type]
       end
-       template = ActionView::Base.new(Rails.configuration.paths['app/views']).render(
-           :partial => "page_blocks/templates/#{type}",
-           :formats => :html,
-           :handlers => :erb,
-           :object =>@block_name,
-           :locals => {:@block_name=>@block_name}
+      if type=='doctor_list'
+        @doctors= Doctor.where(hospital_id:self.hospital_id,department_id:self.department_id).limit(10)
+        @doctor=@doctors[0]
+        template = ActionView::Base.new(Rails.configuration.paths['app/views']).render(
+            :partial => "page_blocks/templates/#{type}",
+            :formats => :html,
+            :handlers => :erb,
+            :object =>@block_name,
+            :locals => {:@block_name=>@block_name,:@doctors=>@doctors,:@doctor=>@doctor}
 
-       )
+        )
+        pra={}
+        pra[:name]=@block_name
+        pra[:block_type]=type
+        pra[:content]= template
+        pra[:hospital_id]=self.hospital_id
+        pra[:position]=index
+        pra[:is_show]=true
+        pra[:department_id]=self.department_id
+        @page_block=PageBlock.new(pra)
+        @page_block.save
+        doctor_ids=[]
+        @doctors.each do |d|
+          doctor_ids.push(d.id)
+        end
+        doctor_ids=doctor_ids.join(',')
+        @block_content=BlockContent.new(content:doctor_ids,block_id:@page_block.id)
+        @block_content.save
+      else
+        template = ActionView::Base.new(Rails.configuration.paths['app/views']).render(
+            :partial => "page_blocks/templates/#{type}",
+            :formats => :html,
+            :handlers => :erb,
+            :object =>@block_name,
+            :locals => {:@block_name=>@block_name}
 
-       pra={}
-       pra[:name]=@block_name
-       pra[:block_type]=type
-       pra[:content]= template
-       pra[:hospital_id]=self.hospital_id
-       pra[:position]=index
-       pra[:is_show]=true
-       pra[:department_id]=self.department_id
-       @page_block=PageBlock.new(pra)
-       @page_block.save
+        )
+        pra={}
+        pra[:name]=@block_name
+        pra[:block_type]=type
+        pra[:content]= template
+        pra[:hospital_id]=self.hospital_id
+        pra[:position]=index
+        pra[:is_show]=true
+        pra[:department_id]=self.department_id
+        @page_block=PageBlock.new(pra)
+        @page_block.save
+      end
 
     }
 
