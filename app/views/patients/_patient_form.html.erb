@@ -34,7 +34,7 @@
         </div>
     <% end %>
     <div class="">
-      <input type="hidden" name="patient[photo]" id="pat_photo_image">
+      <%= f.hidden_field :photo, id:"pat_photo_image" %>
       <div style="display:inline-block;width:49%"><%= f.label '姓名' %><span style="color:red"><b>*</b></span><br>
         <%= f.text_field :name ,class:"form-control",onblur:"check_name(this.value,'true')"%>
       </div>

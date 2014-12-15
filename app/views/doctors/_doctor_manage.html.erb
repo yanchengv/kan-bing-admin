@@ -125,10 +125,20 @@
         url: "/doctors/show_index",
         datatype: "json",
         height: "auto",
-        colNames:['ID','姓名首字母简拼','姓名', '证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','职称','职位','学历','专长','毕业学校','毕业时间'],
+        colNames:['ID','','姓名首字母简拼','姓名', '证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','职称','职位','学历','专长','毕业学校','毕业时间'],
         colModel:[
 //            {name:'act',index:'act', width:75,sortable:false},
             {name:'id',index:'id', width:120, sorttype:"int", hidden:true,search:false },
+            {name:'photo',index:'photo',width:20,
+                formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                    var value = colpos.photo;
+                    if (value==null || value=='') {
+                        return "<img src=\'/default.png\' style=\'width:16px;height:23px\'>";
+                    }else {
+                        return "<img src=\'http://mimas-open.oss-cn-hangzhou.aliyuncs.com/"+value+"\' style=\'width:16px;height:23px\'>";
+                    }
+                }
+            },
             {name:'spell_code',index:'spell_code', width:120, search:true , hidden:true,searchoptions: {searchhidden:true, sopt: ['in']}},
             {name:'name',index:'name', width:55, editable: true ,searchoptions: { sopt: ['in']}},
             {name:'credential_type',index:'credential_type', width:80, editable: true ,edittype:"select",editoptions:{value:"身份证:身份证;其他:其他"},search:false },
