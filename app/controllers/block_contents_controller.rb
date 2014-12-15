@@ -170,8 +170,10 @@ class BlockContentsController < ApplicationController
       sql = ActiveRecord::Base.connection()
       sql.update "update block_contents set content = '#{content}' where id = #{@block_content.id}"
     end
+    @block_content = BlockContent.find(@block_content.id)
     if !@block_content.content.nil? && @block_content.content != ''
       @doctors = Doctor.where("id in (#{@block_content.content})")
+      puts "==#{@block_content.content}===#{@doctors.to_json(:only => [:id, :name])}====="
       @doctor = @doctors[0]
     end
     render partial: "page_blocks/templates/#{@page_block.block_type}"
