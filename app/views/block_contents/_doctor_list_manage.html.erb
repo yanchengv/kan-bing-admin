@@ -106,7 +106,7 @@
         autowidth: true,
         gridComplete:function(){
             $.ajax({
-                    url: "/page_blocks/get_doctors?content=<%= @page_block.block_contents.first.content.nil? ? '' :  @page_block.block_contents.first.content %>",
+                    url: "/page_blocks/get_doctors?content=<%= @page_block.block_contents.first.nil? ? ('') : (@page_block.block_contents.first.content.nil? ? '' :  @page_block.block_contents.first.content)  %>",
                     async: false,
                     type: 'get',
                     datatype: 'json',
