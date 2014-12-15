@@ -21,7 +21,7 @@
       <div class="index_model_title">
         <!--<h3 class="fl">区块名称</h3>-->
         <h3 class="fl"><%=@block_name %></h3>
-        <span class="fr index_model_more"><a href="">more</a></span>
+        <span class="fr index_model_more"><a href="" style="color:#666;">more</a></span>
       </div>
       <p class="index_modle_text">
         xxxx医院，xxxx年xx月正式开院，是一所向社会开放的综合性医院。医院设有急诊科、神经科、内科、普外科、血液净化中心、骨科、手外科、泌尿外科、以执着的医志、高尚的医德书写了辉煌的历史
@@ -101,11 +101,12 @@
         border-bottom: 2px solid #1fa0d8;
     }
 
-    .index_model_more {
-        color: #666;
+    .index_model_more,.index_model_more a ,.index_model_more a:link, .index_model_more a:visited{
+        color: #888 !important;
     }
+    .index_model_more a:hover, .index_model_more a:active{color:#000 !important;}
 
-    /*文本样式*/
+        /*文本样式*/
     .index_modle_text {
         /* text-indent: 2em; */
         line-height: 24px;
