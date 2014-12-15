@@ -53,7 +53,22 @@ class DomainController < ApplicationController
 
   def destroy
     id=params[:id]
+    @domain=Domain.find(id)
+    hospital_id=@domain.hospital_id
+    department_id=@domain.department_id
     Domain.destroy(id)
+
+    @domains=Domain.where(hospital_id:hospital_id,department_id:department_id)
+    if @domains.empty?
+      @page_blocks=PageBlock.where(hospital_id:hospital_id,department_id:department_id)
+      if  !@page_blocks.empty?
+        @page_blocks.each do |page_block|
+          PageBlock.destroy(page_block.id)
+        end
+      end
+
+
+    end
     render json:{flag:"sucess"}
   end
 
