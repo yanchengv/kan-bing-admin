@@ -314,6 +314,7 @@ Rails.application.routes.draw do
        get 'show',to:'domain#show'
       get 'domain_list',to:'domain#domain_list'
       post 'oper_action',to:'domain#oper_action'
+      post 'upload_logo',to:'domain#upload_logo'
     end
   end
 
