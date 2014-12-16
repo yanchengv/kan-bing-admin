@@ -286,6 +286,9 @@ Rails.application.routes.draw do
       get 'get_doctor_to_page', to: 'doctors#get_doctor_to_page'
       get 'search_city', to:'doctors#search_city'
       get 'search_hospital', to:'doctors#search_hospital'
+      get 'show_oth_doc', to:'doctors#show_oth_doc'
+      get 'forDoctors', to: 'doctors#forDoctors'
+      get 'matchDoctor', to: 'doctors#matchDoctor'
     end
   end
 

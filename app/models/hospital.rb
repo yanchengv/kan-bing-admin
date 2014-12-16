@@ -5,6 +5,8 @@ class Hospital < ActiveRecord::Base
   before_save :init_msg
   before_create :set_pk_code
   has_many :domains
+  has_many :doctors, dependent: :destroy
+  has_many :departments, dependent: :destroy
   def init_msg
     self.spell_code = PinYin.abbr(self.name)
     self.province_name = Province.find(self.province_id).name if self.province_id && self.province_id != ''

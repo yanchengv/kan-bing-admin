@@ -4,6 +4,7 @@ class Department < ActiveRecord::Base
   belongs_to :city
   belongs_to :hospital
   has_many :domains
+  has_many :doctors, dependent: :destroy
   before_create :set_pk_code
   def set_pk_code
     if self.id&&self.id!=0

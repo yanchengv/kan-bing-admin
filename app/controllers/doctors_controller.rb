@@ -219,6 +219,64 @@ class DoctorsController < ApplicationController
     render :json => @objJSON.as_json
   end
 
+  def show_oth_doc
+    hos_id = current_user.hospital_id
+    dep_id = current_user.department_id
+    noOfRows = params[:rows]
+    page = params[:page]
+    sql = 'true'
+    if !hos_id.nil? && hos_id != ''
+      @hos = Hospital.find(hos_id)
+      sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%')"
+    end
+    if params[:name] && params[:name] != ''
+      sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
+    end
+    if params[:email] && params[:email] != ''
+      sql << " and email like '%#{params[:email]}%'"
+    end
+    if params[:mobile_phone] && params[:mobile_phone] != ''
+      sql << " and mobile_phone like '%#{params[:mobile_phone]}%'"
+    end
+    if params[:credential_type_number] && params[:credential_type_number] != ''
+      sql << " and credential_type_number like '%#{params[:credential_type_number]}%'"
+    end
+    @doctors = Doctor.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
+    @total=0
+    # records = Doctor.find_by_sql("SELECT FOUND_ROWS() as rows_count")
+    # records = records[0].rows_count
+    # records = Doctor.select("id").where(sql).count
+    records = Doctor.select("count(id) as rows_count").where(sql)
+    records = records[0].rows_count
+    if !noOfRows.nil?
+      if records%noOfRows.to_i == 0
+        @total = records/noOfRows.to_i
+      else
+        @total = (records/noOfRows.to_i)+1
+      end
+    end
+    if !@doctors.empty?
+      @doctors.each do |doc|
+        if (doc.province_name.nil? || doc.province_name == '') && !doc.province2.nil?
+          doc.update(province_name:doc.province2.name)
+        end
+        if (doc.city_name.nil? || doc.city_name == '') && !doc.city.nil?
+          doc.update(city_name:doc.city.name)
+        end
+        if (doc.hospital_name.nil? || doc.hospital_name == '' )&& !doc.hospital.nil?
+          doc.update(hospital_name:doc.hospital.name)
+        end
+        if (doc.department_name.nil? || doc.department_name == '') && !doc.department.nil?
+          doc.update(department_name:doc.department.name)
+        end
+      end
+    end
+    @rows=@doctors#.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}}])
+    @objJSON = {total:@total,doctors:@rows,page:page,records:records}
+
+    render :json => @objJSON.as_json
+  end
+
   #获取首页面上医生的显示信息
   def get_doctor_to_page
     @doctor = Doctor.find(params[:id])
@@ -1490,6 +1548,49 @@ class DoctorsController < ApplicationController
       str = str + opt
     end
     render text: str
+  end
+
+  def matchDoctor
+    if !current_user.hospital_id.nil? && current_user.hospital_id != ''
+      @hospitals = Hospital.where(id:current_user.hospital_id)
+      if !current_user.department_id.nil? && current_user.department_id != ''
+        @departments = Department.where(id:current_user.department_id)
+      else
+        @departments = Department.where(hospital_id:current_user.hospital_id)
+      end
+    else
+      @hospitals = Hospital.all
+      # @departments = Department.all
+    end
+    render partial: 'doctors/matchDoctor'
+  end
+
+  def forDoctors
+    doc_ids = params[:doc_ids].to_s
+    p params[:doc_ids]
+    p doc_ids
+    doc_ids_arr=doc_ids.split(',')
+    p doc_ids_arr
+    if doc_ids_arr.length > 0
+      @doctors = Doctor.where(id:doc_ids_arr)
+      if !@doctors.empty?
+        @doctors.each do |doc|
+          if params[:hos_id] != ''
+            doc.update(hospital_id:params[:hos_id])
+            if !doc.hospital.nil?
+              doc.update_attributes(:hospital_name => doc.hospital.name)
+            end
+          end
+          if params[:dep_id] != ''
+            doc.update(department_id:params[:dep_id])
+            if !doc.department.nil?
+              doc.update_attributes(:department_name => doc.department.name)
+            end
+          end
+        end
+      end
+    end
+    render json: {success:true}
   end
 
   private
