@@ -122,6 +122,11 @@ class DomainController < ApplicationController
        render partial: "block_contents/#{block_type}_manage"
      end
    end
+
+  def upload_logo
+
+    render json:'success'
+  end
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_domain
@@ -131,5 +136,8 @@ class DomainController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def domain_params
     params.permit(:id,:name,:hospital_id,:department_id,:introduction)
+    params.require(:logo).permit(:id,:name,:url,:footer_content,:hospital_id,:department_id)
   end
+
+
 end
