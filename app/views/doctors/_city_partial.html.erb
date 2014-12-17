@@ -1,7 +1,7 @@
   <select id="doctor_city" name="doctor[city_id]" onchange="search_hos()">
   <option value="">---请选择---</option>
   <% if @city.nil? %>
-      <% @city = City.all %>
+      <% @city = City.select("id","name").all %>
   <% end %>
   <% if !@city.empty? %>
       <% @city.each do |city| %>

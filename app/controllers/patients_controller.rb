@@ -16,7 +16,7 @@ class PatientsController < ApplicationController
         @departments = Department.where(hospital_id:current_user.hospital_id)
       end
     else
-      @hospitals = Hospital.all
+      @hospitals = Hospital.select("id","name").all
     end
     render partial: 'patients/patient_manage'
   end
