@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'home_menu/create'
+
   resources :role2_menus do
     collection do
       get 'menus_to_roles', to: 'role2_menus#menus_to_roles'
@@ -86,11 +88,13 @@ Rails.application.routes.draw do
   end
   resources :home_pages do
     collection do
+=begin
       get 'index_show', to: 'home_pages#show_index'
       post 'oper_action', to: 'home_pages#oper_action'
       post 'upload' => 'home_pages#upload'
       get 'home_page_manage',to:'home_pages#home_page_manage'
       post 'update',to:'home_pages#update'
+=end
     end
   end
   resources :page_blocks do

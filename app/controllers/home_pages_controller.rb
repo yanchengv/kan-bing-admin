@@ -1,8 +1,9 @@
 class HomePagesController < ApplicationController
-  before_action :set_home_page, only: [:show, :edit, :update, :destroy]
-  skip_before_filter :verify_authenticity_token, only: [:upload]
+  # before_action :set_home_page, only: [:show, :edit, :update, :destroy]
+  # skip_before_filter :verify_authenticity_token, only: [:upload]
   # GET /home_pages
   # GET /home_pages.json
+=begin
   def index
     @home_pages=HomePage.where(hospital_id:1).first;
     if  @home_pages
@@ -148,6 +149,7 @@ class HomePagesController < ApplicationController
       @left_menus=Menu.new.left_menu admin_id
     end
   end
+=end
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_home_page
@@ -156,7 +158,7 @@ class HomePagesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def home_page_params
-    params.permit(:id, :name, :content, :created_id, :created_name, :updated_id, :updated_name, :hospital_id, :hospital_name, :department_id, :department_name)
+    params.permit(:id,:home_menu_id,:name,:content,:hospital_id,:department_id,:position,:link_url)
   end
 end
 
