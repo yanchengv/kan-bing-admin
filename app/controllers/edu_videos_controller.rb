@@ -171,7 +171,7 @@ class EduVideosController < ApplicationController
           @doctors = Doctor.where(hospital_id:hos_id)
         end
       else
-        @doctors = Doctor.all
+        @doctors = Doctor.select("id","name").all
       end
       @types=VideoType.all
       @video=EduVideo.new
@@ -190,7 +190,7 @@ class EduVideosController < ApplicationController
           @doctors = Doctor.where(hospital_id:hos_id)
         end
       else
-        @doctors = Doctor.all
+        @doctors = Doctor.select("id","name").all
       end
       @types=VideoType.all
       @video=EduVideo.find(params[:id])

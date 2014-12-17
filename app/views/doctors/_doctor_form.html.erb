@@ -198,15 +198,16 @@
         <%#= f.text_field :professional_title,class:"form-control" %>
       </div>
     </div>
+    <!--
     <div>
       <div style="display:inline-block;width:49%">
-        <%= f.label :专长 %><br>
-        <%= f.text_field :expertise,class:"form-control" %>
+        <%#= f.label :专长 %><br>
+        <%#= f.text_field :expertise,class:"form-control" %>
       </div>
       <div style="display:inline-block;width:49%">
-        <%= f.label :学历 %><br>
+        <%#= f.label :学历 %><br>
         <select id="doctor_degree" name="doctor[degree]" >
-          <!--<option value="">---请选择---</option>-->
+          <!--<option value="">---请选择---</option>
           <option id='博士及以上' value="博士及以上">博士及以上</option>
           <option id='研究生' value="研究生">研究生</option>
           <option id='本科' value="本科">本科</option>
@@ -218,6 +219,7 @@
         <%#= f.text_field :degree,class:"form-control" %>
       </div>
     </div>
+    -->
     <div>
       <div style="display:inline-block;width:49%">
         <%= f.label :毕业学校 %><br>
@@ -290,6 +292,22 @@
     </div>
    </div>
   -->
+    <div>
+      <%= f.label :学习经历 %><br>
+      <%= f.text_area :degree, cols:"47", rows:"3" %>
+    </div>
+    <div class="">
+      <%= f.label :专长 %><br>
+      <%= f.text_area :expertise, cols:"47", rows:"3" %>
+    </div>
+    <div class="">
+      <%= f.label :发表论文 %><br>
+      <%= f.text_area :research_paper, cols:"47", rows:"3" %>
+    </div>
+    <div class="">
+      <%= f.label :荣誉奖励 %><br>
+      <%= f.text_area :rewards, cols:"47", rows:"2" %>
+    </div>
     <div class="">
       <%= f.label :说明 %><br>
       <%= f.text_area :introduction, cols:"47", rows:"6" %>
@@ -397,7 +415,7 @@
         });
         $('#doctor_credential_type').select2();
         $('#doctor_marriage').select2()
-        $('#doctor_degree').select2()
+//        $('#doctor_degree').select2()
         $('#doctor_nationality').select2();
         $('#doctor_citizenship').select2();
         $('#doctor_position').select2();
@@ -423,7 +441,7 @@
         if (document.getElementById('<%=doc.marriage%>')!=null) {
             document.getElementById('<%=doc.marriage%>').setAttribute('selected', 'selected')
         }
-        $('#s2id_doctor_degree').children('.select2-choice').children('.select2-chosen').html('<%=doc.degree%>')
+//        $('#s2id_doctor_degree').children('.select2-choice').children('.select2-chosen').html('<%#=doc.degree%>')
         if (document.getElementById('<%=doc.degree%>')!=null) {
             document.getElementById('<%=doc.degree%>').setAttribute('selected', 'selected')
         }

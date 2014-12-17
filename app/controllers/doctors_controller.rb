@@ -18,10 +18,10 @@ class DoctorsController < ApplicationController
         @departments = Department.where(hospital_id:current_user.hospital_id)
       end
     else
-      @hospitals = Hospital.all
+      @hospitals = Hospital.select("id","name").all
     end
-    @provinces = Province.all
-    @cities = City.all
+    @provinces = Province.select("id","name").all
+    @cities = City.select("id","name").all
     render partial: 'doctors/doctor_manage'
   end
   def index2
@@ -547,7 +547,7 @@ class DoctorsController < ApplicationController
         @departments = Department.where(hospital_id:hos_id)
       end
     else
-      @hospitals = Hospital.all
+      @hospitals = Hospital.select("id","name").all
     end
     @doctor = Doctor.new
     photo=@doctor.photo
@@ -636,8 +636,8 @@ class DoctorsController < ApplicationController
         @departments = Department.where(hospital_id:hos_id)
       end
     else
-      @hospitals = Hospital.all
-      @departments = Department.all
+      @hospitals = Hospital.select("id","name").all
+      @departments = Department.select("id","name","hospital_id").all
     end
     @doctor = Doctor.where(id:params[:id]).first
     photo=@doctor.photo

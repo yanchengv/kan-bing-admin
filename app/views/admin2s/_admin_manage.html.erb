@@ -32,7 +32,7 @@
                 { name: 'password', index: 'password', width: 100, align: "center", editable: true,
                     edittype: "password", hidden:true, editrules:{edithidden:true, required: true } },
                 { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
-                    editable: true, edittype: "password", hidden: true, editrules: {edithidden: true, required: true } },
+                    editable: true, edittype: "password", hidden: true, editrules: {edithidden: true, custom: true, required: true , custom_func: check_pwd2} },
                 { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {custom: true, custom_func: check_email, required: false} },
                 { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}},
                 { name: 'admin_type', index: 'admin_type', width: 100, align: "center",editable: true,edittype:"select",
@@ -205,18 +205,14 @@
             return [true, ""];
         }
     }
-function check_pwd1(){
-    return [true,arguments[0]]
-}
-function check_pwd2() {
-    console.log(check_pwd1)
-    console.log(arguments)
-    if (arguments[0]!=check_pwd1[1]) {
-        return [false, "两次密码不一致!"];
-    } else {
-        return [true, ""];
+    function check_pwd2(){
+        var password = document.FormPost.password
+        if (arguments[0] != password.value) {
+            return [false,"两次密码不一致!"]
+        } else {
+            return [true,""]
+        }
     }
-}
     //授权
     function admin_privilege(){
         <% if current_user %>

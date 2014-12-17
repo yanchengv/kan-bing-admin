@@ -88,7 +88,7 @@
                 { name: 'password', index: 'password', width: 100, align: "center", editable: true,
                     edittype: "password", hidden: true, editrules: {edithidden: true} },
                 { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
-                    editable: true, edittype: "password", hidden: true, editrules: {edithidden: true} },
+                    editable: true, edittype: "password", hidden: true, editrules: {edithidden: true,custom: true, required: true, custom_func: check_pwd2} },
                 // {name: 'credential_type_number', index: 'credential_type_number', width: 100, align: "center", editable: true },
                 { name: 'verification_code', index: 'verification_code', width: 100, align: "center", editable: true },
                 { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}},
@@ -249,6 +249,16 @@
             return [false, "不能为空，只能为汉字或字母！"];
         } else {
             return [true, ""];
+        }
+    }
+    function check_pwd2(){
+        console.log(arguments);
+        var password = document.FormPost.password
+        console.log(password.value)
+        if (arguments[0] != password.value) {
+            return [false,"两次密码不一致!"]
+        } else {
+            return [true,""]
         }
     }
     //验证手机号

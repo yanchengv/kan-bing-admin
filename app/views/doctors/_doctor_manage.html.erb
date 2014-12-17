@@ -179,7 +179,7 @@
         url: "/doctors/show_index",
         datatype: "json",
         height: "auto",
-        colNames:['ID','','姓名首字母简拼','姓名', '证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','职称','职位','学历','专长','毕业学校','毕业时间'],
+        colNames:['ID','','姓名首字母简拼','姓名', '证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','职称','职位','学习经历','专长','发表论文','荣誉奖励','毕业学校','毕业时间','说明'],
         colModel:[
 //            {name:'act',index:'act', width:75,sortable:false},
             {name:'id',index:'id', width:120, sorttype:"int", hidden:true,search:false },
@@ -199,9 +199,9 @@
             {name:'credential_type_number',index:'credential_type_number', width:150, editable: true ,searchoptions: { sopt: ['in']}},
             {name:'gender',index:'gender', width:30, editable: true ,search:false },
             {name:'birthday',index:'birthday', width:90, editable: true ,search:false },
-            {name:'birthplace',index:'birthplace', width:100, editable: true ,search:false },
+            {name:'birthplace',index:'birthplace', width:100, editable: true ,search:false,hidden:true},
             {name:'marriage',index:'marriage', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
-            {name:'province_name',index:'province_name', width:100,  editable: true,search:false  },
+            {name:'province_name',index:'province_name', width:80,  editable: true,search:false  },
             {name:'city_name',index:'city_name', width:100,  editable: true ,search:false },
             {name:'hospital_name',index:'hospital_name', width:100, editable: true,search:false  },
             {name:'department_name',index:'department_name', width:100, editable: true,search:false  },
@@ -211,10 +211,13 @@
             {name:'email',index:'email', width:130, align:"right", editable: true ,searchoptions: { sopt: ['in']}},
             {name:'professional_title',index:'professional_title', width:80,align:"right",editable: true,search:false },
             {name:'position',index:'position', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
-            {name:'degree',index:'degree', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
-            {name:'expertise',index:'expertise', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
+            {name:'degree',index:'degree', width:80,search:false,editrules:{edithidden:true}},
+            {name:'expertise',index:'expertise', width:80,search:false,editrules:{edithidden:true}},
+            {name:'research_paper',index:'research_paper',width:80,search:false ,editrules:{edithidden:true}},
+            {name:'rewards',index:'rewards',search:false ,width:80,editrules:{edithidden:true}},
             {name:'graduated_from',index:'graduated_from', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
-            {name:'graduated_at',index:'graduated_at', width:80,search:false ,hidden:true,editrules:{edithidden:true}}
+            {name:'graduated_at',index:'graduated_at', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
+            {name:'introduction',index:'introduction',width:80,esarch:false}
 //          ,
 //            {name:'is_public',index:'is_public', width:80,search:false,viewable:false,
 //                formatter: function (rowId, cellval, colpos, rwdat, _act) {
@@ -266,9 +269,7 @@
             collision: "fit",
             // Ensure the titlebar is always visible
             using: function( pos ) {
-                console.log(pos.top)
                 var topOffset = $( this ).css( pos ).offset().top;
-                console.log(topOffset)
                 if ( topOffset < 0 ) {
                     $( this ).css( "top", pos.top - topOffset );
                 }else {

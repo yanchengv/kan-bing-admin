@@ -1,4 +1,4 @@
-<% @province = Province.all %>
+<% @province = Province.select("id","name").all %>
 <select id="doctor_province" name="doctor[province_id]"  onchange="search_city()" >
     <option value="">---请选择---</option>
   <% @province.each do |pro| %>
