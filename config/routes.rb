@@ -327,6 +327,15 @@ Rails.application.routes.draw do
 
   resource :photos
 
+  resource :home_menu do
+  collection do
+    get 'new',to:'home_menu#new'
+    get 'show',to:'home_menu#show'
+    post 'create',to:'home_menu#create'
+  end
+  end
+  resource :home_pages
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
