@@ -250,6 +250,9 @@
         onSelectRow: function(id){
             selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
         },
+//        ondblClickRow: function(id){
+//           $('#view_list12').click()
+//        },
 
         viewrecords: true,
         editurl:'/doctors/',
@@ -301,6 +304,7 @@
         delfunc : openDialog4Deleting,  // (3) 点击删除按钮，则调用openDialog4Deleting方法
         search:false,
         refreshtext:"刷新",
+        refreshstate:'current',
         alerttext : "请选择记录!"
     });
 //    自定义按钮
