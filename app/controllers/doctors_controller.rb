@@ -771,6 +771,9 @@ class DoctorsController < ApplicationController
   # PATCH/PUT /doctors/1
   # PATCH/PUT /doctors/1.json
   def update
+    if params[:doctor][:professional_title] == ''
+      params[:doctor][:professional_title] = @doctor.professional_title
+    end
     if @doctor.update(doctor_params)
       render json:{success:true}
     else
@@ -1519,7 +1522,7 @@ class DoctorsController < ApplicationController
         docs[@hospital.id] = @hospital.name
       end
     else
-      @hospitals = Hospital.all
+      @hospitals = Hospital.select("id","name").all
       @hospitals.each do |hos|
         docs[hos.id] = hos.name
       end
@@ -1528,9 +1531,9 @@ class DoctorsController < ApplicationController
   end
 
   def get_departments
-    @departments = Department.all
+    @departments = Department.select("id","name").all
     if !params[:hospital_id].nil?
-      @departments = Department.where(hospital_id:params[:hospital_id])
+      @departments = Department.select("id","name").where(hospital_id:params[:hospital_id])
     end
     docs = {}
     str = ""
@@ -1554,12 +1557,12 @@ class DoctorsController < ApplicationController
     if !current_user.hospital_id.nil? && current_user.hospital_id != ''
       @hospitals = Hospital.where(id:current_user.hospital_id)
       if !current_user.department_id.nil? && current_user.department_id != ''
-        @departments = Department.where(id:current_user.department_id)
+        @departments = Department.select("id","name").where(id:current_user.department_id)
       else
-        @departments = Department.where(hospital_id:current_user.hospital_id)
+        @departments = Department.select("id","name").where(hospital_id:current_user.hospital_id)
       end
     else
-      @hospitals = Hospital.all
+      @hospitals = Hospital.select("id","name").all
       # @departments = Department.all
     end
     render partial: 'doctors/matchDoctor'
