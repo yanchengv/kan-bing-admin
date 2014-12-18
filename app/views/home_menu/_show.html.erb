@@ -1,0 +1,102 @@
+<style>
+
+    ul.ztree {margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width:220px;height:360px;overflow-y:scroll;overflow-x:auto;}
+    .select2-container{
+        width:170px;
+
+    }
+    ul li span.button.add { margin-left: 2px; margin-right: -1px; background-position: -144px 0; vertical-align: top; *vertical-align: middle; }
+</style>
+<SCRIPT type="text/javascript">
+    <!--
+    var setting = {
+        view:{
+            addHoverDom:addHoverDom,
+            removeHoverDom:removeHoverDom,
+            selectedMulti:false
+        },
+        edit: {
+            enable: true,
+            showRemoveBtn: setRemoveBtn,
+            showRenameBtn: showRenameBtn,
+            removeTitle: "删除节点",
+            renameTitle: "编辑节点",
+            drag:{
+                prev:false,
+//                inner:per_inner,
+                next:false,
+                isCopy:true,
+                isMove:true
+            }
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        }
+    };
+    function setRemoveBtn(treeId, treeNode) {  //判断是否为根结点,根结点不可删除
+        if (treeNode.level == 0)
+            return false;
+        else
+            return true;
+    }
+    function addHoverDom(treeId,treeNode){
+        if ((''+treeNode.id).indexOf("_") > 0) {
+        }else{
+            var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                    + "' title='添加子页面' onfocus='this.blur();'></span>";
+            sObj.after(addStr);
+        }
+        var btn = $("#addBtn_"+treeNode.tId);
+        if (btn) btn.bind("click", function(){
+            var zTree=$.fn.zTree.getZTreeObj(treeId)
+            addChildMenu(treeId,treeNode)
+            return false;
+        });
+    }
+
+    function removeHoverDom(treeId,treeNode){
+        $("#addBtn_"+treeNode.tId).unbind().remove();
+    }
+    function showRemoveBtn(treeId, treeNode) {
+        return !treeNode.isFirstNode;
+    }
+    function showRenameBtn(treeId, treeNode){
+        var treeObj = $.fn.zTree.getZTreeObj(treeId);
+        if ((''+treeNode.id).indexOf("_") > 0 || treeNode.level==0) {
+            return false
+        }else{
+            return true
+        }
+    } ;
+
+    function addChildMenu(treeId,treeNode){
+        var id=treeNode['id']
+        $.ajax({
+            url:'home_menu/new',
+            type:'get',
+            data:{nodeId:id},
+            success:function(data){
+                $('#showHomePage').html(data)
+            }
+        })
+    };
+
+    var homeMenus=<%= raw @home_menus.to_json%>
+    $(document).ready(function(){
+        $.fn.zTree.init($("#homeMenuTree"), setting, homeMenus);
+    });
+    //-->
+</SCRIPT>
+<div class="zTreeDemoBackground left">
+  <ul id="homeMenuTree" class="ztree"></ul>
+
+</div>
+<!--添加编辑富文本的显示-->
+<div id="showHomePage">
+
+
+</div>

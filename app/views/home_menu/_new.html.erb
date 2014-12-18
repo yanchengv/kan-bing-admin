@@ -1,0 +1,19 @@
+
+<%= form_for @home_page,url:{action: :create,controller: :home_menu},method:'post',html: {multipart: true, id: 'home_menu_form'} do |f| %>
+    <%= label :name,'标题'%>
+    <%=f.text_field :name %>
+    <%= label_tag(:content,'内容：')%>
+    <%= f.kindeditor :content %>
+    <%=f.hidden_field :parent_id, value: @parent_id%>
+    <%=f.submit '保存'%>
+    <%= button_tag '取消',type:'button'%>
+<% end %>
+
+
+
+<script>
+    $('#home_menu_form').submit(function () {
+        $(this).ajaxSubmit(options);
+        return false;
+    });
+</script>

@@ -92,8 +92,6 @@ class Role2MenusController < ApplicationController
     @all_role= Role2.all
     @all_roles=[]
     @all_role.each do |role|
-      p 'role'
-      p role.name
       if role.menu_tree == []
         @role = {id:'role-'+role.id.to_s,name:role.name,pId:0,code:role.code,instruction:role.instruction,open:true}
       else
@@ -101,7 +99,6 @@ class Role2MenusController < ApplicationController
       end
       @all_roles.push(@role)
     end
-    p 'a'
     @all_roles = {name:'角色列表',children:@all_roles,open:true}
     render partial: 'role2_menus/menus_to_roles'
   end
