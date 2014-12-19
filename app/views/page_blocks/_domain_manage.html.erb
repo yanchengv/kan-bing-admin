@@ -7,15 +7,6 @@
 
   </div>
 </div>
-  <div style="height: 100px"></div>
-<!--logo管理-->
-<div style="width: 100%">
-  <div style="margin-left: 20px;">
-    <table id="logo_domain"></table>
-    <div id="logo_block"></div>
-
-  </div>
-</div>
 
 <!--添加域名彈出框-->
 <div id="domain_consoleDlg">
@@ -36,151 +27,15 @@
 <!--添加logo彈出框-->
 <div id="logo_consoleDlg">
   <div id="logo_form" >
-    <input type="text" name="name" id="logoName">
-    <input type="file" name="logoUpload" name="files[]" id="logoUpload">
-    <div id="logo_blank"></div>
+    <input id="logo_img2" style="display:inline" type="button" value="选择图片"/>
+    <div id="uploadLogoStaus"></div>
+    <input type="file" name="logoUpload" name="files[]" id="logoUpload" style='visibility:hidden;'>
+    <div id="logo_blank">如果已存在，则会替换原有图片</div>
   </div>
 </div>
 
-<!--修改logo彈出框-->
-<div id="logo_update_consoleDlg">
-  <div id="logo_update_form" >
-    <input type="text" name="name" id="logoUpdateName">
-    <div id="logo_update_blank"></div>
-  </div>
+
+<!--修改页脚-->
+<div id="footer_consoleDlg">
+    <input id="footer" type="text" name="footer"/>
 </div>
-<script type="text/javascript">
-  //添加logo彈出框
-  $("#logo_consoleDlg").dialog({    //初始化对话框
-      autoOpen: false,
-      modal: false,    // 设置对话框为模态（modal）对话框
-      resizable: true,
-      width: 400,
-      position: {
-          my: "center",
-          at: "center",
-          of: window,
-          collision: "fit",
-          // Ensure the titlebar is always visible
-          using: function( pos ) {
-              var topOffset = $( this ).css( pos ).offset().top;
-              if ( topOffset < 0 ) {
-                  $( this ).css( "top", pos.top - topOffset );
-              }else {
-                  $( this ).css( "top", 100 );
-              }
-          }
-      },
-      buttons: {  // 为对话框添加按钮
-          "确定": create,
-          "取消": function() {$("#logo_consoleDlg").dialog("close")}
-      }
-  });
-
-  //修改logo彈出框
-  $("#logo_update_consoleDlg").dialog({    //初始化对话框
-      autoOpen: false,
-      modal: false,    // 设置对话框为模态（modal）对话框
-      resizable: true,
-      width: 400,
-      position: {
-          my: "center",
-          at: "center",
-          of: window,
-          collision: "fit",
-          // Ensure the titlebar is always visible
-          using: function( pos ) {
-              console.log(pos.top)
-              var topOffset = $( this ).css( pos ).offset().top;
-              console.log(topOffset)
-              if ( topOffset < 0 ) {
-                  $( this ).css( "top", pos.top - topOffset );
-              }else {
-                  $( this ).css( "top", 100 );
-              }
-          }
-      },
-      buttons: {  // 为对话框添加按钮
-          "确定": updateDomain,
-          "取消": function() {$("#logo_update_consoleDlg").dialog("close")}
-      }
-  });
-
-  $(function () {
-      $('#logoUpload').fileupload({
-          url:'domain/upload_logo',
-          dataType: 'json',
-          done: function (e, data) {
-              alert('chengogn')
-          }
-      });
-  });
-  // Logo  table list
-  jQuery("#logo_domain").jqGrid({
-//      url: '/domain/domain_list',
-      datatype: "json",
-      mtype: 'GET',
-      colNames: ['ID', '名称', '链接','页脚内容',  '医院', '科室'],
-      colModel: [
-          {name: 'id', index: 'id', align: "center", hidden: true},
-          {name: 'name', index: 'name', align: "center"},
-          {name: 'url', index: 'url', align: "center"},
-          {name: 'footer_content', index: 'footer_content', align: "center"},
-          {name: 'hospital_id', index: 'hospital_id', align: "center", hidden: true},
-          {name: 'department_id', index: 'department_id', align: "center", hidden: true}
-      ],
-      rowList: [10, 20, 30],
-      sortname: 'id',
-      viewrecords: true,
-      sortorder: "desc",
-      autowidth: true,
-      rownumbers: true,
-      page: 1,
-      jsonReader: {
-          root: "data",
-          total: "totalpages",
-          page: "currpage",
-          records: "totalrecords",
-          repeatitems: false
-      },
-      prmNames: {
-          page: "page", // 表示请求页码的参数名称
-          rows: "rows", // 表示请求行数的参数名称
-          id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
-          //   npage: null,
-          totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
-          editoper: "edit", // 当在edit模式中提交数据时，操作的名称
-          addoper: "add", // 当在add模式中提交数据时，操作的名称
-          deloper: "del" // 当在delete模式中提交数据时，操作的名称
-      },
-      editurl: '/domain/oper_action',
-      closeAfterAdd: true,
-      pager: jQuery('#logo_block'),
-      multiselect: false,
-      rowNum: 20,
-      altclass: 'altRowsColour',
-      height: 'auto',
-      caption: "logo管理"
-  }).navGrid('#logo_block', {
-              cloneToTop: true, add: false, edit: false,
-              deltext: "删除", deltitle: "删除", view: false, search: false, refreshtext: "刷新", refreshtitle: "刷新"},
-          {
-              closeAfterEdit: true
-          },//edit
-          {
-              closeAfterAdd: true
-          }//a
-  ).navButtonAdd('#logo_block', { title: '编辑', buttonicon: "ui-icon-pencil", caption: '编辑', onClickButton: function () {
-              var domain_update_consoleDlg = $("#logo_update_consoleDlg");
-              domain_update_consoleDlg.dialog("option", "title", "修改域名").dialog("open");
-              var id = jQuery("#list_domain").jqGrid('getGridParam', 'selrow');
-              var name = $('#list_domain').jqGrid('getRowData', id).name
-              $("#domainUpdateName").val(name);
-          }, position: "first"}
-  ).navButtonAdd('#logo_block', { title: '添加', caption: '添加', buttonicon: "ui-icon-plus", onClickButton: function () {
-              var domain_consoleDlg = $("#logo_consoleDlg");
-              domain_consoleDlg.dialog("option", "title", "添加域名").dialog("open");
-
-          }, position: "first"});
-
-</script>
