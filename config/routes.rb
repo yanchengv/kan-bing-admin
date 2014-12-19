@@ -322,6 +322,8 @@ Rails.application.routes.draw do
       get 'domain_list',to:'domain#domain_list'
       post 'oper_action',to:'domain#oper_action'
       post 'upload_logo',to:'domain#upload_logo'
+      post 'save_logo',to:'domain#save_logo'
+      post 'update_footer',to:'domain#update_footer'
     end
   end
 

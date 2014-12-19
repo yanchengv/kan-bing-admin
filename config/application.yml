@@ -14,7 +14,7 @@ defaults: &defaults
       video_bucket: 'dev-mimas'
       oss_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
 
-
+  aliyun_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
 development:
   <<: *defaults
 
@@ -33,3 +33,4 @@ production:
       default_bucket: 'mimas-open'
       video_bucket: 'webadmin-video'
       oss_url: 'http://webadmin-video.oss-cn-beijing.aliyuncs.com/'
+  aliyun_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'

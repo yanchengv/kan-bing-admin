@@ -27,6 +27,7 @@ class DomainController < ApplicationController
       @flag="sucess"
       @domain=Domain.new(domain)
       @domain.save
+      @domain.update_attributes(logo_url:hos_dept.first.logo_url,footer:hos_dept.first.footer)#添加科室的logo和footer
     else
 
       @flag="false"
@@ -123,9 +124,43 @@ class DomainController < ApplicationController
      end
    end
 
+  # 上传logo
   def upload_logo
+    file=params[:logoUpload]
+    tmpfile = getFileName(file.original_filename.to_s)
+    uuid = upload_video_img_bucket(file)
+    url = Settings.aliyun_url + uuid
+    if true
+      render :json => {flag: true, url: url}
+    else
+      render :json => {flag: false, url: ''}
+    end
 
+  end
+  # 保存logo,使其与本科室所有域名管理
+  def save_logo
+    logo_url=params[:logoUrl]
+    par={}
+    par[:hospital_id]=current_user.hospital_id
+    par[:department_id]=current_user.department.id
+    domains=Domain.where(par)
+    domains.each do |d|
+       d.update_attributes(logo_url:logo_url)
+    end
     render json:'success'
+  end
+
+  def update_footer
+     footer=params[:footer]
+     par={}
+     par[:hospital_id]=current_user.hospital_id
+     par[:department_id]=current_user.department.id
+     domains=Domain.where(par)
+     domains.each do |d|
+       d.update_attributes(footer:footer)
+     end
+     render :json => {flag: true}
+
   end
   private
   # Use callbacks to share common setup or constraints between actions.
@@ -135,8 +170,7 @@ class DomainController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def domain_params
-    params.permit(:id,:name,:hospital_id,:department_id,:introduction)
-    params.require(:logo).permit(:id,:name,:url,:footer_content,:hospital_id,:department_id)
+    params.permit(:id,:name,:hospital_id,:department_id,:introduction,:logo_url,:footer)
   end
 
 

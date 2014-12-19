@@ -5,6 +5,8 @@ class CreateDomains < ActiveRecord::Migration
       t.integer :hospital_id,:limit => 8
       t.integer :department_id,:limit => 8
       t.string :introduction
+      t.string :logo_url
+      t.text  :footer
       t.timestamps
     end
   end

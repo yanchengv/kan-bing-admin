@@ -102,15 +102,133 @@ function updateDomain(){
     }
 }
 
+
+//添加logo彈出框
+$("#logo_consoleDlg").dialog({    //初始化对话框
+    autoOpen: false,
+    modal: false,    // 设置对话框为模态（modal）对话框
+    resizable: true,
+    width: 400,
+    position: {
+        my: "center",
+        at: "center",
+        of: window,
+        collision: "fit",
+        // Ensure the titlebar is always visible
+        using: function( pos ) {
+            var topOffset = $( this ).css( pos ).offset().top;
+            if ( topOffset < 0 ) {
+                $( this ).css( "top", pos.top - topOffset );
+            }else {
+                $( this ).css( "top", 100 );
+            }
+        }
+    },
+    buttons: {  // 为对话框添加按钮
+        "确定": uploadLogo,
+        "取消": cancleLogo
+    }
+});
+
+//添加页脚彈出框
+$("#footer_consoleDlg").dialog({    //初始化对话框
+    autoOpen: false,
+    modal: false,    // 设置对话框为模态（modal）对话框
+    resizable: true,
+    width: 400,
+    position: {
+        my: "center",
+        at: "center",
+        of: window,
+        collision: "fit",
+        // Ensure the titlebar is always visible
+        using: function( pos ) {
+            var topOffset = $( this ).css( pos ).offset().top;
+            if ( topOffset < 0 ) {
+                $( this ).css( "top", pos.top - topOffset );
+            }else {
+                $( this ).css( "top", 100 );
+            }
+        }
+    },
+    buttons: {  // 为对话框添加按钮
+        "确定": updateFooter,
+        "取消": function() {$("#footer_consoleDlg").dialog("close")}
+    }
+});
+
+$("#logo_img2").click(function () {
+    $("#logoUpload").click();
+});
+//logo取消上传
+function cancleLogo(){
+    $("#logo_consoleDlg").dialog("close")
+    $("#uploadLogoStaus").html("")
+}
+//  logo使用ajax上传
+var  logoUrl='';
+$(function () {
+    $('#logoUpload').fileupload({
+        url:'domain/upload_logo',
+        dataType: 'json',
+        success: function (response, textStatus, jqXHR) {
+            var flag=response['flag']
+            if  (flag==true){
+                $("#uploadLogoStaus").html("上传成功！")
+                logoUrl=response["url"]
+            } else{
+                logoUrl=''
+            }
+
+        }
+    });
+});
+
+//保存logo图片
+function uploadLogo(){
+    $.ajax({
+        type:'post',
+        url:'domain/save_logo',
+        data:{logoUrl:logoUrl},
+        success:function(data){
+            logoUrl=''
+            $("#uploadLogoStaus").html("")
+
+        }
+    });
+    $("#logo_consoleDlg").dialog("close")
+};
+
+
+
+//页脚修改
+function updateFooter(){
+    var footer=$("#footer").val();
+    $.ajax({
+        url:'domain/update_footer',
+        data:{footer:footer},
+        type:'post',
+        success:function(data){
+            $("#footer_consoleDlg").dialog("close")
+            $("#footer").val("")
+        }
+
+    })
+}
+
+
+
 //  donmain table list
 jQuery("#list_domain").jqGrid({
     url: '/domain/domain_list',
     datatype: "json",
     mtype: 'GET',
-    colNames: ['ID', '域名',  '医院', '科室'],
+    colNames: ['ID', '域名','logo','页脚',  '医院', '科室'],
     colModel: [
         {name: 'id', index: 'id', align: "center", hidden: true},
         {name: 'name', index: 'name', align: "center"},
+        {name: 'logo_url', index: 'logo_url', align: "center"},
+        {name: 'footer', index: 'footer', align: "center"},
         {name: 'hospital_id', index: 'hospital_id', align: "center", hidden: true},
         {name: 'department_id', index: 'department_id', align: "center", hidden: true}
     ],
@@ -166,4 +284,19 @@ jQuery("#list_domain").jqGrid({
         var domain_consoleDlg = $("#domain_consoleDlg");
         domain_consoleDlg.dialog("option", "title", "添加域名").dialog("open");
 
-    }, position: "first"});
+    }, position: "first"}
+).navButtonAdd('#domain_block', { title: '上传logo', caption: '上传logo', buttonicon: "ui-icon-plus", onClickButton: function () {
+        var logo_consoleDlg = $("#logo_consoleDlg");
+        logo_consoleDlg.dialog("option", "title", "logo上传(图片尺寸:245*45)").dialog("open");
+
+    }, position: "last"}
+).navButtonAdd('#domain_block', { title: '修改页脚', caption: '修改页脚', buttonicon: "ui-icon-plus", onClickButton: function () {
+        var footer_consoleDlg = $("#footer_consoleDlg");
+        footer_consoleDlg.dialog("option", "title", "修改页脚").dialog("open");
+
+    }, position: "last"})
+
+
+
+
+

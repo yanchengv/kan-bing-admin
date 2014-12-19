@@ -26,9 +26,13 @@ class HomeMenuController < ApplicationController
     render json:'success'
   end
   def show
-      home_menus=HomeMenu.where(hospital_id:current_user.hospital_id,department_id:current_user.department_id)
-      @home_menus= {name:"菜单管理",children:home_menus,open:true}
-
+      menus=HomeMenu.where(hospital_id:current_user.hospital_id,department_id:current_user.department_id)
+      # @home_menus= {name:"菜单管理",children:home_menus,open:true}
+      home_menus=[]
+      menus.each do |menu|
+        home_menus<<{id:menu.id,pId:menu.parent_id,name:menu.name,hospital_id:menu.hospital_id,department_id:menu.department_id,open:true}
+      end
+      @home_menus=home_menus
      render partial: 'home_menu/show'
   end
 
