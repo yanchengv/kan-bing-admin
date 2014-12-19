@@ -1,11 +1,18 @@
 <style>
 
-    ul.ztree {margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width:220px;height:360px;overflow-y:scroll;overflow-x:auto;}
-    .select2-container{
-        width:170px;
+
+    .select2-container {
+        width: 170px;
 
     }
-    ul li span.button.add { margin-left: 2px; margin-right: -1px; background-position: -144px 0; vertical-align: top; *vertical-align: middle; }
+
+    ul li span.button.add {
+        margin-left: 2px;
+        margin-right: -1px;
+        background-position: -144px 0;
+        vertical-align: top;
+        *vertical-align: middle;
+    }
 </style>
 <SCRIPT type="text/javascript">
     <!--
@@ -13,7 +20,8 @@
         view:{
             addHoverDom:addHoverDom,
             removeHoverDom:removeHoverDom,
-            selectedMulti:false
+            selectedMulti:false,
+            showIcon: true
         },
         edit: {
             enable: true,
@@ -91,12 +99,11 @@
     });
     //-->
 </SCRIPT>
-<div class="zTreeDemoBackground left">
-  <ul id="homeMenuTree" class="ztree"></ul>
+<div class="zTreeDemoBackground menu_box col-md-11">
+  <ul id="homeMenuTree" class="ztree col-md-2"></ul>
+  <!--添加编辑富文本的显示-->
+  <div id="showHomePage" class="col-md-9" style="">
 
+  </div>
 </div>
-<!--添加编辑富文本的显示-->
-<div id="showHomePage">
 
-
-</div>
