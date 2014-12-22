@@ -12,7 +12,7 @@
         border:#ff0000 1px solid
     }
 </style>
-<div style="font-size: 12px">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项,手机号和电子邮箱至少填写一个.</div>
+<div style="font-size: 12px">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项.</div>
 <hr style="margin: 10px 0px;"/>
 <div style="" >
   <%= render 'photos/photo_form' %>
@@ -71,8 +71,8 @@
     </div>
     <div>
       <div style="display:inline-block;width:49%">
-        <%= f.label :生日 %><span style="color:red"><b>*</b></span><br>
-        <input id='doc_birthday' data-format="yyyy-MM-dd" name='doctor[birthday]' type="text" class="form-control" onblur="check_birthday(this.value,'true')"/>
+        <%= f.label :生日 %><span style="color:red"></span><br>
+        <input id='doc_birthday' data-format="yyyy-MM-dd" name='doctor[birthday]' type="text" class="form-control"/>
         <%#= f.date_select :birthday %>
       </div>
       <!--<div class="col-md-6 field">-->
@@ -158,45 +158,49 @@
     </div>
     <div>
       <div style="display:inline-block;width:49%">
-        <%= f.label :电子邮箱 %>　<span style="color:blue"><b>*</b></span><br>
+        <%= f.label :电子邮箱 %>　<span style="color:blue"></span><br>
         <%= f.text_field :email,class:"form-control",onblur:"check_email(this.value,'true')" %>
       </div>
       <div style="display:inline-block;width:49%">
-        <%= f.label :手机号 %>　<span style="color:blue"><b>*</b></span><br>
+        <%= f.label :手机号 %>　<span style="color:blue"></span><br>
         <%= f.text_field :mobile_phone,class:"form-control",onblur:"check_phone(this.value,'true')"  %>
       </div>
     </div>
-    <div>
-      <div style="display:inline-block;width:49%">
-        <%= f.label :职位 %><br>
-        <select id="doctor_position" name="doctor[position]" >
-          <option value="">---请选择---</option>
-          <option id="教授" value="教授">教授</option>
-          <option id="副教授" value="副教授">副教授</option>
-          <option id="科主任" value="科主任">科主任</option>
-          <option id="副科主任" value="副科主任">副科主任</option>
-        </select>
+    <!--<div>-->
+      <!--<div style="display:inline-block;width:49%">-->
+        <%#= f.label :职位 %><br>
+        <!--<select id="doctor_position" name="doctor[position]" >-->
+          <!--<option value="">---请选择---</option>-->
+          <!--<option id="教授" value="教授">教授</option>-->
+          <!--<option id="副教授" value="副教授">副教授</option>-->
+          <!--<option id="科主任" value="科主任">科主任</option>-->
+          <!--<option id="副科主任" value="副科主任">副科主任</option>-->
+        <!--</select>-->
         <%#= f.text_field :position,class:"form-control" %>
-      </div>
-      <div style="display:inline-block;width:49%">
-        <%= f.label :专业职称 %><br>
-        <select id="doctor_professional_title" name="doctor[professional_title]" >
-          <option value="">---请选择---</option>
-          <% @doc_pro = Dictionary.where(dictionary_type_id:4) %>
-          <% if !@doc_pro.empty? %>
-              <% @doc_pro.each do |pro| %>
-                  <option id="<%= pro.name %>" value="<%= pro.name %>"><%= pro.name %></option>
-              <% end %>
-          <% end %>
+      <!--</div>-->
+      <!--<div style="display:inline-block;width:49%">-->
+        <!--<%#= f.label :专业职称 %><br>
+        <!--<select id="doctor_professional_title" name="doctor[professional_title]" >-->
+          <!--<option value="">---请选择---</option>-->
+          <!--<%# @doc_pro = Dictionary.where(dictionary_type_id:4) %>-->
+          <!--<%# if !@doc_pro.empty? %>-->
+              <!--<%# @doc_pro.each do |pro| %>-->
+                  <!--<option id="<%#= pro.name %>" value="<%#= pro.name %>"><%#= pro.name %></option>-->
+              <!--<%# end %>-->
+          <!--<%# end %>-->
           <!--<option id="主治医师" value="主治医师">主治医师</option>-->
           <!--<option id="主任医师" value="主任医师">主任医师</option>-->
           <!--<option id="副主任医师" value="副主任医师">副主任医师</option>-->
           <!--<option id="主任技师" value="主任技师">主任技师</option>-->
           <!--<option id="副主任技师" value="副主任技师">副主任技师</option>-->
           <!--<option id="特聘高年资医师" value="特聘高年资医师">特聘高年资医师</option>-->
-        </select>
+        <!--</select>-->
         <%#= f.text_field :professional_title,class:"form-control" %>
-      </div>
+      <!--</div>-->
+    <!--</div>-->
+    <div>
+      <%= f.label :专业职称 %><br>
+      <%= f.text_area :professional_title, cols:"47", rows:"3" %>
     </div>
     <!--
     <div>
@@ -297,19 +301,19 @@
       <%= f.text_area :degree, cols:"47", rows:"3" %>
     </div>
     <div class="">
-      <%= f.label :专长 %><br>
-      <%= f.text_area :expertise, cols:"47", rows:"3" %>
+      <%= f.label :专业特长 %><br>
+      <%= f.text_area :expertise, cols:"47", rows:"5" %>
     </div>
     <div class="">
-      <%= f.label :发表论文 %><br>
+      <%= f.label :科研论文 %><br>
       <%= f.text_area :research_paper, cols:"47", rows:"3" %>
     </div>
     <div class="">
       <%= f.label :荣誉奖励 %><br>
-      <%= f.text_area :rewards, cols:"47", rows:"2" %>
+      <%= f.text_area :rewards, cols:"47", rows:"3" %>
     </div>
     <div class="">
-      <%= f.label :说明 %><br>
+      <%= f.label :执业经历 %><br>
       <%= f.text_area :introduction, cols:"47", rows:"6" %>
     </div>
     <div class="actions" style="display:none;">
@@ -421,7 +425,7 @@
         $('#doctor_position').select2();
         $('#doctor_hospital_id').select2();
         $('#doctor_department_id').select2();
-        $('#doctor_professional_title').select2();
+//        $('#doctor_professional_title').select2();
         $('#doc_birthday').datetimepicker({
             lang:'ch',
             timepicker:false,
@@ -450,7 +454,7 @@
         if (document.getElementById('<%=doc.citizenship%>')!=null) {
             document.getElementById('<%=doc.citizenship%>').setAttribute('selected', 'selected')
         }
-        $('#s2id_doctor_professional_title').children('.select2-choice').children('.select2-chosen').html('<%=doc.professional_title%>')
+//        $('#s2id_doctor_professional_title').children('.select2-choice').children('.select2-chosen').html('<%=doc.professional_title%>')
         if (document.getElementById('<%=doc.professional_title%>')!=null) {
             document.getElementById('<%=doc.professional_title%>').setAttribute('selected', 'selected')
         }

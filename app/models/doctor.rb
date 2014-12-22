@@ -1,5 +1,7 @@
 include SessionsHelper
 class Doctor < ActiveRecord::Base
+  self.table_name = "doctors"
+  self.inheritance_column = "ruby_type"
   before_create :set_pk_code,:pinyin,:set_default_value
   before_update :update_default_value
   after_create :save_patient
@@ -28,11 +30,6 @@ class Doctor < ActiveRecord::Base
     else
       self.name = id
     end
-    if self.birthday
-      self.birthday = birthday
-    else
-      self.birthday=Time.now
-    end
     self.is_checked = 0
     self.is_activated = 0
   end
@@ -42,11 +39,6 @@ class Doctor < ActiveRecord::Base
       self.name = name
     else
       self.name = id
-    end
-    if self.birthday
-      self.birthday = birthday
-    else
-      self.birthday=Time.now
     end
   end
 

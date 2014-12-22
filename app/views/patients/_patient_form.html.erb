@@ -10,7 +10,7 @@
         border:#ff0000 1px solid
     }
 </style>
-<div style="font-size: 12px;">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项,手机号和电子邮箱至少填写一个.</div>
+<div style="font-size: 12px;">注:表单中带<span style="color:red;"><b>*</b></span>的为必填项.</div>
 <hr style="margin: 10px 0px;"/>
 <div>
   <%= render 'patients/photo_form' %>
@@ -66,8 +66,8 @@
     </div>
     <div class="">
       <div style="display:inline-block;width:49%">
-        <%= f.label :生日 %><span style="color:red"><b>*</b></span><br>
-        <input id='pat_birthday' data-format="yyyy-MM-dd" name='patient[birthday]' type="text" class="form-control" onblur="check_birthday(this.value,'true')" />
+        <%= f.label :生日 %><span style="color:red"></span><br>
+        <input id='pat_birthday' data-format="yyyy-MM-dd" name='patient[birthday]' type="text" class="form-control" />
         <%#= f.date_select :birthday %>
       </div>
       <!--<div class="col-md-6 field">-->
@@ -124,11 +124,11 @@
     </div>
     <div>
       <div style="display:inline-block;width:49%">
-        <%= f.label :电子邮件 %>　<span style="color:blue"><b>*</b></span><br>
+        <%= f.label :电子邮件 %>　<span style="color:blue"></span><br>
         <%= f.text_field :email,class:"form-control",onblur:"check_email(this.value,'true')" %>
       </div>
       <div style="display:inline-block;width:49%">
-        <%= f.label :手机号 %>　<span style="color:blue"><b>*</b></span><br>
+        <%= f.label :手机号 %>　<span style="color:blue"></span><br>
         <%= f.text_field :mobile_phone,class:"form-control" ,onblur:"check_phone(this.value,'true')"%>
       </div>
     </div>
