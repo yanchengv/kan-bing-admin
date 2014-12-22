@@ -197,6 +197,7 @@ function uploadLogo(){
         }
     });
     $("#logo_consoleDlg").dialog("close")
+    jQuery("#list_domain").jqGrid('setGridParam', {url: "/domain/domain_list" }).trigger("reloadGrid")
 };
 
 
@@ -209,11 +210,13 @@ function updateFooter(){
         data:{footer:footer},
         type:'post',
         success:function(data){
-            $("#footer_consoleDlg").dialog("close")
+
             $("#footer").val("")
         }
 
-    })
+    });
+    $("#footer_consoleDlg").dialog("close")
+    jQuery("#list_domain").jqGrid('setGridParam', {url: "/domain/domain_list" }).trigger("reloadGrid")
 }
 
 
