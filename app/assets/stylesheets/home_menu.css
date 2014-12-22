@@ -175,3 +175,10 @@
     font-family:"MIcrosoft YaHei",Arial;
     margin:0 0 5px 0;
 }
+.add_btn{
+    background: #55cc7f;
+    border:1px solid #51b46b;
+    padding:5px 10px;
+    color:#fff;
+    margin-bottom:15px;
+}

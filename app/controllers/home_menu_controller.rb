@@ -1,7 +1,7 @@
 class HomeMenuController < ApplicationController
   # 展现添加菜单极富文本的页面
   def new
-    @node_id=params['nodeId']
+    @parent_id=params['nodeId']
     @home_page=HomePage.new
     render partial:'home_menu/new'
   end

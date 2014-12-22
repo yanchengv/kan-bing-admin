@@ -61,9 +61,6 @@
         return false
     }
     function setRemoveBtn(treeId, treeNode) {  //判断是否为根结点,根结点不可删除
-        if (treeNode.level == 0)
-            return false;
-        else
             return true;
     }
     function addHoverDom(treeId,treeNode){
@@ -91,15 +88,25 @@
     }
     function showRenameBtn(treeId, treeNode){
         var treeObj = $.fn.zTree.getZTreeObj(treeId);
-        if ((''+treeNode.id).indexOf("_") > 0 || treeNode.level==0) {
-            return false
-        }else{
             return true
-        }
-    } ;
 
+    } ;
+//    添加子菜单
     function addChildMenu(treeId,treeNode){
-        var id=treeNode['id']
+        var id=treeNode['id'] //父节点Id
+        $.ajax({
+            url:'home_menu/new',
+            type:'get',
+            data:{nodeId:id},
+            success:function(data){
+                $('#showHomePage').html(data)
+            }
+        })
+    };
+
+//    添加一级菜单
+    function addMainMenu(parentId){
+        var id=parentId //父节点Id为0
         $.ajax({
             url:'home_menu/new',
             type:'get',
@@ -115,9 +122,18 @@
         $.fn.zTree.init($("#homeMenuTree"), setting, homeMenus);
     });
     //-->
+//    当点击添加新页面按钮时，默认添加的时一级菜单，一级菜单parent_id=0
+
+
 </SCRIPT>
 <div class="zTreeDemoBackground menu_box col-md-11">
-  <ul id="homeMenuTree" class="ztree col-md-2"></ul>
+  <div class="col-md-2">
+    <button class="add_btn" onclick=addMainMenu(0)>添加新页面</button>
+    <ul id="homeMenuTree" class="ztree" style="width:100%">
+
+    </ul>
+  </div>
+
   <!--添加编辑富文本的显示-->
   <div id="showHomePage" class="col-md-9" style="">
 

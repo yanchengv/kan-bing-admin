@@ -67,10 +67,10 @@ class Admin2 < ActiveRecord::Base
     # 判断此科室是否已经存在管理员
     @is_admin=Admin2.where(hospital_id:self.hospital_id,department_id:self.department_id)
     #判断科室是否存在默认菜单
-    @is_home_menu= HomeMenu.where(name:'导航菜单',hospital_id:self.hospital_id,department_id:self.department_id)
+    @is_home_menu= HomeMenu.where(name:'home',parent_id:0,hospital_id:self.hospital_id,department_id:self.department_id)
     if @is_admin.empty? &&@is_home_menu.empty?
-      # 如果医院科室第一次添加管理员则默认添加菜单root
-      @home_menu= HomeMenu.new(name:'导航菜单',hospital_id:self.hospital_id,department_id:self.department_id,show_in_menu:false,show_in_header:false,show_in_footer:false)
+      # 如果医院科室第一次添加管理员则默认添加菜单
+      @home_menu= HomeMenu.new(name:'home',hospital_id:self.hospital_id,department_id:self.department_id,parent_id:0,show_in_menu:false,show_in_header:false,show_in_footer:false)
       @home_menu.save
 
     end
