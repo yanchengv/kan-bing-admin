@@ -69,7 +69,7 @@
 <% else %>
 <div id="search_div" style="margin-bottom: 10px">
   省：<select  id="doctor_pro_id" name="doctor_pro_id" onchange="doc_search_pro()" >
-  <option value="">---请选择---</option>
+  <option value="">全部</option>
   <% if !@provinces.nil? && !@provinces.empty? %>
       <% @provinces.each do |pro| %>
           <option id='serch_pro_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
@@ -77,7 +77,7 @@
   <% end %>
 </select>
   市：<span id="search_city_id"><select id="doctor_city_id" name="doctor[city_id]" onchange="doc_search_city()" >
-  <option value="all">---请选择---</option>
+  <option value="all">全部</option>
   <% if !@cities.nil? && !@cities.empty? %>
       <% @cities.each do |city| %>
           <option id='serch_city_<%= city.id %>' value="<%= city.id %>"><%= city.name %></option>
@@ -85,7 +85,7 @@
   <% end %>
 </select></span>
   医院：<span id="search_hos_id"><select  id="doctor_hos_id" name="doctor_hos_id" onchange="doc_search_hos()" >
-  <option value="">---请选择---</option>
+  <option value="">全部</option>
   <% if !@hospitals.nil? && !@hospitals.empty? %>
       <% @hospitals.each do |hos| %>
           <option id='serch_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
@@ -93,7 +93,7 @@
   <% end %>
 </select></span>
   科室：<span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" onchange="doc_search_dep()" >
-    <option value="all">---请选择---</option>
+    <option value="all">全部</option>
   <% if !@departments.nil? && !@departments.empty? %>
       <% @departments.each do |dep| %>
           <option id='serch_dep_<%= dep.id %>' value="<%= dep.id %>"><%= dep.name %></option>
@@ -179,7 +179,7 @@
         url: "/doctors/show_index",
         datatype: "json",
         height: "auto",
-        colNames:['ID','','姓名首字母简拼','姓名', '证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','职称','职位','学习经历','专长','发表论文','荣誉奖励','毕业学校','毕业时间','说明'],
+        colNames:['ID','','姓名首字母简拼','姓名', '证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','职称','职位','学习经历','专业特长','科研论文','荣誉奖励','毕业学校','毕业时间','执业经历'],
         colModel:[
 //            {name:'act',index:'act', width:75,sortable:false},
             {name:'id',index:'id', width:120, sorttype:"int", hidden:true,search:false },
@@ -205,8 +205,8 @@
             {name:'city_name',index:'city_name', width:100,  editable: true ,search:false },
             {name:'hospital_name',index:'hospital_name', width:100, editable: true,search:false  },
             {name:'department_name',index:'department_name', width:100, editable: true,search:false  },
-            {name:'citizenship',index:'citizenship', width:50,search:false },
-            {name:'nationality',index:'nationality', width:50,search:false },
+            {name:'citizenship',index:'citizenship', width:50,search:false ,hidden:true},
+            {name:'nationality',index:'nationality', width:50,search:false  ,hidden:true},
             {name:'mobile_phone',index:'mobile_phone', width:100, align:"right", editable: true,searchoptions: { sopt: ['in']} },
             {name:'email',index:'email', width:130, align:"right", editable: true ,searchoptions: { sopt: ['in']}},
             {name:'professional_title',index:'professional_title', width:80,align:"right",editable: true,search:false },
@@ -314,9 +314,6 @@
 //    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '修改', caption: '修改',id:'updateDoctor', onClickButton: updateDoctor});
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailDoctor', onClickButton: sendEmailDoctor});
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhoneDoctor', onClickButton: sendPhoneDoctor});
-    <% if current_user.admin_type != '科室管理员'%>
-        $("#list12").navButtonAdd('#pager12', {position: 'last', title: '分配医院和科室', caption: '分配医院和科室',id:'matchDoctor', onClickButton: matchDoctor});
-    <% end %>
 
     function matchDoctor() {
         if (selectedIds.length>0) {
@@ -569,7 +566,7 @@
         }else{
             two_blank = true
         }
-        if(two_blank && credential_type_number_flag && name_flag&&email_flag && phone_flag && birthday_flag){
+        if(credential_type_number_flag && name_flag&&email_flag && phone_flag){
             create_or_update()
         }else{
             alert("表单填写有误，不能提交表单！");

@@ -14,7 +14,7 @@
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
 <% else %>
   医院：<select  id="patient_hos_id" onchange="pat_search_hos()" >
-  <option value="">---请选择---</option>
+  <option value="">全部</option>
   <% if !@hospitals.empty? && !@hospitals.nil?  %>
       <% @hospitals.each do |hos| %>
           <option id='search_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
@@ -22,7 +22,7 @@
   <% end %>
 </select>
   科室：<span id="search_dep_id"><select id="patient_dep" onchange="pat_search_dep()" >
-  <option value="all">---请选择---</option>
+  <option value="all">全部</option>
   <% if !@departments.nil? && !@departments.empty? %>
       <% @departments.each do |hos| %>
           <option id='serach_dep_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
@@ -129,8 +129,8 @@
             {name:'city_name',index:'city_name', width:100,hidden:true,search:false },
             {name:'hospital.name',index:'hospital.name', width:100,search:false },
             {name:'department.name',index:'department.name', width:100,search:false },
-            {name:'citizenship',index:'citizenship', width:50,search:false },
-            {name:'nationality',index:'nationality', width:50,search:false },
+            {name:'citizenship',index:'citizenship', width:50,search:false  ,hidden:true},
+            {name:'nationality',index:'nationality', width:50,search:false  ,hidden:true},
             {name:'mobile_phone',index:'mobile_phone', width:100, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
             {name:'email',index:'email', width:130, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
             {name:'education',index:'education', width:100, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
@@ -424,7 +424,7 @@
         }else{
             two_blank = true
         }
-        if(two_blank == false || credential_type_number_flag!=true||name_flag!=true||email_flag==false||phone_flag==false||credential_type_number_flag==false||birthday_flag==false){
+        if(credential_type_number_flag!=true||name_flag!=true||email_flag==false||phone_flag==false||credential_type_number_flag==false){
             alert("表单填写有误，不能提交表单！");
         }else{
             create_or_update()
