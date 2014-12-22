@@ -1,4 +1,4 @@
-<select id="doctor_hos_id" name="doctor[hospital_id]" onchange="doc_search_hos()" ><option value="">---请选择---</option>
+<select id="doctor_hos_id" name="doctor[hospital_id]" onchange="doc_search_hos()" ><option value="">全部</option>
 <% if !@hospitals.nil? %>
     <% if !@hospitals.empty? %>
         <% @hospitals.each do |hos| %>

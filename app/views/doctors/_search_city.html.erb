@@ -1,4 +1,4 @@
-<select id="doctor_city_id" name="doctor[city_id]" onchange="doc_search_city()" ><option value="">---请选择---</option>
+<select id="doctor_city_id" name="doctor[city_id]" onchange="doc_search_city()" ><option value="">全部</option>
 <% if !@cities.nil? %>
     <% if !@cities.empty? %>
         <% @cities.each do |city| %>
