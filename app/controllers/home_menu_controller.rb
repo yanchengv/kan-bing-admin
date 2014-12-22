@@ -1,7 +1,7 @@
 class HomeMenuController < ApplicationController
   # 展现添加菜单极富文本的页面
   def new
-    @parent_id=params['nodeId']
+    @node_id=params['nodeId']
     @home_page=HomePage.new
     render partial:'home_menu/new'
   end
@@ -36,8 +36,28 @@ class HomeMenuController < ApplicationController
      render partial: 'home_menu/show'
   end
 
+  # 获取编辑菜单及内容
+  def edit
+    node_id=params['nodeId']
+    @home_menu=HomeMenu.where(id:node_id).first
+    @home_page=HomePage.where(home_menu_id:node_id).first
+    @home_menu_id= @home_page.home_menu_id
+    render partial: 'home_menu/edit'
+  end
+  #  编辑后保存
+  def save
+    home_menu_id=params['home_page']['home_menu_id']
+    home_page_content=params['home_page']['content']
+    name=params['home_page']['name']
+    @home_menu=HomeMenu.where(id:home_menu_id).first
+    @home_menu.update_attributes(name:name)
 
 
+    @home_page=HomePage.where(home_menu_id:home_menu_id).first
+    @home_page.update_attributes(content:home_page_content)
+    render json:'success'
+
+  end
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_home_page

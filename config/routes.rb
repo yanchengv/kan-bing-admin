@@ -334,6 +334,8 @@ Rails.application.routes.draw do
     get 'new',to:'home_menu#new'
     get 'show',to:'home_menu#show'
     post 'create',to:'home_menu#create'
+    get 'edit',to:'home_menu#edit'
+    post 'save',to: 'home_menu#save'
   end
   end
   resource :home_pages
