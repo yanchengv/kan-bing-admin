@@ -3,6 +3,7 @@ class HomeMenuController < ApplicationController
   def new
     @parent_id=params['nodeId']
     @home_page=HomePage.new
+    @home_menu=HomeMenu.new
     render partial:'home_menu/new'
   end
 
@@ -10,15 +11,16 @@ class HomeMenuController < ApplicationController
   def create
     menu_pra={}
     home_page_pra={}
-    menu_pra[:parent_id]=params['home_page']['parent_id']
-    menu_pra[:name]=params['home_page']['name']
+    menu_pra[:parent_id]=params['home_menu']['parent_id']
+    menu_pra[:name]=params['home_menu']['name']
+    menu_pra[:show_in_menu]=params['home_menu']['show_in_menu']
     menu_pra[:hospital_id]=current_user.hospital_id
     menu_pra[:department_id]=current_user.department_id
     @home_menu=HomeMenu.new(menu_pra)
     @home_menu.save
 
     home_page_pra[:home_menu_id]=@home_menu.id
-    home_page_pra[:content]=params['home_page']['content']
+    home_page_pra[:content]=params['home_menu']['content']
     home_page_pra[:hospital_id]=current_user.hospital_id
     home_page_pra[:department_id]=current_user.department_id
     @home_page=HomePage.new(home_page_pra)
@@ -46,11 +48,14 @@ class HomeMenuController < ApplicationController
   end
   #  编辑后保存
   def save
-    home_menu_id=params['home_page']['home_menu_id']
-    home_page_content=params['home_page']['content']
-    name=params['home_page']['name']
+    menu_pra={}
+    menu_pra[:name]=params['home_menu']['name']
+    menu_pra[:show_in_menu]=params['home_menu']['show_in_menu']
+
+    home_menu_id=params['home_menu']['home_menu_id']
+    home_page_content=params['home_menu']['content']
     @home_menu=HomeMenu.where(id:home_menu_id).first
-    @home_menu.update_attributes(name:name)
+    @home_menu.update_attributes(menu_pra)
 
 
     @home_page=HomePage.where(home_menu_id:home_menu_id).first
@@ -62,8 +67,16 @@ class HomeMenuController < ApplicationController
   def destroy
      id=params[:nodeId]
       @home_menu=HomeMenu.where(id:id).first
+      @home_menus=HomeMenu.where(parent_id:id)
      if  @home_menu
        @home_menu.destroy
+       if !@home_menus.empty?
+         # 同时删除子菜单
+         @home_menus.each do |menu|
+           menu.destroy
+         end
+       end
+
      end
     render json:'success'
   end
