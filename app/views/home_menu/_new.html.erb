@@ -3,10 +3,11 @@
     <%=f.text_field :name ,:class => "home_menu_title"%><br />
     <%= label_tag(:content,'内容：',:class => "home_menu_cont ent")%><br />
     <%= f.kindeditor :content %>
-
     <%=f.hidden_field :parent_id, value: @parent_id%>
     <%= label_tag(:show_in_menu,'在菜单中显示：',:class => "home_menu_cont ent")%><br />
-    <%=f.check_box :show_in_menu%>在网站菜单中显示这个页面
+    <%=f.check_box :show_in_menu%>在网站菜单中显示这个页面; <br />
+    <%= label_tag(:link_url,'自定义页面url路径（用来覆盖默认创建的url,例如：about_me）：',:class => "home_menu_cont ent")%><br />
+    <%=f.text_field :link_url%>
     <br />
     <%=f.submit '保存'%>
     <%= button_tag '取消',type:'button'%>
