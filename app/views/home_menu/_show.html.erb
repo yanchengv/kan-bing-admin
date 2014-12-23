@@ -1,5 +1,8 @@
 <style>
 
+    .add,.edit,.remove{
+        margin:0 3px !important;
+    }
 
     .select2-container {
         width: 170px;
@@ -151,16 +154,16 @@
 
 
 </SCRIPT>
-<div class="zTreeDemoBackground menu_box col-md-11">
-  <div class="col-md-2" style="border-right:1px solid #dcdcdc;">
+<div class="zTreeDemoBackground menu_box col-md-12">
+  <div class="col-md-3" style="border-right:1px solid #dcdcdc;">
     <button class="add_btn" onclick=addMainMenu(0)>添加新页面</button>
-    <ul id="homeMenuTree" class="ztree" style="width:100%">
+    <ul id="homeMenuTree" class="ztree" style="width:100%;overflow-x:auto;max-width:400px;">
 
     </ul>
   </div>
 
   <!--添加编辑富文本的显示-->
-  <div id="showHomePage" class="col-md-9" style="">
+  <div id="showHomePage" class="col-md-8" style="">
 
   </div>
 </div>
