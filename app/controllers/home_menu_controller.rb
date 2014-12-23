@@ -14,6 +14,7 @@ class HomeMenuController < ApplicationController
     menu_pra[:parent_id]=params['home_menu']['parent_id']
     menu_pra[:name]=params['home_menu']['name']
     menu_pra[:show_in_menu]=params['home_menu']['show_in_menu']
+    menu_pra[:link_url]=params['home_menu']['link_url']
     menu_pra[:hospital_id]=current_user.hospital_id
     menu_pra[:department_id]=current_user.department_id
     @home_menu=HomeMenu.new(menu_pra)
@@ -21,6 +22,7 @@ class HomeMenuController < ApplicationController
 
     home_page_pra[:home_menu_id]=@home_menu.id
     home_page_pra[:content]=params['home_menu']['content']
+    home_page_pra[:link_url]=params['home_menu']['link_url']
     home_page_pra[:hospital_id]=current_user.hospital_id
     home_page_pra[:department_id]=current_user.department_id
     @home_page=HomePage.new(home_page_pra)
@@ -49,17 +51,22 @@ class HomeMenuController < ApplicationController
   #  编辑后保存
   def save
     menu_pra={}
+    home_page_pra={}
     menu_pra[:name]=params['home_menu']['name']
     menu_pra[:show_in_menu]=params['home_menu']['show_in_menu']
+    menu_pra[:link_url]=params['home_menu']['link_url']
 
     home_menu_id=params['home_menu']['home_menu_id']
-    home_page_content=params['home_menu']['content']
+
+    home_page_pra[:content]=params['home_menu']['content']
+    home_page_pra[:link_url]=params['home_menu']['link_url']
+
     @home_menu=HomeMenu.where(id:home_menu_id).first
     @home_menu.update_attributes(menu_pra)
 
 
     @home_page=HomePage.where(home_menu_id:home_menu_id).first
-    @home_page.update_attributes(content:home_page_content)
+    @home_page.update_attributes(home_page_pra)
     render json:'success'
 
   end
