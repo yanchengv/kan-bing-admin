@@ -33,11 +33,6 @@ class Patient < ActiveRecord::Base
     else
       self.name = id
     end
-    if self.birthday
-      self.birthday = birthday
-    else
-      self.birthday=Time.now
-    end
     self.is_checked = 0
     self.is_activated = 0
   end
@@ -47,11 +42,6 @@ class Patient < ActiveRecord::Base
       self.name = name
     else
       self.name = id
-    end
-    if self.birthday
-      self.birthday = birthday
-    else
-      self.birthday=Time.now
     end
   end
 
