@@ -12,13 +12,28 @@
 
 
 <script>
-     var options2={
-         success:function(){
-            alert("成功")
-         }
-     }
+    var options={
+        success:function(data){
+            $.ajax({
+                type:'get',
+                url:'home_menu/show',
+                success:function(data){
+                    $("#rightContent").html(data)
+                }
+            });
+        },
+        error:function(){
+            $.ajax({
+                type:'get',
+                url:'home_menu/show',
+                success:function(data){
+                    $("#rightContent").html(data)
+                }
+            });
+        }
+    }
     $('#home_menu_form').submit(function () {
-        $(this).ajaxSubmit();
+        $(this).ajaxSubmit(options);
         return false;
     });
 </script>
