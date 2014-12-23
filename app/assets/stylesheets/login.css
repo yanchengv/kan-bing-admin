@@ -2,6 +2,7 @@
     background: url('login_bg.png') no-repeat center center;
     width: 340px;
     height: 248px;
+    cursor:pointer;
     position:absolute;
     top:25%;
     left:50%;
