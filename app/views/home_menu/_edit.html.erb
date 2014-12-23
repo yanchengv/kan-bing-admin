@@ -7,7 +7,10 @@
     <%=f.check_box :show_in_menu,value:@home_menu.show_in_menu%>在网站菜单中显示这个页面;<br />
     <%=f.hidden_field :home_menu_id, value: @home_menu_id%>
     <%= label_tag(:link_url,'自定义页面url路径（用来覆盖默认创建的url,例如：about_me）：',:class => "home_menu_cont ent")%><br />
-    <%=f.text_field :link_url,value:@home_menu.link_url%>
+    <%=f.text_field :link_url,value:@home_menu.link_url%> <br />
+
+    <%= label_tag(:redirect_url,'重定向这个页面到其他的网站或页面(例如：http://www.kanbing365.com)：',:class => "home_menu_cont ent")%><br />
+    <%=f.text_field :redirect_url,value:@home_menu.redirect_url%>
     <br />
     <%=f.submit '保存'%>
     <%= button_tag '取消',type:'button'%>
