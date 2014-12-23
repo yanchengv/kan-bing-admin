@@ -336,6 +336,7 @@ Rails.application.routes.draw do
     post 'create',to:'home_menu#create'
     get 'edit',to:'home_menu#edit'
     post 'save',to: 'home_menu#save'
+    delete 'destroy',to:'home_menu#destroy'
   end
   end
   resource :home_pages

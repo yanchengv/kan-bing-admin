@@ -44,8 +44,8 @@
         },
         callback: {
             /*编辑与删除回调*/
-            beforeEditName: beforeEditName
-
+            beforeEditName: beforeEditName,
+            beforeRemove: beforeRemove
         }
     };
     function   beforeEditName(treeId,treeNode){
@@ -59,7 +59,32 @@
             }
         })
         return false
-    }
+    };
+//    点击删除按钮时触发的方法
+    function  beforeRemove(treeId,treeNode){
+        var nodeId=treeNode['id'];//要删除的节点id
+        var msg = treeNode.isParent ? "确定删除父节点？":"确定删除此节点？"
+        if (confirm(msg)==true){
+            $.ajax({
+                type:'delete',
+                url:'home_menu/destroy',
+                data:{nodeId:nodeId} ,
+                success:function(){
+                    $.ajax({
+                        type:'get',
+                        url:'home_menu/show',
+                        success:function(data){
+                            $("#rightContent").html(data)
+                        }
+                    });
+                }
+            })
+            return true
+        }
+        return false
+
+
+    };
     function setRemoveBtn(treeId, treeNode) {  //判断是否为根结点,根结点不可删除
             return true;
     }
@@ -140,3 +165,6 @@
   </div>
 </div>
 
+<div id="dialog-confirm" title="是否删除此页面">
+
+</div>

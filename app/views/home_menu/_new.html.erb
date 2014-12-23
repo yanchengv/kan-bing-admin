@@ -1,4 +1,4 @@
-<%= form_for @home_page,url:{action: :create,controller: :home_menu},method:'post',html: {multipart: true, id: 'home_menu_form'} do |f| %>
+<%= form_for @home_page,html: {multipart: true, id: 'home_menu_form'} do |f| %>
     <%= label :name,'标题',:class => "home_menu_content"%><br />
     <%=f.text_field :name ,:class => "home_menu_title"%><br />
     <%= label_tag(:content,'内容：',:class => "home_menu_content")%><br />
@@ -12,6 +12,28 @@
 
 
 <script>
+  var options={
+      type:'post',
+      url:'home_menu/create',
+      success:function(data){
+          $.ajax({
+              type:'get',
+              url:'home_menu/show',
+              success:function(data){
+                  $("#rightContent").html(data)
+              }
+          });
+      },
+      error:function(){
+          $.ajax({
+              type:'get',
+              url:'home_menu/show',
+              success:function(data){
+                  $("#rightContent").html(data)
+              }
+          });
+      }
+  };
     $('#home_menu_form').submit(function () {
         $(this).ajaxSubmit(options);
         return false;

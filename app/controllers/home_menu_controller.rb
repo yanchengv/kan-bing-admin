@@ -58,6 +58,15 @@ class HomeMenuController < ApplicationController
     render json:'success'
 
   end
+
+  def destroy
+     id=params[:nodeId]
+      @home_menu=HomeMenu.where(id:id).first
+     if  @home_menu
+       @home_menu.destroy
+     end
+    render json:'success'
+  end
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_home_page
