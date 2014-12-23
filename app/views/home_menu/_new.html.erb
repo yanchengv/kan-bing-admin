@@ -7,7 +7,10 @@
     <%= label_tag(:show_in_menu,'在菜单中显示：',:class => "home_menu_cont ent")%><br />
     <%=f.check_box :show_in_menu%>在网站菜单中显示这个页面; <br />
     <%= label_tag(:link_url,'自定义页面url路径（用来覆盖默认创建的url,例如：about_me）：',:class => "home_menu_cont ent")%><br />
-    <%=f.text_field :link_url%>
+    <%=f.text_field :link_url%><br />
+
+    <%= label_tag(:redirect_url,'自定义页面url路径（用来覆盖默认创建的url,例如：about_me）：',:class => "home_menu_cont ent")%><br />
+    <%=f.text_field :redirect_url%>
     <br />
     <%=f.submit '保存'%>
     <%= button_tag '取消',type:'button'%>

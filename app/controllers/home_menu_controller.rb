@@ -15,14 +15,17 @@ class HomeMenuController < ApplicationController
     menu_pra[:name]=params['home_menu']['name']
     menu_pra[:show_in_menu]=params['home_menu']['show_in_menu']
     menu_pra[:link_url]=params['home_menu']['link_url']
+    menu_pra[:redirect_url]=params['home_menu']['redirect_url']
     menu_pra[:hospital_id]=current_user.hospital_id
     menu_pra[:department_id]=current_user.department_id
+
     @home_menu=HomeMenu.new(menu_pra)
     @home_menu.save
 
     home_page_pra[:home_menu_id]=@home_menu.id
     home_page_pra[:content]=params['home_menu']['content']
     home_page_pra[:link_url]=params['home_menu']['link_url']
+    home_page_pra[:redirect_url]=params['home_menu']['redirect_url']
     home_page_pra[:hospital_id]=current_user.hospital_id
     home_page_pra[:department_id]=current_user.department_id
     @home_page=HomePage.new(home_page_pra)
@@ -55,12 +58,13 @@ class HomeMenuController < ApplicationController
     menu_pra[:name]=params['home_menu']['name']
     menu_pra[:show_in_menu]=params['home_menu']['show_in_menu']
     menu_pra[:link_url]=params['home_menu']['link_url']
+    menu_pra[:redirect_url]=params['home_menu']['redirect_url']
 
     home_menu_id=params['home_menu']['home_menu_id']
 
     home_page_pra[:content]=params['home_menu']['content']
     home_page_pra[:link_url]=params['home_menu']['link_url']
-
+    home_page_pra[:redirect_url]=params['home_menu']['redirect_url']
     @home_menu=HomeMenu.where(id:home_menu_id).first
     @home_menu.update_attributes(menu_pra)
 
@@ -95,8 +99,8 @@ class HomeMenuController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def home_page_params
-    params.permit(:id,:name,:parent_id,:hospital_id,:department_id,:content,:show_in_menu,:link_url,:skip_to_first_child,:show_in_header,:show_in_footer,:depth)
-    params.require(:home_pages).permit(:id,:home_menu_id,:name,:content,:hospital_id,:department_id,:position,:link_url)
+    params.permit(:id,:name,:parent_id,:hospital_id,:department_id,:content,:show_in_menu,:link_url,:redirect_url,:skip_to_first_child,:show_in_header,:show_in_footer,:depth)
+    params.require(:home_pages).permit(:id,:home_menu_id,:name,:content,:hospital_id,:department_id,:position,:link_url,:redirect_url)
 
   end
 end
