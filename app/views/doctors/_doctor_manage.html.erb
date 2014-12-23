@@ -699,6 +699,13 @@
                 $('#search_hos_id').html(data)
             }
         })
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_department?pro_id=' + pro_id,
+            success: function (data) {
+                $('#search_dep_id').html(data)
+            }
+        })
 //        var pro_name = $('#s2id_doctor_pro_id').children('.select2-choice').children('.select2-chosen').html()
 //        if (pro_name.indexOf('请选择')>0){
 //            $('#doctor_pro_name').val(pro_name)

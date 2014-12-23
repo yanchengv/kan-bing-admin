@@ -17,7 +17,8 @@ class Admin2sController < ApplicationController
       admin_type = '科室管理员'
     elsif params[:admin_type] == 'web_admin'
       admin_type = '网站管理员'
-    else
+    elsif params[:admin_type] == 'ins_admin'
+      admin_type = '机构管理员'
     end
     sql = 'true'
     if current_user.admin_type == '医院管理员'
@@ -80,6 +81,10 @@ class Admin2sController < ApplicationController
   # POST /admins
   # POST /admins.json
   def create
+    if params[:admin_type] == '机构管理员'
+      params[:department_id]=pk_id_rules
+      params[:hospital_id]=params[:department_id]
+    end
 
     @admin = Admin2.new(admin_params)
     if @admin.password.nil? || @admin.password == ''
@@ -184,6 +189,7 @@ class Admin2sController < ApplicationController
       types['科室管理员']='科室管理员'
       types['医院管理员']='医院管理员'
       types['网站管理员']='网站管理员'
+      types['机构管理员']='机构管理员'
     end
     render :json => {:admin_type => types.as_json}
   end

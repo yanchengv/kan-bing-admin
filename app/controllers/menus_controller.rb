@@ -43,13 +43,17 @@ class MenusController < ApplicationController
         # @menu = {id:menu.id,name:menu.name,parent_name:parent_name,priorities:@per_names,uri:menu.uri}
         dep_flag='否'
         hos_flag='否'
+        ins_flag='否'
         if menu.dep_admin_show
           dep_flag='是'
         end
         if menu.hos_admin_show
           hos_flag='是'
         end
-        @menu = {id:menu.id,name:menu.name,parent_id:parent_name,uri:menu.uri,dep_admin_show:dep_flag,hos_admin_show:hos_flag}
+        if menu.ins_admin_show
+          ins_flag='是'
+        end
+        @menu = {id:menu.id,name:menu.name,parent_id:parent_name,uri:menu.uri,dep_admin_show:dep_flag,hos_admin_show:hos_flag,ins_admin_show:ins_flag}
         @menus.push(@menu)
       end
     end
@@ -593,6 +597,9 @@ class MenusController < ApplicationController
     if params[:admin_type] == 'hos_admin'
       @menu.update(hos_admin_show:params[:flag])
     end
+    if params[:admin_type] == 'ins_admin'
+      @menu.update(ins_admin_show:params[:flag])
+    end
     render json:{success:true}
   end
 
@@ -604,6 +611,6 @@ class MenusController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def menu_params
-      params.permit(:name, :parent_id,:uri, :table_name, :model_class,:dep_admin_show,:hos_admin_show)
+      params.permit(:name, :parent_id,:uri, :table_name, :model_class,:dep_admin_show,:hos_admin_show,:ins_admin_show)
     end
 end

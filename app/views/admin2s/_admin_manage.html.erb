@@ -10,6 +10,7 @@
           <option value="web_admin">网站管理员</option>
           <option value="dep_admin">科室管理员</option>
           <option value="hos_admin">医院管理员</option>
+          <option value="ins_admin">机构管理员</option>
       <% end %>
     </select>
     姓名：<input type="text" id="search_name"> 邮箱：<input type="text" id="search_email">
@@ -256,7 +257,7 @@
             hos.removeAttr('disabled')
             dep.removeAttr('disabled')
         }
-        if (obj.value=='网站管理员'){
+        if (obj.value=='网站管理员' || obj.value=='机构管理员'){
             $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
             $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
             dep.val('')
