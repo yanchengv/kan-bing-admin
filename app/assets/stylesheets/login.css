@@ -39,11 +39,13 @@
     width:297px;
     height:49px;
     border:0px;
+    cursor:pointer;
     margin-top:10px;
     background:url("b.png") no-repeat -8px -8px;
 }
 .login_button:focus{
     border-width:0px;
+    cursor:pointer;
     outline-width:0px;
     background:url("pb.png") no-repeat -8px -8px;
 }
