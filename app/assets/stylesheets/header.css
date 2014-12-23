@@ -1,5 +1,7 @@
-
-
+body{margin:0;padding:0;}
+.yahei{
+    font-family: "Microsoft YaHei", Arial;
+}
 #menu li a {
     color: #fff;
     font-family: "Microsoft YaHei", Arial;
@@ -92,7 +94,6 @@
 .nologin_nav{
     height:49px;
     width:100%;
-    padding:0 15px;
     background:#313235;
     border-bottom:1px solid #2c2d30;
     color:#fff;
@@ -103,6 +104,7 @@
     font-family: "Microsoft YaHei",Arial;
     font-size:20px;
     float:left;
+    margin-left:15px;
     width:300px;
 }
 .nologin_menu{
