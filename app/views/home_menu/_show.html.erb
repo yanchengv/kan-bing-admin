@@ -63,7 +63,7 @@
 //    点击删除按钮时触发的方法
     function  beforeRemove(treeId,treeNode){
         var nodeId=treeNode['id'];//要删除的节点id
-        var msg = treeNode.isParent ? "确定删除父节点？":"确定删除此节点？"
+        var msg = treeNode.isParent ? "确定删除此页面以及所有子页面？":"确定删除此页面？"
         if (confirm(msg)==true){
             $.ajax({
                 type:'delete',
