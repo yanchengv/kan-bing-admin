@@ -649,6 +649,7 @@ class DoctorsController < ApplicationController
     end
     @my_photo = photo
     p @my_photo
+    p @doctor
     render partial: 'doctors/doctor_form'
   end
 
@@ -1158,6 +1159,9 @@ class DoctorsController < ApplicationController
 
   def search_department
     @departments = Department.where(hospital_id:params[:hos_id])
+    if params[:hos_id].nil? || params[:hos_id]==''
+      @departments=nil
+    end
     if !current_user.department_id.nil? && current_user.department_id != ''
       @departments = Department.where(id:current_user.department_id)
     end
