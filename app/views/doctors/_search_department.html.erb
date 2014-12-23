@@ -1,4 +1,4 @@
-<select id="doctor_dep" name="doctor[department_id]"  ><option value="all">全部</option>
+<select id="doctor_dep" name="doctor[department_id]" onchange="doc_search_dep()" ><option value="all">全部</option>
 <% if !@departments.nil? %>
     <% if !@departments.empty? %>
         <% @departments.each do |dep| %>

@@ -560,7 +560,7 @@
         check_phone(phone)
         check_name(name)
         check_email(email)
-        check_birthday(birthday)
+//        check_birthday(birthday)
         if (phone=='' && email==''){
             two_blank = false
         }else{
@@ -733,6 +733,7 @@
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()  + "&pro_id=" + pro_id + "&city_id=" + city_id + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val() }).trigger("reloadGrid")
     }
     function doc_search_dep(){
+        alert("a")
         var pro_id = $('#doctor_pro_id').val()
         var city_id = $('#doctor_city_id').val()
         $('#searchString').val('')
