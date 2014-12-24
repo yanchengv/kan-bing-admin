@@ -10,8 +10,8 @@
       <span class="home_menu_content2">（用来覆盖默认创建的url,例如：about_me）：</span><br />
     <%=f.text_field :link_url,value:@home_menu.link_url%> </p>
 
-    <p class="home_menu_content"><%= label_tag(:redirect_url,'重定向这个页面到其他的网站或页面',:class => "home_menu_content")%><br />
-      <span class="home_menu_content2">(例如：http://www.kanbing365.com)：</span><br />
+    <p class="home_menu_content"><%= label_tag(:redirect_url,'重定向这个页面到其他的网站或页面:',:class => "home_menu_content")%><br />
+      <span class="home_menu_content2">(例如：http://www.kanbing365.com)</span><br />
     <%=f.text_field :redirect_url,value:@home_menu.redirect_url%>
     </p>
     <div class="col-md-2" style="padding:0;"><%=f.submit '保存',:class=>"add_btn"%> </div>
