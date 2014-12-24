@@ -298,7 +298,7 @@
   -->
     <div>
       <%= f.label :学习经历 %><br>
-      <%= f.text_area :degree, cols:"47", rows:"3" %>
+      <%= f.text_area :degree, cols:"47", rows:"5" %>
     </div>
     <div class="">
       <%= f.label :专业特长 %><br>
@@ -446,18 +446,18 @@
             document.getElementById('<%=doc.marriage%>').setAttribute('selected', 'selected')
         }
 //        $('#s2id_doctor_degree').children('.select2-choice').children('.select2-chosen').html('<%#=doc.degree%>')
-        if (document.getElementById('<%=doc.degree%>')!=null) {
-            document.getElementById('<%=doc.degree%>').setAttribute('selected', 'selected')
-        }
+//        if (document.getElementById('<%#=doc.degree%>')!=null) {
+//            document.getElementById('<%#=doc.degree%>').setAttribute('selected', 'selected')
+//        }
 
         $('#s2id_doctor_citizenship').children('.select2-choice').children('.select2-chosen').html('<%=doc.citizenship%>')
         if (document.getElementById('<%=doc.citizenship%>')!=null) {
             document.getElementById('<%=doc.citizenship%>').setAttribute('selected', 'selected')
         }
 //        $('#s2id_doctor_professional_title').children('.select2-choice').children('.select2-chosen').html('<%=doc.professional_title%>')
-        if (document.getElementById('<%=doc.professional_title%>')!=null) {
-            document.getElementById('<%=doc.professional_title%>').setAttribute('selected', 'selected')
-        }
+//        if (document.getElementById('<%#=doc.professional_title%>')!=null) {
+//            document.getElementById('<%#=doc.professional_title%>').setAttribute('selected', 'selected')
+//        }
         $('#s2id_doctor_position').children('.select2-choice').children('.select2-chosen').html('<%=doc.position%>')
         if (document.getElementById('<%=doc.position%>')!=null) {
             document.getElementById('<%=doc.position%>').setAttribute('selected', 'selected')
