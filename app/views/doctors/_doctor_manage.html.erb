@@ -189,7 +189,7 @@
                     if (value==null || value=='') {
                         return "<img src=\'/default.png\' style=\'width:16px;height:23px\'>";
                     }else {
-                        return "<img src=\'http://mimas-open.oss-cn-hangzhou.aliyuncs.com/"+value+"\' style=\'width:16px;height:23px\'>";
+                        return "<img src=\'<%= Settings.aliyunOSS.photo_url %>"+value+"\' style=\'width:16px;height:23px\'>";
                     }
                 }
             },
