@@ -11,4 +11,6 @@ Rails.application.config.assets.precompile += %w( dialog-min.js )
 Rails.application.config.assets.precompile += %w( update_password.js )
 Rails.application.config.assets.precompile += %w( ajax_image_crop_upload.js )
 Rails.application.config.assets.precompile += %w( pat_ajax_image_crop_upload.js)
-Rails.application.config.assets.precompile += %w(  domain_manage.js)
+# Rails.application.config.assets.precompile += %w(  domain_manage.js)
+
+Rails.application.config.assets.precompile += ['page_blocks/*','domain_manage.js']
