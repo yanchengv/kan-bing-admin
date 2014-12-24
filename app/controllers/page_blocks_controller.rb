@@ -40,13 +40,11 @@ class PageBlocksController < ApplicationController
   # 获取模版
   def get_template
      block_type=params[:type]
-     @block_name=params[:name]
-     #添加的区块为医生列表时,默认本科室的所有医生(10条)
-     if block_type == 'doctor_list'
-       @doctors = doctors_default
-       @doctor = @doctors[0]
-     end
-    render partial: "page_blocks/templates/#{block_type}"
+     block_name=params[:name]
+     @page_block=PageBlock.new
+     data=@page_block.get_template  block_type,block_name,current_user
+     @page_block=data[:page_block]
+     render partial: "block_contents/#{block_type}_manage"
   end
 
   #获取科室或医院的前十条医生信息
