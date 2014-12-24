@@ -47,6 +47,7 @@ class PageBlock < ActiveRecord::Base
 
   end
 
+
   #获取科室或医院的前十条医生信息
   def doctors_default  current_user
     if !current_user.nil?
@@ -75,6 +76,33 @@ class PageBlock < ActiveRecord::Base
     end
     return @block_content
   end
+
+  # 添加内容或者修改内容时，把内容保存到模板进行模板更新
+  def add_content_template page_block_id
+    @page_block=PageBlock.where(id:page_block_id).first
+    block_type=@page_block.block_type #block_type必须是模版的名称
+    @block_contents = nil
+    @block_contents=BlockContent.where(block_id:page_block_id)
+
+    # 等同于controller 中的render partial:'page_blocks/templates/jianjie' 的功能
+    template = ActionView::Base.new(Rails.configuration.paths['app/views']).render(
+        :partial => "page_blocks/templates/#{block_type}",
+        :formats => :html,
+        :handlers => :erb,
+
+        :locals => {:@block_contents=>@block_contents,:@doctors=>@doctors,:@doctor=>@doctor}
+
+    )
+
+    pra={}
+    pra[:content]= template
+    @page_block.update_attributes(pra)
+    @flag=@page_block.save
+
+    data={page_block:@page_block}
+    return  data
+  end
+
   def set_default_value
     @hospital = Hospital.where(:id => self.hospital_id)
     self.hospital_name = @hospital.first.name if !@hospital.first.nil?
