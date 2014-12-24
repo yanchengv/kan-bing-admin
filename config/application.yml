@@ -10,11 +10,10 @@ defaults: &defaults
       server: 'oss.aliyuncs.com'
       access_key_id: 'h17xgVZatOgQ6IeJ'
       secret_access_key: '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
-      default_bucket: 'mimas-open'
+      default_bucket: 'dev-mimas'
       video_bucket: 'dev-mimas'
       oss_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
-
-  aliyun_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
+      video_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
 development:
   <<: *defaults
 
@@ -32,5 +31,5 @@ production:
       secret_access_key: '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
       default_bucket: 'mimas-open'
       video_bucket: 'webadmin-video'
-      oss_url: 'http://webadmin-video.oss-cn-beijing.aliyuncs.com/'
-  aliyun_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
+      oss_url: 'http://mimas-open.oss-cn-beijing.aliyuncs.com/'
+      video_url: 'http://webadmin-video.oss-cn-beijing.aliyuncs.com/'

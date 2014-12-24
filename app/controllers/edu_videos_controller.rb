@@ -143,10 +143,10 @@ class EduVideosController < ApplicationController
     @video = EduVideo.find(params[:id])
     @doc = Doctor.find_by_id(params[:doctor_id])
     if !@video.video_url.nil? && (@video.video_url != params[:video_url])
-      delte_file_from_aliyun(@video.video_url)  #删除之前的file
+      delte_video_file_from_aliyun(@video.video_url)  #删除之前的file
     end
     if !@video.image_url.nil? && (@video.image_url != params[:image_url])
-      delte_file_from_aliyun(@video.image_url)
+      delte_video_file_from_aliyun(@video.image_url)
     end
     if @video.update_attributes(:name => params[:name], :content => params[:content], :doctor_name => @doc.nil? ? '' : @doc.name,
                                 :video_time => params[:video_time], :image_url => params[:image_url], :video_url => params[:video_url],
@@ -229,10 +229,10 @@ class EduVideosController < ApplicationController
   # DELETE /edu_videos/1.json
   def destroy
     if !@edu_video.image_url.nil?
-      delte_file_from_aliyun(@edu_video.image_url) #删除对应的缩略图
+      delte_video_file_from_aliyun(@edu_video.image_url) #删除对应的缩略图
     end
     if !@edu_video.video_url.nil?
-      delte_file_from_aliyun(@edu_video.video_url) #删除对应的视频
+      delte_video_file_from_aliyun(@edu_video.video_url) #删除对应的视频
     end
    if @edu_video.destroy
      render :json => {:success => true}

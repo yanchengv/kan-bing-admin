@@ -128,8 +128,8 @@ class DomainController < ApplicationController
   def upload_logo
     file=params[:logoUpload]
     tmpfile = getFileName(file.original_filename.to_s)
-    uuid = upload_video_img_bucket(file)
-    url = Settings.aliyun_url + uuid
+    uuid = uploadFileToAliyun(file)
+    url = Settings.aliyunOSS.oss_url + uuid
     if true
       render :json => {flag: true, url: url}
     else

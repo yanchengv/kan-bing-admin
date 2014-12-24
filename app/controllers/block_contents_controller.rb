@@ -118,8 +118,8 @@ class BlockContentsController < ApplicationController
   def upload_image
     file=params[:edu_video].nil? ? params[:image] : params[:edu_video][:image]
     tmpfile = getFileName(file.original_filename.to_s)
-    uuid = upload_video_img_bucket(file)
-    url = "http://dev-mimas.oss-cn-beijing.aliyuncs.com/" << uuid
+    uuid = uploadFileToAliyun(file)
+    url = Settings.aliyunOSS.oss_url << uuid
     if true
       render :json => {flag: true, url: url}
     else

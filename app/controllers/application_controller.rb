@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   def access_flag
     menu_name = params[:menu_name]
     flag=false
-    @menu_permissions = MenuPermission.joins(role2s_menu_permissions:[{role2: [{admin2s_role2s: :admin2}]}]).where(admin2s:{id:current_user.id})
+    @menu_permissions = MenuPermission.joins(role2s_menu_permissions: [{role2: [{admin2s_role2s: :admin2}]}]).where(admin2s: {id: current_user.id})
     if !@menu_permissions.empty?
       @menu_permissions.each do |menu_permission|
         if menu_permission.menu.name == menu_name
@@ -34,25 +34,20 @@ class ApplicationController < ActionController::Base
     #if !file.original_filename.empty?
     #连接信息
     Aliyun::OSS::Base.establish_connection!(
-        :server => 'oss.aliyuncs.com', #可不填,默认为此项
+        :server => 'oss-cn-beijing.aliyuncs.com', #可不填,默认为此项
         :access_key_id => 'h17xgVZatOgQ6IeJ',
         :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
     )
-    mimas_dev_bucket = Bucket.find('mimas-open') #查找Bucket
+    bucket = Settings.aliyunOSS.default_bucket
+    mimas_dev_bucket = Bucket.find(bucket) #查找Bucket
     obj = mimas_dev_bucket.new_object #在此Bucket新建Object
     #生成一个随机的文件名 uuid+后缀类型的文件
     #obj.key = getFileName(file.original_filename)
-    obj.key = file
+    obj.key = getFileName(file.original_filename)
     obj.value= open(file)
     ##向dir目录写入文件
     obj.store
-    ##返回文件名称，保存到数据库中
-    if File.exist?(file)
-      File.delete(file)
-    end
-
     return obj.key
-    #end
   end
 
   def upload_video_img_bucket(file)
@@ -62,7 +57,7 @@ class ApplicationController < ActionController::Base
           :access_key_id => 'h17xgVZatOgQ6IeJ',
           :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
       )
-      video_image_bucket = Bucket.find('dev-mimas') #查找Bucket
+      video_image_bucket = Bucket.find(Settings.aliyunOSS.video_bucket) #查找Bucket
       obj = video_image_bucket.new_object #在此Bucket新建Object
       obj.key = getFileName(file.original_filename)
       #obj.key = file
@@ -91,9 +86,24 @@ class ApplicationController < ActionController::Base
         :access_key_id => 'h17xgVZatOgQ6IeJ',
         :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
     )
-   # mimas_open_bucket = Bucket.find(BUCKET) #查找Bucket
+    # mimas_open_bucket = Bucket.find(BUCKET) #查找Bucket
     begin
-      OSSObject.delete(file, 'dev-mimas') #删除文件
+      OSSObject.delete(file, Settings.aliyunOSS.default_bucket) #删除文件
+    rescue
+      puts 'delte  error'
+    end
+  end
+
+  #删除视频文件
+  def delte_video_file_from_aliyun(file)
+    Aliyun::OSS::Base.establish_connection!(
+        :server => 'oss-cn-beijing.aliyuncs.com', #可不填,默认为此项
+        :access_key_id => 'h17xgVZatOgQ6IeJ',
+        :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+    )
+    # mimas_open_bucket = Bucket.find(BUCKET) #查找Bucket
+    begin
+      OSSObject.delete(file, Settings.aliyunOSS.video_bucket) #删除文件
     rescue
       puts 'delte  error'
     end
