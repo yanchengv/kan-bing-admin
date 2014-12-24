@@ -19,7 +19,7 @@ class PhotosController < ApplicationController
     image.resize '150x210'
     tmpfile = getFileName(file.original_filename.to_s)
     image.write tmpfile
-    uuid = uploadFileToAliyun(tmpfile)
+    uuid = uploadFileToAliyun(file)
     @data=''
 
     # TODO file.exits? in aliyun
