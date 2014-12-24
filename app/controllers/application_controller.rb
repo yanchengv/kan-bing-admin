@@ -74,9 +74,9 @@ class ApplicationController < ActionController::Base
       prefix = UUIDTools::UUID.random_create.to_s
       last_fix_index = filename.rindex('.')
       last_fix = filename[last_fix_index..-1]
-
       filename = prefix.to_s + last_fix.to_s
     end
+    return filename
   end
 
   # delete object by filename
