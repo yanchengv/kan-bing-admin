@@ -1,8 +1,21 @@
 module SessionsHelper
   def sign_in(user)
-    remember_token = Admin2.new_remember_token
-    cookies.permanent[:remember_token] = remember_token
-    user.update_attribute(:remember_token, Admin2.encrypt(remember_token))
+    # 单点登录
+    # remember_token = Admin2.new_remember_token
+    # cookies.permanent[:remember_token] = remember_token
+    # user.update_attribute(:remember_token, Admin2.encrypt(remember_token))
+    # user.update_attribute(:sign_in_count,user.sign_in_count+1)
+    # self.current_user = user
+
+     # 多点登录
+     if !user.remember_token.nil?&&user.remember_token!=''
+       cookies.permanent[:remember_token] = user.remember_token
+     else
+       remember_token = Admin2.new_remember_token
+       cookies.permanent[:remember_token] = remember_token
+       user.update_attribute(:remember_token, Admin2.encrypt(remember_token))
+     end
+
     user.update_attribute(:sign_in_count,user.sign_in_count+1)
     self.current_user = user
   end
@@ -23,7 +36,8 @@ module SessionsHelper
     if params[:remember_token]
       remember_token = params[:remember_token]
     else
-      remember_token = Admin2.encrypt(cookies[:remember_token])
+      # remember_token = Admin2.encrypt(cookies[:remember_token])  #单点登录
+      remember_token = cookies[:remember_token]#多点登录
     end
     @current_user ||= Admin2.find_by(remember_token:remember_token)
   end
