@@ -1,8 +1,8 @@
 <%= form_for :home_menu,url:{action: :save,controller: :home_menu},method:'post',html: {multipart: true, id: 'home_menu_form'} do |f| %>
     <%= label :name,'标题',:class => "home_menu_content"%><br />
     <%=f.text_field :name ,value:@home_menu.name,:class => "home_menu_title"%><br />
-    <%= label_tag(:content,'内容：',value:@home_page.content,:class => "home_menu_content")%><br />
-    <%= f.kindeditor :content %>
+    <%= label_tag(:content,'内容：',:class => "home_menu_content")%><br />
+    <%= f.kindeditor :content,value:@home_page.content %>
     <p class="home_menu_content"><%= label_tag(:show_in_menu,'在菜单中显示：',:class => "home_menu_content")%><br />
     <span class="home_menu_content2"><%=f.check_box :show_in_menu,value:@home_menu.show_in_menu%>在网站菜单中显示这个页面;</span></p>
     <%=f.hidden_field :home_menu_id, value: @home_menu_id%>
