@@ -154,7 +154,7 @@ class DomainController < ApplicationController
      footer=params[:footer]
      par={}
      par[:hospital_id]=current_user.hospital_id
-     par[:department_id]=current_user.department.id
+     par[:department_id]=current_user.department_id
      domains=Domain.where(par)
      domains.each do |d|
        d.update_attributes(footer:footer)
