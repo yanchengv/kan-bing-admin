@@ -6,7 +6,7 @@
           <input type="hidden" name="block_id" id="block_id" value="<%= @page_block.id if !@page_block.nil? %>">
           <%
              if !@doctor.photo.nil?&&@doctor.photo!='' %>
-              <%= link_to image_tag("http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{@doctor.photo}", size: "75x105", alt: @doctor.name, class: "img-responsive index_doc_photo", id: 'img_url'),
+              <%= link_to image_tag(Settings.aliyunOSS.photo_url+@doctor.photo, size: "75x105", alt: @doctor.name, class: "img-responsive index_doc_photo", id: 'img_url'),
                           '#', :onclick => "showDoctorPage(#{@doctor.id}, 'str');return false;" %>
 
           <% else %>
@@ -34,7 +34,7 @@
             <% @doctors.limit(10).each do |doctor| %>
                 <li style="width:55px;height:77px">
                   <% if !doctor.photo.nil?&&doctor.photo!='' %>
-                      <%= link_to image_tag("http://mimas-open.oss-cn-hangzhou.aliyuncs.com/#{doctor.photo}",
+                      <%= link_to image_tag(Settings.aliyunOSS.photo_url+doctor.photo,
                                             id: 'img_url',
                                             src: doctor.photo,
                                             size: "55x77",

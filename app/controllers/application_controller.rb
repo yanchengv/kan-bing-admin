@@ -34,16 +34,16 @@ class ApplicationController < ActionController::Base
     #if !file.original_filename.empty?
     #连接信息
     Aliyun::OSS::Base.establish_connection!(
-        :server => 'oss-cn-beijing.aliyuncs.com', #可不填,默认为此项
+        :server => 'oss.aliyuncs.com', #可不填,默认为此项
         :access_key_id => 'h17xgVZatOgQ6IeJ',
         :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
     )
-    bucket = Settings.aliyunOSS.default_bucket
+    bucket = Settings.aliyunOSS.photo_buket
     mimas_dev_bucket = Bucket.find(bucket) #查找Bucket
     obj = mimas_dev_bucket.new_object #在此Bucket新建Object
     #生成一个随机的文件名 uuid+后缀类型的文件
     #obj.key = getFileName(file.original_filename)
-    obj.key = getFileName(file.original_filename)
+    obj.key = file
     obj.value= open(file)
     ##向dir目录写入文件
     obj.store
