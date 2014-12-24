@@ -2,6 +2,7 @@ class BlockContentsController < ApplicationController
   before_filter :signed_in_user
   before_action :set_block_content, only: [:show, :edit, :update, :destroy]
   skip_before_filter :oper_action
+  skip_before_filter :verify_authenticity_token, only: [:editor_upload]
   # GET /block_contents
   # GET /block_contents.json
   def index
@@ -124,6 +125,17 @@ class BlockContentsController < ApplicationController
       render :json => {flag: true, url: url}
     else
       render :json => {flag: false, url: ''}
+    end
+  end
+
+  def editor_upload
+    file=params[:imgFile]
+    aliyun_url = Settings.aliyunOSS.oss_url
+    uuid = uploadFileToAliyun(file)
+    if true
+      render :text => ({:error => 0, :url => aliyun_url[0, aliyun_url.rindex('/')+1] << uuid}.to_json)
+    else
+      render :text => ({:error => "上传失败", :url => ""}.to_json)
     end
   end
 
