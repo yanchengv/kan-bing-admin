@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141223095957) do
+ActiveRecord::Schema.define(version: 20141224085257) do
 
   create_table "admin2_menus", force: true do |t|
     t.integer  "admin2_id"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20141223095957) do
     t.integer  "hospital_id",            limit: 8
     t.integer  "department_id",          limit: 8
     t.string   "admin_type",             limit: 11
+    t.string   "introduction"
   end
 
   add_index "admin2s", ["confirmation_token"], name: "index_admin2s_on_confirmation_token", unique: true, using: :btree
