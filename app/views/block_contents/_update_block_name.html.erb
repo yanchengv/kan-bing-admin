@@ -55,7 +55,7 @@
     };
 
     // 更新保存模板
-    function save_content_model(pageBlockId){
+    /*function save_content_model(pageBlockId){
         $.ajax({
             type: 'get',
             url: 'page_blocks/add_content',
@@ -72,7 +72,7 @@
             }
         })
         jQuery('.ui-jqdialog-titlebar-close').click();
-    }
+    }*/
 
     // 更新保存模板
     function save_content_model2(pageBlockId){
@@ -81,8 +81,10 @@
             url: 'page_blocks/add_content2',
             data: {page_block_id: pageBlockId},
             success: function (data) {
-                jQuery('.ui-jqdialog-titlebar-close').click();
                 $("#rightContent").html(data);
+                jQuery('.ui-jqdialog-titlebar-close').click();
+
+
             }
         })
 

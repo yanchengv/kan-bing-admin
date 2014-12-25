@@ -118,7 +118,7 @@
             {
                 afterComplete: function (response, data) {
                     var pageBlockId = JSON.parse(response.responseText)['block_id'];
-                    saveTempalte(pageBlockId);
+                    save_content_model2(pageBlockId);
                 }
             }
     ).navButtonAdd('#pic_text_page', { title: '修改', caption: '修改', onClickButton: function () {
@@ -206,11 +206,13 @@
             },
             async: false,
             success: function (data) {
+                $('#image_path').val("");
                 var pageBlockId = data["page_block_id"];
-                saveTempalte(pageBlockId);
+                 save_content_model2(pageBlockId);
                 $("#pic_text_console").dialog("close");
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $('#image_path').val("");
                 alert('图片失败!');
             }
         });
@@ -228,7 +230,7 @@
             async: false,
             success: function (data) {
                 var pageBlockId = data["page_block_id"];
-                saveTempalte(pageBlockId);
+                save_content_model2(pageBlockId);
                 $("#pic_text_console").dialog("close");
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -236,21 +238,5 @@
             }
         });
     }
-    function saveTempalte(pageBlockId) {
-        $.ajax({
-            type: 'get',
-            url: 'page_blocks/add_content',
-            data: {page_block_id: pageBlockId},
-            success: function (data) {
-                $.ajax({
-                    type: 'post',
-                    url: 'page_blocks/update_template',
-                    data: {content: data, page_block_id: pageBlockId},
-                    success: function (data) {
-                        $("#rightContent").html(data);
-                    }
-                })
-            }
-        })
-    }
+
 </script>
