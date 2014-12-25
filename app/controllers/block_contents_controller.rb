@@ -119,7 +119,7 @@ class BlockContentsController < ApplicationController
   def upload_image
     file=params[:edu_video].nil? ? params[:image] : params[:edu_video][:image]
     tmpfile = getFileName(file.original_filename.to_s)
-    uuid = uploadFileToAliyun(file)
+    uuid = uplod_kineditor_img_to_aliyun(file)
     url = Settings.aliyunOSS.oss_url << uuid
     if true
       render :json => {flag: true, url: url}
@@ -131,7 +131,7 @@ class BlockContentsController < ApplicationController
   def editor_upload
     file=params[:imgFile]
     aliyun_url = Settings.aliyunOSS.oss_url
-    uuid = uploadFileToAliyun(file)
+    uuid = uplod_kineditor_img_to_aliyun(file)
     if true
       render :text => ({:error => 0, :url => aliyun_url[0, aliyun_url.rindex('/')+1] << uuid}.to_json)
     else

@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
     end
 
   end
-
+#上传医生图片
   def uploadFileToAliyun(file)
     #if !file.original_filename.empty?
     #连接信息
@@ -49,11 +49,30 @@ class ApplicationController < ActionController::Base
     obj.store
     return obj.key
   end
+#上传富文本框中的图片
+  def uplod_kineditor_img_to_aliyun(file)
+    #连接信息
+    Aliyun::OSS::Base.establish_connection!(
+        :server => Settings.aliyunOSS.kindeditor_service, #可不填,默认为此项
+        :access_key_id => 'h17xgVZatOgQ6IeJ',
+        :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+    )
+    bucket = Settings.aliyunOSS.kindeditor_bucket
+    mimas_dev_bucket = Bucket.find(bucket) #查找Bucket
+    obj = mimas_dev_bucket.new_object #在此Bucket新建Object
+    #生成一个随机的文件名 uuid+后缀类型的文件
+    obj.key = getFileName(file.original_filename)
+    # obj.key = file
+    obj.value= open(file)
+    ##向dir目录写入文件
+    obj.store
+    return obj.key
+  end
 
   def upload_video_img_bucket(file)
     if !file.original_filename.empty?
       Aliyun::OSS::Base.establish_connection!(
-          :server => 'oss-cn-beijing.aliyuncs.com', #可不填,默认为此项
+          :server => Settings.aliyunOSS.video_service, #可不填,默认为此项
           :access_key_id => 'h17xgVZatOgQ6IeJ',
           :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
       )
