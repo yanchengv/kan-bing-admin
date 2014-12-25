@@ -1,0 +1,145 @@
+<style>
+    input,select{
+        /*display: block;*/
+        /*margin-top: 1em;*/
+    }
+    .bar {
+        height: 18px;
+        background: green;
+    }
+
+    #progress1,#progress2 {
+        width: 490px;
+        background: #f5f5f5;
+        /*box-sizing: border-box;*/
+    }
+</style>
+<br>
+<br>
+    <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
+    <input type=" text" name="image_url"  id='image_path' style='visibility:hidden;' value="<%= @skill.photo %>">
+    <input type="hidden" id='skill_id' name="id" value="<%= @skill.id %>">
+    <table class="EditTable" style="margin-top: -80px;">
+      <tr class="FormData">
+        <td class="CaptionTD">技术名称:</td>
+        <td class="DataTD">
+          <input type="text" id="name" name='name' value="<%= @skill.name %>" class='FormElement ui-widget-content ui-corner-all' onblur="check_data('name_label', this.value)"><label style="color:red;" id="name_label">*</label></td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">上传图片:</td>
+        <td class="DataTD">
+          <label id="image_path2"></label><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/><label style="color:red;" id="name_label">*</label>
+        </td>
+      </tr>
+      <tr class="FormData" id="textareaContent">
+        <td class="CaptionTD">描述:</td>
+        <td class="DataTD">
+          <textarea name='desc' rows="5" id="content" style="width:600px; " onblur="check_data('desc_label', this.value)" class='FormElement ui-widget-content ui-corner-all'><%= @skill.desc %></textarea><label style="color:red;" id="name_label">*</label>
+        </td>
+      </tr>
+      <tr class="FormData" id="textareaContent">
+        <td class="CaptionTD">详细信息:</td>
+        <td class="DataTD">
+          <textarea name='detail' rows="5" id="detail" style="width: 600px; " class='FormElement ui-widget-content ui-corner-all'><%= @skill.detail %></textarea>
+        </td>
+      </tr>
+
+      <tr class="FormData" id="contentUrl">
+        <td class="CaptionTD">有效期:</td>
+        <td class="DataTD">
+          <input type="text" id="period" name='period' value="<%= @skill.period %>" class='FormElement ui-widget-content ui-corner-all'>
+        </td>
+      </tr>
+      <tr class="FormData" id="contentUrl">
+        <td class="CaptionTD">起始时间:</td>
+        <td class="DataTD">
+          <input id='from_time' class='FormElement ui-widget-content ui-corner-all' data-format="yyyy-MM-dd" name='video_time' type="text" style='width:209px;height:26px;' value="<%= @skill.from %>"/>
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">关键字:</td>
+        <td class="DataTD">
+          <input type="text" id="keywords" name='keywords' value="<%= @skill.keywords %>" class='FormElement ui-widget-content ui-corner-all'>
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">类型:</td>
+        <td class="DataTD">
+          <input type="text" id="sort" name='sort' value="<%= @skill.sort %>" class='FormElement ui-widget-content ui-corner-all'>
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">是否首页显示:</td>
+        <td class="DataTD">
+          <%= check_box_tag :index_page_show, value: @skill.index_page_show, :id => 'index_page_show' %>
+        </td>
+      </tr>
+    </table>
+<script>
+    $(function () {
+        $('#from_time').datetimepicker({
+            lang: 'ch',
+            timepicker: false,
+            format: 'Y-m-d'
+        });
+        KindEditor.ready(function (K) {
+            window.editor = K.create('#content', {
+                resizeType: 0,
+                width: 600,
+                height: 400,
+                allowFileManager: false,
+                window_onload: true,
+                simple_mode: false,
+                uploadJson: "/block_contents/editor_upload",
+                afterBlur: function () {
+                    this.sync();
+                }
+            });
+        });
+    });
+    function getFileName(obj)
+    {
+        var pos = obj.value.lastIndexOf("/")*1;
+        var filepath = obj.value.substring(pos+1);
+        var pos2 = filepath.lastIndexOf("\\")*1;
+        var filename = filepath.substring(pos2+1);
+        $('#video_path').val(filename);
+        $('#progress2 .bar').css(
+                'width',
+                '0%'
+        );
+    }
+    $("#fakebtn1_img").click(function () {
+        $("#fileupload_img").click();
+    });
+    var ChunkCount = 0;
+    var stime;
+        var url1 = "/block_contents/upload_image";
+        $('#fileupload_img').fileupload({
+            autoUpload: true,
+            type:'post',
+            url: url1,
+            dataType: 'json',
+            //forceIframeTransport: true,
+//            maxChunkSize: 100000000, //100Mb
+            fail:function (e, data) {
+                console.log(data.errorThrown);
+                alert('上传失败！')
+            },
+
+            done: function (e, data) {
+                if (data.result.flag){
+                   $('#image_path').val(data.result.url);
+                   $('#image_path2').html(data.result.url.substring(data.result.url.lastIndexOf('/') + 1, data.result.url.length));
+                }
+            }
+        });
+    function check_data(label, value) {
+        if (value && value != '') {
+            $("#" + label).html('*');
+        } else {
+            $("#" + label).html('必填项不能为空!');
+        }
+    }
+
+</script>
