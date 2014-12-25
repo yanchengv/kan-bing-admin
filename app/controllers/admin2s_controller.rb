@@ -118,6 +118,9 @@ class Admin2sController < ApplicationController
   # PATCH/PUT /admins/1
   # PATCH/PUT /admins/1.json
   def update
+    if params[:password].nil? && params[:password] == ''    #密码为空时,表示不修改密码
+      params[:password] = @admin.password
+    end
     if @admin.update(admin_params)
       render :json => {:success => true}
     else

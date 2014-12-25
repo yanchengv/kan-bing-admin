@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
     end
 
   end
-#上传医生图片
+#上传医生患者头像
   def uploadFileToAliyun(file)
     #if !file.original_filename.empty?
     #连接信息
