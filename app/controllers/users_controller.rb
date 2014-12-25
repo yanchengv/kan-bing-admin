@@ -110,6 +110,9 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
+    if params[:password].nil? && params[:password] == ''    #密码为空时,表示不修改密码
+      params[:password] = @user.password
+    end
     if @user.update(user_params)
       render :json => {:success => true}
     else
