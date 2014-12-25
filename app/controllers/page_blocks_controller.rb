@@ -65,6 +65,7 @@ class PageBlocksController < ApplicationController
   end
 =end
 
+=begin
   def add_content_template
     page_block_id=params[:page_block_id]
     @page_block=PageBlock.where(id:page_block_id).first
@@ -73,6 +74,7 @@ class PageBlocksController < ApplicationController
     @block_contents=BlockContent.where(block_id:page_block_id)
     render partial: "page_blocks/templates/#{block_type}"
   end
+=end
 
   def add_content_template2
     page_block_id=params[:page_block_id]
@@ -83,23 +85,21 @@ class PageBlocksController < ApplicationController
     @page_block.add_content_template  page_block_id
     render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
   end
+=begin
   def update_template
     page_block_id=params[:page_block_id]
     content = params[:content]
     page_block=PageBlock.where(id:page_block_id).first
     page_block.update_attributes(content:content)
-    # sql = ActiveRecord::Base.connection()
-    # sql.update "update page_blocks set content = '#{content}' where id = #{page_block.id}"
-   #@page_block.update_attributes(content:content)
     @page_block=PageBlock.find(page_block_id)
     @block_contents = @page_block.block_contents
-    #render :partial => 'block_contents/block_contents_manage'
     if @page_block.block_type == 'login'
       render :partial => 'page_blocks/show'
     else
       render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
     end
   end
+=end
 #获取用户所管理的非在首界面的医生列表中显示的医生
 =begin
   def get_doctor_not_in_content
