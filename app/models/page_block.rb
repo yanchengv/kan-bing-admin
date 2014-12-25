@@ -89,8 +89,7 @@ class PageBlock < ActiveRecord::Base
         :partial => "page_blocks/templates/#{block_type}",
         :formats => :html,
         :handlers => :erb,
-
-        :locals => {:@block_contents=>@block_contents,:@doctors=>@doctors,:@doctor=>@doctor}
+        :locals => {:@block_contents=>@block_contents,:@doctors=>@doctors,:@doctor=>@doctor,:@page_block=>@page_block,:@block_name=>@page_block.name}
 
     )
 
