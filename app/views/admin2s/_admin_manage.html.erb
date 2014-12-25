@@ -26,16 +26,16 @@
             url: '/admin2s/test_index',
             datatype: "json",
             mtype: 'GET',
-            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号','管理员类型','医院','科室'],
+            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号','管理员类型','医院','科室','机构ID','说明'],
             colModel: [
                 { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden:true},
-                { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name},editoptions:{style: "width:150px"}},
                 { name: 'password', index: 'password', width: 100, align: "center", editable: true,
-                    edittype: "password", hidden:true, editrules:{edithidden:true, required: true } },
+                    edittype: "password", hidden:true, editrules:{edithidden:true, required: true } ,editoptions:{style: "width:150px"}},
                 { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
-                    editable: true, edittype: "password", hidden: true, editrules: {edithidden: true, custom: true, required: true , custom_func: check_pwd2} },
-                { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {custom: true, custom_func: check_email, required: false} },
-                { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}},
+                    editable: true, edittype: "password", hidden: true, editrules: {edithidden: true, custom: true, required: true , custom_func: check_pwd2} ,editoptions:{style: "width:150px"}},
+                { name: 'email', index: 'email', width: 150, align: "center", editable: true, editrules: {custom: true, custom_func: check_email, required: false},editoptions:{style: "width:150px"} },
+                { name: 'mobile_phone', index: 'mobile_phone', width: 120, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone},editoptions:{style: "width:150px"}},
                 { name: 'admin_type', index: 'admin_type', width: 100, align: "center",editable: true,edittype:"select",
                     editoptions: {dataEvents: [
                         { type: 'change', fn: function (e) {
@@ -47,7 +47,7 @@
                             $(element).select2();
                             init_select($(element))
                         },
-                        style: "width:147px",
+                        style: "width:158px",
 
                         value: function () {
                             var positions;
@@ -74,7 +74,7 @@
                             $(element).select2();
                             change_department($(element).val())
                         },
-                        style: "width:147px",
+                        style: "width:158px",
                         value: function () {
                             var positions;
                             $.ajax({
@@ -94,10 +94,36 @@
                         dataInit: function (element) {
                             $(element).select2();
                         },
-                        style: "width:147px",
+                        style: "width:158px",
                         value: ":----请选择----"
                     }
-                }
+                },
+                { name: 'hos_id', index: 'hospital_id', width: 40, align: "left", hidden:true,editable: true,edittype:"select", editrules: {edithidden:true},
+                    editoptions:{dataEvents: [
+                    { type: 'change', fn: function(e) {} }
+
+                    ],
+                dataInit: function (element) {
+                    $(element).select2();
+                    $(element).val()
+                },
+                style: "width:158px",
+                value: function () {
+                    var positions;
+                    $.ajax({
+                        url: "/admin2s/get_ins_hos",
+                        async: false,
+                        success: function (data) {
+                            positions = data.admins;
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert(textStatus);
+                        }
+                    });
+                    return positions;
+                }}
+                },
+                { name: 'introduction', index: 'introduction', width: 180, align: "left",editable:true, edittype: 'textarea', editoptions: {rows: 3, style: "width:260px"}}
             ],
             rowList: [10, 20, 30],
             sortname: 'id',
@@ -252,18 +278,30 @@
             dep.val('')
             dep.attr('disabled','disabled')
             hos.removeAttr('disabled')
+            $('select#hos_id').attr('disabled','disabled')
         }
         if (obj.value=='科室管理员'){
             hos.removeAttr('disabled')
             dep.removeAttr('disabled')
+            $('select#hos_id').attr('disabled','disabled')
         }
-        if (obj.value=='网站管理员' || obj.value=='机构管理员'){
+        if (obj.value=='网站管理员'){
             $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
             $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
             dep.val('')
             hos.val('')
             hos.attr('disabled','disabled')
             dep.attr('disabled','disabled')
+            $('select#hos_id').attr('disabled','disabled')
+        }
+        if (obj.value=='机构管理员'){
+            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+            $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+            dep.val('')
+            hos.val('')
+            hos.attr('disabled','disabled')
+            dep.attr('disabled','disabled')
+            $('select#hos_id').removeAttr('disabled')
         }
     }
 
@@ -281,11 +319,13 @@
                             $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
                             dep.val('')
                             dep.attr('disabled','disabled')
+                            $('select#hos_id').attr('disabled','disabled')
                             hos.removeAttr('disabled')
                         }
                         if (obj.val()=='科室管理员'){
                             hos.removeAttr('disabled')
                             dep.removeAttr('disabled')
+                            $('select#hos_id').attr('disabled','disabled')
                             if(data['success']){
                                 $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html(data['data']['department_name'])
                             }
@@ -293,6 +333,22 @@
                         if (obj.val()=='网站管理员'){
                             hos.attr('disabled','disabled')
                             dep.attr('disabled','disabled')
+                            $('select#hos_id').attr('disabled','disabled')
+                            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+                            $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+                            dep.val('')
+                            hos.val('')
+
+                        }
+                        if (obj.val()=='机构管理员'){
+                            hos.attr('disabled','disabled')
+                            dep.attr('disabled','disabled')
+                            $('#tr_hos_id').show()
+                            if (data['success']) {
+                                $('select#hos_id').val(data['data']['hospital_id'])
+                                $('#s2id_hos_id').children('.select2-choice').children('.select2-chosen').html(data['data']['hospital_id'])
+                            }
+                            $('select#hos_id').removeAttr('disabled')
                             $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
                             $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
                             dep.val('')
