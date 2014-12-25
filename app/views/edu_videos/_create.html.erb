@@ -81,7 +81,7 @@
     <tr class="FormData">
       <td colspan="2">
         <div id="upload_div" style="display:inline;margin-left: 10px;float:right">
-          <!--<div id="uploadinfo"></div>-->
+          <div id="uploadinfo"></div>
         </div>
       </td>
     </tr>
@@ -150,49 +150,26 @@
         //forceIframeTransport: true,
 //        maxChunkSize: 100000000000, //100Gb
         maxFileSize: 100000000000,//100Gb
-      add: function (e, data) {
-          $("#uploadinfo").remove();
-          $('#progress .bar').css(
-                  'width',
-                  '0%'
-          );
-          //data.files[0].name
-          data.context = $('<button/>').text('上传')
-                  .appendTo($('#upload_div'))
-                  .click(function () {
-                      data.context = $('<p id="uploadinfo"></p>').text('Uploading...').replaceAll($(this));
-                      var d = new Date();
-                      data.submit();
-                      stime = d.getTime();
-                  });
-          ChunkCount = 0;
-          $('#pausebtn').click(function(){
-              data.abort();
-          });
+      fail: function (e, data) {
+          alert('上传失败！');
+          data.context = $("#uploadinfo").text('视频上传失败！');
       },
-        fail: function (e, data) {
-            alert('上传失败！');
-            data.context = $("#uploadinfo").text('视频上传失败或上传取消！');
-        },
-        done: function (e, data) {
-            if (data.result.flag) {
-                $('#video_url').val(data.result.url);
-                $('#video_path').val(data.result.url);
-            }
-            data.context = $("#uploadinfo").text('视频上传成功!');
-            $('#pausebtn').css('display','none');
-        },
-        progress: function (e, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress2 .bar').css(
-                    'width',
-                    progress + '%'
-            );
-            data.context = $("#uploadinfo").text('视频正在上传...');
-            $('#pausebtn').css('display','block');
-        }
-
-    });
+      done: function (e, data) {
+          if (data.result.flag) {
+              $('#video_url').val(data.result.url);
+              $('#video_path').val(data.result.url);
+          }
+          data.context = $("#uploadinfo").text('视频上传成功!');
+      },
+      progress: function (e, data) {
+          var progress = parseInt(data.loaded / data.total * 100, 10);
+          $('#progress2 .bar').css(
+                  'width',
+                          progress + '%'
+          );
+          data.context = $("#uploadinfo").text('视频正在上传...');
+      }
+  });
 //  $('button.cancel').click(function (e) {
 //      alert(jqXHR)
 //      jqXHR.abort();
