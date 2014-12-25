@@ -165,6 +165,18 @@ class UsersController < ApplicationController
     if !dep_id.nil? && dep_id != ''
       sql << " and department_id=#{dep_id}"
     end
+    if params[:name] && params[:name] != ''
+      sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
+    end
+    if params[:email] && params[:email] != ''
+      sql << " and email like '%#{params[:email]}%'"
+    end
+    if params[:mobile_phone] && params[:mobile_phone] != ''
+      sql << " and mobile_phone like '%#{params[:mobile_phone]}%'"
+    end
+    if params[:credential_type_number] && params[:credential_type_number] != ''
+      sql << " and credential_type_number like '%#{params[:credential_type_number]}%'"
+    end
     @doctors = Doctor.where(sql)
     count = @doctors.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
@@ -182,6 +194,18 @@ class UsersController < ApplicationController
     end
     if !dep_id.nil? && dep_id != ''
       sql << " and department_id=#{dep_id}"
+    end
+    if params[:name] && params[:name] != ''
+      sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
+    end
+    if params[:email] && params[:email] != ''
+      sql << " and email like '%#{params[:email]}%'"
+    end
+    if params[:mobile_phone] && params[:mobile_phone] != ''
+      sql << " and mobile_phone like '%#{params[:mobile_phone]}%'"
+    end
+    if params[:credential_type_number] && params[:credential_type_number] != ''
+      sql << " and credential_type_number like '%#{params[:credential_type_number]}%'"
     end
     @patients = Patient.where(sql)
     count = @patients.count

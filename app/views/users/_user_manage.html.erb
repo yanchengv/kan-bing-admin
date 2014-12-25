@@ -26,10 +26,16 @@
   <div style="margin-top: 30px;">
 
     <div id="doctor_div">
+      姓名：<input type="text" id="search_name1" onkeydown="entersearch(event,'doc')"> 证件号码：<input type="text" id="search_number1" onkeydown="entersearch(event,'doc')">
+      邮箱：<input type="text" id="search_email1" onkeydown="entersearch(event,'doc')"> 手机号：<input type="text" id="search_tel1" onkeydown="entersearch(event,'doc')">
+      <button id="search_btn1" onclick="search_by('doc')" >搜索</button>&nbsp;<button id="clear_btn1" onclick="clearfiled('doc')" >清空</button>
       <table id="doc_list"></table>
       <div id="doc_page"></div>
     </div>
     <div id="patient_div">
+      姓名：<input type="text" id="search_name2" onkeydown="entersearch(event,'pat')"> 证件号码：<input type="text" id="search_number2" onkeydown="entersearch(event,'pat')">
+      邮箱：<input type="text" id="search_email2" onkeydown="entersearch(event,'pat')"> 手机号：<input type="text" id="search_tel2" onkeydown="entersearch(event,'pat')">
+      <button id="search_btn2" onclick="search_by('pat')" >搜索</button>&nbsp;<button id="clear_btn2" onclick="clearfiled('pat')" >清空</button>
       <table id="pat_list"></table>
       <div id="pat_page"></div>
     </div>
@@ -420,6 +426,43 @@
     }
     function add_pat_to_user(){
        $('#add_user_list').click()
+    }
+    function search_by(user_flag) {
+        if (user_flag=='doc') {
+            var name = $('#search_name1').val();
+            var email = $('#search_email1').val();
+            var tel = $('#search_tel1').val();
+            var number = $('#search_number1').val();
+            var url = "/users/get_doctors?name=" + name + "&email=" + email + "&mobile_phone=" + tel + "&credential_type_number=" + number
+            url = encodeURI(url)  //处理 ｕｒｌ中文问题
+            jQuery("#doc_list").jqGrid('setGridParam', {url: url}).trigger("reloadGrid");
+        }else {
+            var name = $('#search_name2').val();
+            var email = $('#search_email2').val();
+            var tel = $('#search_tel2').val();
+            var number = $('#search_number2').val();
+            var url = "/users/get_patients?name=" + name + "&email=" + email + "&mobile_phone=" + tel + "&credential_type_number=" + number
+            url = encodeURI(url)  //处理 ｕｒｌ中文问题
+            jQuery("#pat_list").jqGrid('setGridParam', {url: url}).trigger("reloadGrid");
+        }
+    };
+    //清空搜索条件
+    function clearfiled(user_flag) {
+        if (user_flag == 'doc'){
+            $('#search_name1').val('');
+            $('#search_email1').val('');
+            $('#search_tel1').val('');
+            $('#search_number1').val('');
+        }else {
+            $('#search_name2').val('');
+            $('#search_email2').val('');
+            $('#search_tel2').val('');
+            $('#search_number2').val('');
+        }
+    };
+    function entersearch(event, user_flag){
+        if (event.keyCode == 13)
+            search_by(user_flag);
     }
     $(function(){
         click_btn('doctor')
