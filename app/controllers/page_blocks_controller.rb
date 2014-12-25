@@ -48,6 +48,7 @@ class PageBlocksController < ApplicationController
   end
 
   #获取科室或医院的前十条医生信息
+=begin
   def doctors_default
     if !current_user.nil?
       sql = 'true'
@@ -62,6 +63,7 @@ class PageBlocksController < ApplicationController
       return Doctor.where('1 != 1')
     end
   end
+=end
 
   def add_content_template
     page_block_id=params[:page_block_id]
@@ -72,7 +74,15 @@ class PageBlocksController < ApplicationController
     render partial: "page_blocks/templates/#{block_type}"
   end
 
-
+  def add_content_template2
+    page_block_id=params[:page_block_id]
+    @page_block=PageBlock.where(id:page_block_id).first
+    block_type=@page_block.block_type #block_type必须是模版的名称
+    @block_contents = nil
+    @block_contents=BlockContent.where(block_id:page_block_id)
+    @page_block.add_content_template  page_block_id
+    render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
+  end
   def update_template
     page_block_id=params[:page_block_id]
     content = params[:content]
@@ -91,6 +101,7 @@ class PageBlocksController < ApplicationController
     end
   end
 #获取用户所管理的非在首界面的医生列表中显示的医生
+=begin
   def get_doctor_not_in_content
       sql = 'true'
       if !current_user.nil?
@@ -108,7 +119,9 @@ class PageBlocksController < ApplicationController
       @doctors_select = Doctor.where(sql)
       render :json => {:doctors => @doctors_select.as_json(:only => [:id, :name])}
   end
+=end
 
+=begin
   def save_template
     name=params[:name]
     block_type=params[:type]
@@ -132,6 +145,7 @@ class PageBlocksController < ApplicationController
       render partial: "block_contents/#{block_type}_manage"
     end
   end
+=end
   # GET /page_blocks/1
   # GET /page_blocks/1.json
   def show

@@ -77,7 +77,7 @@
             {
                 afterSubmit:  function(response,data){
                     var pageBlockId=(data["block_id"])
-                    save_content_model(pageBlockId)
+                    save_content_model2(pageBlockId)
                 },
                 afterShowForm: showKindEditor,
                 closeAfterEdit: true,
@@ -87,7 +87,7 @@
             {
                 afterSubmit:  function(response,data){
                     var pageBlockId=(data["block_id"])
-                    save_content_model(pageBlockId)
+                    save_content_model2(pageBlockId)
                 },
                 afterShowForm: showKindEditor,
                 closeAfterAdd: true,
@@ -97,7 +97,7 @@
             {
                 afterComplete: function (response, data) {
                     var pageBlockId = JSON.parse(response.responseText)['block_id'];
-                    save_content_model(pageBlockId);
+                    save_content_model2(pageBlockId);
                 }
             }
              );
