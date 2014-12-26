@@ -87,6 +87,22 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def uploadToAliyun(file,server,bucket)
+    if !file.original_filename.empty?
+      Aliyun::OSS::Base.establish_connection!(
+          :server => server, #可不填,默认为此项
+          :access_key_id => 'h17xgVZatOgQ6IeJ',
+          :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+      )
+      video_image_bucket = Bucket.find(bucket) #查找Bucket
+      obj = video_image_bucket.new_object #在此Bucket新建Object
+      obj.key = getFileName(file.original_filename)
+      #obj.key = file
+      obj.value= open(file)
+      obj.store
+      return obj.key
+    end
+  end
 
   def getFileName(filename)
     if !filename.nil?
