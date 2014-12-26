@@ -4,16 +4,20 @@
     <%= label_tag(:content,'内容：',:class => "home_menu_cont ent")%><br />
     <%= f.kindeditor :content, uploadJson: "/block_contents/editor_upload" %>
     <%=f.hidden_field :parent_id, value: @parent_id%>
-    <%= label_tag(:show_in_menu,'在菜单中显示：',:class => "home_menu_cont ent")%><br />
-    <%=f.check_box :show_in_menu,checked:true%>在网站菜单中显示这个页面; <br />
-    <%= label_tag(:link_url,'自定义页面url路径（用来覆盖默认创建的url,例如：about_me）：',:class => "home_menu_cont ent")%><br />
+    <p class="home_menu_content">
+    <%= label_tag(:show_in_menu,'在菜单中显示：',:class => "home_menu_content")%><br />
+    <span class="home_menu_content2"><%=f.check_box :show_in_menu,checked:true%>在网站菜单中显示这个页面;</span>
+      </p>
+    <%= label_tag(:link_url,'自定义页面url路径：',:class => "home_menu_content")%><br />
+    <span class="home_menu_content2">（用来覆盖默认创建的url,例如：about_me）</span><br />
     <%=f.text_field :link_url%><br />
-
-    <%= label_tag(:redirect_url,'自定义页面url路径（用来覆盖默认创建的url,例如：about_me）：',:class => "home_menu_cont ent")%><br />
+    <p class="home_menu_content">
+    <%= label_tag(:redirect_url,'重定向这个页面到其他的网站或页面:',:class => "home_menu_content")%><br />
+    <span class="home_menu_content2">(例如：http://www.kanbing365.com)</span><br />
     <%=f.text_field :redirect_url%>
-    <br />
-    <%=f.submit '保存'%>
-    <%= button_tag '取消',type:'button'%>
+    </p>
+    <div class="col-md-2" style="padding:0;"><%=f.submit '保存',:class=>"add_btn"%> </div>
+    <div class="col-md-2" style="padding:0;margin-left:15px;"><%= button_tag '取消',type:'button',:class=>"q_btn"%></div>
 <% end %>
 
 
