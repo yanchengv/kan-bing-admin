@@ -5,7 +5,7 @@
 </div>
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">新技术名称：<input type="text" id="skill_search">&nbsp;&nbsp;<button id="search_skill_btn">搜索</button>&nbsp;<button id="clear_skill_btn" >清空</button>
+    <div style="margin-bottom: 10px;">技术名称：<input type="text" id="skill_search">&nbsp;&nbsp;<button id="search_skill_btn">搜索</button>&nbsp;<button id="clear_skill_btn" >清空</button>
     </div>
     <table id="skill_list"></table>
     <div id="page_skill"></div>
@@ -69,7 +69,7 @@
         altclass: 'altRowsColour',
         width: '500',
         height: 'auto',
-        caption: "新技术管理"
+        caption: "治疗技术管理"
     });
     jQuery("#skill_list").jqGrid('navGrid', '#page_skill', {
                 cloneToTop: true, add:false, edit:false,
@@ -138,7 +138,7 @@
                     dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                     dialogButtonPanel.find("button:contains('修改')").show();
                     video_consoleDlg.dialog("option", "width", "800");
-                    video_consoleDlg.dialog("option", "title", "修改图片（图片尺寸:1200x300）").dialog("open");
+                    video_consoleDlg.dialog("option", "title", "编辑").dialog("open");
                 }
             })
         } else {
