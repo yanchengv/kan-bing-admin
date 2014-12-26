@@ -42,6 +42,6 @@ production:
       video_bucket: 'webadmin-video'
       video_service: 'oss-cn-beijing.aliyuncs.com'
       video_url:  'http://webadmin-video.oss-cn-beijing.aliyuncs.com/'
-      kindeditor_bucket: 'mimas-open'
-      kindeditor_service: 'oss.aliyuncs.com'
+      kindeditor_bucket: 'mimas-img'
+      kindeditor_service: 'oss-cn-beijing.aliyuncs.com'
       kindeditor_url: 'http://mimas-open.oss-cn-hangzhou.aliyuncs.com/'
