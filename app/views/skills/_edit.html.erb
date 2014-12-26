@@ -71,7 +71,9 @@
       <tr class="FormData">
         <td class="CaptionTD">是否首页显示:</td>
         <td class="DataTD">
-          <%= check_box_tag :index_page_show, value: @skill.index_page_show, :id => 'index_page_show' %>
+          <input type="checkbox" name="index_page_show" id="index_page_show" value="<%= @skill.index_page_show %>"
+                 <% if @skill.index_page_show %> checked <%end%>>
+          <%#= check_box_tag :index_page_show, value: @skill.index_page_show, :id => 'index_page_show' %>
         </td>
       </tr>
     </table>
