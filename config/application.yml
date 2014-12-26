@@ -44,4 +44,4 @@ production:
       video_url:  'http://webadmin-video.oss-cn-beijing.aliyuncs.com/'
       kindeditor_bucket: 'mimas-img'
       kindeditor_service: 'oss-cn-beijing.aliyuncs.com'
-      kindeditor_url: 'http://mimas-open.oss-cn-hangzhou.aliyuncs.com/'
+      kindeditor_url: 'http://mimas-img.oss-cn-beijing.aliyuncs.com/'
