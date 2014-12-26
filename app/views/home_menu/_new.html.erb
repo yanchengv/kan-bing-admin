@@ -10,11 +10,11 @@
       </p>
     <%= label_tag(:link_url,'自定义页面url路径：',:class => "home_menu_content")%><br />
     <span class="home_menu_content2">（用来覆盖默认创建的url,例如：about_me）</span><br />
-    <%=f.text_field :link_url%><br />
+    <%=f.text_field :link_url, onblur:"check_link_url(value)" %><span id="link_url_error" style="color:red;font-size: 12px;"></span><br />
     <p class="home_menu_content">
     <%= label_tag(:redirect_url,'重定向这个页面到其他的网站或页面:',:class => "home_menu_content")%><br />
     <span class="home_menu_content2">(例如：http://www.kanbing365.com)</span><br />
-    <%=f.text_field :redirect_url%>
+      <%=f.text_field :redirect_url, onblur:"check_redirect_url(value)" %> <span id="redirect_error" style="color:red;font-size: 12px;"></span>
     </p>
     <div class="col-md-2" style="padding:0;"><%=f.submit '保存',:class=>"add_btn"%> </div>
     <div class="col-md-2" style="padding:0;margin-left:15px;"><%= button_tag '取消',type:'button',:class=>"q_btn"%></div>
