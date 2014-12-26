@@ -77,7 +77,7 @@ class EduVideosController < ApplicationController
 
     file=params[:edu_video].nil? ? params[:image] : params[:edu_video][:image]
     tmpfile = getFileName(file.original_filename.to_s)
-    uuid = upload_video_img_bucket(file)
+    uuid = uploadToAliyun(file,Settings.aliyunOSS.video_service,Settings.aliyunOSS.image_bucket)
     if true
       render :json => {flag: true, url: uuid}
     else
@@ -90,7 +90,9 @@ class EduVideosController < ApplicationController
     file=params[:edu_video].nil? ? params[:video] : params[:edu_video][:video]
     p file.original_filename
     tmpfile = getFileName(file.original_filename.to_s)
-    uuid = upload_video_img_bucket(file)
+    service = Settings.aliyunOSS.video_service
+    bucket = Settings.aliyunOSS.video_bucket
+    uuid = uploadToAliyun(file,service,bucket)
     if true
       render :json => {flag: true, url: uuid}
     else
@@ -102,7 +104,7 @@ class EduVideosController < ApplicationController
     file=params[:video]
     p file.original_filename
     tmpfile = getFileName(file.original_filename.to_s)
-    uuid = upload_video_img_bucket(file)
+    uuid = uploadToAliyun(file,Settings.aliyunOSS.video_service,Settings.aliyunOSS.video_bucket)
     if true
       render :json => {flag: true, url: uuid}
     else
