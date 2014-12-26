@@ -347,6 +347,7 @@ Rails.application.routes.draw do
     get 'edit',to:'home_menu#edit'
     post 'save',to: 'home_menu#save'
     delete 'destroy',to:'home_menu#destroy'
+    get 'check_url', to:'home_menu#check_url'
   end
   end
   resource :home_pages

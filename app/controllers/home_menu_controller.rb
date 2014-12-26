@@ -91,6 +91,20 @@ class HomeMenuController < ApplicationController
      end
     render json:'success'
   end
+
+  def check_url
+    @home_menu = HomeMenu.where(link_url:params[:link_url]).first
+    if @home_menu.nil?
+      render json: {success:true}
+    else
+      if @home_menu.id.to_i == params[:home_menu_id].to_i
+        render json: {success:true}
+      else
+        render json: {success:false}
+      end
+    end
+  end
+
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_home_page
