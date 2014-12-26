@@ -118,10 +118,11 @@ class BlockContentsController < ApplicationController
   #上传图片
   def upload_image
     file=params[:edu_video].nil? ? params[:image] : params[:edu_video][:image]
-    aliyun_url = Settings.aliyunOSS.kindeditor_url
     tmpfile = getFileName(file.original_filename.to_s)
     uuid = uplod_kineditor_img_to_aliyun(file)
-    url = aliyun_url[0, aliyun_url.rindex('/')+1] << uuid
+    # aliyun_url =Settings.aliyunOSS.kindeditor_url
+    # url = aliyun_url[0, aliyun_url.rindex('/')+1] << uuid
+    url=Settings.aliyunOSS.kindeditor_url+uuid
     if true
       render :json => {flag: true, url: url}
     else
@@ -131,10 +132,11 @@ class BlockContentsController < ApplicationController
 
   def editor_upload
     file=params[:imgFile]
-    aliyun_url = Settings.aliyunOSS.kindeditor_url
+    # aliyun_url = Settings.aliyunOSS.kindeditor_url
     uuid = uplod_kineditor_img_to_aliyun(file)
     if true
-      render :text => ({:error => 0, :url => aliyun_url[0, aliyun_url.rindex('/')+1] << uuid}.to_json)
+      # render :text => ({:error => 0, :url => aliyun_url[0, aliyun_url.rindex('/')+1] << uuid}.to_json)
+      render :text => ({:error => 0, :url => Settings.aliyunOSS.kindeditor_url + uuid}.to_json)
     else
       render :text => ({:error => "上传失败", :url => ""}.to_json)
     end
