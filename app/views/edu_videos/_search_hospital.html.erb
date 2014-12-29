@@ -1,0 +1,38 @@
+<select id="doctor_hos_id" name="hospital_id" onchange="doc_search_hos()" >
+  <% if current_user.admin_type == '网站管理员' %>
+      <option value="all">全部</option>
+  <% else %>
+  <% end %>
+<% if !@hospitals.nil? %>
+    <% if !@hospitals.empty? %>
+        <% @hospitals.each do |hos| %>
+            <option id="serch_hos_<%= hos.id %>" value="<%= hos.id %>"<% if !@video.nil? && hos.id == @video.hospital_id %> selected="selected"
+                    <% end %> ><%= hos.name %></option>
+        <% end %>
+    <% end %>
+<% end %>
+</select>
+<script>
+    $(function() {
+        $("#doctor_hos_id").select2()
+        doc_search_hos()
+    })
+    function doc_search_hos(){
+        $('#searchString').val('')
+        var hos_id = $('#doctor_hos_id').val()
+        $.ajax({
+            type: 'get',
+            url: '/edu_videos/search_department?hos_id='+hos_id+'&video_id=<%= @video.id unless @video.nil?%>',
+            success: function (data) {
+                $('#search_dep_id').html(data)
+            }
+        })
+        $.ajax({
+            type: 'get',
+            url: '/edu_videos/search_doctor?hos_id='+hos_id+'&video_id=<%= @video.id unless @video.nil?%>',
+            success: function (data) {
+                $('#search_doc_id').html(data)
+            }
+        })
+    }
+</script>

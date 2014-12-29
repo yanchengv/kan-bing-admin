@@ -80,6 +80,8 @@ Rails.application.routes.draw do
       post 'video_edit', to:'edu_videos#video_edit'
       post 'upload_video2', to: 'edu_videos#upload_video2'
       post 'video_delete', to:'edu_videos#video_delete'
+      get 'search_department', to:'edu_videos#search_department'
+      get 'search_doctor', to:'edu_videos#search_doctor'
     end
   end
   resources :video_types do

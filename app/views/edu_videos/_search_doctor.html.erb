@@ -1,0 +1,15 @@
+<select id="video_doctor_id" name="doctor_id" style="width:209px;"><option value="">请选择</option>
+<% if !@doctors.nil? %>
+    <% if !@doctors.empty? %>
+        <% @doctors.each do |doc| %>
+            <option id="serch_doc_<%= doc.id %>" value="<%= doc.id %>"<% if !@video.nil? && doc.id == @video.doctor_id %> selected="selected"
+                    <% end %> ><%= doc.name %></option>
+        <% end %>
+    <% end %>
+<% end %>
+</select>
+<script>
+    $(function() {
+        $("#video_doctor_id").select2()
+    })
+</script>

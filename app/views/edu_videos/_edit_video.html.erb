@@ -13,6 +13,9 @@
         background: #f5f5f5;
         /*box-sizing: border-box;*/
     }
+    .DataTD .select2-container{
+        width:209px;
+    }
 </style>
     <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
     <input type="file" name='video' id='video_upload' style='visibility:hidden;'>
@@ -28,17 +31,32 @@
         <td class="DataTD"><input type="text" name='content' id="video_content" class='FormElement ui-widget-content ui-corner-all' value="<%= @video.content %>" ></td>
       </tr>
       <tr class="FormData">
+        <td class="CaptionTD">医院:</td>
+        <td class="DataTD" id="search_hos_id">
+          <%= render partial: 'edu_videos/search_hospital'%>
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">科室:</td>
+        <td class="DataTD" id="search_dep_id">
+          <%= render partial: 'edu_videos/search_department'%>
+        </td>
+      </tr>
+      <tr class="FormData">
         <td class="CaptionTD">医生:</td>
-        <td class="DataTD"><select name="video[doctor_id]" id="video_doctor_id" style="width:209px;height:26px;" class="select2-container FormElement ui-widget-content ui-corner-all">
-          <% if !@doctors.nil? %>
-              <option value="">请选择</option>
-              <% @doctors.each do |doctor| %>
-                  <option value="<%= doctor.id %>"
-                          <% if doctor.id == @video.doctor_id %> selected="selected"
-                          <% end %> ><%= doctor.name %></option>
-              <% end %>
-          <% end %>
-        </select></td>
+        <td class="DataTD" id="search_doc_id">
+          <!--<select name="video[doctor_id]" id="video_doctor_id" style="width:209px;height:26px;" class="select2-container FormElement ui-widget-content ui-corner-all">-->
+          <!--<%# if !@doctors.nil? %>-->
+          <!--<option value="">请选择</option>-->
+          <!--<%# @doctors.each do |doctor| %>-->
+          <!--<option value="<%#= doctor.id %>"-->
+          <!--<%# if doctor.id == @video.doctor_id %> selected="selected"
+                          <%# end %> ><%#= doctor.name %></option>
+              <!--<%# end %>-->
+          <!--<%# end %>-->
+          <!--</select>-->
+          <%= render partial: 'edu_videos/search_doctor'%>
+        </td>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">时间:</td>
@@ -90,6 +108,8 @@
     </table>
 <script>
     $(function(){
+        $('#video_type_id').select2();
+        $('#video_doctor_id').select2();
         $('#video_time').datetimepicker({
             lang:'ch',
             timepicker:false,

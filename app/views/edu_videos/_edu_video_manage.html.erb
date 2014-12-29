@@ -223,6 +223,8 @@
                 video_time: $('#video_time').val(),
                 image_url: $('#image_path').val(),
                 video_url: $('#video_url').val(),
+                hospital_id:$('#doctor_hos_id').val(),
+                department_id:$('#doctor_dep_id').val(),
                 doctor_id: $('#video_doctor_id').val(),
                 video_type_id: $('#video_type_id').val()
             },
@@ -247,6 +249,8 @@
                 video_time:$('#video_time').val(),
                 image_url:$('#image_path').val(),
                 video_url:$('#video_url').val(),
+                hospital_id:$('#doctor_hos_id').val(),
+                department_id:$('#doctor_dep_id').val(),
                 doctor_id:$('#video_doctor_id').val(),
                 video_type_id:$('#video_type_id').val()
             },
@@ -262,23 +266,27 @@
         });
     }
     function cancelContact() {
-        $.ajax({
-            url: "/edu_videos/video_delete",
-            type: 'post',
-            data: { video_id: $('#video_id').val(),
-                image_url:$('#image_path').val(),
-                video_url:$('#video_url').val()
-            },
-            async: false,
-            success: function (data) {
-                window.parent.$("#video_consoleDlg").dialog("close");  //关闭对话框
-//                $('#refresh_edu_video_list').click()
-//                $("#rightContent").html(data);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert('视频修改失败!');
-            }
-        });
+        if ($('#image_path').val()=='' && $('#video_url').val()=='') {
+            window.parent.$("#video_consoleDlg").dialog("close");
+        } else{
+            $.ajax({
+                url: "/edu_videos/video_delete",
+                type: 'post',
+                data: { video_id: $('#video_id').val(),
+                    image_url:$('#image_path').val(),
+                    video_url:$('#video_url').val()
+                },
+                async: false,
+                success: function (data) {
+                    window.parent.$("#video_consoleDlg").dialog("close");  //关闭对话框
+    //                $('#refresh_edu_video_list').click()
+    //                $("#rightContent").html(data);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('视频修改失败!');
+                }
+            });
+        }
     }
 
 </script>
