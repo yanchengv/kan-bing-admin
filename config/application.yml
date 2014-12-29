@@ -22,7 +22,7 @@ defaults: &defaults
       kindeditor_bucket: 'dev-mimas'
       kindeditor_service: 'oss-cn-beijing.aliyuncs.com'
       kindeditor_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
-       image_url:  'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
+      image_url:  'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
 development:
   <<: *defaults
 
