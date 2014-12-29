@@ -28,6 +28,18 @@
               <input type="text" id="title" name='title' value="<%= @block_content.title %>" class='FormElement ui-widget-content ui-corner-all'></td>
           </tr>
           <% end %>
+      <% if @page_block.block_type == 'pic_text2'%>
+          <tr class="FormData">
+            <td class="CaptionTD">图片标题:</td>
+            <td class="DataTD">
+              <input type="text" id="title" name='title' value="<%= @block_content.title %>" class='FormElement ui-widget-content ui-corner-all'></td>
+          </tr>
+          <tr class="FormData">
+            <td class="CaptionTD">子标题:</td>
+            <td class="DataTD">
+              <input type="text" id="subtitle" name='subtitle' value="<%= @block_content.subtitle %>" class='FormElement ui-widget-content ui-corner-all'></td>
+          </tr>
+      <% end %>
       <tr class="FormData">
         <td class="CaptionTD">上传图片:</td>
         <td class="DataTD">
