@@ -71,6 +71,10 @@ class SkillsController < ApplicationController
   # PATCH/PUT /skills/1
   # PATCH/PUT /skills/1.json
   def update
+    if @skill.photo && (@skill.photo != skill_params[:photo])
+      photo_name = @skill.photo[@skill.photo.rindex('/')+1, @skill.photo.length]
+      deleteFromAliyun(photo_name, Settings.aliyunOSS.beijing_service, Settings.aliyunOSS.image_bucket)
+    end
     if @skill.update(skill_params)
       render :json => {:success => true}
     else
@@ -90,6 +94,10 @@ class SkillsController < ApplicationController
   # DELETE /skills/1
   # DELETE /skills/1.json
   def destroy
+    if @skill.photo && @skill.photo != ''
+      photo_name = @skill.photo[@skill.photo.rindex('/')+1, @skill.photo.length]
+      deleteFromAliyun(photo_name, Settings.aliyunOSS.beijing_service, Settings.aliyunOSS.image_bucket)
+    end
    if @skill.destroy
      render :json => {:success => true}
    end
