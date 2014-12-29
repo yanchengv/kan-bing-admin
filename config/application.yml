@@ -8,6 +8,7 @@ defaults: &defaults
 
   aliyunOSS:
       server: 'oss.aliyuncs.com'
+      beijing_service: 'oss-cn-beijing.aliyuncs.com'
       access_key_id: 'h17xgVZatOgQ6IeJ'
       secret_access_key: '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
       photo_buket: 'mimas-open'
@@ -21,6 +22,7 @@ defaults: &defaults
       kindeditor_bucket: 'dev-mimas'
       kindeditor_service: 'oss-cn-beijing.aliyuncs.com'
       kindeditor_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
+       image_url:  'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
 development:
   <<: *defaults
 
@@ -34,6 +36,7 @@ production:
 
   aliyunOSS:
       server: 'oss.aliyuncs.com'
+      beijing_service: 'oss-cn-beijing.aliyuncs.com'
       access_key_id: 'h17xgVZatOgQ6IeJ'
       secret_access_key: '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
       photo_buket: 'mimas-open'
@@ -43,7 +46,9 @@ production:
       video_bucket: 'mimas-video'
       image_bucket: 'mimas-img'
       video_service: 'oss-cn-beijing.aliyuncs.com'
-      video_url:  'http://webadmin-video.oss-cn-beijing.aliyuncs.com/'
+      video_url:  'http://mimas-video.oss-cn-beijing.aliyuncs.com/'
+      image_url:  'http://mimas-img.oss-cn-beijing.aliyuncs.com/'
       kindeditor_bucket: 'mimas-img'
       kindeditor_service: 'oss-cn-beijing.aliyuncs.com'
       kindeditor_url: 'http://mimas-img.oss-cn-beijing.aliyuncs.com/'
+
