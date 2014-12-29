@@ -129,6 +129,13 @@ Rails.application.routes.draw do
       post 'batch_delete', to: 'skills#batch_delete'
     end
   end
+  resources :groups do
+    collection do
+      get 'index_show', to: 'groups#show_index'
+      post 'oper_action', to: 'groups#oper_action'
+      post 'batch_delete', to: 'groups#batch_delete'
+    end
+  end
   resources :departments do
     collection do
       get 'index_show', to: 'departments#show_index'

@@ -1,23 +1,23 @@
-<div id="skill_console">
-  <div id="skill_div">
+<div id="group_console">
+  <div id="group_div">
 
   </div>
 </div>
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">技术名称：<input type="text" id="skill_search">&nbsp;&nbsp;<button id="search_skill_btn">搜索</button>&nbsp;<button id="clear_skill_btn" >清空</button>
+    <div style="margin-bottom: 10px;">组名称：<input type="text" id="group_search">&nbsp;&nbsp;<button id="search_group_btn">搜索</button>&nbsp;<button id="clear_group_btn" >清空</button>
     </div>
-    <table id="skill_list"></table>
-    <div id="page_skill"></div>
+    <table id="group_list"></table>
+    <div id="page_group"></div>
   </div>
 </div>
 
 <script type="text/javascript">
-    jQuery("#skill_list").jqGrid({
-        url: '/skills/index_show',
+    jQuery("#group_list").jqGrid({
+        url: '/groups/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: [ 'ID', '新技术标题', '图片', '图片路径', '描述', '详细内容', '有效期', '起始日期', '创建人', '关键字', '排序', '是否首页显示'],
+        colNames: [ 'ID', '名称','图片', '图片路径', '描述', '网址', '创建人ID', '创建人', '排序', '专家统计'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
             { name: 'name', index: 'name', align: "center", editable: true},
@@ -33,19 +33,11 @@
             },
             { name: 'photo', index: 'photo', align: "center", editable: true, hidden: true},
             { name: 'desc', index: 'desc', align: "center", editable: true, hidden: true, editrules: {edithidden: true}},
-            { name: 'detail', index: 'detail', align: "center", editable: true},
-            { name: 'period', index: 'period', align: "center", editable: true},
-            { name: 'from', index: 'from', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
-                $(element).datetimepicker({
-                    lang: 'ch',
-                    timepicker: false,
-                    format: 'Y-m-d'
-                })
-            } }},
-            { name: 'create_by_user', index: 'create_by_user', align: "center", editable: true},
-            { name: 'keywords', index: 'keywords', align: "center", editable: true},
+            { name: 'web_site', index: 'detail', align: "center", editable: true},
+            { name: 'create_user_id', index: 'period', align: "center", editable: true,hidden:true},
+            { name: 'create_user', index: 'create_by_user', align: "center", editable: true},
             { name: 'sort', index: 'sort', align: "center", editable: true},
-            { name: 'index_page_show', index: 'index_page_show', align: "center", editable: true}
+            { name: 'expert_count', index: 'expert_count', align: "center", editable: true}
         ],
         rownumbers: true,
         page:1,
@@ -55,7 +47,7 @@
         sortorder: "desc",
         autowidth: true,
         jsonReader: {
-            root: "skills",
+            root: "groups",
             total: "totalpages",
             page: "currpage",
             records: "totalrecords",
@@ -71,17 +63,17 @@
             addoper: "add", // 当在add模式中提交数据时，操作的名称
             deloper: "del" // 当在delete模式中提交数据时，操作的名称
         },
-        editurl: '/skills/oper_action',
+        editurl: '/groups/oper_action',
         closeAfterAdd: true,
-        pager: jQuery('#page_skill'),
+        pager: jQuery('#page_group'),
      //   multiselect: true,
         rowNum: 15,
         altclass: 'altRowsColour',
         width: '500',
         height: 'auto',
-        caption: "治疗技术管理"
+        caption: "组管理"
     });
-    jQuery("#skill_list").jqGrid('navGrid', '#page_skill', {
+    jQuery("#group_list").jqGrid('navGrid', '#page_group', {
                 cloneToTop: true, add:false, edit:false,
                 deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
@@ -91,22 +83,22 @@
             {
                 closeAfterAdd: true
             }//add
-             ).navButtonAdd('#page_skill', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
-                skill_edit();
-            }, position: "first"}).navButtonAdd('#page_skill', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
-                skill_new();
+             ).navButtonAdd('#page_group', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
+                group_edit();
+            }, position: "first"}).navButtonAdd('#page_group', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                group_new();
             }, position: "first"});
    
-    //搜索skill
-    $('#search_skill_btn').click(function () {
-        var skill = $('#skill_search').val();
-        jQuery("#skill_list").jqGrid('setGridParam', {url: "/skills/index_show?name=" + skill}).trigger("reloadGrid")
+    //搜索group
+    $('#search_group_btn').click(function () {
+        var group = $('#group_search').val();
+        jQuery("#group_list").jqGrid('setGridParam', {url: "/groups/index_show?name=" + group}).trigger("reloadGrid")
     });
     //清空k
-    $('#clear_skill_btn').click(function () {
-        $('#skill_search').val('');
+    $('#clear_group_btn').click(function () {
+        $('#group_search').val('');
     });
-    $("#skill_console").dialog({    //初始化对话框
+    $("#group_console").dialog({    //初始化对话框
         autoOpen: false,
         modal: false,    // 设置对话框为模态（modal）对话框
         resizable: true,
@@ -127,23 +119,23 @@
             }
         },
         buttons: {  // 为对话框添加按钮
-            "保存": save_skill,
-            "修改": update_skill,
+            "保存": save_group,
+            "修改": update_group,
             "取消": function () {
-                $("#skill_console").dialog("close")
+                $("#group_console").dialog("close")
             }
         }
     });
-    function skill_edit() {
-        var id = jQuery("#skill_list").jqGrid('getGridParam', 'selrow');
+    function group_edit() {
+        var id = jQuery("#group_list").jqGrid('getGridParam', 'selrow');
         if (id) {
             $.ajax({
-                url: '/skills/' + id + '/edit',
+                url: '/groups/' + id + '/edit',
                 type: 'get',
                 data: {id: id},
                 success: function (data) {
-                    $("#skill_div").html(data);
-                    var video_consoleDlg = $("#skill_console");
+                    $("#group_div").html(data);
+                    var video_consoleDlg = $("#group_console");
                     var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
                     dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                     dialogButtonPanel.find("button:contains('修改')").show();
@@ -155,13 +147,13 @@
             alert('请选择需要进行修改的图片!');
         }
     }
-    function skill_new() {
+    function group_new() {
         $.ajax({
-            url: "/skills/new",
+            url: "/groups/new",
             type: 'get',
             success: function (data) {
-                $("#skill_div").html(data);
-                var video_consoleDlg = $("#skill_console");
+                $("#group_div").html(data);
+                var video_consoleDlg = $("#group_console");
                 var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
                 dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                 dialogButtonPanel.find("button:contains('保存')").show();
@@ -170,85 +162,58 @@
             }
         });
     }
-    function save_skill(){
+    function save_group(){
         var name = $('#name').val();
-        var photo = $('#image_path').val();
-        var desc = $('#content').val();
-        if (name && name != '' && photo && photo != '' && desc && desc != ''){
+        if (name && name != '') {
             $.ajax({
-                url: "/skills",
-                type: 'post',
-                data: { name: name,
-                    detail: $('#detail').val(),
-                    desc: desc,
-                    photo: photo,
-                    period: $('#period').val(),
-                    from: $('#from_time').val(),
-                    keywords: $('#keywords').val(),
-                    sort: $('#sort').val(),
-                    index_page_show: $('#index_page_show').val()
+                url: "/groups",
+                type: 'post',////:id, :name, :desc, :photo, :web_site, :expert_count, :sort
+                data: { name: $('#name').val(),
+                    desc: $('#content').val(),
+                    photo: $('#image_path').val(),
+                    web_site: $('#web_site').val(),
+                    expert_count: $('#expert_count').val(),
+                    sort: $('#sort').val()
                 },
                 async: false,
                 success: function (data) {
-                    $("#skill_console").dialog("close");
-                    jQuery("#skill_list").jqGrid('setGridParam', {url: "/skills/index_show"}).trigger("reloadGrid")
+                    $("#group_console").dialog("close");
+                    jQuery("#group_list").jqGrid('setGridParam', {url: "/groups/index_show"}).trigger("reloadGrid")
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert('保存失败!');
                 }
             });
         }else{
-            if(!name || name == ''){
-                $("#name_label").html('必填项不能为空!');
-            }
-            if (!desc || desc == '') {
-                $("#desc_label").html('必填项不能为空!');
-            }
-            if (!photo || photo == '') {
-                $("#photo_label").html('必填项不能为空!');
-            }
+            $("#group_label").html('必填项不能为空!');
         }
-
     }
-    function update_skill() {
-        var id = $('#skill_id').val();
+    function update_group() {
+        var id = $('#group_id').val();
         if (id) {
             var name = $('#name').val();
-            var photo = $('#image_path').val();
-            var desc = $('#content').val();
-            if (name && name != '' && photo && photo != '' && desc && desc != '') {
+            if (name && name != '') {
                 $.ajax({
-                    url: "/skills/" + id,
+                    url: "/groups/" + id,
                     type: 'put',
-                    data: { name: name,
-                        detail: $('#detail').val(),
-                        desc: desc,
-                        photo: photo,
-                        period: $('#period').val(),
-                        from: $('#from_time').val(),
-                        keywords: $('#keywords').val(),
-                        sort: $('#sort').val(),
-                        index_page_show: $('#index_page_show').val()
+                    data: { name: $('#name').val(),
+                        desc: $('#content').val(),
+                        photo: $('#image_path').val(),
+                        web_site: $('#web_site').val(),
+                        expert_count: $('#expert_count').val(),
+                        sort: $('#sort').val()
                     },
                     async: false,
                     success: function (data) {
-                        $("#skill_console").dialog("close");
-                        jQuery("#skill_list").jqGrid('setGridParam', {url: "/skills/index_show"}).trigger("reloadGrid")
+                        $("#group_console").dialog("close");
+                        jQuery("#group_list").jqGrid('setGridParam', {url: "/groups/index_show"}).trigger("reloadGrid")
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         alert('修改失败!');
                     }
                 });
-            } else {
-                if (!name || name == '') {
-                    $("#name_label").html('必填项不能为空!');
-                }
-                if (!desc || desc == '') {
-                    $("#desc_label").html('必填项不能为空!');
-                }
-                if (!photo || photo == '') {
-                    $("#photo_label").html('必填项不能为空!');
-                }
+            }else{
+                $("#group_label").html('必填项不能为空!');
             }
         } else {
             alert('请选择需要进行修改的项!');

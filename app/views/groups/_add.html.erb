@@ -19,49 +19,35 @@
 <br>
 <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
 <input type=" text" name="image_url" id='image_path' style='visibility:hidden;'>
-<input type="hidden" id='skill_id' name="id">
 <table class="EditTable" style="margin-top: -80px;">
   <tr class="FormData">
-    <td class="CaptionTD">技术名称:</td>
+    <td class="CaptionTD">组名称:</td>
     <td class="DataTD">
-      <input type="text" id="name" name='name' class='FormElement ui-widget-content ui-corner-all' onblur="check_data('name_label', this.value)"><label style="color:red;" id="name_label">*</label>
+      <input type="text" id="name" name='name' class='FormElement ui-widget-content ui-corner-all' onblur="check_data('group_label', this.value)"><label style="color:red;" id="group_label">*</label>
     </td>
   </tr>
   <tr class="FormData">
     <td class="CaptionTD">上传图片:</td>
     <td class="DataTD">
-      <label id="image_path2"></label><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/><label style="color:red;" id="photo_label">*</label>
+      <label id="image_path2"></label><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
     </td>
   </tr>
   <tr class="FormData" id="textareaContent">
     <td class="CaptionTD">描述:</td>
     <td class="DataTD">
-      <textarea name='desc' rows="5" id="content" style="width: 600px; " class='FormElement ui-widget-content ui-corner-all' onblur="check_data('desc_label', this.value)"></textarea><label style="color:red;" id="desc_label">*</label>
-    </td>
-  </tr>
-  <tr class="FormData" id="textareaContent">
-    <td class="CaptionTD">详细信息:</td>
-    <td class="DataTD">
-      <textarea name='detail' rows="5" id="detail" style="width: 600px; " class='FormElement ui-widget-content ui-corner-all'></textarea>
-    </td>
-  </tr>
-
-  <tr class="FormData" id="contentUrl">
-    <td class="CaptionTD">有效期:</td>
-    <td class="DataTD">
-      <input type="text" id="period" name='period' class='FormElement ui-widget-content ui-corner-all'>
+      <textarea name='desc' rows="5" id="content" style="width: 600px; " class='FormElement ui-widget-content ui-corner-all'></textarea>
     </td>
   </tr>
   <tr class="FormData" id="contentUrl">
-    <td class="CaptionTD">起始时间:</td>
+    <td class="CaptionTD">网址:</td>
     <td class="DataTD">
-      <input id='from_time' class='FormElement ui-widget-content ui-corner-all' data-format="yyyy-MM-dd" name='video_time' type="text" style='width:209px;height:26px;'/>
+      <input type="text" id="web_site" name='web_site' class='FormElement ui-widget-content ui-corner-all'>
     </td>
   </tr>
   <tr class="FormData">
-    <td class="CaptionTD">关键字:</td>
+    <td class="CaptionTD">专家统计:</td>
     <td class="DataTD">
-      <input type="text" id="keywords" name='keywords' class='FormElement ui-widget-content ui-corner-all'>
+      <input type="text" id="expert_count" name='expert_count' class='FormElement ui-widget-content ui-corner-all'>
     </td>
   </tr>
   <tr class="FormData">
@@ -70,20 +56,9 @@
       <input type="text" id="sort" name='sort' class='FormElement ui-widget-content ui-corner-all'>
     </td>
   </tr>
-  <tr class="FormData">
-    <td class="CaptionTD">是否首页显示:</td>
-    <td class="DataTD">
-      <input type="checkbox" name="index_page_show" id="index_page_show" checked="checked" value="true">
-    </td>
-  </tr>
 </table>
 <script>
     $(function () {
-        $('#from_time').datetimepicker({
-            lang: 'ch',
-            timepicker: false,
-            format: 'Y-m-d'
-        });
         KindEditor.ready(function (K) {
             window.editor = K.create('#content', {
                 resizeType: 0,
@@ -135,10 +110,10 @@
             }
         }
     });
-    function check_data(label, value){
-        if(value && value != ''){
-            $("#"+label).html('*');
-        }else{
+    function check_data(label, value) {
+        if (value && value != '') {
+            $("#" + label).html('*');
+        } else {
             $("#" + label).html('必填项不能为空!');
         }
     }
