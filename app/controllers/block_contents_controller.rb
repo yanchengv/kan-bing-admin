@@ -151,6 +151,7 @@ class BlockContentsController < ApplicationController
     # Settings.block_content+"/?content_id=#{block_content.id}
     para={}
     para[:title]=params[:title]
+    para[:subtitle]=params[:subtitle]
     para[:content]=params[:content]
     para[:url]=params[:url]
     para[:block_id]=params[:block_id]
@@ -279,6 +280,6 @@ class BlockContentsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def block_content_params
-    params.permit(:block_name, :title, :content, :url,:content_url, :block_type, :create_date, :block_id)
+    params.permit(:block_name, :title,:subtitle, :content, :url,:content_url, :block_type, :create_date, :block_id)
   end
 end

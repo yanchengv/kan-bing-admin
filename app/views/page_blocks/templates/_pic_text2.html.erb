@@ -1,0 +1,189 @@
+ <!--绿色医疗的模板-->
+<style>
+
+
+    /*屏幕尺寸大于1200px */
+    @media (min-width: 1200px) {
+
+        .stickpagebody_box {
+            width: 388px;
+            float: left;
+            display: inline-block;
+            height: 310px;
+            min-height: 120px;
+            line-height: 16px;
+            overflow: hidden;
+            position: relative;
+            margin:5px;
+            background: #fff;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+            -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+            word-break: break-all;
+        }
+    }
+
+    /*屏幕尺寸小于960px*/
+    @media (max-width: 960px) {
+
+        .stickpagebody_box {
+            width:33%;
+            float: left;
+            display: inline-block;
+            height: 310px;
+            min-height: 120px;
+            line-height: 16px;
+            overflow: hidden;
+            position: relative;
+            margin:5px;
+            background: #fff;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+            -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+            word-break: break-all;
+        }
+    }
+
+    /*屏幕尺寸小于480px*/
+    @media (max-width: 683px) {
+        .stickpagebody_box {
+            width:100%;
+            float: left;
+            display: inline-block;
+            height: 310px;
+            min-height: 120px;
+            line-height: 16px;
+            overflow: hidden;
+            position: relative;
+            margin:5px;
+            background: #fff;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+            -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+            word-break: break-all;
+        }
+    }
+
+    .stickpagebody_box {
+        width: 388px;
+        float: left;
+        display: inline-block;
+        height: 310px;
+        min-height: 120px;
+        line-height: 16px;
+        overflow: hidden;
+        position: relative;
+        margin:5px;
+        background: #fff;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+        -moz-box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.17);
+        word-break: break-all;
+    }
+    .img_text img{
+        height:120px !important;
+    }
+
+    ul li {
+        list-style: none;
+    }
+
+    ul, li, div {
+        margin: 0;
+        padding: 0;
+    }
+
+    .fr {
+        float: right;
+    }
+
+    .fl {
+        float: left;
+    }
+    .g_title{
+        font-size:18px;
+        margin-bottom: 15px;
+        font-weight:bold;
+        color:#1c8a42;
+
+    }
+    .g_title2{
+        font-weight:bold;
+        color: #404040;
+        font-size: 14px;
+        margin-top: 15px;
+
+
+    }
+    .g_content p{
+        font-family:"Microsoft YaHei",Arial;
+    }
+    .g_content{
+        padding:0 15px 15px 15px;}
+    .g_text{
+        font-size:12px;
+        color:#888;
+        line-height:18px;
+    }
+    .g_more{
+        cursor:pointer;
+        color:#1c8a42;
+        margin-top:10px;
+        font-size:12px;
+        font-family:"Microsoft YaHei",Arial;
+    }
+    .g_more:hover{
+        color:#41B669;
+    }
+
+</style>
+ <% if !@block_contents.nil? && !@block_contents.empty? %>
+     <div class="stickpagebody_box">
+       <div class="img_text">
+
+         <a class="g_more" herf=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %>>|  <img src=<%= @block_contents.last.url %>/></a>
+       </div>
+       <div class="g_content">
+         <a class="g_more" herf=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %>><p class="g_title"><%= @block_contents.last.title%></p></a>
+         <a class="g_more" herf=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %>><p class="g_title2"><%= @block_contents.last.subtitle%></p></a>
+         <p class="g_text">
+           <% @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
+              if @content.length > 85
+                @content = @content[0, 85] << '...'
+              else
+                @content = @content
+              end
+           %>
+           <%= @content %>
+         </p>
+         <a class="g_more" herf=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %>>| 查看更多</a>
+       </div>
+     </div>
+         <%else%>
+     <div class="stickpagebody_box">
+       <div class="img_text">
+         <img src="1.jpeg"/>
+       </div>
+       <div class="g_content">
+         <p class="g_title">公共关系</p>
+         <p class="g_title2">清华大学经管学院中国工商管理案例中心</p>
+         <p class="g_text">6月28日清华大学绿色医疗学术交流会斯坦福医学院院长兼首席执行官（CEO）Amir Dan Rubin医院管理讲座,2013年10月12日清华大学绿色医疗院长交流班斯坦福专家与国内院长互动...</p>
+         <a class="g_more">| 查看更多</a>
+       </div>
+     </div>
+     <%end%>
+
+
+</div>

@@ -4,22 +4,22 @@
 #
 #   gem 'sqlite3'
 #
-#development:
-#  adapter: mysql2
-#  encoding: utf8
-#  database: mimas_development
-#  pool: 5
-#  username: root
-#  password: 123
 development:
-  host: 166.111.131.96
-  port: 3307
   adapter: mysql2
-  #encoding: unicode
-  database: mimas_production
+  encoding: utf8
+  database: mimas_development
   pool: 5
   username: root
-  password: "123"
+  password: 123
+#development:
+#  host: 166.111.131.96
+#  port: 3307
+#  adapter: mysql2
+#  #encoding: unicode
+#  database: mimas_production
+#  pool: 5
+#  username: root
+#  password: "123"
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
