@@ -139,9 +139,27 @@ class ApplicationController < ActionController::Base
     )
     # mimas_open_bucket = Bucket.find(BUCKET) #查找Bucket
     begin
+      p file
+      put 'success'
       OSSObject.delete(file, Settings.aliyunOSS.video_bucket) #删除文件
     rescue
       puts 'delte  error'
+    end
+  end
+
+  def deleteFromAliyun(file,server,bucket)
+      Aliyun::OSS::Base.establish_connection!(
+          :server => server, #可不填,默认为此项
+          :access_key_id => 'h17xgVZatOgQ6IeJ',
+          :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+      )
+  # mimas_open_bucket = Bucket.find(BUCKET) #查找Bucket
+    begin
+      p file
+      OSSObject.delete(file, bucket) #删除文件
+      p 'success'
+    rescue
+      puts 'delete  error'
     end
   end
 

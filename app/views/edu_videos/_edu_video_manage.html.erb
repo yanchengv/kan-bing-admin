@@ -145,7 +145,7 @@
         buttons: {  // 为对话框添加按钮
             "保存": addContact,
             "修改": updateContact,
-            "取消": function() {$("#video_consoleDlg").dialog("close")}
+            "取消": cancelContact
         }
     });
     jQuery("#edu_video_list").jqGrid('navGrid', '#page_video', {
@@ -252,8 +252,8 @@
             },
             async: false,
             success: function (data) {
-                window.parent.$("#video_consoleDlg").dialog("close");
-                $('#refresh_edu_video_list').click()  //修改成功后关闭对话框
+                window.parent.$("#video_consoleDlg").dialog("close");  //修改成功后关闭对话框
+                $('#refresh_edu_video_list').click()
 //                $("#rightContent").html(data);
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -261,4 +261,24 @@
             }
         });
     }
+    function cancelContact() {
+        $.ajax({
+            url: "/edu_videos/video_delete",
+            type: 'post',
+            data: { video_id: $('#video_id').val(),
+                image_url:$('#image_path').val(),
+                video_url:$('#video_url').val()
+            },
+            async: false,
+            success: function (data) {
+                window.parent.$("#video_consoleDlg").dialog("close");  //关闭对话框
+//                $('#refresh_edu_video_list').click()
+//                $("#rightContent").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('视频修改失败!');
+            }
+        });
+    }
+
 </script>

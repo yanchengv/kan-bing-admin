@@ -144,11 +144,12 @@ class EduVideosController < ApplicationController
   def video_edit
     @video = EduVideo.find(params[:id])
     @doc = Doctor.find_by_id(params[:doctor_id])
+    service = Settings.aliyunOSS.video_service
     if !@video.video_url.nil? && (@video.video_url != params[:video_url])
-      delte_video_file_from_aliyun(@video.video_url)  #删除之前的file
+      deleteFromAliyun(@video.video_url,service,Settings.aliyunOSS.video_bucket) #删除对应的视频
     end
     if !@video.image_url.nil? && (@video.image_url != params[:image_url])
-      delte_video_file_from_aliyun(@video.image_url)
+      deleteFromAliyun(@video.image_url,service,Settings.aliyunOSS.image_bucket) #删除对应的缩略图
     end
     if @video.update_attributes(:name => params[:name], :content => params[:content], :doctor_name => @doc.nil? ? '' : @doc.name,
                                 :video_time => params[:video_time], :image_url => params[:image_url], :video_url => params[:video_url],
@@ -160,6 +161,27 @@ class EduVideosController < ApplicationController
       @types=VideoType.all
       render :partial => 'edu_videos/edit_video'
     end
+  end
+
+  def video_delete
+    @video = EduVideo.where(id:params[:video_id]).first
+    service = Settings.aliyunOSS.video_service
+    if !@video.nil?
+      p @video.image_url
+      if @video.image_url != params[:image_url]
+        bucket = Settings.aliyunOSS.image_bucket
+        deleteFromAliyun(params[:image_url],service,bucket) #删除对应的缩略图
+      end
+      p @video.video_url
+      if @video.video_url != params[:video_url]
+        bucket = Settings.aliyunOSS.video_bucket
+        deleteFromAliyun(params[:video],service,bucket) #删除对应的视频
+      end
+    else
+      deleteFromAliyun(params[:image_url],service,Settings.aliyunOSS.image_bucket) #删除对应的缩略图
+      deleteFromAliyun(params[:video_url],service,Settings.aliyunOSS.video_bucket) #删除对应的视频
+    end
+    render json: {success:true}
   end
 
   def new_video
@@ -231,10 +253,14 @@ class EduVideosController < ApplicationController
   # DELETE /edu_videos/1.json
   def destroy
     if !@edu_video.image_url.nil?
-      delte_video_file_from_aliyun(@edu_video.image_url) #删除对应的缩略图
+      service = Settings.aliyunOSS.video_service
+      bucket = Settings.aliyunOSS.image_bucket
+      deleteFromAliyun(@edu_video.image_url,service,bucket) #删除对应的缩略图
     end
     if !@edu_video.video_url.nil?
-      delte_video_file_from_aliyun(@edu_video.video_url) #删除对应的视频
+      service = Settings.aliyunOSS.video_service
+      bucket = Settings.aliyunOSS.video_bucket
+      deleteFromAliyun(@edu_video.image_url,service,bucket) #删除对应的视频
     end
    if @edu_video.destroy
      render :json => {:success => true}

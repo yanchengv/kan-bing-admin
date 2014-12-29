@@ -800,6 +800,9 @@ class DoctorsController < ApplicationController
     @doctors = Doctor.where(id:ids_arr)
     if !@doctors.empty?
       @doctors.each do |doc|
+        if !doc.photo.nil?
+          deleteFromAliyun(doc.photo,Settings.aliyunOSS.server,Settings.aliyunOSS.photo_buket)
+        end
         doc.destroy
       end
     end
@@ -1478,7 +1481,8 @@ class DoctorsController < ApplicationController
       else
         render json:{success:true,content:'此邮箱可以使用'}
       end
-    end  end
+    end
+  end
   def check_phone      #用于页面验证
     @doctor = Doctor.find_by(id:params[:doctor_id])
     mobile_phone=params[:phone]
@@ -1598,6 +1602,20 @@ class DoctorsController < ApplicationController
       end
     end
     render json: {success:true}
+  end
+
+  def delete_image
+    @doc = Doctor.where(id:params[:doc_id]).first
+    service = 'oss.aliyuncs.com'
+    buket =  Settings.aliyunOSS.photo_buket
+    if !@doc.nil?
+      if @doc.photo != params[:image]
+        deleteFromAliyun(params[:image],service,buket) #删除头像
+      end
+    else
+      deleteFromAliyun(params[:image],service,buket) #删除头像
+    end
+    render json:{success:true}
   end
 
   private
