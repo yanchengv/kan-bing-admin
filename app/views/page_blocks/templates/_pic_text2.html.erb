@@ -153,11 +153,11 @@
      <div class="stickpagebody_box">
        <div class="img_text">
 
-         <a class="g_more" herf=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %>>|  <img src=<%= @block_contents.last.url %>/></a>
+         <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">|  <img src=<%= @block_contents.last.url %>/></a>
        </div>
        <div class="g_content">
-         <a class="g_more" herf=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %>><p class="g_title"><%= @block_contents.last.title%></p></a>
-         <a class="g_more" herf=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %>><p class="g_title2"><%= @block_contents.last.subtitle%></p></a>
+         <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank"><p class="g_title"><%= @block_contents.last.title%></p></a>
+         <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank"><p class="g_title2"><%= @block_contents.last.subtitle%></p></a>
          <p class="g_text">
            <% @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
               if @content.length > 85
@@ -168,7 +168,7 @@
            %>
            <%= @content %>
          </p>
-         <a class="g_more" herf=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %>>| 查看更多</a>
+         <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">| 查看更多</a>
        </div>
      </div>
          <%else%>

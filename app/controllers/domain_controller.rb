@@ -129,7 +129,8 @@ class DomainController < ApplicationController
     file=params[:logoUpload]
     tmpfile = getFileName(file.original_filename.to_s)
     uuid = uploadFileToAliyun(file)
-    url = Settings.aliyunOSS.oss_url + uuid
+    uuid=uploadToAliyun(file,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+    url = Settings.aliyunOSS.image_url + uuid
     if true
       render :json => {flag: true, url: url}
     else
