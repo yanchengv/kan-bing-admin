@@ -1,0 +1,31 @@
+<select id="doctor_dep_id" name="department_id" onchange="doc_search_dep()" >
+  <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '医院管理员' %>
+    <option value="all">全部</option>
+  <% else %>
+  <% end %>
+<% if !@departments.nil? %>
+    <% if !@departments.empty? %>
+        <% @departments.each do |dep| %>
+            <option id="serch_dep_<%= dep.id %>" value="<%= dep.id %>"<% if !@video.nil? && dep.id == @video.department_id %> selected="selected"
+                    <% end %> ><%= dep.name %></option>
+        <% end %>
+    <% end %>
+<% end %>
+</select>
+<script>
+    $(function() {
+        $("#doctor_dep_id").select2()
+        doc_search_dep()
+    })
+    function doc_search_dep(){
+        var hos_id = $('#doctor_hos_id').val()
+        var dep_id = $('#doctor_dep_id').val()
+        $.ajax({
+            type: 'get',
+            url: '/edu_videos/search_doctor?hos_id='+hos_id+'&dep_id='+dep_id+'&video_id=<%= @video.id unless @video.nil?%>',
+            success: function (data) {
+                $('#search_doc_id').html(data)
+            }
+        })
+    }
+</script>

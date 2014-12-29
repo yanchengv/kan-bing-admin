@@ -118,8 +118,8 @@ class EduVideosController < ApplicationController
     para[:content]=params[:content]
     para[:video_url]=params[:video_url]
     para[:doctor_id]=params[:doctor_id]
-    para[:hospital_id]=current_user.hospital_id
-    para[:department_id]=current_user.department_id
+    para[:hospital_id] = params[:hospital_id]
+    para[:department_id] = params[:department_id]
     if !params[:doctor_id].nil?
       @doc = Doctor.find_by_id(params[:doctor_id])
       if !@doc.nil?
@@ -151,9 +151,11 @@ class EduVideosController < ApplicationController
     if !@video.image_url.nil? && (@video.image_url != params[:image_url])
       deleteFromAliyun(@video.image_url,service,Settings.aliyunOSS.image_bucket) #删除对应的缩略图
     end
+    hospital_id = params[:hospital_id]
+    department_id = params[:department_id]
     if @video.update_attributes(:name => params[:name], :content => params[:content], :doctor_name => @doc.nil? ? '' : @doc.name,
                                 :video_time => params[:video_time], :image_url => params[:image_url], :video_url => params[:video_url],
-                                :doctor_id => params[:doctor_id], :video_type_id => params[:video_type_id])
+                                :doctor_id => params[:doctor_id], :video_type_id => params[:video_type_id], :hospital_id => hospital_id, :department_id => department_id)
       @video_types = VideoType.all
       render :partial => 'edu_videos/edu_video_manage'
     else
@@ -190,12 +192,16 @@ class EduVideosController < ApplicationController
       dep_id = current_user.department_id
       if !hos_id.nil? && hos_id != ''
         if !dep_id.nil? && dep_id != ''
-          @doctors = Doctor.where(hospital_id:hos_id,department_id:dep_id)
+          @doctors = Doctor.select("id","name").where(hospital_id:hos_id,department_id:dep_id)
+          @departments = Department.select("id","name").where(id:dep_id)
         else
-          @doctors = Doctor.where(hospital_id:hos_id)
+          @departments = Department.select("id","name").where(hospital_id:hos_id)
+          @doctors = Doctor.select("id","name").where(hospital_id:hos_id).order("name")
         end
+        @hospitals = Hospital.select("id","name").where(id:hos_id)
       else
-        @doctors = Doctor.select("id","name").all
+        @hospitals = Hospital.select("id","name").all
+        #   @doctors = Doctor.select("id","name").all
       end
       @types=VideoType.all
       @video=EduVideo.new
@@ -209,12 +215,15 @@ class EduVideosController < ApplicationController
       dep_id = current_user.department_id
       if !hos_id.nil? && hos_id != ''
         if !dep_id.nil? && dep_id != ''
-          @doctors = Doctor.where(hospital_id:hos_id,department_id:dep_id)
+          @doctors = Doctor.select("id","name").where(hospital_id:hos_id,department_id:dep_id)
+          @departments = Department.select("id","name").where(id:dep_id)
         else
-          @doctors = Doctor.where(hospital_id:hos_id)
+          @departments = Department.select("id","name").where(hospital_id:hos_id)
+          @doctors = Doctor.select("id","name").where(hospital_id:hos_id).order("name")
         end
       else
-        @doctors = Doctor.select("id","name").all
+        @hospitals = Hospital.select("id","name").select("id","name").all
+        # @doctors = Doctor.select("id","name").all
       end
       @types=VideoType.all
       @video=EduVideo.find(params[:id])
@@ -292,6 +301,37 @@ class EduVideosController < ApplicationController
   def setting
     render template: 'edu_videos/setting'
   end
+
+  def search_department
+    @departments = Department.where(hospital_id:params[:hos_id])
+    if params[:hos_id].nil? || params[:hos_id]=='' || params[:hos_id] == 'all'
+      @departments=nil
+    end
+    if !current_user.department_id.nil? && current_user.department_id != ''
+      @departments = Department.select("id","name").where(id:current_user.department_id)
+    end
+    @video = EduVideo.where(id:params[:video_id]).first
+    render partial: 'edu_videos/search_department'
+  end
+
+  def search_doctor
+    if params[:hos_id] == 'all'
+      p 'hos'
+      @doctors = Doctor.select("id","name").all
+    else
+      if params[:dep_id] == 'all'
+        @doctors = Doctor.select("id","name").where(hospital_id:params[:hos_id]).order("name")
+      else
+        @doctors = Doctor.select("id","name").where(hospital_id:params[:hos_id],department_id:params[:dep_id]).order("name")
+      end
+    end
+    if !current_user.department_id.nil? && current_user.department_id != ''
+      @doctors = Doctor.where(department_id:current_user.department_id).order("name")
+    end
+    @video = EduVideo.where(id:params[:video_id]).first
+    render partial: 'edu_videos/search_doctor'
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
