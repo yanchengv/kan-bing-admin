@@ -114,6 +114,7 @@
     }
     .g_title{
         font-size:18px;
+        margin-top:15px;
         margin-bottom: 15px;
         font-weight:bold;
         color:#1c8a42;
@@ -147,13 +148,15 @@
     .g_more:hover{
         color:#41B669;
     }
-
+    .stickpagebody_box a:link{
+        color:#41B669 !important;
+    }
 </style>
  <% if !@block_contents.nil? && !@block_contents.empty? %>
      <div class="stickpagebody_box">
        <div class="img_text">
 
-         <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">|  <img src=<%= @block_contents.last.url %>></a>
+         <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank"><img src=<%= @block_contents.last.url %>></a>
        </div>
        <div class="g_content">
          <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank"><p class="g_title"><%= @block_contents.last.title%></p></a>

@@ -79,40 +79,26 @@ class BlockContentsController < ApplicationController
       render :json => {:success => false, :errors => '添加失败！'}
     end
 
-    #respond_to do |format|
-    #  if @block_content.save
-    #    format.html { redirect_to @block_content, notice: 'Admin was successfully created.' }
-    #    format.json { render :show, status: :created, location: @block_content }
-    #  else
-    #    format.html { render :new }
-    #    format.json { render json: @block_content.errors, status: :unprocessable_entity }
-    #  end
-    #end
+
   end
 
   def update
     para={}
     para[:title]=params[:title]
+    para[:subtitle]=params[:subtitle]
     para[:content]=params[:content]
+    para[:content_url]=params[:content_url]
     para[:url]=params[:url]
-    if @block_content.update(para)
+    @block_contents = BlockContent.where(:block_id => params[:block_id])
+    if @block_content.update_attributes(para)
       @page_block = PageBlock.find(@block_content.block_id)
-      @block_contents = nil
       @block_contents = BlockContent.where(:block_id => params[:block_id])
       render json:{page_block_id:@page_block.id}
       # render partial: "page_blocks/templates/#{@page_block.block_type}"
     else
       render :partial => 'block_contents/edit_pic'
     end
-    #respond_to do |format|
-    #  if @block_content.update(block_content_params)
-    #    format.html { redirect_to @block_content, notice: 'Admin was successfully updated.' }
-    #    format.json { render :show, status: :ok, location: @block_content }
-    #  else
-    #    format.html { render :edit }
-    #    format.json { render json: @block_content.errors, status: :unprocessable_entity }
-    #  end
-    #end
+
   end
 
   #上传图片
