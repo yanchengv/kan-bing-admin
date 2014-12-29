@@ -287,7 +287,7 @@
             <%# if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
             "确定": forDoctor,
             <%# end %>
-            "取消": function() {$("#consoleDlg").dialog("close")}
+            "取消": cancelContact
         }
     });
 
@@ -591,6 +591,23 @@
         $('#refresh_list12').click()
 //        var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
 //        jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+    }
+
+    function cancelContact() {
+        var image = $('#user_photo_image').val()
+        $.ajax({
+            type: 'post',
+            url: '/doctors/delete_image',
+            data:{doc_id:selectedIds,image:image},
+            success: function (data) {
+                if (data['success']) {
+                    window.parent.$("#consoleDlg").dialog("close");
+//                    alert('删除成功!')
+                } else {
+                    alert('删除失败!')
+                }
+            }
+        })
     }
 
 //    添加医生

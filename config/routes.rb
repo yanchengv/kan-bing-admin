@@ -79,6 +79,7 @@ Rails.application.routes.draw do
       post 'edit_video', to: 'edu_videos#edit_video'
       post 'video_edit', to:'edu_videos#video_edit'
       post 'upload_video2', to: 'edu_videos#upload_video2'
+      post 'video_delete', to:'edu_videos#video_delete'
     end
   end
   resources :video_types do
@@ -303,6 +304,7 @@ Rails.application.routes.draw do
       get 'show_oth_doc', to:'doctors#show_oth_doc'
       get 'forDoctors', to: 'doctors#forDoctors'
       get 'matchDoctor', to: 'doctors#matchDoctor'
+      post 'delete_image', to:'doctors#delete_image'
     end
   end
 
@@ -320,6 +322,7 @@ Rails.application.routes.draw do
       get 'check_phone', to:'patients#check_phone'
       get 'check_email', to:'patients#check_email'
       get 'check_credential_type_number', to:'patients#check_credential_type_number'
+      post 'delete_image', to:'patients#delete_image'
     end
   end
 
