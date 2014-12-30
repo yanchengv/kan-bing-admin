@@ -87,8 +87,9 @@ class BlockContentsController < ApplicationController
     para[:title]=params[:title]
     para[:subtitle]=params[:subtitle]
     para[:content]=params[:content]
+    para[:content_summary]=params[:content_summary]
     para[:content_url]=params[:content_url]
-    para[:url]=params[:url]
+    para[:url]=params[:url] #图片url
     @block_contents = BlockContent.where(:block_id => params[:block_id])
     if @block_content.update_attributes(para)
       @page_block = PageBlock.find(@block_content.block_id)
@@ -139,10 +140,12 @@ class BlockContentsController < ApplicationController
     para[:title]=params[:title]
     para[:subtitle]=params[:subtitle]
     para[:content]=params[:content]
-    para[:url]=params[:url]
+    para[:content_summary]=params[:content_summary]
+    para[:content_url]=params[:content_url]
+    para[:url]=params[:url]    #图片url
     para[:block_id]=params[:block_id]
     para[:block_type] = params[:type]
-    para[:content_url]=params[:content_url]
+
     @block_content=BlockContent.new(para)
     @page_block = PageBlock.find(params[:block_id])
     @block_contents = nil
@@ -266,6 +269,6 @@ class BlockContentsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def block_content_params
-    params.permit(:block_name, :title,:subtitle, :content, :url,:content_url, :block_type, :create_date, :block_id)
+    params.permit(:block_name, :title,:subtitle, :content, :content_summary,:url,:content_url, :block_type, :create_date, :block_id)
   end
 end

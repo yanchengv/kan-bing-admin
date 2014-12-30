@@ -10,14 +10,14 @@
         <img alt="医院环境" src="<%= @block_contents.last.url %>" title="医院环境" height="100px">
       </div>
       <p class="in_index_modle_text">
-        <% @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
-           if @content.length > 85
-             @content = @content[0, 85] << '...'
+        <% @content_summary = @block_contents.last.content_summary.nil? ? '' : @block_contents.last.content_summary.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
+           if @content_summary.length > 85
+             @content_summary = @content_summary[0, 85] << '...'
            else
-             @content = @content
+             @content_summary = @content_summary
            end
         %>
-        <%= @content %>
+        <%= @content_summary %>
       </p>
     </div>
 <% else %>

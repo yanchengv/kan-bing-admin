@@ -47,6 +47,13 @@
         </td>
       </tr>
       <tr class="FormData">
+        <td class="CaptionTD">内容概要:</td>
+        <td class="DataTD">
+          <!-- 内容概要输入请保持在85字之内-->
+          <textarea name='content_summary' rows="5" id="content_summary" style="width: 600px; "  class='FormElement ui-widget-content ui-corner-all'><%=@block_content.content_summary %></textarea>
+        </td>
+      </tr>
+      <tr class="FormData">
         <td class="CaptionTD">访问方式:</td>
         <td class="DataTD" style="padding-left: 30px;">
           <input type="radio" name="radio_url" class="radio_url" value="1" checked=true onchange="showContent(this.value)"/>链接
@@ -64,7 +71,7 @@
       <tr class="FormData" id="contentUrl">
         <td class="CaptionTD">链接路径:</td>
         <td class="DataTD">
-          <input type="text" size="60" name="contentUrl" id="content_url" placeholder="这里输入图片链接地址" value="<%= @block_content.content_url %>" />
+          <input type="text" size="60" name="contentUrl" id="content_url" placeholder="这里输入图片链接地址,格式如:http://www.kanbing365.com" value="<%= @block_content.content_url %>" />
         </td>
       </tr>
     <!--  <tr class="FormData">
