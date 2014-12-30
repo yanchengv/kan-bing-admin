@@ -266,7 +266,7 @@
         });
     }
     function cancelContact() {
-        if ($('#image_path').val()=='' && $('#video_url').val()=='') {
+        if ($.trim($('#image_path').val())=='' && $.trim($('#video_url').val())=='') {
             window.parent.$("#video_consoleDlg").dialog("close");
         } else{
             $.ajax({

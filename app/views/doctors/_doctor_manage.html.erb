@@ -595,19 +595,22 @@
 
     function cancelContact() {
         var image = $('#user_photo_image').val()
-        $.ajax({
-            type: 'post',
-            url: '/doctors/delete_image',
-            data:{doc_id:selectedIds,image:image},
-            success: function (data) {
-                if (data['success']) {
-                    window.parent.$("#consoleDlg").dialog("close");
-//                    alert('删除成功!')
-                } else {
-                    alert('删除失败!')
+        if ($.trim(image)==''){
+            window.parent.$("#consoleDlg").dialog("close");
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '/doctors/delete_image',
+                data:{doc_id:selectedIds,image:image},
+                success: function (data) {
+                    if (data['success']) {
+                        window.parent.$("#consoleDlg").dialog("close");
+                    } else {
+                        alert('删除失败!')
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
 //    添加医生

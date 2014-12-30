@@ -801,7 +801,7 @@ class DoctorsController < ApplicationController
     if !@doctors.empty?
       @doctors.each do |doc|
         if !doc.photo.nil?
-          deleteFromAliyun(doc.photo,Settings.aliyunOSS.server,Settings.aliyunOSS.photo_buket)
+          deleteFromAliyun(doc.photo,Settings.aliyunOSS.video_service,Settings.aliyunOSS.image_bucket)
         end
         doc.destroy
       end
@@ -1604,16 +1604,16 @@ class DoctorsController < ApplicationController
     render json: {success:true}
   end
 
-  def delete_image
+  def delete_image   #点击取消按钮执行该方法
     @doc = Doctor.where(id:params[:doc_id]).first
-    service = 'oss.aliyuncs.com'
-    buket =  Settings.aliyunOSS.photo_buket
+    service =   Settings.aliyunOSS.video_service
+    bucket =  Settings.aliyunOSS.image_bucket
     if !@doc.nil?
       if @doc.photo != params[:image]
-        deleteFromAliyun(params[:image],service,buket) #删除头像
+        deleteFromAliyun(params[:image],service,bucket) #删除头像
       end
     else
-      deleteFromAliyun(params[:image],service,buket) #删除头像
+      deleteFromAliyun(params[:image],service,bucket) #删除头像
     end
     render json:{success:true}
   end
