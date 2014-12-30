@@ -1,4 +1,4 @@
-<div id="pic_text_console">
+       <div id="pic_text_console">
   <div id="create_pic_text">
 
   </div>
@@ -201,6 +201,7 @@
             type: 'post',
             data: { title: $('#title').val(),
                 content: $('#content').val(),
+                content_summary:$('#content_summary').val(),
                 content_url:$('#content_url').val(),
                 url: $('#image_path').val(),
                 block_id: $('#block_id').val()
@@ -224,6 +225,7 @@
             type: 'put',
             data: { title: $('#title').val(),
                 content: $('#content').val(),
+                content_summary:$('#content_summary').val(),
                 url: $('#image_path').val(),
                 content_url: $('#content_url').val(),
                 block_id: $('#block_id').val()
