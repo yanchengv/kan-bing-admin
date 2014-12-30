@@ -162,14 +162,15 @@
          <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank"><p class="g_title"><%= @block_contents.last.title%></p></a>
          <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank"><p class="g_title2"><%= @block_contents.last.subtitle%></p></a>
          <p class="g_text">
-           <% @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
-              if @content.length > 85
-                @content = @content[0, 85] << '...'
+           <% @content_summary = @block_contents.last.content_summary.nil? ? '' : @block_contents.last.content_summary.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
+              if @content_summary.length > 85
+                @content_summary = @content_summary[0, 85] << '...'
               else
-                @content = @content
+                @content_summary = @content_summary
               end
            %>
-           <%= @content %>
+           <%= @content_summary %>
+
          </p>
          <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">| 查看更多</a>
        </div>
