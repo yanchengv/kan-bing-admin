@@ -13,4 +13,4 @@ Rails.application.config.assets.precompile += %w( ajax_image_crop_upload.js )
 Rails.application.config.assets.precompile += %w( pat_ajax_image_crop_upload.js)
 # Rails.application.config.assets.precompile += %w(  domain_manage.js)
 
-Rails.application.config.assets.precompile += ['page_blocks/*','domain_manage.js','home_menu/*']
+Rails.application.config.assets.precompile += ['page_blocks/*','domain_manage.js','home_menu/*','menus/*']
