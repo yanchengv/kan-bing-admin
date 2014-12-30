@@ -100,26 +100,54 @@ class PageBlocksController < ApplicationController
     end
   end
 =end
+  def get_doctor_list
+    if params[:page_block_id]
+      @page_block = PageBlock.find(params[:page_block_id])
+    end
+    @provinces = Province.select(:id, :name).all
+    @cities = City.select(:id, :name).all
+    @hospitals = Hospital.select(:id, :name).all
+    @departments = Department.select(:id, :name).all
+    render :partial => 'block_contents/docs_list'
+  end
 #获取用户所管理的非在首界面的医生列表中显示的医生
-=begin
   def get_doctor_not_in_content
       sql = 'true'
       if !current_user.nil?
-        if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-          sql << " and hospital_id = #{current_user.hospital_id}"
+        if current_user.admin_type == '医院管理员'
+          if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+            sql << " and hospital_id = #{current_user.hospital_id}"
+          end
+        elsif current_user.admin_type == '科室管理员'
+          if !current_user.department_id.nil? && !current_user.department_id != ''
+            sql << " and department_id = #{current_user.department_id}"
+          end
         end
-        if !current_user.department_id.nil? && !current_user.department_id != ''
-          sql << " and department_id = #{current_user.department_id}"
-        end
+      end
+      if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'all'
+        sql << " and province_id = #{params[:province_id]}"
+      end
+      if params[:city_id] && params[:city_id] != '' && params[:city_id] != 'all'
+        sql << " and city_id = #{params[:city_id]}"
+      end
+      if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'all'
+        sql << " and hospital_id = #{params[:hospital_id]}"
+      end
+      if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'all'
+        sql << " and department_id = #{params[:department_id]}"
+      end
+      if params[:name] && params[:name] != ''
+        sql << " and name like '%#{params[:name]}%' "
       end
       content = params[:content]
       if !content.nil? && content != ''
         sql << " and id not in (#{content})"
       end
-      @doctors_select = Doctor.where(sql)
-      render :json => {:doctors => @doctors_select.as_json(:only => [:id, :name])}
+      count =Doctor.where(sql).count
+      totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+      @doctors = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+      render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
-=end
 
 =begin
   def save_template
