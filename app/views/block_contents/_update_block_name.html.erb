@@ -55,26 +55,6 @@
     };
 
     // 更新保存模板
-    /*function save_content_model(pageBlockId){
-        $.ajax({
-            type: 'get',
-            url: 'page_blocks/add_content',
-            data: {page_block_id: pageBlockId},
-            success: function (data) {
-                $.ajax({
-                    type: 'post',
-                    url: 'page_blocks/update_template',
-                    data: {content: data, page_block_id: pageBlockId},
-                    success: function (data) {
-                        $("#rightContent").html(data);
-                    }
-                })
-            }
-        })
-        jQuery('.ui-jqdialog-titlebar-close').click();
-    }*/
-
-    // 更新保存模板
     function save_content_model2(pageBlockId){
         $.ajax({
             type: 'get',

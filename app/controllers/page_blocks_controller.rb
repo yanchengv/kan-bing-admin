@@ -219,16 +219,16 @@ class PageBlocksController < ApplicationController
   # PATCH/PUT /page_blocks/1
   # PATCH/PUT /page_blocks/1.json
   def update
+    page_block_id=params[:id]
     if current_user
       @page_block.updated_id = current_user.id
       @page_block.updated_name = current_user.name
+
     end
     if @page_block.update(page_block_params)
-      if @page_block.block_type == 'login'
-        render :partial => 'page_blocks/show'
-      else
-        render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
-      end
+      @page_block.add_content_template  page_block_id
+      render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
+
     else
       render :json => {:success => false, :errors => '修改失败！'}
     end
