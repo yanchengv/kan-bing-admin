@@ -145,10 +145,10 @@ class EduVideosController < ApplicationController
     @video = EduVideo.find(params[:id])
     @doc = Doctor.find_by_id(params[:doctor_id])
     service = Settings.aliyunOSS.video_service
-    if !@video.video_url.nil? && (@video.video_url != params[:video_url])
+    if !@video.video_url.nil? && (@video.video_url != params[:video_url]) && @video.video_url != ''
       deleteFromAliyun(@video.video_url,service,Settings.aliyunOSS.video_bucket) #删除对应的视频
     end
-    if !@video.image_url.nil? && (@video.image_url != params[:image_url])
+    if !@video.image_url.nil? && (@video.image_url != params[:image_url]) && @video.image_url != ''
       deleteFromAliyun(@video.image_url,service,Settings.aliyunOSS.image_bucket) #删除对应的缩略图
     end
     hospital_id = params[:hospital_id]
@@ -165,23 +165,25 @@ class EduVideosController < ApplicationController
     end
   end
 
-  def video_delete
+  def video_delete #上传或修改视频时，点击取消按钮执行 #params[:video_url]和params[:image_url]两个都空自然不会调用该方法
     @video = EduVideo.where(id:params[:video_id]).first
     service = Settings.aliyunOSS.video_service
     if !@video.nil?
-      p @video.image_url
       if @video.image_url != params[:image_url]
         bucket = Settings.aliyunOSS.image_bucket
         deleteFromAliyun(params[:image_url],service,bucket) #删除对应的缩略图
       end
-      p @video.video_url
       if @video.video_url != params[:video_url]
         bucket = Settings.aliyunOSS.video_bucket
         deleteFromAliyun(params[:video],service,bucket) #删除对应的视频
       end
     else
-      deleteFromAliyun(params[:image_url],service,Settings.aliyunOSS.image_bucket) #删除对应的缩略图
-      deleteFromAliyun(params[:video_url],service,Settings.aliyunOSS.video_bucket) #删除对应的视频
+      if !params[:image_url].nil? && params[:image_url] != ''
+        deleteFromAliyun(params[:image_url],service,Settings.aliyunOSS.image_bucket) #删除对应的缩略图
+      end
+      if !params{:video_url}.nil? && params[:video_url] != ''
+        deleteFromAliyun(params[:video_url],service,Settings.aliyunOSS.video_bucket) #删除对应的视频
+      end
     end
     render json: {success:true}
   end
@@ -222,7 +224,7 @@ class EduVideosController < ApplicationController
           @doctors = Doctor.select("id","name").where(hospital_id:hos_id).order("name")
         end
       else
-        @hospitals = Hospital.select("id","name").select("id","name").all
+        @hospitals = Hospital.select("id","name").all
         # @doctors = Doctor.select("id","name").all
       end
       @types=VideoType.all
@@ -261,13 +263,12 @@ class EduVideosController < ApplicationController
   # DELETE /edu_videos/1
   # DELETE /edu_videos/1.json
   def destroy
-    if !@edu_video.image_url.nil?
-      service = Settings.aliyunOSS.video_service
+    service = Settings.aliyunOSS.video_service
+    if !@edu_video.image_url.nil? && !@edu_video.image_url != ''
       bucket = Settings.aliyunOSS.image_bucket
       deleteFromAliyun(@edu_video.image_url,service,bucket) #删除对应的缩略图
     end
-    if !@edu_video.video_url.nil?
-      service = Settings.aliyunOSS.video_service
+    if !@edu_video.video_url.nil? && @edu_video.video_url != ''
       bucket = Settings.aliyunOSS.video_bucket
       deleteFromAliyun(@edu_video.image_url,service,bucket) #删除对应的视频
     end
@@ -316,7 +317,6 @@ class EduVideosController < ApplicationController
 
   def search_doctor
     if params[:hos_id] == 'all'
-      p 'hos'
       @doctors = Doctor.select("id","name").all
     else
       if params[:dep_id] == 'all'
