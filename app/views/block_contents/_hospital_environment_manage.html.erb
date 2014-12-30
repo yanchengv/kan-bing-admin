@@ -48,10 +48,11 @@
             $('input', elem).val(value);
         }
     }
-    var cols = [ 'ID', '标题', '内容详情','内容', '图片', '区块ID'];
+    var cols = [ 'ID', '标题', '内容概要','内容详情','内容', '图片', '区块ID'];
     var mods = [
         { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
         { name: 'title', index: 'title', align: "center", editable: true},
+        { name: 'content_summary', index: 'content_summary', align: "center", editable: true,edittype: 'textarea'},
         { name: 'content', index: 'content', align: "center",hidden:true,  editable: true, edittype: 'textarea', editrules: {edithidden: true}, editoptions: {rows: 5, style: "width:200px"}},
         { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
             var value = colpos.content;
@@ -200,6 +201,7 @@
             type: 'post',
             data: { title: $('#title').val(),
                 content: $('#content').val(),
+                content_summary:$('#content_summary').val(),
                 content_url: $('#content_url').val(),
                 url: $('#image_path').val(),
                 block_id: $('#block_id').val()
@@ -221,6 +223,7 @@
                 type: 'put',
                 data: { title: $('#title').val(),
                     content: $('#content').val(),
+                    content_summary:$('#content_summary').val(),
                     content_url: $('#content_url').val(),
                     url: $('#image_path').val(),
                     block_id: $('#block_id').val()
