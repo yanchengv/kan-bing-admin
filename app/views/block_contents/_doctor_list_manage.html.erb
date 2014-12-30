@@ -245,7 +245,7 @@
                     content: ids,
                     block_id: $('#block_id_d').val()
                 },
-                success: function (data) { alert('success');
+                success: function (data) {
                     if(data['success']){
                         jQuery("#block_doctor_list").jqGrid('setGridParam', {url: "/block_contents/get_doctors?block_id=<%= @page_block.id%>"}).trigger("reloadGrid");
                         $("#doctor_console").dialog("close");
