@@ -1,0 +1,16 @@
+.add,.edit,.remove{
+    margin:0 3px !important;
+}
+
+.select2-container {
+    width: 170px;
+
+}
+
+ul li span.button.add {
+    margin-left: 2px;
+    margin-right: -1px;
+    background-position: -144px 0;
+    vertical-align: top;
+    *vertical-align: middle;
+}
