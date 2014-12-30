@@ -104,6 +104,4 @@ window.onload = function(){
 
     document.getElementById("homeLeftMenus").style.height = (h-57)+"px";
     };
-//        初始化富文本
-KindEditor.ready(function(K) {
-    });
+
