@@ -83,7 +83,13 @@ class PageBlock < ActiveRecord::Base
     block_type=@page_block.block_type #block_type必须是模版的名称
     @block_contents = nil
     @block_contents=BlockContent.where(block_id:page_block_id)
-
+    if block_type == 'doctor_list'
+      @block_content = @page_block.block_contents.first
+      if @block_content && @block_content.content && @block_content.content != ''
+        @doctors = Doctor.where("id in (#{@block_content.content})")
+        @doctor = @doctors[0]
+      end
+    end
     # 等同于controller 中的render partial:'page_blocks/templates/jianjie' 的功能
     template = ActionView::Base.new(Rails.configuration.paths['app/views']).render(
         :partial => "page_blocks/templates/#{block_type}",

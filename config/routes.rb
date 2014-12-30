@@ -116,6 +116,7 @@ Rails.application.routes.draw do
       post 'save_template',to:'page_blocks#save_template'
       post 'update_template',to:'page_blocks#update_template'
       get 'get_doctors', to:'page_blocks#get_doctor_not_in_content'
+      get 'get_doctor_list', to:'page_blocks#get_doctor_list'
     end
   end
   resources :apk_versions do
@@ -130,6 +131,8 @@ Rails.application.routes.draw do
       get 'index_show', to: 'skills#show_index'
       post 'oper_action', to: 'skills#oper_action'
       post 'batch_delete', to: 'skills#batch_delete'
+      get 'get_groups', to: 'skills#get_groups'
+      get 'group_list', to:'skills#group_list'
     end
   end
   resources :groups do

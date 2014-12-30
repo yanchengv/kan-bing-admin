@@ -1,15 +1,16 @@
 <div id="doctor_console">
   <div id="create_doctor_div">
-    <div class="FormData">
-      <div class="CaptionTD" style="float: left">选择医生:</div>
+    <!--   <div class="FormData">
+   <div class="CaptionTD" style="float: left">选择医生:</div>
       <div class="DataTD" style="float: left">
         <select id="doctor_select" style="float: left;width:200px;">
           <option value="0">---请选择---</option>
-          <% @doctors_select.each do |doc|%>
-          <option value="<%= doc.id %>"><%= doc.name%></option>
-              <% end if !@doctors_select.nil? && !@doctors_select.empty? %>
+          <%# @doctors_select.each do |doc|%>
+          <option value="<%#= doc.id %>"><%#= doc.name%></option>
+              <%#end if !@doctors_select.nil? && !@doctors_select.empty? %>
         </select>
       </div>
+  -->
     </div>
   </div>
 </div>
@@ -105,8 +106,9 @@
         sortorder: "desc",
         autowidth: true,
         gridComplete:function(){
-            $.ajax({
-                    url: "/page_blocks/get_doctors?content=<%= @page_block.block_contents.first.nil? ? ('') : (@page_block.block_contents.first.content.nil? ? '' :  @page_block.block_contents.first.content)  %>",
+            jQuery("#doc_list").jqGrid('setGridParam', {url: "/page_blocks/get_doctors?content=<%= @page_block.block_contents.first.nil? ? ('') : (@page_block.block_contents.first.content.nil? ? '' :  @page_block.block_contents.first.content)  %>"}).trigger("reloadGrid");
+           /* $.ajax({
+                    url: "",
                     async: false,
                     type: 'get',
                     datatype: 'json',
@@ -121,7 +123,7 @@
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
                         alert(textStatus);
                     }
-                });
+                });*/
         },
         jsonReader: {
             root: "doctors",
@@ -169,7 +171,7 @@
         autoOpen: false,
         modal: false,    // 设置对话框为模态（modal）对话框
         resizable: true,
-        width: 800,
+        width: 900,
         position: {
             my: "center",
             at: "center",
@@ -193,14 +195,19 @@
         }
     });
     function add_doctor() {
-
-        var video_consoleDlg = $("#doctor_console");
-        var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
-        dialogButtonPanel.find("button:not(:contains('取消'))").hide();
-        dialogButtonPanel.find("button:contains('保存')").show();
-        video_consoleDlg.dialog("option", "width", "800");
-        video_consoleDlg.dialog("option", "title", "添加").dialog("open");
-
+        $.ajax({
+            type: 'get',
+            url: '/page_blocks/get_doctor_list?page_block_id=<%= @page_block.id%>',
+            success: function (data) {
+                $("#create_doctor_div").html(data);
+                var video_consoleDlg = $("#doctor_console");
+                var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                dialogButtonPanel.find("button:contains('保存')").show();
+                video_consoleDlg.dialog("option", "width", "800");
+                video_consoleDlg.dialog("option", "title", "添加").dialog("open");
+            }
+        })
     }
     //删除医生
     function delete_doctor(){
@@ -214,15 +221,10 @@
                     block_id: $('#block_id_d').val()
                 },
                 success: function (data) {
-                    $.ajax({
-                        type: 'post',
-                        url: 'page_blocks/update_template',
-                        data: {content: data, page_block_id: $('#block_id_d').val()},
-                        success: function (data) {
-                            $("#rightContent").html(data);
-                            $("#doctor_console").dialog("close");
-                        }
-                    })
+                    if (data['success']) {
+                        jQuery("#block_doctor_list").jqGrid('setGridParam', {url: "/block_contents/get_doctors?block_id=<%= @page_block.id%>"}).trigger("reloadGrid");
+                        $("#doctor_console").dialog("close");
+                    }
                 }
             })
 
@@ -232,27 +234,22 @@
     }
     //保存医生
     function save_doctor(){
-        var doctor_id = $('#doctor_select').val();
-        if(doctor_id == 0){
+        var ids = $('#doc_list').jqGrid('getGridParam', 'selarrrow');
+        if(ids.length == 0){
             alert('请选择医生!');
         }else{
             $.ajax({
                 type: 'post',
                 url: '/block_contents/save_doctors',
                 data: {
-                    content: doctor_id,
+                    content: ids,
                     block_id: $('#block_id_d').val()
                 },
-                success: function (data) {
-                    $.ajax({
-                        type: 'post',
-                        url: 'page_blocks/update_template',
-                        data: {content: data, page_block_id: $('#block_id_d').val()},
-                        success: function (data) {
-                            $("#rightContent").html(data);
-                            $("#doctor_console").dialog("close");
-                        }
-                    })
+                success: function (data) { alert('success');
+                    if(data['success']){
+                        jQuery("#block_doctor_list").jqGrid('setGridParam', {url: "/block_contents/get_doctors?block_id=<%= @page_block.id%>"}).trigger("reloadGrid");
+                        $("#doctor_console").dialog("close");
+                    }
                 }
             })
         }

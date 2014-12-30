@@ -19,6 +19,24 @@ class SkillsController < ApplicationController
     render :json => {:skills => @skills.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
+  def get_groups
+    @skill = Skill.find(params[:skill_id])
+    if @skill && !@skill.groups.nil? && !@skill.groups.empty?
+      @groups = @skill.groups
+    else
+      @groups = Group.all
+    end
+    count = @groups.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @skills = @groups.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:groups => @groups.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
+  def group_list
+    @skill = Skill.find(params[:skill_id])
+    render :partial => 'skills/group_list'
+  end
+
   def oper_action
     if params[:oper] == 'add'
       create

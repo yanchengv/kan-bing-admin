@@ -95,7 +95,9 @@
                 skill_edit();
             }, position: "first"}).navButtonAdd('#page_skill', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
                 skill_new();
-            }, position: "first"});
+            }, position: "first"});//.navButtonAdd('#page_skill', { title: '相关机构', caption: '相关机构', onClickButton: function () {
+//                get_groups();
+//            }, position: "last"});
    
     //搜索skill
     $('#search_skill_btn').click(function () {
@@ -254,5 +256,26 @@
             alert('请选择需要进行修改的项!');
         }
 
+    }
+    function get_groups(){
+        var id = jQuery("#skill_list").jqGrid('getGridParam', 'selrow');
+        if (id) {
+            $.ajax({
+                url: '/skills/group_list',
+                type: 'get',
+                data: {skill_id: id},
+                success: function (data) {
+                    $("#skill_div").html(data);
+                    var video_consoleDlg = $("#skill_console");
+                    var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                    dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                    dialogButtonPanel.find("button:contains('保存')").hide();
+                    video_consoleDlg.dialog("option", "width", "800");
+                    video_consoleDlg.dialog("option", "title", "相关机构").dialog("open");
+                }
+            })
+        }else{
+            alert('请选择查询项!');
+        }
     }
 </script>

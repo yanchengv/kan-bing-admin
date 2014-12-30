@@ -167,18 +167,19 @@ class BlockContentsController < ApplicationController
       if @block_content.content.nil? || @block_content.content == ''
         content = params[:content]
       else
-        content = @block_content.content << ",#{params[:content]}"
+        content = @block_content.content << ",#{params[:content].join(',')}"
       end
       sql = ActiveRecord::Base.connection()
       sql.update "update block_contents set content = '#{content}' where id = #{@block_content.id}"
     end
-    @block_content = BlockContent.find(@block_content.id)
-    if !@block_content.content.nil? && @block_content.content != ''
-      @doctors = Doctor.where("id in (#{@block_content.content})")
-      puts "==#{@block_content.content}===#{@doctors.to_json(:only => [:id, :name])}====="
-      @doctor = @doctors[0]
-    end
-    render partial: "page_blocks/templates/#{@page_block.block_type}"
+    #@block_content = BlockContent.find(@block_content.id)
+    #if !@block_content.content.nil? && @block_content.content != ''
+    #  @doctors = Doctor.where("id in (#{@block_content.content})")
+    #  @doctor = @doctors[0]
+    #end
+    @page_block.add_content_template @page_block.id
+    render json: {success: true}
+#    render partial: "page_blocks/templates/#{@page_block.block_type}"
   end
   #删除医生
   def delete_doctor
@@ -204,11 +205,13 @@ class BlockContentsController < ApplicationController
         end
       end
     end
-    if !content.nil? && content != ''
-      @doctors = Doctor.where("id in (#{content})")
-      @doctor = @doctors[0]
-    end
-    render partial: "page_blocks/templates/#{@page_block.block_type}"
+    #if !content.nil? && content != ''
+    #  @doctors = Doctor.where("id in (#{content})")
+    #  @doctor = @doctors[0]
+    #end
+    @page_block.add_content_template block_id
+    render json: {success: true}
+   # render partial: "page_blocks/templates/#{@page_block.block_type}"
   end
 
   #def save_doctors
