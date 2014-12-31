@@ -105,7 +105,7 @@ body{margin:0;padding:0;}
     font-size:20px;
     float:left;
     margin-left:15px;
-    width:300px;
+    width:180px;
 }
 .nologin_menu{
     float:right;
@@ -116,3 +116,11 @@ body{margin:0;padding:0;}
     background:#313235;
     border:none;
 }
+.nologin_user{
+    font-family: "Microsoft YaHei",Arial;
+    font-size:14px;
+    padding-top:15px;
+    color:#989898;
+}
+.fr{float:right;}
+.fl{float:left;}

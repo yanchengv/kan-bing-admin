@@ -4,6 +4,8 @@
 <header class="">
   <div class="nologin_nav">
     <div class="nologin_logo">后台管理系统</div>
+
+    <div class="fl nologin_user"><%= current_user.admin_type%>:<%= current_user.name%></div>
     <div class="nologin_menu">
       <ul id="menu">
         <% if signed_in? %>
@@ -21,6 +23,7 @@
         <% end %>
       </ul>
     </div>
+
   </div>
 
 </header>
