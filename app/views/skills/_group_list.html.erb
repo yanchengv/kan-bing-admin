@@ -14,6 +14,7 @@
         <option value="<%= group.id %>"><%= group.name%></option>
         <% end if !@groups.nil? && !@groups.empty? %>
       </select>
+      <button id="add_group_button">添加</button>
     </div>
 </div>
 </div>
@@ -23,10 +24,14 @@
         url: '/skills/get_groups?skill_id=<%=@skill.id%>',
         datatype: "json",
         mtype: 'GET',
-        colNames: [ 'ID', '名称'],
+        colNames: [ 'ID', '名称', '删除'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-            { name: 'name', index: 'name', align: "center",width: 600}
+            { name: 'name', index: 'name', align: "center",width: 500},
+            { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                return "<button value=\"删除\" onclick=\"delete_associate(" + colpos.id + ")\">删除</button>";
+            }
+            }
         ],
         rownumbers: true,
         page:1,
@@ -36,7 +41,7 @@
         sortorder: "desc",
         autowidth: true,
         jsonReader: {
-            root: "group_skills",
+            root: "groups",
             total: "totalpages",
             page: "currpage",
             records: "totalrecords",
@@ -51,6 +56,28 @@
             editoper: "edit", // 当在edit模式中提交数据时，操作的名称
             addoper: "add", // 当在add模式中提交数据时，操作的名称
             deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        gridComplete: function () {
+            $.ajax({
+                url: "/skills/get_unrelated_groups",
+                async: false,
+                type: 'get',
+                data:{
+                    skill_id: <%= @skill.id %>
+                },
+                datatype: 'json',
+                success: function (data) {
+                    var positions = data['groups'];
+                    $("#group_select").html("");
+                    $("#group_select").prepend("<option value='0'>请选择</option>");
+                    for (var i = 0; i < data['groups'].length; i++) {
+                        jQuery("#group_select").append("<option value=" + data['groups'][i].id + ">" + data['groups'][i].name + "</option>")
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(textStatus);
+                }
+            });
         },
         editurl: '/group_skills/oper_action',
         closeAfterAdd: true,
@@ -67,5 +94,54 @@
                 del:false,view: false,search: false,
                 refreshtext: "更新", refreshtitle: "更新"}
           );
-   
+    $('#add_group_button').click(function () {
+        var group_id = $('#group_select').val();
+        if (group_id == 0){
+            alert('请选择机构!');
+        }else{
+            $.ajax({
+                type: 'post',
+                url: '/groups_skills',
+                data: {
+                    skill_id: <%= @skill.id %>,
+                    group_id: group_id
+                },
+                success: function (data) {
+                    jQuery("#group_skill_list").jqGrid('setGridParam', {url: '/skills/get_groups?skill_id=<%=@skill.id%>'}).trigger("reloadGrid");
+                }
+            })
+        }
+    });
+    //删除关联关系
+    function delete_associate(id){
+        $.ajax({
+            type: 'post',
+            url: '/skills/del_group_skill',
+            data: {
+                skill_id: <%= @skill.id %>,
+                group_id: id
+            },
+            success: function (data) {
+                if (data['success']){
+                    jQuery("#group_skill_list").jqGrid('setGridParam', {url: '/skills/get_groups?skill_id=<%=@skill.id%>'}).trigger("reloadGrid");
+                }else{
+                    alert('删除失败!');
+                }
+            }
+        })
+    }
+    function myelem(value, options) {
+        var el = document.createElement("input");
+        el.type = "text";
+        el.value = value;
+        return el;
+    }
+
+    function myvalue(elem, operation, value) {
+        if (operation === 'get') {
+            return $(elem).val();
+        } else if (operation === 'set') {
+            $('input', elem).val(value);
+        }
+    }
 </script>

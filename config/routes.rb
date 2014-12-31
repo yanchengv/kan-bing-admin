@@ -133,8 +133,11 @@ Rails.application.routes.draw do
       post 'batch_delete', to: 'skills#batch_delete'
       get 'get_groups', to: 'skills#get_groups'
       get 'group_list', to:'skills#group_list'
+      get 'get_unrelated_groups', to: 'skills#get_unrelated_groups'
+      post 'del_group_skill', to: 'skills#del_group_skill'
     end
   end
+  resources :groups_skills
   resources :groups do
     collection do
       get 'index_show', to: 'groups#show_index'

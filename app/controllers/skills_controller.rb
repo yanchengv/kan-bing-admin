@@ -32,10 +32,27 @@ class SkillsController < ApplicationController
     render :json => {:groups => @groups.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
+  def get_unrelated_groups
+    @groups = Group.where(" id not in (select group_id from groups_skills where skill_id = ?)", params[:skill_id])
+    render :json => {groups: @groups.as_json}
+  end
+
   def group_list
     @skill = Skill.find(params[:skill_id])
     @groups = Group.where(" id not in (select group_id from groups_skills where skill_id = ?)", @skill.id)
     render :partial => 'skills/group_list'
+  end
+
+  def del_group_skill
+    if params[:group_id] && params[:skill_id]
+      if GroupsSkill.where(:group_id => params[:group_id], :skill_id => params[:skill_id]).delete_all
+        render :json => {success: true}
+      else
+        render :json => {success: false}
+      end
+    else
+      render :json => {success: false}
+    end
   end
 
   def oper_action
