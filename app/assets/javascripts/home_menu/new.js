@@ -47,10 +47,11 @@ $('#home_menu_form').submit(function(){
             url:'home_menu/create',
             data:valuesToSubmit,
             success:function(data){
-                $("#rightContent").html(data)
+                $("#rightContent").html(data);
+                $("#showHomePage").html("<h1>保存成功</h1>");
             },
             error:function(){
-                alert("保存失败！")
+                alert("保存失败！");
             }
 
         });
