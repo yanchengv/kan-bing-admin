@@ -30,7 +30,7 @@ class HomeMenuController < ApplicationController
     home_page_pra[:department_id]=current_user.department_id
     @home_page=HomePage.new(home_page_pra)
     @home_page.save
-    render json:'success'
+    redirect_to action:'show'
   end
   def show
       menus=HomeMenu.where(hospital_id:current_user.hospital_id,department_id:current_user.department_id)
@@ -43,6 +43,7 @@ class HomeMenuController < ApplicationController
      render partial: 'home_menu/show'
   end
 
+
   # 获取编辑菜单及内容
   def edit
     node_id=params['nodeId']
@@ -51,6 +52,7 @@ class HomeMenuController < ApplicationController
     @home_menu_id= @home_page.home_menu_id
     render partial: 'home_menu/edit'
   end
+
   #  编辑后保存
   def save
     menu_pra={}
@@ -71,8 +73,8 @@ class HomeMenuController < ApplicationController
 
     @home_page=HomePage.where(home_menu_id:home_menu_id).first
     @home_page.update_attributes(home_page_pra)
-    render json:'success'
 
+    redirect_to action:'show'
   end
 
   def destroy

@@ -39,31 +39,27 @@ function check_redirect_url(value){
         redirect_url_flag = true
     }
 
-}
-var options={
-    success:function(data){
+};
+
+
+//修改后提交保存
+if (link_url_flag&&redirect_url_flag) {
+    $('#home_menu_form_eidt').submit(function(){
+        var valuesToSubmit=$(this).serialize();
         $.ajax({
-            type:'get',
-            url:'home_menu/show',
+            type:'post',
+            url:'home_menu/save',
+            data:valuesToSubmit,
             success:function(data){
+                alert("sucee")
                 $("#rightContent").html(data)
+            },
+            error:function(){
+                alert("保存失败！")
             }
+
         });
-    },
-    error:function(){
-        alert("error")
-        $.ajax({
-            type:'get',
-            url:'home_menu/show',
-            success:function(data){
-                $("#rightContent").html(data)
-            }
-        });
-    }
+        return false; // prevents normal behaviour    阻止普通提交
+    });
 }
-$('#home_menu_form').submit(function () {
-    if (link_url_flag&&redirect_url_flag) {
-        $(this).ajaxSubmit(options);
-    }
-    return false;
-});
+

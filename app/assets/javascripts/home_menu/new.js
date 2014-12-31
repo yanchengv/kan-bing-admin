@@ -35,33 +35,25 @@ function check_redirect_url(value){
         redirect_url_flag = true
     }
 
-}
-var options={
-    type:'post',
-    url:'home_menu/create',
-    success:function(data){
-        $.ajax({
-            type:'get',
-            url:'home_menu/show',
-            success:function(data){
-                $("#rightContent").html(data)
-            }
-        });
-    },
-    error:function(){
-        alert(555)
-        $.ajax({
-            type:'get',
-            url:'home_menu/show',
-            success:function(data){
-                $("#rightContent").html(data)
-            }
-        });
-    }
 };
-$('#home_menu_form').submit(function () {
+
+
+//提交保存
+$('#home_menu_form').submit(function(){
     if (link_url_flag&&redirect_url_flag) {
-        $(this).ajaxSubmit(options);
+        var valuesToSubmit=$(this).serialize();
+        $.ajax({
+            type:'post',
+            url:'home_menu/create',
+            data:valuesToSubmit,
+            success:function(data){
+                $("#rightContent").html(data)
+            },
+            error:function(){
+                alert("保存失败！")
+            }
+
+        });
     }
-    return false;
+    return false; // prevents normal behaviour 阻止普通提交
 });
