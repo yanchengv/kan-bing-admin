@@ -1,4 +1,4 @@
-<%= form_for :home_menu,url:{action: :save,controller: :home_menu},method:'post',html: {multipart: true, id: 'home_menu_form'} do |f| %>
+<%= form_for :home_menu,html: {multipart: true, id: 'home_menu_form_eidt'} do |f| %>
     <%= label :name,'标题',:class => "home_menu_content"%><br />
     <%=f.text_field :name ,value:@home_menu.name,:class => "home_menu_title"%><br />
     <%= label_tag(:content,'内容：',:class => "home_menu_content")%><br />
