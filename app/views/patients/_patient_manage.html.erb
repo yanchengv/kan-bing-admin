@@ -457,7 +457,7 @@
     function cancelContact() {
         var image = $('#pat_photo_image').val()
         if ($.trim(image)==''){
-            window.parent.$("#consoleDlg").dialog("close");
+            window.parent.$("#consoleDlg2").dialog("close");
         } else {
             $.ajax({
                 type: 'post',

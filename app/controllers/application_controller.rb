@@ -42,12 +42,13 @@ class ApplicationController < ActionController::Base
     mimas_dev_bucket = Bucket.find(bucket) #查找Bucket
     obj = mimas_dev_bucket.new_object #在此Bucket新建Object
     #生成一个随机的文件名 uuid+后缀类型的文件
-    obj.key = 'avatar/'+getFileName(file.original_filename)
+    uuid = getFileName(file.original_filename)
+    obj.key = 'avatar/'+uuid
     # obj.key = file
     obj.value= open(file)
     ##向dir目录写入文件
     obj.store
-    return obj.key
+    return uuid
   end
 #上传富文本框中的图片
   def uplod_kineditor_img_to_aliyun(file)

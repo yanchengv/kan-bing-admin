@@ -418,7 +418,7 @@ class PatientsController < ApplicationController
     if !@patients.empty?
       @patients.each do |pat|
         if !pat.photo.nil? && pat.photo != ''
-          deleteFromAliyun(pat.photo,Settings.aliyunOSS.video_service,Settings.aliyunOSS.image_bucket)
+          deleteFromAliyun('avatar/'+pat.photo,Settings.aliyunOSS.video_service,Settings.aliyunOSS.image_bucket)
         end
         pat.destroy
       end
@@ -741,10 +741,10 @@ class PatientsController < ApplicationController
     bucket =  Settings.aliyunOSS.image_bucket
     if !@pat.nil?
       if @pat.photo != params[:image]
-        deleteFromAliyun(params[:image],service,bucket) #删除修改时未保存的头像
+        deleteFromAliyun('avatar/'+params[:image],service,bucket) #删除修改时未保存的头像
       end
     else
-      deleteFromAliyun(params[:image],service,bucket) #删除创建时未保存的头像
+      deleteFromAliyun('avatar/'+params[:image],service,bucket) #删除创建时未保存的头像
     end
     render json:{success:true}
   end
