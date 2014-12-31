@@ -1,0 +1,207 @@
+<hr>
+<% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员' %>
+    省：<select id="doctor_pro_id" name="doctor_pro_id" style="width: 150px;" onchange="doc_search_pro()">
+  <option value="">全部</option>
+  <% if !@provinces.nil? && !@provinces.empty? %>
+      <% @provinces.each do |pro| %>
+          <option id='serch_pro_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
+      <% end %>
+  <% end %>
+</select>
+    市：
+    <span id="search_city_id"><select id="doctor_city_id" name="doctor[city_id]" style="width: 150px;" onchange="doc_search_city()">
+      <option value="all">全部</option>
+      <% if !@cities.nil? && !@cities.empty? %>
+          <% @cities.each do |city| %>
+              <option id='serch_city_<%= city.id %>' value="<%= city.id %>"><%= city.name %></option>
+          <% end %>
+      <% end %>
+    </select></span>
+    医院：
+    <span id="search_hos_id"><select id="doctor_hos_id" name="doctor_hos_id" style="width: 150px;" onchange="doc_search_hos()">
+      <option value="">全部</option>
+      <% if !@hospitals.nil? && !@hospitals.empty? %>
+          <% @hospitals.each do |hos| %>
+              <option id='serch_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+          <% end %>
+      <% end %>
+    </select></span><br>
+    科室：
+    <span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" style="width: 150px;" onchange="doc_search_dep()">
+      <option value="all">全部</option>
+      <% if !@departments.nil? && !@departments.empty? %>
+          <% @departments.each do |dep| %>
+              <option id='serch_dep_<%= dep.id %>' value="<%= dep.id %>"><%= dep.name %></option>
+          <% end %>
+      <% end %>
+    </select></span>
+    姓名：<input type="text" id="search_name">
+    <button id="search_doc_btn">搜索</button>
+    &nbsp;
+    <button id="clear_doc_btn">清空</button>
+<% end %>
+<table id="doc_list_group"></table>
+<div id="page_doc"></div>
+<script>
+    jQuery("#doc_list_group").jqGrid({
+        url: '/groups/get_unrelated_doctors?group_id=<%= @group.id  %>',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '姓名', '省', '市', '医院', '科室'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true, width: 120},
+            { name: 'name', index: 'name', align: "center", width: 120},
+            {name: 'province_name', index: 'province_name', editable: true, search: false, width: 120 },
+            {name: 'city_name', index: 'city_name', editable: true, search: false, width: 120},
+            {name: 'hospital_name', index: 'hospital_name', editable: true, search: false, width: 120 },
+            {name: 'department_name', index: 'department_name', editable: true, search: false, width: 120 }
+        ],
+        rownumbers: true,
+        page: 1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "doctors",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: '/page_blocks/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_doc'),
+        multiselect: true,
+        rowNum: 10,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "医生列表"
+    });
+    jQuery("#doc_list_group").jqGrid('navGrid', '#page_doc', {
+                cloneToTop: true, add: false, edit: false,
+                del: false, view: false, search: false,
+                refreshtext: "更新", refreshtitle: "更新"}
+    ).navButtonAdd('#page_doc', { title: '添加医生', caption: '添加医生', onClickButton: function () {
+                save_doctors();
+            }, position: "first"});
+    function doc_search_pro() {
+        var pro_id = $('#doctor_pro_id').val()
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_city?pro_id=' + pro_id,
+            success: function (data) {
+                $('#search_city_id').html(data)
+            }
+        })
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_hospital?pro_id=' + pro_id,
+            success: function (data) {
+                $('#search_hos_id').html(data)
+            }
+        })
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_department?pro_id=' + pro_id,
+            success: function (data) {
+                $('#search_dep_id').html(data)
+            }
+        })
+        search_docs()
+    }
+    function doc_search_city() {
+        var pro_id = $('#doctor_pro_id').val()
+        var city_id = $('#doctor_city_id').val()
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_hospital?pro_id=' + pro_id + '&city_id=' + city_id,
+            success: function (data) {
+                $('#search_hos_id').html(data)
+            }
+        })
+        search_docs()
+    }
+
+    function doc_search_hos() {
+        $('#searchString').val('')
+        var hos_id = $('#doctor_hos_id').val()
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_department?hos_id=' + hos_id,
+            success: function (data) {
+                $('#search_dep_id').html(data)
+            }
+        })
+        search_docs()
+    }
+    function doc_search_dep() {
+        search_docs()
+    }
+
+    $(function () {
+        $("#doctor_hos_id").select2();
+        $("#doctor_dep").select2();
+        $('#doctor_pro_id').select2();
+        $('#doctor_city_id').select2();
+        $("#is_activated").select2();
+        $("#is_public").select2();
+        $("#searchField").select2();
+        $('#searchString').attr('disabled', 'disabled')
+    })
+    //搜索
+    function search_docs() {
+        var province = $('#doctor_pro_id').val();
+        var city = $('#doctor_city_id').val();
+        var hospital = $('#doctor_hos_id').val();
+        var department = $('#doctor_dep').val();
+        var name = $('#search_name').val();
+        jQuery("#doc_list_group").jqGrid('setGridParam', {url: '/groups/get_unrelated_doctors?group_id=<%= @group.id  %>&province_id=' + province + '&city_id=' + city + '&hospital_id=' + hospital + '&department_id=' + department + '&name=' + name}).trigger("reloadGrid")
+    }
+    $('#search_doc_btn').click(function () {
+        search_docs()
+    });
+    //清空k
+    $('#clear_doc_btn').click(function () {
+        $('#doctor_pro_id').select2("val", "0");
+        $('#doctor_city_id').select2("val", "0");
+        $('#doctor_hos_id').select2("val", "0");
+        $('#doctor_dep').select2("val", "0");
+        $('#search_name').val('');
+    });
+    function save_doctors() {
+        var ids = jQuery("#doc_list_group").jqGrid('getGridParam', 'selarrrow');
+        if (ids) {
+            $.ajax({
+                type: 'post',
+                url: '/groups/save_doctors',
+                data: {
+                    group_id: <%= @group.id %>,
+                    doctor_ids: ids
+                },
+                success: function (data) {
+                    if (data['success']) {
+                        jQuery("#doc_list_group").jqGrid('setGridParam', {url: '/groups/get_unrelated_doctors?group_id=<%= @group.id  %>'}).trigger("reloadGrid");
+                        jQuery("#doc_group_list").jqGrid('setGridParam', {url: '/groups/get_doctors?group_id=<%= @group.id  %>'}).trigger("reloadGrid");
+                    } else {
+                        alert('保存失败!');
+                    }
+                }
+            })
+        } else {
+            alert('请选择要添加的医生!');
+        }
+    }
+</script>

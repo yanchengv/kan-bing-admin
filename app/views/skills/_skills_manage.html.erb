@@ -97,6 +97,8 @@
                 skill_new();
             }, position: "first"}).navButtonAdd('#page_skill', { title: '相关机构', caption: '相关机构', onClickButton: function () {
                 get_groups();
+            }, position: "last"}).navButtonAdd('#page_skill', { title: '相关医生', caption: '相关医生', onClickButton: function () {
+                doctor_list();
             }, position: "last"});
    
     //搜索skill
@@ -278,4 +280,25 @@
             alert('请选择查询项!');
         }
     }
+  function doctor_list(){
+      var id = jQuery("#skill_list").jqGrid('getGridParam', 'selrow');
+      if (id) {
+          $.ajax({
+              url: '/skills/doctor_list',
+              type: 'get',
+              data: {skill_id: id},
+              success: function (data) {
+                  $("#skill_div").html(data);
+                  var video_consoleDlg = $("#skill_console");
+                  var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                  dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                  dialogButtonPanel.find("button:contains('保存')").hide();
+                  video_consoleDlg.dialog("option", "width", "800");
+                  video_consoleDlg.dialog("option", "title", "相关医生").dialog("open");
+              }
+          })
+      } else {
+          alert('请选择查询项!');
+      }
+  }
 </script>

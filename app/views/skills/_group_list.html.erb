@@ -101,13 +101,15 @@
         }else{
             $.ajax({
                 type: 'post',
-                url: '/groups_skills',
+                url: '/skills/add_skill_group',
                 data: {
                     skill_id: <%= @skill.id %>,
                     group_id: group_id
                 },
                 success: function (data) {
-                    jQuery("#group_skill_list").jqGrid('setGridParam', {url: '/skills/get_groups?skill_id=<%=@skill.id%>'}).trigger("reloadGrid");
+                    if(data['success']){
+                        jQuery("#group_skill_list").jqGrid('setGridParam', {url: '/skills/get_groups?skill_id=<%=@skill.id%>'}).trigger("reloadGrid");
+                    }
                 }
             })
         }
@@ -116,7 +118,7 @@
     function delete_associate(id){
         $.ajax({
             type: 'post',
-            url: '/groups_skills/del_group_skill',
+            url: '/skills/del_group_skill',
             data: {
                 skill_id: <%= @skill.id %>,
                 group_id: id
