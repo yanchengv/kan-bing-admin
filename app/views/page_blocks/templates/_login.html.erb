@@ -1,4 +1,4 @@
-<%= stylesheet_link_tag 'page_blocks/logo'%>
+
 <div class="index_model_box_3_1">
   <div class="index_model_title">
     <h3 class="fl">用户登陆</h3>
@@ -32,4 +32,115 @@
     </table>
   </form>
 </div>
+<style>
+    /*登录模板 login*/
+    .index_model_box_3_1 {
+        width: 388px;
+        height: 222px;
+        overflow: hidden;
+        border: 1px solid #e8e8e8;
+        background: #fff;
+        padding: 15px;
+        margin: 5px;
+        float: left;
+    }
+
+    /*屏幕尺寸大于1200px */
+    @media (min-width: 1200px) {
+
+        .index_model_box_3_1 {
+            width: 388px;
+            min-height: 222px;
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            padding: 15px;
+            margin: 5px;
+            float: left;
+        }
+    }
+
+    /*屏幕尺寸小于960px*/
+    @media (max-width: 960px) {
+
+        .index_model_box_3_1 {
+            width: 33%;
+            height: 222px;
+            overflow: hidden;
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            padding: 15px;
+            margin: 5px;
+            float: left;
+        }
+    }
+
+    /*屏幕尺寸小于480px*/
+    @media (max-width: 683px) {
+        .index_model_box_3_1 {
+            width: 100%;
+            overflow: hidden;
+            height: 222px;
+            border: 1px solid #e8e8e8;
+            background: #fff;
+            padding: 15px;
+            margin: 5px;
+            float: left;
+        }
+    }
+    .login_username {
+        width: 100%;
+        border: 1px solid #dcdcdc;
+        border-radius: 3px;
+        display: inline-block;
+        background: #fff;
+        height: 34px;
+        margin: 3px 0px;
+
+    }
+
+    .login_username_input {
+        width: 98%;
+        margin: 0 auto;
+        background: url('http://dev-mimas.oss-cn-beijing.aliyuncs.com/2507ac6f-c92f-4bc4-8854-7a07a269a9b0.png') no-repeat left center;
+        border: 0px;
+        height: 32px;
+        padding-left: 33px;
+        outline: 0px;
+        line-height: 30px;
+        font-family: 'Microsoft YaHei', Verdana;
+    }
+
+    .login_password_input {
+        width: 98%;
+        margin: 0 auto;
+        background: url('http://dev-mimas.oss-cn-beijing.aliyuncs.com/b5afd35c-b951-4d92-ad16-e83d4a9d1994.png') no-repeat left center;
+        border: 0px;
+        padding-left: 33px;
+        height: 32px;
+        outline: 0px;
+        line-height: 30px;
+        font-family: 'Microsoft YaHei', Verdana;
+    }
+
+    .login_btn {
+        height: 32px;
+        width: 100%;
+        font-size: 14px;
+        color: #ffffff;
+        border-radius: 2px !important;
+        border-top: 1px solid #55acd1;
+        border-bottom: 1px solid #0d88c1;
+        text-shadow: 0px 0px 1px #1f8bba;
+        border-left: 1px solid #3e9fc9;
+        border-right: 1px solid #3e9fc9;
+        filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=0, startColorStr=#59b4db, endColorStr=#1d98cd);
+        background: -ms-linear-gradient(top, #59b4db, #1d98cd);
+        background: -moz-linear-gradient(top, #59b4db, #1d98cd);
+        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#59b4db), to(#1d98cd));
+        background: -webkit-linear-gradient(top, #59b4db, #1d98cd);
+        background: -o-linear-gradient(top, #59b4db, #1d98cd);
+        font-family: 'Microsoft YaHei', Verdana;
+    }
+
+</style>
 
