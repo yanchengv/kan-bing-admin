@@ -49,6 +49,7 @@ var options={
         });
     },
     error:function(){
+        alert(555)
         $.ajax({
             type:'get',
             url:'home_menu/show',

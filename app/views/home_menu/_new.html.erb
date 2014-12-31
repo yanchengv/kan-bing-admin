@@ -1,9 +1,9 @@
-<%= javascript_include_tag 'home_menu/new'%>
+
 <%= form_for :home_menu,html: {multipart: true, id: 'home_menu_form'} do |f| %>
     <%= label :name,'标题',:class => "home_menu_content"%><br />
     <%=f.text_field :name ,:class => "home_menu_title"%><br />
     <%= label_tag(:content,'内容：',:class => "home_menu_cont ent")%><br />
-    <%= f.kindeditor :content,filterMode:false, uploadJson: "/block_contents/editor_upload",:height => 700 %>
+    <%= f.kindeditor :content,filterMode:false, uploadJson: "/block_contents/editor_upload",height:500 %>
     <%=f.hidden_field :parent_id, value: @parent_id%>
     <p class="home_menu_content">
     <%= label_tag(:show_in_menu,'在菜单中显示：',:class => "home_menu_content")%><br />
@@ -20,4 +20,6 @@
     <div class="col-md-2" style="padding:0;"><%=f.submit '保存',:class=>"add_btn"%> </div>
     <div class="col-md-2" style="padding:0;margin-left:15px;"><%= button_tag '取消',type:'button',:class=>"q_btn"%></div>
 <% end %>
+
+<%= javascript_include_tag 'home_menu/new'%>
 
