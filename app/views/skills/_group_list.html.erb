@@ -4,6 +4,18 @@
     <table id="group_skill_list"></table>
     <div id="page_group_skill"></div>
   </div>
+  <br>
+  <div style="margin-left: 20px;margin-right: 20px;" >
+    <div class="CaptionTD" style="float: left">选择机构:</div>
+    <div class="DataTD" style="float: left">
+      <select id="group_select" style="float: left;width:200px;">
+        <option value="0">---请选择---</option>
+        <%= @groups.each do |group|%>
+        <option value="<%= group.id %>"><%= group.name%></option>
+        <% end if !@groups.nil? && !@groups.empty? %>
+      </select>
+    </div>
+</div>
 </div>
 
 <script type="text/javascript">
@@ -14,7 +26,7 @@
         colNames: [ 'ID', '名称'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-            { name: 'name', index: 'name', align: "center"}
+            { name: 'name', index: 'name', align: "center",width: 600}
         ],
         rownumbers: true,
         page:1,

@@ -34,6 +34,7 @@ class SkillsController < ApplicationController
 
   def group_list
     @skill = Skill.find(params[:skill_id])
+    @groups = Group.where(" id not in (select group_id from groups_skills where skill_id = ?)", @skill.id)
     render :partial => 'skills/group_list'
   end
 
