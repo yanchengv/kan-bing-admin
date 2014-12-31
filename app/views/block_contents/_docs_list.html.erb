@@ -6,6 +6,7 @@
 </style>
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
+    <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员'%>
     省：<select id="doctor_pro_id" name="doctor_pro_id" style="width: 150px;" onchange="doc_search_pro()">
     <option value="">全部</option>
     <% if !@provinces.nil? && !@provinces.empty? %>
@@ -42,6 +43,7 @@
     <button id="search_doc_btn">搜索</button>
     &nbsp;
     <button id="clear_doc_btn">清空</button>
+        <% end %>
     <table id="doc_list"></table>
     <div id="page_doc"></div>
   </div>
