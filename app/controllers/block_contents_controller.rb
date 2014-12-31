@@ -162,13 +162,13 @@ class BlockContentsController < ApplicationController
     @page_block = PageBlock.find(params[:block_id])
     if @page_block.block_contents.nil? || @page_block.block_contents.empty?
       @block_content=BlockContent.new()
-      @block_content.content = params[:content]
+      @block_content.content = params[:content].join(',')
       @block_content.block_id = params[:block_id]
       @block_content.save
     else
       @block_content = @page_block.block_contents.first
       if @block_content.content.nil? || @block_content.content == ''
-        content = params[:content]
+        content = params[:content].join(',')
       else
         content = @block_content.content << ",#{params[:content].join(',')}"
       end
