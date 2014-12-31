@@ -105,7 +105,7 @@
         <%= f.label :国籍 %><br>
         <select id="patient_citizenship" name="patient[citizenship]" onchange="get_nationality()">
           <option value="">---请选择---</option>
-          <% @citizenships = NationalInformation.where(parent_id:nil) %>
+          <% @citizenships = NationalInformation.where("parent_id=0 or parent_id in null") %>
           <% if !@citizenships.empty? %>
               <% @citizenships.each do |citizenship| %>
                   <option id="pat_<%= citizenship.name %>" value="<%= citizenship.name %>"><%= citizenship.name %></option>
