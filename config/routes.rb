@@ -112,7 +112,7 @@ Rails.application.routes.draw do
       post 'change_is_show', to: 'page_blocks#change_is_show'
       get 'get_template',to:'page_blocks#get_template'
       get 'add_content',to:'page_blocks#add_content_template'
-      get 'add_content2',to:'page_blocks#add_content_template2'
+      get 'add_content2',to:'page_blocks#add_content_template'
       post 'save_template',to:'page_blocks#save_template'
       post 'update_template',to:'page_blocks#update_template'
       get 'get_doctors', to:'page_blocks#get_doctor_not_in_content'

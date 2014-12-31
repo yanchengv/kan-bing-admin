@@ -47,36 +47,9 @@ class PageBlocksController < ApplicationController
      render partial: "block_contents/#{block_type}_manage"
   end
 
-  #获取科室或医院的前十条医生信息
-=begin
-  def doctors_default
-    if !current_user.nil?
-      sql = 'true'
-      if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-        sql << " and hospital_id = #{current_user.hospital_id}"
-      end
-      if !current_user.department_id.nil? && !current_user.department_id != ''
-        sql << " and department_id = #{current_user.department_id}"
-      end
-      return Doctor.where(sql).limit(10)
-    else
-      return Doctor.where('1 != 1')
-    end
-  end
-=end
 
-=begin
+
   def add_content_template
-    page_block_id=params[:page_block_id]
-    @page_block=PageBlock.where(id:page_block_id).first
-    block_type=@page_block.block_type #block_type必须是模版的名称
-    @block_contents = nil
-    @block_contents=BlockContent.where(block_id:page_block_id)
-    render partial: "page_blocks/templates/#{block_type}"
-  end
-=end
-
-  def add_content_template2
     page_block_id=params[:page_block_id]
     @page_block=PageBlock.where(id:page_block_id).first
     block_type=@page_block.block_type #block_type必须是模版的名称
@@ -85,21 +58,7 @@ class PageBlocksController < ApplicationController
     @page_block.add_content_template  page_block_id
     render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
   end
-=begin
-  def update_template
-    page_block_id=params[:page_block_id]
-    content = params[:content]
-    page_block=PageBlock.where(id:page_block_id).first
-    page_block.update_attributes(content:content)
-    @page_block=PageBlock.find(page_block_id)
-    @block_contents = @page_block.block_contents
-    if @page_block.block_type == 'login'
-      render :partial => 'page_blocks/show'
-    else
-      render :partial => "block_contents/#{@page_block.block_type}_manage", :object => @page_block
-    end
-  end
-=end
+
   def get_doctor_list
     if params[:page_block_id]
       @page_block = PageBlock.find(params[:page_block_id])
@@ -149,31 +108,7 @@ class PageBlocksController < ApplicationController
       render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
-=begin
-  def save_template
-    name=params[:name]
-    block_type=params[:type]
-    content= params[:content]
-    hospital_id=current_user.hospital_id
-    department_id=current_user.department_id
-    @page_block=PageBlock.new(name:name,block_type:block_type,content:content,hospital_id:hospital_id,department_id:department_id)
-    @page_block.save
-    if block_type == 'login'
-      render :partial => 'page_blocks/show'
-    else
-      if block_type == 'doctor_list'
-        doctor_ids = []
-        @docs = doctors_default
-        @docs.each do |doc|
-          doctor_ids.push(doc.id)
-        end
-        @block_content = BlockContent.new(block_id: @page_block.id, content: doctor_ids.join(","))
-        @block_content.save
-      end
-      render partial: "block_contents/#{block_type}_manage"
-    end
-  end
-=end
+
   # GET /page_blocks/1
   # GET /page_blocks/1.json
   def show
