@@ -6,15 +6,15 @@
 </style>
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <table id="doc_skill_list"></table>
-    <div id="page_doc_skill"></div>
-    <%= render :partial => 'skills/unrelated_docs_list'%>
+    <table id="doc_group_list"></table>
+    <div id="page_doc_group"></div>
+    <%= render :partial => 'groups/unrelated_docs_list'%>
   </div>
 </div>
 
 <script type="text/javascript">
-    jQuery("#doc_skill_list").jqGrid({
-        url: '/skills/get_doctors?skill_id=<%=@skill.id  %>',
+    jQuery("#doc_group_list").jqGrid({
+        url: '/groups/get_doctors?group_id=<%=@group.id  %>',
         datatype: "json",
         mtype: 'GET',
         colNames: [ 'ID', '姓名', '医院', '科室', '删除'],
@@ -54,7 +54,7 @@
         },
         editurl: '',
         closeAfterAdd: true,
-        pager: jQuery('#page_doc_skill'),
+        pager: jQuery('#page_doc_group'),
         //   multiselect: true,
         rowNum: 10,
         altclass: 'altRowsColour',
@@ -62,7 +62,7 @@
         height: 'auto',
         caption: "相关医生"
     });
-    jQuery("#doc_skill_list").jqGrid('navGrid', '#page_doc_skill', {
+    jQuery("#doc_group_list").jqGrid('navGrid', '#page_doc_group', {
                 cloneToTop: true, add: false, edit: false,
                 del: false, view: false, search: false,
                 refreshtext: "更新", refreshtitle: "更新"}
@@ -71,15 +71,15 @@
     function delete_associate(id) {
         $.ajax({
             type: 'post',
-            url: '/skills/del_doctor_skill',
+            url: '/groups/del_doctor_group',
             data: {
-                skill_id: <%= @skill.id %>,
+                group_id: <%= @group.id %>,
                 doctor_id: id
             },
             success: function (data) {
                 if (data['success']) {
-                    jQuery("#doc_list").jqGrid('setGridParam', {url: '/skills/get_unrelated_doctors?skill_id=<%= @skill.id  %>'}).trigger("reloadGrid");
-                    jQuery("#doc_skill_list").jqGrid('setGridParam', {url: '/skills/get_doctors?skill_id=<%= @skill.id  %>'}).trigger("reloadGrid");
+                    jQuery("#doc_list_group").jqGrid('setGridParam', {url: '/groups/get_unrelated_doctors?group_id=<%= @group.id  %>'}).trigger("reloadGrid");
+                    jQuery("#doc_group_list").jqGrid('setGridParam', {url: '/groups/get_doctors?group_id=<%= @group.id  %>'}).trigger("reloadGrid");
                 } else {
                     alert('删除失败!');
                 }

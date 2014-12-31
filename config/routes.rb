@@ -134,12 +134,13 @@ Rails.application.routes.draw do
       get 'get_groups', to: 'skills#get_groups'
       get 'group_list', to:'skills#group_list'
       get 'get_unrelated_groups', to: 'skills#get_unrelated_groups'
-      get 'get_doctors', to:'skills#get_doctors'
-    end
-  end
-  resources :groups_skills do
-    collection do
-      post 'del_group_skill', to: 'groups_skills#del_group_skill'
+      get 'doctor_list', to:'skills#doctor_list'
+      post 'add_skill_group', to: 'skills#add_skill_group'
+      post 'del_group_skill', to: 'skills#del_group_skill'
+      get 'get_unrelated_doctors', to: 'skills#get_unrelated_doctors'
+      post 'save_doctors', to: 'skills#save_doctors'
+      get 'get_doctors', to: 'skills#get_doctors'
+      post 'del_doctor_skill', to: 'skills#del_doctor_skill'
     end
   end
   resources :groups do
@@ -147,6 +148,11 @@ Rails.application.routes.draw do
       get 'index_show', to: 'groups#show_index'
       post 'oper_action', to: 'groups#oper_action'
       post 'batch_delete', to: 'groups#batch_delete'
+      get 'doctor_list', to: 'groups#doctor_list'
+      get 'get_doctors', to: 'groups#get_doctors'
+      get 'get_unrelated_doctors', to: 'groups#get_unrelated_doctors'
+      post 'save_doctors', to: 'groups#save_doctors'
+      post 'del_doctor_group', to: 'groups#del_doctor_group'
     end
   end
   resources :departments do

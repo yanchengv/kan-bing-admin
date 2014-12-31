@@ -37,10 +37,109 @@ class SkillsController < ApplicationController
     render :json => {groups: @groups.as_json}
   end
 
+  def get_unrelated_doctors
+    sql = 'true'
+    if !current_user.nil?
+      if current_user.admin_type == '医院管理员'
+        if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+          sql << " and hospital_id = #{current_user.hospital_id}"
+        end
+      elsif current_user.admin_type == '科室管理员'
+        if !current_user.department_id.nil? && !current_user.department_id != ''
+          sql << " and department_id = #{current_user.department_id}"
+        end
+      end
+    end
+    if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'all' && params[:province_id] != 'null'
+      sql << " and province_id = #{params[:province_id]}"
+    end
+    if params[:city_id] && params[:city_id] != '' && params[:city_id] != 'all' && params[:city_id] != 'null'
+      sql << " and city_id = #{params[:city_id]}"
+    end
+    if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'all' && params[:hospital_id] != 'null'
+      sql << " and hospital_id = #{params[:hospital_id]}"
+    end
+    if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'all' && params[:department_id] != 'null'
+      sql << " and department_id = #{params[:department_id]}"
+    end
+    if params[:name] && params[:name] != '' && params[:name] != 'null'
+      sql << " and name like '%#{params[:name]}%' "
+    end
+    @skill = Skill.find(params[:skill_id])
+    if @skill
+      sql << " and id not in (select doctor_id from doctors_skills where skill_id = #{params[:skill_id]})"
+    end
+    @doctors = Doctor.where(sql)
+    count = @doctors.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @doctors = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
   def group_list
     @skill = Skill.find(params[:skill_id])
     @groups = Group.where(" id not in (select group_id from groups_skills where skill_id = ?)", @skill.id)
     render :partial => 'skills/group_list'
+  end
+
+  def doctor_list
+    @skill = Skill.find(params[:skill_id])
+    @provinces = Province.select(:id, :name).all
+    @cities = City.select(:id, :name).all
+    @hospitals = Hospital.select(:id, :name).all
+    @departments = Department.select(:id, :name).all
+    render :partial => 'skills/docs_list'
+  end
+
+  def get_doctors
+    @skill = Skill.find(params[:skill_id])
+    @doctors = @skill.doctors
+    count = @doctors.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @doctors = @doctors.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
+  def save_doctors
+    @skill = Skill.find(params[:skill_id])
+    @doctors = Doctor.where(" id in (#{params[:doctor_ids].join(',')})")
+    @skill.doctors << @doctors
+    render :json => {:success => true}
+  end
+
+  def add_skill_group
+    if params[:skill_id] && params[:group_id]
+      @skill = Skill.find(params[:skill_id])
+      @skill.groups << Group.find(params[:group_id]) if @skill
+      render :json => {success: true}
+    else
+      render :json => {success: false}
+    end
+
+  end
+
+  def del_group_skill
+    if params[:group_id] && params[:skill_id]
+      if GroupsSkill.where(:group_id => params[:group_id], :skill_id => params[:skill_id]).delete_all
+        render :json => {success: true}
+      else
+        render :json => {success: false}
+      end
+    else
+      render :json => {success: false}
+    end
+  end
+
+  def del_doctor_skill
+    if params[:doctor_id] && params[:skill_id]
+      if DoctorsSkill.where(:doctor_id => params[:doctor_id], :skill_id => params[:skill_id]).delete_all
+        render :json => {success: true}
+      else
+        render :json => {success: false}
+      end
+    else
+      render :json => {success: false}
+    end
   end
 
   def oper_action

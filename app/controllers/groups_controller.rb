@@ -19,6 +19,82 @@ class GroupsController < ApplicationController
     render :json => {:groups => @groups.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
+  def doctor_list
+    @group = Group.find(params[:group_id])
+    @provinces = Province.select(:id, :name).all
+    @cities = City.select(:id, :name).all
+    @hospitals = Hospital.select(:id, :name).all
+    @departments = Department.select(:id, :name).all
+    render :partial => 'groups/docs_list'
+  end
+
+  def get_doctors
+    @group = Group.find(params[:group_id])
+    @doctors = @group.doctors
+    count = @doctors.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @doctors = @doctors.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
+  def get_unrelated_doctors
+    sql = 'true'
+    if !current_user.nil?
+      if current_user.admin_type == '医院管理员'
+        if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+          sql << " and hospital_id = #{current_user.hospital_id}"
+        end
+      elsif current_user.admin_type == '科室管理员'
+        if !current_user.department_id.nil? && !current_user.department_id != ''
+          sql << " and department_id = #{current_user.department_id}"
+        end
+      end
+    end
+    if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'all' && params[:province_id] != 'null'
+      sql << " and province_id = #{params[:province_id]}"
+    end
+    if params[:city_id] && params[:city_id] != '' && params[:city_id] != 'all' && params[:city_id] != 'null'
+      sql << " and city_id = #{params[:city_id]}"
+    end
+    if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'all' && params[:hospital_id] != 'null'
+      sql << " and hospital_id = #{params[:hospital_id]}"
+    end
+    if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'all' && params[:department_id] != 'null'
+      sql << " and department_id = #{params[:department_id]}"
+    end
+    if params[:name] && params[:name] != '' && params[:name] != 'null'
+      sql << " and name like '%#{params[:name]}%' "
+    end
+    @group = Group.find(params[:group_id])
+    if @group
+      sql << " and id not in (select doctor_id from doctors_groups where group_id = #{params[:group_id]})"
+    end
+    @doctors = Doctor.where(sql)
+    count = @doctors.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    @doctors = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
+  def save_doctors
+    @group = Group.find(params[:group_id])
+    @doctors = Doctor.where(" id in (#{params[:doctor_ids].join(',')})")
+    @group.doctors << @doctors
+    render :json => {:success => true}
+  end
+
+  def del_doctor_group
+    if params[:doctor_id] && params[:group_id]
+      if DoctorsGroup.where(:doctor_id => params[:doctor_id], :group_id => params[:group_id]).delete_all
+        render :json => {success: true}
+      else
+        render :json => {success: false}
+      end
+    else
+      render :json => {success: false}
+    end
+  end
+
   def oper_action
     if params[:oper] == 'add'
       create
