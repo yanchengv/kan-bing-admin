@@ -174,8 +174,10 @@ class GroupsController < ApplicationController
   # DELETE /groups/1
   # DELETE /groups/1.json
   def destroy
-    photo_name = @group.photo[@group.photo.rindex('/')+1, @group.photo.length]
-    deleteFromAliyun(photo_name, Settings.aliyunOSS.beijing_service, Settings.aliyunOSS.image_bucket)
+    if @group.photo && @group.photo != ''
+      photo_name = @group.photo[@group.photo.rindex('/')+1, @group.photo.length]
+      deleteFromAliyun(photo_name, Settings.aliyunOSS.beijing_service, Settings.aliyunOSS.image_bucket)
+    end
     if @group.destroy
       render :json => {:success => true}
     end
