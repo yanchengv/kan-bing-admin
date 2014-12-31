@@ -51,8 +51,8 @@ if (link_url_flag&&redirect_url_flag) {
             url:'home_menu/save',
             data:valuesToSubmit,
             success:function(data){
-                alert("sucee")
-                $("#rightContent").html(data)
+                $("#rightContent").html(data);
+                $("#showHomePage").html("<h1>修改成功</h1>")
             },
             error:function(){
                 alert("保存失败！")
