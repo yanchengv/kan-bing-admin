@@ -1,17 +1,18 @@
-<%= stylesheet_link_tag 'page_blocks/slides'%>
 <% if !@block_contents.nil? && !@block_contents.empty? %>
-<div class="index_model_box_p_1">
-  <% if @block_contents.count == 1 %>
-      <a href=<%= @block_contents.first.content_url.nil? ? '' : @block_contents.first.content_url+"/?content_id=#{@block_contents.first.id}"%> target="_blank"> <img src=<%= @block_contents.first.url %> height='300'></a>
-  <% else %>
-      <div id="slides2">
-        <% @block_contents.each do |block_content| %>
-           <a href=<%=block_content.content_url.nil? ? '' : block_content.content_url<<"/?content_id=#{block_content.id}"%> target="_blank"> <img src=<%= block_content.url %> height='300'></a>
-        <% end %>
-      </div>
-  <% end %>
-</div>
- <%else%>
+    <div class="index_model_box_p_1">
+      <% if @block_contents.count == 1 %>
+          <a href=<%= @block_contents.first.content_url.nil? ? '' : @block_contents.first.content_url+"/?content_id=#{@block_contents.first.id}" %> target="_blank">
+            <img src=<%= @block_contents.first.url %> height='300'></a>
+      <% else %>
+          <div id="slides2">
+            <% @block_contents.each do |block_content| %>
+                <a href=<%= block_content.content_url.nil? ? '' : block_content.content_url<<"/?content_id=#{block_content.id}" %> target="_blank">
+                  <img src=<%= block_content.url %> height='300'></a>
+            <% end %>
+          </div>
+      <% end %>
+    </div>
+<% else %>
     <div class="index_model_box_p_1">
       <div id="slides2">
         <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo1.jpg">
@@ -19,7 +20,7 @@
         <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo3.jpg">
       </div>
     </div>
-<%end%>
+<% end %>
 
 
 <script>
@@ -41,4 +42,163 @@
 
 
     });
+
+
 </script>
+<style>
+    /*图片轮播*/
+    .index_model_box_p_1 {
+        width: 1188px;
+        height: 300px;
+        overflow: hidden;
+        background: #ccc;
+
+        margin: 5px;
+        float: left;
+    }
+
+    @media (min-width: 1200px) {
+        .index_model_box_p_1 {
+            width: 1188px;
+            min-height: 300px;
+            background: #ccc;
+
+            margin: 5px;
+            float: left;
+        }
+    }
+
+    @media (max-width: 960px) {
+        .index_model_box_p_1 {
+            width: 98%;
+            height: 300px;
+            overflow: hidden;
+            background: #ccc;
+
+            margin: 5px;
+            float: left;
+        }
+    }
+
+    @media (max-width: 683px) {
+        .index_model_box_p_1 {
+            width: 100%;
+
+            overflow: hidden;
+            height: auto;
+            min-height: 222px;
+            background: #ccc;
+
+            margin: 5px;
+            float: left;
+        }
+    }
+
+    #slides2 {
+        position: relative;
+    }
+
+    .slidesjs-navigation {
+        z-index: 999;
+        position: absolute;
+
+    }
+
+    .slidesjs-previous {
+        margin-right: 5px;
+        float: left;
+        left: 30px;
+        bottom: 10px;
+    }
+
+    .slidesjs-next {
+        margin-right: 5px;
+        float: left;
+        left: 50px;
+        bottom: 10px;
+    }
+
+    .slidesjs-pagination {
+        margin: 6px 0 0;
+        float: right;
+        list-style: none;
+        position: absolute;
+        bottom: 20px;
+        right: 30px;
+        z-index: 999;
+    }
+
+    .slidesjs-pagination li {
+        float: left;
+        margin: 0 1px;
+    }
+
+    .slidesjs-pagination li a {
+        display: block;
+        width: 13px;
+        height: 0;
+        padding-top: 13px;
+        background-image: url(http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/pagination.png);
+        background-position: 0 0;
+        float: left;
+        overflow: hidden;
+    }
+
+    .slidesjs-pagination li a.active,
+    .slidesjs-pagination li a:hover.active {
+        background-position: 0 -13px
+    }
+
+    .slidesjs-pagination li a:hover {
+        background-position: 0 -26px
+    }
+
+    /*a:link,*/
+    /*a:visited {*/
+    /*color: #ddd*/
+    /*}*/
+
+    /*a:hover,*/
+    /*a:active {*/
+    /*color: #fff*/
+    /*}*/
+
+    .container {
+        margin: 0 auto
+    }
+
+    /* For tablets & smart phones */
+    @media (max-width: 767px) {
+        body {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .container {
+            width: auto
+        }
+    }
+
+    /* For smartphones */
+    @media (max-width: 480px) {
+        .container {
+            width: auto
+        }
+    }
+
+    /* For smaller displays like laptops */
+    @media (min-width: 768px) and (max-width: 979px) {
+        .container {
+            width: 724px
+        }
+    }
+
+    /* For larger displays */
+    @media (min-width: 1200px) {
+        .container {
+            width: 1170px
+        }
+    }
+
+
+</style>
