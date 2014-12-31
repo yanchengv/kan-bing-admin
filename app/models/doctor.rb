@@ -12,6 +12,12 @@ class Doctor < ActiveRecord::Base
   belongs_to :hospital
   belongs_to :department
   has_many :doctor_friendships, foreign_key: :doctor1_id,:dependent => :destroy
+  has_and_belongs_to_many :groups
+  has_and_belongs_to_many :skills
+  #has_many :doctors_groups, :dependent => :destroy
+  #has_many :doctors_skills, :dependent => :destroy
+  #has_many :groups, :through => :doctors_groups, :source => :group
+  #has_many :skills, :through => :doctors_skills, :source => :skill
   has_many :doctor_friendships, foreign_key: :doctor2_id,:dependent => :destroy
   has_many :treatment_relationships, :dependent => :destroy
   has_many :patfriends, :through => :treatment_relationships, :source  => :patient

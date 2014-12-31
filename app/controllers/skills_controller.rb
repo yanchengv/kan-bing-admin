@@ -43,18 +43,6 @@ class SkillsController < ApplicationController
     render :partial => 'skills/group_list'
   end
 
-  def del_group_skill
-    if params[:group_id] && params[:skill_id]
-      if GroupsSkill.where(:group_id => params[:group_id], :skill_id => params[:skill_id]).delete_all
-        render :json => {success: true}
-      else
-        render :json => {success: false}
-      end
-    else
-      render :json => {success: false}
-    end
-  end
-
   def oper_action
     if params[:oper] == 'add'
       create

@@ -1,6 +1,10 @@
 class Skill < ActiveRecord::Base
-  has_many :groups_skills, :dependent => :destroy
-  has_many :groups, :through => :groups_skills, :source => :group
+  #has_many :groups_skills, :dependent => :destroy
+  #has_many :groups, :through => :groups_skills, :source => :group
+  #has_many :doctors_skills, :dependent => :destroy
+  #has_many :doctors, :through => :doctors_skills, :source => :doctor
+  has_and_belongs_to_many :groups
+  has_and_belongs_to_many :doctors
   before_save :default_values
 
   default_scope { where sort: 'desc' }

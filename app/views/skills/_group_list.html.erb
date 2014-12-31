@@ -116,7 +116,7 @@
     function delete_associate(id){
         $.ajax({
             type: 'post',
-            url: '/skills/del_group_skill',
+            url: '/groups_skills/del_group_skill',
             data: {
                 skill_id: <%= @skill.id %>,
                 group_id: id

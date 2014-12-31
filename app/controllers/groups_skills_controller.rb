@@ -63,6 +63,18 @@ class GroupsSkillsController < ApplicationController
       render :json => {:success => false, :errors => '修改失败！'}
     end
   end
+  #删除关联关系
+  def del_group_skill
+    if params[:group_id] && params[:skill_id]
+      if GroupsSkill.where(:group_id => params[:group_id], :skill_id => params[:skill_id]).delete_all
+        render :json => {success: true}
+      else
+        render :json => {success: false}
+      end
+    else
+      render :json => {success: false}
+    end
+  end
 
   # DELETE /groups_skills/1
   # DELETE /groups_skills/1.json
