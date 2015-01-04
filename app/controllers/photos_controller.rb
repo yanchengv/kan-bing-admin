@@ -19,13 +19,13 @@ class PhotosController < ApplicationController
     image.resize '150x210'
     tmpfile = getFileName(file.original_filename.to_s)
     image.write tmpfile
-    uuid = uploadFileToAliyun(file)
+    uuid = uploadFileToAliyun(tmpfile)
     @data=''
 
     # TODO file.exits? in aliyun
     if File.exist?(image_path)  || true
       #pic_url = Settings.pic+uuid
-      default_access_url_prefix = Settings.aliyunOSS.photo_url#"http://mimas-open.oss-cn-hangzhou.aliyuncs.com/"
+      default_access_url_prefix = Settings.aliyunOSS.photo_url
       p default_access_url_prefix
       pic_url = default_access_url_prefix + uuid.to_s
       @data={flag:true,url:pic_url,image_path:uuid}

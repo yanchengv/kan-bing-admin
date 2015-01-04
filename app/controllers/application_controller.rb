@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
     mimas_dev_bucket = Bucket.find(bucket) #查找Bucket
     obj = mimas_dev_bucket.new_object #在此Bucket新建Object
     #生成一个随机的文件名 uuid+后缀类型的文件
-    uuid = getFileName(file.original_filename)
+    uuid = file
     obj.key = 'avatar/'+uuid
     # obj.key = file
     obj.value= open(file)
