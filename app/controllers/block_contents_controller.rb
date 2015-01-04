@@ -69,12 +69,18 @@ class BlockContentsController < ApplicationController
     render :partial => 'block_contents/edit_pic'
   end
 
+  def edit_content
+    @block_content = BlockContent.find(params[:content_id])
+    @page_block = PageBlock.find(@block_content.block_id)
+    render :partial => 'block_contents/content_edit'
+  end
+
   # POST /block_contents
   # POST /block_contents.json
   def create
     @block_content = BlockContent.new(block_content_params)
     if @block_content.save
-      render :json => {:success => true}
+      render :json => {:success => true, :page_block_id => @block_content.block_id}
     else
       render :json => {:success => false, :errors => '添加失败！'}
     end
@@ -90,6 +96,7 @@ class BlockContentsController < ApplicationController
     para[:content_summary]=params[:content_summary]
     para[:content_url]=params[:content_url]
     para[:url]=params[:url] #图片url
+    para[:create_date]=params[:create_date]
     @block_contents = BlockContent.where(:block_id => params[:block_id])
     if @block_content.update_attributes(para)
       @page_block = PageBlock.find(@block_content.block_id)
@@ -132,6 +139,11 @@ class BlockContentsController < ApplicationController
   def save_pic
     @page_block = PageBlock.find(params[:block_id])
     render :partial => 'block_contents/save_pic'
+  end
+
+  def save_alzs
+    @page_block = PageBlock.find(params[:block_id])
+    render :partial => 'block_contents/content_new'
   end
 
   def save_pic_content

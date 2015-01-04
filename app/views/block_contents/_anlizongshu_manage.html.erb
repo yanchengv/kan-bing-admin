@@ -1,12 +1,15 @@
+
 <div style="width: 100%">
   <%= render partial: 'block_contents/update_block_name'%>
   <div style="margin-left: 20px;margin-right: 20px;">
     <table id="anlizongshu_content_list"></table>
     <div id="page_anlizongshu"></div>
   </div>
-  <br>
-  <div>
 
+  <div id="anlizongshu_console">
+    <div id="anlizongshu_div" style="margin-top: 40px;">
+
+    </div>
   </div>
 </div>
 <script type="text/javascript">
@@ -84,26 +87,9 @@
                 cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
                 deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
-
             {
-                afterSubmit:  function(response,data){
-                    var pageBlockId=(data["block_id"])
-                    save_content_model2(pageBlockId)
-                },
-                afterShowForm: showKindEditor,
-                closeAfterEdit: true,
-                width:800,
-                height:600
             },//edit
             {
-                afterSubmit:  function(response,data){
-                    var pageBlockId=(data["block_id"])
-                    save_content_model2(pageBlockId)
-                },
-                afterShowForm: showKindEditor,
-                closeAfterAdd: true,
-                width:800,
-                height:600
             },//add
             {
                 afterComplete: function (response, data) {
@@ -111,7 +97,11 @@
                     save_content_model2(pageBlockId);
                 }
             }
-             );
+    ).navButtonAdd('#page_anlizongshu', { title: '修改', caption: '修改', onClickButton: function () {
+                alzs_edit();
+            }, position: "first"}).navButtonAdd('#page_anlizongshu', { title: '添加', caption: '添加', onClickButton: function () {
+                alzs_new();
+            }, position: "first"});
 
          function showKindEditor(){
              KindEditor.ready(function(K) {
@@ -143,4 +133,117 @@
           $('input', elem).val(value);
       }
   }
+  $("#anlizongshu_console").dialog({    //初始化对话框
+      autoOpen: false,
+      modal: false,    // 设置对话框为模态（modal）对话框
+      resizable: true,
+      width: 800,
+      position: {
+          my: "center",
+          at: "center",
+          of: window,
+          collision: "fit",
+          // Ensure the titlebar is always visible
+          using: function (pos) {
+              var topOffset = $(this).css(pos).offset().top;
+              if (topOffset < 0) {
+                  $(this).css("top", pos.top - topOffset);
+              } else {
+                  $(this).css("top", 100);
+              }
+          }
+      },
+      buttons: {  // 为对话框添加按钮
+          "保存": save_alzs,
+          "修改": update_alzs,
+          "取消": function () {
+              $("#anlizongshu_console").dialog("close")
+          }
+      }
+  });
+  function alzs_new() {
+      $.ajax({
+          url: "/block_contents/save_alzs",
+          type: 'post',
+          data: {
+              block_id: <%= @page_block.id %>
+          },
+          success: function (data) {
+              $("#anlizongshu_div").html(data);
+              var video_consoleDlg = $("#anlizongshu_console");
+              var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+              dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+              dialogButtonPanel.find("button:contains('保存')").show();
+              video_consoleDlg.dialog("option", "width", "800");
+              video_consoleDlg.dialog("option", "title", "添加记录").dialog("open");
+          }
+      });
+  }
+  function alzs_edit() {
+      var id = jQuery("#anlizongshu_content_list").jqGrid('getGridParam', 'selrow');
+      if (id) {
+          $.ajax({
+              url: '/block_contents/edit_content',
+              type: 'get',
+              data: {content_id: id},
+              success: function (data) {
+                  $("#anlizongshu_div").html(data);
+                  var video_consoleDlg = $("#anlizongshu_console");
+                  var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                  dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                  dialogButtonPanel.find("button:contains('修改')").show();
+                  video_consoleDlg.dialog("option", "width", "800");
+                  video_consoleDlg.dialog("option", "title", "修改图片（图片尺寸:1200x300）").dialog("open");
+              }
+          })
+      } else {
+          alert('请选择修改项!');
+      }
+  }
+  function save_alzs() {
+      $.ajax({
+          url: "/block_contents",
+          type: 'post',
+          data: { title: $('#title').val(),
+              content: $('#content').val(),
+              content_url: $('#content_url').val(),
+              block_id: $('#block_id').val(),
+              create_date: $('#create_date').val()
+          },
+          async: false,
+          success: function (data) {
+              console.log(data);
+              var pageBlockId = data["page_block_id"];
+              $("#anlizongshu_console").dialog("close");
+              save_content_model2(pageBlockId);
+          },
+          error: function (XMLHttpRequest, textStatus, errorThrown) {
+              alert('保存失败!');
+          }
+      });
+  }
+  function update_alzs() {
+      $.ajax({
+          url: "/block_contents/" + $('#content_id').val(),
+          type: 'put',
+          data: { title: $('#title').val(),
+              content: $('#content').val(),
+              content_url: $('#content_url').val(),
+              block_id: $('#block_id').val(),
+              create_date: $('#create_date').val()
+          },
+          async: false,
+          success: function (data) {
+              console.log(data);
+              var pageBlockId = data["page_block_id"];
+              $("#anlizongshu_console").dialog("close");
+              save_content_model2(pageBlockId);
+          },
+          error: function (XMLHttpRequest, textStatus, errorThrown) {
+              alert('保存失败!');
+          }
+      });
+  }
+  ;
+
 </script>
