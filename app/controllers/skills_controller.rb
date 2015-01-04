@@ -21,11 +21,7 @@ class SkillsController < ApplicationController
 
   def get_groups
     @skill = Skill.find(params[:skill_id])
-    if @skill && !@skill.groups.nil? && !@skill.groups.empty?
-      @groups = @skill.groups
-    else
-      @groups = Group.all
-    end
+    @groups = @skill.groups
     count = @groups.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     @skills = @groups.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
