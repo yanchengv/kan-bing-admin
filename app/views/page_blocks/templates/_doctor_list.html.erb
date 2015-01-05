@@ -42,8 +42,8 @@
                                             title: doctor.name,
                                             alt: doctor.name,
                                             class: "img-responsive index_doc_photo",
-                                            onclick: "showDoctorPage(#{doctor.id}, '')",
-                                            onmouseover: "change_doctor(#{doctor.id})"
+                                            onclick: "showDoctorPage(#{doctor.id}, '');return false;",
+                                            onmouseover: "change_doctor(#{doctor.id});return false;"
                                   ),
                                   '#',
                                   :class => "pl"
@@ -56,8 +56,8 @@
                                             title: doctor.name,
                                             alt: doctor.name,
                                             class: "img-responsive index_doc_photo",
-                                            onclick: "showDoctorPage(#{doctor.id}, '')",
-                                            onmouseover: "change_doctor(#{doctor.id})"
+                                            onclick: "showDoctorPage(#{doctor.id}, '');return false;",
+                                            onmouseover: "change_doctor(#{doctor.id});return false;"
                                   ),
                                   '#',
                                   :class => "pl"
