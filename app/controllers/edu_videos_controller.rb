@@ -77,7 +77,7 @@ class EduVideosController < ApplicationController
 
     file=params[:edu_video].nil? ? params[:image] : params[:edu_video][:image]
     tmpfile = getFileName(file.original_filename.to_s)
-    uuid = uploadToAliyun(file,Settings.aliyunOSS.video_service,Settings.aliyunOSS.image_bucket)
+    uuid = uploadToAliyun(file,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
     if true
       render :json => {flag: true, url: uuid}
     else
@@ -90,7 +90,7 @@ class EduVideosController < ApplicationController
     file=params[:edu_video].nil? ? params[:video] : params[:edu_video][:video]
     p file.original_filename
     tmpfile = getFileName(file.original_filename.to_s)
-    service = Settings.aliyunOSS.video_service
+    service = Settings.aliyunOSS.beijing_service
     bucket = Settings.aliyunOSS.video_bucket
     uuid = uploadToAliyun(file,service,bucket)
     if true
@@ -104,7 +104,7 @@ class EduVideosController < ApplicationController
     file=params[:video]
     p file.original_filename
     tmpfile = getFileName(file.original_filename.to_s)
-    uuid = uploadToAliyun(file,Settings.aliyunOSS.video_service,Settings.aliyunOSS.video_bucket)
+    uuid = uploadToAliyun(file,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.video_bucket)
     if true
       render :json => {flag: true, url: uuid}
     else
@@ -144,7 +144,7 @@ class EduVideosController < ApplicationController
   def video_edit
     @video = EduVideo.find(params[:id])
     @doc = Doctor.find_by_id(params[:doctor_id])
-    service = Settings.aliyunOSS.video_service
+    service = Settings.aliyunOSS.beijing_service
     if !@video.video_url.nil? && (@video.video_url != params[:video_url]) && @video.video_url != ''
       deleteFromAliyun(@video.video_url,service,Settings.aliyunOSS.video_bucket) #删除对应的视频
     end
@@ -167,7 +167,7 @@ class EduVideosController < ApplicationController
 
   def video_delete #上传或修改视频时，点击取消按钮执行 #params[:video_url]和params[:image_url]两个都空自然不会调用该方法
     @video = EduVideo.where(id:params[:video_id]).first
-    service = Settings.aliyunOSS.video_service
+    service = Settings.aliyunOSS.beijing_service
     if !@video.nil?
       if @video.image_url != params[:image_url]
         bucket = Settings.aliyunOSS.image_bucket
@@ -263,7 +263,7 @@ class EduVideosController < ApplicationController
   # DELETE /edu_videos/1
   # DELETE /edu_videos/1.json
   def destroy
-    service = Settings.aliyunOSS.video_service
+    service = Settings.aliyunOSS.beijing_service
     if !@edu_video.image_url.nil? && !@edu_video.image_url != ''
       bucket = Settings.aliyunOSS.image_bucket
       deleteFromAliyun(@edu_video.image_url,service,bucket) #删除对应的缩略图
