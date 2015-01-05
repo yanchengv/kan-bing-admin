@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
     #if !file.original_filename.empty?
     #连接信息
     Aliyun::OSS::Base.establish_connection!(
-        :server => Settings.aliyunOSS.video_service, #可不填,默认为此项
+        :server => Settings.aliyunOSS.beijing_service, #可不填,默认为此项
         :access_key_id => 'h17xgVZatOgQ6IeJ',
         :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
     )
@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
   def upload_video_img_bucket(file)
     if !file.original_filename.empty?
       Aliyun::OSS::Base.establish_connection!(
-          :server => Settings.aliyunOSS.video_service, #可不填,默认为此项
+          :server => Settings.aliyunOSS.beijing_service, #可不填,默认为此项
           :access_key_id => 'h17xgVZatOgQ6IeJ',
           :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
       )
