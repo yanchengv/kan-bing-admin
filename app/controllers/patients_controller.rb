@@ -285,7 +285,7 @@ class PatientsController < ApplicationController
     end
     @patient = Patient.new
     photo=@patient.photo
-    default_access_url_prefix = Settings.aliyunOSS.photo_url#"http://mimas-open.oss-cn-hangzhou.aliyuncs.com/"
+    default_access_url_prefix = Settings.aliyunOSS.photo_url
     if photo.nil?||photo==''
       photo='/default.png'
     else
@@ -347,7 +347,7 @@ class PatientsController < ApplicationController
     end
     @patient = Patient.where(id:params[:id]).first
     photo=@patient.photo
-    default_access_url_prefix = Settings.aliyunOSS.photo_url#"http://mimas-open.oss-cn-hangzhou.aliyuncs.com/"
+    default_access_url_prefix = Settings.aliyunOSS.photo_url
     if photo.nil?||photo==''
       photo='/default.png'
     else

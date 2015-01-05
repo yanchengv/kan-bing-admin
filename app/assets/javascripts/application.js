@@ -20,7 +20,6 @@
 //= require jquery.jqGrid
 //= require jquery-ui
 //= require jquery.ztree.all-3.5.min
-//= require_tree .
 //= require jquery.fileupload
 //= require kindeditor
 //= require jquery.slides.min
