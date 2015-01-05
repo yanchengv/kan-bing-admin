@@ -252,7 +252,7 @@ class BlockContentsController < ApplicationController
     if @block_content.destroy
       if @block_content.block_type == 'hospital_environment' || @block_content.block_type == 'slides'
         if !@block_content.url.nil? && @block_content.url != ''
-          delte_file_from_aliyun(@block_content.url[@block_content.url.rindex('/')+1, @block_content.url.length])
+          deleteFromAliyun(@block_content.url[@block_content.url.rindex('/')+1, @block_content.url.length], Settings.aliyunOSS.beijing_service, Settings.aliyunOSS.image_bucket)
         end
       end
       render :json => {:success => true, :block_id => block_id}

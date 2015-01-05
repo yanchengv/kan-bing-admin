@@ -59,7 +59,6 @@ class ApplicationController < ActionController::Base
         :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
     )
     bucket = Settings.aliyunOSS.kindeditor_bucket
-    puts "============bucket=#{bucket}"
     mimas_dev_bucket = Bucket.find(bucket) #查找Bucket
     obj = mimas_dev_bucket.new_object #在此Bucket新建Object
     #生成一个随机的文件名 uuid+后缀类型的文件
@@ -117,19 +116,19 @@ class ApplicationController < ActionController::Base
   end
 
   # delete object by filename
-  def delte_file_from_aliyun(file)
-    Aliyun::OSS::Base.establish_connection!(
-        :server => 'oss-cn-beijing.aliyuncs.com', #可不填,默认为此项
-        :access_key_id => 'h17xgVZatOgQ6IeJ',
-        :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
-    )
-    # mimas_open_bucket = Bucket.find(BUCKET) #查找Bucket
-    begin
-      OSSObject.delete(file, Settings.aliyunOSS.default_bucket) #删除文件
-    rescue
-      puts 'delte  error'
-    end
-  end
+  #def delte_file_from_aliyun(file)
+  #  Aliyun::OSS::Base.establish_connection!(
+  #      :server => 'oss-cn-beijing.aliyuncs.com', #可不填,默认为此项
+  #      :access_key_id => 'h17xgVZatOgQ6IeJ',
+  #      :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+  #  )
+  #  # mimas_open_bucket = Bucket.find(BUCKET) #查找Bucket
+  #  begin
+  #    OSSObject.delete(file, Settings.aliyunOSS.default_bucket) #删除文件
+  #  rescue
+  #    puts 'delte  error'
+  #  end
+  #end
 
   #删除视频文件
   def delte_video_file_from_aliyun(file)
