@@ -49,11 +49,11 @@ class HospitalsController < ApplicationController
      end
 
      if params[:city_name] == "true"
-       q << " and city_name  is  null "
+       q << " and city_name ='' "
      end
 
      if params[:province_name] == "true"
-       q << " and province_name  is  null "
+       q << " and province_name = '' "
      end
     if q =="true"
       @hospitals =  Hospital.where(q).limit(16)
