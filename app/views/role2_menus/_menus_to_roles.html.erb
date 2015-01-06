@@ -506,14 +506,21 @@
         }
         target_node = {id:target_node.id,name:target_node.name}
         //注释部分:当父结点的子结点为空时,同时删除父结点
-//        var t_node = treeNode
-//        if (t_node.getParentNode().children.length==0 && (''+t_node.id).indexOf('_')>0){
-//            right_treeObj.removeNode(t_node.getParentNode());
-//        }
+        var t_node = treeNode
+        console.log(t_node.level)
+        if (t_node.getParentNode().children.length==0 && t_node.level>2){
+            right_treeObj.removeNode(t_node.getParentNode());
+        }
         var tree_node = {id:treeNode.id,name:treeNode.name,pId:treeNode.pId}
         if (parent_menu!=null){
             parent_menu = {id:parent_menu.id,name:parent_menu.name}
         }
+//        parent_menu = treeNode.getParentNode()
+//        if (parent_menu.level>1){
+//            parent_menu = {id:parent_menu.id,name:parent_menu.name}
+//        }else {
+//            parent_menu = null
+//        }
 
         $.ajax({
             type:'delete',
