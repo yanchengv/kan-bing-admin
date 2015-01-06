@@ -37,6 +37,35 @@ class HospitalsController < ApplicationController
     render :json => {:hospitals => @hospitals.as_json(:include => [{:province => {:only => [:id, :name]}}, {:city => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
+  #整理医院数据用 tmpmethod
+  def show_index_search
+     q = "true"
+     if params[:city_id] == "true"
+       q << " and city_id  is  null "
+     end
+
+     if params[:province_id] == "true"
+       q << " and province_id  is  null "
+     end
+
+     if params[:city_name] == "true"
+       q << " and city_name  is  null "
+     end
+
+     if params[:province_name] == "true"
+       q << " and province_name  is  null "
+     end
+    if q =="true"
+      @hospitals =  Hospital.where(q).limit(16)
+    else
+      @hospitals =  Hospital.where(q)
+    end
+
+     totalpages =1
+     count =  @hospitals.count
+     render :json => {:hospitals => @hospitals.as_json(:include => [{:province => {:only => [:id, :name]}}, {:city => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
   def oper_action
     if params[:oper] == 'add'
       create

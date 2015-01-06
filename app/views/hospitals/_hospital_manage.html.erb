@@ -17,6 +17,17 @@
       <% end if !@cities.empty? %>
     </select>&nbsp;&nbsp;医院名称：<input type="text" id="hospital_name">&nbsp;&nbsp;<button id="search_hos_btn">搜索</button>&nbsp;<button id="clear_hos_btn">清空</button>
     </div>
+    <div style="margin-bottom: 10px;" id="tmpsearch" hidden="true">
+      <span> 选择为空选项</span>
+      省名：<input type="checkbox" id="province_name2" name="province_name"   >
+      市名：<input type="checkbox" id="city_name2" name="city_name" >
+      省id：<input type="checkbox" id="province_id2"  name="province_id" >
+      市id：<input type="checkbox" id="city_id2"  name="city_id" >
+      <button id="clear_tmpsearch">清空</button>
+      <button id="search_btnx2">搜索为空选项</button>
+
+    </div>
+
     <table id="hospital_list"></table>
     <div id="page_hos"></div>
   </div>
@@ -57,7 +68,7 @@
             { name: 'name', index: 'name', align: "center", editable: true,editoptions:{style: "width:156px"}},
             { name: 'short_name', index: 'short_name', align: "center", editable: true,editoptions:{style: "width:156px"}},
             { name: 'province_name', index: 'province_name', align: "center", editable: false},
-            { name: 'province_id', index: 'province_id', align: "center", jsonmap:'province.id',editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
+            { name: 'province_id', index: 'province_id', align: "center", jsonmap:'province.id',editable: true, hidden: false, editrules: {edithidden: true}, edittype: 'select',
                 editoptions: {
                     dataInit: function (element) {
                         $(element).select2();
@@ -97,7 +108,7 @@
                     ]
                 }
             },
-            { name: 'city_id', index: 'city_id', align: "center", editable: true,jsonmap:'city.id', hidden: true, editrules: {edithidden: true}, edittype: 'select',
+            { name: 'city_id', index: 'city_id', align: "center", editable: true,jsonmap:'city.id', hidden: false, editrules: {edithidden: true}, edittype: 'select',
                 editoptions: {
                     dataInit: function (element) {
                         $(element).select2();
@@ -147,7 +158,7 @@
             { name: 'key_departments', index: 'key_departments', align: "center", editable: true,editoptions:{style: "width:156px"}},
             { name: 'description', index: 'description', align: "center", hidden: true, editrules: {edithidden: true}, editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:300px"}}
         ],
-        rowList: [10, 15, 20],
+        rowList: [10, 15, 20,50,100],
         sortname: 'id',
         viewrecords: true,
         sortorder: "desc",
@@ -284,6 +295,36 @@
         var hos_name = $('#hospital_name').val();
         jQuery("#hospital_list").jqGrid('setGridParam', {url: "/hospitals/index_show?province_id=" + pro_id +'&city_id=' + city_id + '&name=' + hos_name }).trigger("reloadGrid")
     });
+
+    //搜索医院tmp
+    $( "input[type=checkbox]" ).on( "click", searche2 );
+
+    function searche2(){
+//        console.log(this);
+         if (this.checked){
+             this.value = true;
+         }else{
+             this.value = false;
+         }
+        var province_name = $('#province_name2').val();
+        var city_name = $('#city_name2').val();
+        var province_id = $('#province_id2').val();
+        var city_id = $('#city_id2').val();
+        console.log( province_name + "  "  + city_name + "  "  +  province_id + "  "  +  city_id + "  " )
+        jQuery("#hospital_list").jqGrid('setGridParam', {url: "/hospitals/index_show2?province_id=" + province_id +'&city_id=' + city_id
+                + '&city_name=' + city_name + '&province_name=' + province_name  }).trigger("reloadGrid")
+
+    }
+    //清空搜索选项
+    $('#clear_tmpsearch').click(function () {
+
+        $('#province_name2').attr("checked", false);
+        $('#city_id2').attr("checked", false);
+        $('#province_id2').attr("checked", false);
+        $('#city_name2').attr("checked", false);
+    });
+    var tmpsearch = $('#tmpsearch')
+
     //清空搜索医院的查询条件
     $('#clear_hos_btn').click(function () {
         $("#province_search_id").select2("val", "0");

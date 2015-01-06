@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   resources :hospitals do
     collection do
       get 'index_show', to:'hospitals#show_index'
+      get 'index_show2',to:'hospitals#show_index_search'
       get 'get_provinces', to:'hospitals#get_provinces'
       get 'get_cities', to: 'hospitals#get_cities'
       post 'oper_action', to: 'hospitals#oper_action'
