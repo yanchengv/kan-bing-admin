@@ -26,7 +26,17 @@ class TreatmentRelationshipsController < ApplicationController
 
     #获取医生
     def get_doctors
-      @doctors = Doctor.all
+      sql = 'true'
+      hos_id = current_user.hospital_id
+      dep_id = current_user.department_id
+      if !hos_id.nil? && hos_id != ''
+        if !dep_id.nil? && dep_id != ''
+          sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
+        else
+          sql << " and hospital_id=#{hos_id}"
+        end
+      end
+      @doctors = Doctor.select(:id, :name).where(sql)
       docs = {}
       @doctors.each do |doc|
         docs[doc.id] = doc.name
@@ -36,7 +46,17 @@ class TreatmentRelationshipsController < ApplicationController
 
     #获取患者
     def get_patients
-      @patients = Patient.all
+      sql = 'true'
+      hos_id = current_user.hospital_id
+      dep_id = current_user.department_id
+      if !hos_id.nil? && hos_id != ''
+        if !dep_id.nil? && dep_id != ''
+          sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
+        else
+          sql << " and hospital_id=#{hos_id}"
+        end
+      end
+      @patients = Patient.select(:id, :name).where(sql)
       pats = {}
       @patients.each do |pat|
         pats[pat.id] = pat.name
