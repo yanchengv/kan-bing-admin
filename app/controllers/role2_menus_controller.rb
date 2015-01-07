@@ -75,10 +75,31 @@ class Role2MenusController < ApplicationController
         @role.destroy
       end
     else
-      @role_menus = Role2Menu.where(role2_id: role_id,menu_id: node_id)
-      if !@role_menus.empty?
-        @role_menus.each do |role_menu|
-          role_menu.destroy
+      @menu = Menu.where(id:node_id).first
+      if !@menu.nil?
+        @all_childs = @menu.all_child(Menu.all)
+      end
+      @all_childs.push(@menu)
+      if !@all_childs.empty?
+        @all_childs.each do |child_menu|
+          @role_menus = Role2Menu.where(role2_id: role_id,menu_id: child_menu.id)
+          if !@role_menus.empty?
+            @role_menus.each do |role_menu|
+              role_menu.destroy
+            end
+          end
+        end
+      end
+      parent_id =  @menu.parent_id
+      if !parent_id.nil? && parent_id != ''
+        @role2_menus = Role2Menu.where("role2_id=#{role_id} and menu_id in (select id from menus where parent_id=#{parent_id})")
+        if @role2_menus.empty?
+          @role_menus = Role2Menu.where(role2_id: role_id,menu_id: parent_id)
+          if !@role_menus.empty?
+            @role_menus.each do |role_menu|
+              role_menu.destroy
+            end
+          end
         end
       end
     end
