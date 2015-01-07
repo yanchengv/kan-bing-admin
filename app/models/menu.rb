@@ -22,13 +22,13 @@ class Menu < ActiveRecord::Base
     return priority_ids
   end
 
-  def all_child(menus)  #在指定菜单列表menus中获得当前menu的所有子菜单  含权限
+  def all_child(menus)  #在指定菜单列表menus中获得当前menu的所有子菜单
     @all_childs = []
     get_child(self,menus,@all_childs)
     return @all_childs.uniq
   end
 
-  def get_child(menu,menus,the_menus) #递归获取子菜单     含权限
+  def get_child(menu,menus,the_menus) #递归获取子菜单
     if !menu.child_menus.empty?
       menu.child_menus.each do |menu2|
         if !menu2.child_menus.empty?
