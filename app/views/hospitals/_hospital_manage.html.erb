@@ -323,8 +323,11 @@
         $('#province_id2').attr("checked", false);
         $('#city_name2').attr("checked", false);
     });
-    var tmpsearch = $('#tmpsearch')
 
+    function tshow(){
+        var tmpsearch = $('#tmpsearch')[0];
+        tmpsearch.hidden =false
+    }
     //清空搜索医院的查询条件
     $('#clear_hos_btn').click(function () {
         $("#province_search_id").select2("val", "0");
