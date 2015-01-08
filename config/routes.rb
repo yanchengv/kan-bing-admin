@@ -220,6 +220,10 @@ Rails.application.routes.draw do
       post 'oper_action', to:'doctor_friendships#oper_action'
       post 'batch_delete', to: 'doctor_friendships#batch_delete'
       get 'get_doctors', to: 'doctor_friendships#get_doctors'
+      get 'get_provinces', to: 'doctor_friendships#get_provinces'
+      get 'get_cities', to: 'doctor_friendships#get_cities'
+      get 'get_hospitals', to: 'doctor_friendships#get_hospitals'
+      get 'get_departments', to: 'doctor_friendships#get_departments'
     end
 
   end
