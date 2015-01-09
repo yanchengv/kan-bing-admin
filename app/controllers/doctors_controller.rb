@@ -116,104 +116,119 @@ class DoctorsController < ApplicationController
   end  #含增删改查权限的 ############　删　################
 
   def show_index
-    hos_id = current_user.hospital_id
-    dep_id = current_user.department_id
-    if !params[:pro_id].nil? && params[:pro_id] != '' && params[:pro_id] != 'undefined'
-      pro_id = params[:pro_id]
+    if params[:str] == 'hospital'
+      sql = "hospital_id is null or hospital_id = 0 or hospital_id = '' or hospital_name is null or hospital_name = ''"
+      page = params[:page].to_i
+      records = Doctor.where(sql).count
+      @total =records % params[:rows].to_i == 0 ? records / params[:rows].to_i : records / params[:rows].to_i + 1
+      @rows = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    elsif params[:str] == 'department'
+      sql = "department_id is null or department_id = 0 or department_id = '' or department_name is null or department_name = ''"
+      page = params[:page].to_i
+      records = Doctor.where(sql).count
+      @total =records % params[:rows].to_i == 0 ? records / params[:rows].to_i : records / params[:rows].to_i + 1
+      @rows = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    else
+          hos_id = current_user.hospital_id
+          dep_id = current_user.department_id
+          if !params[:pro_id].nil? && params[:pro_id] != '' && params[:pro_id] != 'undefined'
+            pro_id = params[:pro_id]
+          end
+          if !params[:city_id].nil? && params[:city_id] != '' && params[:city_id] != 'undefined'
+            city_id = params[:city_id]
+          end
+          if !params[:hos_id].nil? && params[:hos_id] != '' && params[:hos_id] != 'undefined'
+            hos_id = params[:hos_id]
+          end
+          if !params[:dep_id].nil? && params[:dep_id] != '' && params[:dep_id] != 'all' && params[:dep_id] != 'undefined'
+            dep_id = params[:dep_id]
+          end
+          is_activated = params[:is_activated]
+          is_public = params[:is_public]
+          noOfRows = params[:rows]
+          page = params[:page]
+          @doctors_all = nil
+          sql = "true"
+          if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
+            @hos = Hospital.find(hos_id)
+            @dep = Department.find(dep_id)
+            sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%') and (department_id=#{dep_id} or department_name like '%#{@dep.name}%')"
+          elsif !hos_id.nil? && hos_id != ''
+            @hos = Hospital.find(hos_id)
+            sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%')"
+          end
+          if !pro_id.nil? && pro_id != '' && !city_id.nil? && city_id != ''
+            @pro = Province.find(pro_id)
+            @city = City.find(city_id)
+            sql << " and (province_id = #{pro_id} or province_name like '%#{@pro.name}%') and (city_id=#{city_id} or city_name like '%#{@city.name}%')"
+          elsif !pro_id.nil? && pro_id != ''
+            @pro = Province.find(pro_id)
+            sql << " and (province_id = #{pro_id} or province_name like '%#{@pro.name}%')"
+          end
+          # field = params[:searchField]
+          # p params[:searchOper]
+          # value = params[:searchString]
+          # if !field.nil? && field!='' && !value.nil?
+          #   sql << " and #{field} like '%#{value]}%'"
+          # end
+          if params[:name] && params[:name] != ''
+            sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
+          end
+          if params[:email] && params[:email] != ''
+            sql << " and email like '%#{params[:email]}%'"
+          end
+          if params[:mobile_phone] && params[:mobile_phone] != ''
+            sql << " and mobile_phone like '%#{params[:mobile_phone]}%'"
+          end
+          if params[:credential_type_number] && params[:credential_type_number] != ''
+            sql << " and credential_type_number like '%#{params[:credential_type_number]}%'"
+          end
+          if is_activated=='0'
+            sql << " and is_activated=0"
+          end
+          if is_activated=='1'
+            sql << " and is_activated not in (0)"
+          end
+          if is_public=='0'
+            sql << " and is_public=0"
+          end
+          if is_public=='1'
+            sql << " and is_public=1"
+          end
+          # @doctors = Doctor.find_by_sql("select SQL_CALC_FOUND_ROWS * from doctors where #{sql} order by #{params[:sidx]} #{params[:sord]} limit #{noOfRows.to_i*(page.to_i-1)},#{noOfRows.to_i}")
+          @doctors = Doctor.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
+          @total=0
+          # records = Doctor.find_by_sql("SELECT FOUND_ROWS() as rows_count")
+          # records = records[0].rows_count
+          # records = Doctor.select("id").where(sql).count
+          records = Doctor.select("count(id) as rows_count").where(sql)
+          records = records[0].rows_count
+          if !noOfRows.nil?
+            if records%noOfRows.to_i == 0
+              @total = records/noOfRows.to_i
+            else
+              @total = (records/noOfRows.to_i)+1
+            end
+          end
+          if !@doctors.empty?
+            @doctors.each do |doc|
+              if (doc.province_name.nil? || doc.province_name == '') && !doc.province2.nil?
+                doc.update(province_name: doc.province2.name)
+              end
+              if (doc.city_name.nil? || doc.city_name == '') && !doc.city.nil?
+                doc.update(city_name: doc.city.name)
+              end
+              if (doc.hospital_name.nil? || doc.hospital_name == '')&& !doc.hospital.nil?
+                doc.update(hospital_name: doc.hospital.name)
+              end
+              if (doc.department_name.nil? || doc.department_name == '') && !doc.department.nil?
+                doc.update(department_name: doc.department.name)
+              end
+            end
+          end
+          @rows=@doctors #.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}}])
     end
-    if !params[:city_id].nil? && params[:city_id] != '' && params[:city_id] != 'undefined'
-      city_id = params[:city_id]
-    end
-    if !params[:hos_id].nil? && params[:hos_id] != '' && params[:hos_id] != 'undefined'
-      hos_id = params[:hos_id]
-    end
-    if !params[:dep_id].nil? && params[:dep_id] != '' && params[:dep_id] != 'all' && params[:dep_id] != 'undefined'
-      dep_id = params[:dep_id]
-    end
-    is_activated = params[:is_activated]
-    is_public = params[:is_public]
-    noOfRows = params[:rows]
-    page = params[:page]
-    @doctors_all = nil
-    sql = "true"
-    if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
-      @hos = Hospital.find(hos_id)
-      @dep = Department.find(dep_id)
-      sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%') and (department_id=#{dep_id} or department_name like '%#{@dep.name}%')"
-    elsif !hos_id.nil? && hos_id != ''
-      @hos = Hospital.find(hos_id)
-      sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%')"
-    end
-    if !pro_id.nil? && pro_id != '' && !city_id.nil? && city_id != ''
-      @pro = Province.find(pro_id)
-      @city = City.find(city_id)
-      sql << " and (province_id = #{pro_id} or province_name like '%#{@pro.name}%') and (city_id=#{city_id} or city_name like '%#{@city.name}%')"
-    elsif !pro_id.nil? && pro_id != ''
-      @pro = Province.find(pro_id)
-      sql << " and (province_id = #{pro_id} or province_name like '%#{@pro.name}%')"
-    end
-    # field = params[:searchField]
-    # p params[:searchOper]
-    # value = params[:searchString]
-    # if !field.nil? && field!='' && !value.nil?
-    #   sql << " and #{field} like '%#{value]}%'"
-    # end
-    if params[:name] && params[:name] != ''
-      sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
-    end
-    if params[:email] && params[:email] != ''
-      sql << " and email like '%#{params[:email]}%'"
-    end
-    if params[:mobile_phone] && params[:mobile_phone] != ''
-      sql << " and mobile_phone like '%#{params[:mobile_phone]}%'"
-    end
-    if params[:credential_type_number] && params[:credential_type_number] != ''
-      sql << " and credential_type_number like '%#{params[:credential_type_number]}%'"
-    end
-    if is_activated=='0'
-      sql << " and is_activated=0"
-    end
-    if is_activated=='1'
-      sql << " and is_activated not in (0)"
-    end
-    if is_public=='0'
-      sql << " and is_public=0"
-    end
-    if is_public=='1'
-      sql << " and is_public=1"
-    end
-    # @doctors = Doctor.find_by_sql("select SQL_CALC_FOUND_ROWS * from doctors where #{sql} order by #{params[:sidx]} #{params[:sord]} limit #{noOfRows.to_i*(page.to_i-1)},#{noOfRows.to_i}")
-    @doctors = Doctor.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
-    @total=0
-    # records = Doctor.find_by_sql("SELECT FOUND_ROWS() as rows_count")
-    # records = records[0].rows_count
-    # records = Doctor.select("id").where(sql).count
-    records = Doctor.select("count(id) as rows_count").where(sql)
-    records = records[0].rows_count
-      if !noOfRows.nil?
-        if records%noOfRows.to_i == 0
-          @total = records/noOfRows.to_i
-        else
-          @total = (records/noOfRows.to_i)+1
-        end
-      end
-    if !@doctors.empty?
-      @doctors.each do |doc|
-        if (doc.province_name.nil? || doc.province_name == '') && !doc.province2.nil?
-          doc.update(province_name:doc.province2.name)
-        end
-        if (doc.city_name.nil? || doc.city_name == '') && !doc.city.nil?
-          doc.update(city_name:doc.city.name)
-        end
-        if (doc.hospital_name.nil? || doc.hospital_name == '' )&& !doc.hospital.nil?
-          doc.update(hospital_name:doc.hospital.name)
-        end
-        if (doc.department_name.nil? || doc.department_name == '') && !doc.department.nil?
-          doc.update(department_name:doc.department.name)
-        end
-      end
-    end
-    @rows=@doctors#.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}}])
+
     @objJSON = {total:@total,doctors:@rows,page:page,records:records}
 
     render :json => @objJSON.as_json
