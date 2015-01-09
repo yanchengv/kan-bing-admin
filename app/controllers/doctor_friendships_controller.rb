@@ -32,11 +32,11 @@ class DoctorFriendshipsController < ApplicationController
 
     #获取非医友关系的医生
     def get_doctors
-      if  params[:hospital_id] && params[:hospital_id] != '' && params[:department_id] && params[:department_id] != ''
-        if params[:hospital_id] && params[:hospital_id] != ''
+      if  params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'null' && params[:department_id] && params[:department_id] != '' && params[:department_id] != 'null'
+        if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'null'
           @doctors = Doctor.where(:hospital_id => params[:hospital_id])
         end
-        if params[:department_id] && params[:department_id] != ''
+        if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'null'
           if @doctors.nil?
             @doctors = Doctor.where(:department_id => params[:department_id])
           else
@@ -76,7 +76,7 @@ class DoctorFriendshipsController < ApplicationController
   #获取市
   def get_cities
     @cities = City.select(:id, :name).all
-    if params[:province_id] && params[:province_id] != ''
+    if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'null'
       @cities = @cities.where(:province_id => params[:province_id])
     end
     cities = {}
@@ -89,11 +89,11 @@ class DoctorFriendshipsController < ApplicationController
   #获取医院
   def get_hospitals
 
-    if  params[:province_id] && params[:province_id] != '' && params[:city_id] && params[:city_id] != ''
-      if params[:province_id] && params[:province_id] != ''
+    if  params[:province_id] && params[:province_id] != '' && params[:city_id] && params[:city_id] != '' && params[:province_id] != 'null' && params[:city_id] != 'null'
+      if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'null'
         @hospitals = Hospital.where(:province_id => params[:province_id])
       end
-      if params[:city_id] && params[:city_id] != ''
+      if params[:city_id] && params[:city_id] != '' && params[:city_id] != 'null'
         if @hospitals.nil?
           @hospitals = Hospital.where(:city_id => params[:city_id])
         else
@@ -112,18 +112,18 @@ class DoctorFriendshipsController < ApplicationController
 
   #获取科室
   def get_departments
-    if params[:province_id] && params[:province_id] != '' && params[:city_id] && params[:city_id] != '' && params[:hospital_id] && params[:hospital_id] != ''
-      if params[:province_id] && params[:province_id] != ''
+    if params[:province_id] && params[:province_id] != '' && params[:city_id] && params[:city_id] != '' && params[:hospital_id] && params[:hospital_id] != '' && params[:province_id] != 'null' && params[:city_id] != 'null' && params[:hospital_id] != 'null'
+      if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'null'
         @departments = Department.where(:province_id => params[:province_id])
       end
-      if params[:city_id] && params[:city_id] != ''
+      if params[:city_id] && params[:city_id] != '' && params[:city_id] != 'null'
         if @departments.nil?
           @departments = Department.where(:city_id => params[:city_id])
         else
           @departments = @departments.where(:city_id => params[:city_id])
         end
       end
-      if params[:hospital_id] && params[:hospital_id] != ''
+      if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'null'
         if @departments.nil?
           @departments = Department.where(:hospital_id => params[:hospital_id])
         else

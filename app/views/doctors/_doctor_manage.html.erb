@@ -116,7 +116,13 @@
   <div style="margin-top: 10px;">
     姓名：<input type="text" id="search_name" onkeydown="entersearch1(event)"> 证件号码：<input type="text" id="search_number" onkeydown="entersearch1(event)">
     邮箱：<input type="text" id="search_email" onkeydown="entersearch1(event)"> 手机号：<input type="text" id="search_tel" onkeydown="entersearch1(event)">
-    <button id="search_btn" onclick="search_by()" >搜索</button>&nbsp;<button id="clear_btn" >清空</button>
+    <button id="search_btn" onclick="search_by()" >搜索</button>&nbsp;
+    <button id="clear_btn">清空</button>
+    &nbsp;
+    <button id="hospital_search" onclick="msg_check('hospital')">医院有问题</button>
+    &nbsp;
+    <button id="department_search" onclick="msg_check('department')">科室有问题</button>
+    &nbsp;
     <%#= form_for '', url: {controller: 'doctors', action: 'show_index'}, method: 'get',:html => {:multipart => true} do |f| %>
       <!--<div style="margin-left: 0px;padding: 0px;" >-->
         <!--<%#= f.label :搜索条件 %>:
@@ -788,6 +794,9 @@
         $("#searchField").select2();
         $('#searchString').attr('disabled','disabled')
     })
+    function msg_check(str) {
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?str=" + str}).trigger("reloadGrid")
+    }
 </script>
 
 <div id="doc_create_or_edit_form2"></div>
