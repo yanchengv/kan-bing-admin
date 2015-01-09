@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       get 'get_cities', to: 'hospitals#get_cities'
       post 'oper_action', to: 'hospitals#oper_action'
       get 'get_ranks', to:'hospitals#hospital_rank'
+      post 'change_index_page', to: 'hospitals#change_index_page'
     end
   end
   resources :block_models do
