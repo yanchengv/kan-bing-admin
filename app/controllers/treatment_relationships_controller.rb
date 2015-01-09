@@ -11,6 +11,15 @@ class TreatmentRelationshipsController < ApplicationController
 
     def show_index
       sql = 'true'
+      hos_id = current_user.hospital_id
+      dep_id = current_user.department_id
+      if !hos_id.nil? && hos_id != ''
+        if !dep_id.nil? && dep_id != ''
+          sql << " and d_hospital_id=#{hos_id} and d_department_id=#{dep_id}"
+        else
+          sql << " and d_hospital_id=#{hos_id}"
+        end
+      end
       if !params[:patient_name].nil? && params[:patient_name] != '' && params[:patient_name] != 'null'
         sql << " and patient_id in (select id from patients where name = '#{params[:patient_name]}')"
       end
@@ -46,22 +55,35 @@ class TreatmentRelationshipsController < ApplicationController
 
     #获取患者
     def get_patients
-      sql = 'true'
-      hos_id = current_user.hospital_id
-      dep_id = current_user.department_id
-      if !hos_id.nil? && hos_id != ''
-        if !dep_id.nil? && dep_id != ''
-          sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
-        else
-          sql << " and hospital_id=#{hos_id}"
+      if  params[:hospital_id] && params[:hospital_id] != '' && params[:department_id] && params[:department_id] != ''
+        if params[:hospital_id] && params[:hospital_id] != ''
+          @patients = Patient.where(:hospital_id => params[:hospital_id])
         end
+        if params[:department_id] && params[:department_id] != ''
+          if @patients.nil?
+            @patients = Patient.where(:department_id => params[:department_id])
+          else
+            @patients = @patients.where(:department_id => params[:department_id])
+          end
+        end
+      else
+        sql = 'true'
+        hos_id = current_user.hospital_id
+        dep_id = current_user.department_id
+        if !hos_id.nil? && hos_id != ''
+          if !dep_id.nil? && dep_id != ''
+            sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
+          else
+            sql << " and hospital_id=#{hos_id}"
+          end
+        end
+        @patients = Patient.select(:id, :name).where(sql)
       end
-      @patients = Patient.select(:id, :name).where(sql)
-      pats = {}
+      patients = {}
       @patients.each do |pat|
-        pats[pat.id] = pat.name
+        patients[pat.id] = pat.name
       end
-      render :json => {:patients => pats.as_json}
+      render :json => {:patients => patients.as_json}
     end
 
     def oper_action
@@ -169,6 +191,6 @@ class TreatmentRelationshipsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def treatment_relationship_params
-      params.permit(:id, :doctor_id, :patient_id)
+      params.permit(:id, :doctor_id, :patient_id, :d_province_id, :d_city_id, :d_hospital_id, :d_department_id, :p_province_id, :p_city_id, :p_hospital_id, :p_department_id )
     end
   end
