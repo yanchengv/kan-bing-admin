@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       get 'get_cities', to: 'hospitals#get_cities'
       post 'oper_action', to: 'hospitals#oper_action'
       get 'get_ranks', to:'hospitals#hospital_rank'
+      post 'change_index_page', to: 'hospitals#change_index_page'
     end
   end
   resources :block_models do
@@ -220,6 +221,10 @@ Rails.application.routes.draw do
       post 'oper_action', to:'doctor_friendships#oper_action'
       post 'batch_delete', to: 'doctor_friendships#batch_delete'
       get 'get_doctors', to: 'doctor_friendships#get_doctors'
+      get 'get_provinces', to: 'doctor_friendships#get_provinces'
+      get 'get_cities', to: 'doctor_friendships#get_cities'
+      get 'get_hospitals', to: 'doctor_friendships#get_hospitals'
+      get 'get_departments', to: 'doctor_friendships#get_departments'
     end
 
   end

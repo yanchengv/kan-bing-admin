@@ -175,6 +175,21 @@ class HospitalsController < ApplicationController
     render :json => {:ranks => ranks.as_json}
   end
 
+  #是否显示于首页
+   def change_index_page
+     if params[:id] && params[:indexpage] && params[:id] != '' && params[:indexpage] != ''
+       puts "=================indexpage ==== #{params[:indexpage]}"
+       @hospital = Hospital.find(params[:id])
+       if @hospital.update_attributes(:indexpage => params[:indexpage])
+         render :json => {:success => true}
+       else
+         render :json => {:success => false}
+       end
+     else
+       render :json => {:success => false}
+     end
+   end
+
 
   def setting
     render template: 'hospitals/setting'
@@ -188,6 +203,7 @@ class HospitalsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def hospital_params
-      params.permit(:id, :name, :short_name, :spell_code,:address, :phone, :description, :rank, :province_id, :province_name, :city_id, :city_name, :key_departments, :operation_mode, :email, :hospital_site, :fax_number)
+      params.permit(:id, :name, :short_name, :spell_code,:address, :phone, :description, :rank, :province_id, :province_name, :city_id, :city_name,
+                    :key_departments, :operation_mode, :email, :hospital_site, :fax_number, :indexpage, :sort)
     end
 end

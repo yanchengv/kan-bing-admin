@@ -62,7 +62,7 @@
         url: '/hospitals/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: [ 'ID', '名称', '简称', '省份', '省份', '城市', '城市', '地址', '等级', '邮箱', '运营模式', '网址', '传真', '特色科室', '描述'],
+        colNames: [ 'ID', '名称', '简称', '省份', '省份', '城市', '城市', '地址', '等级', '邮箱', '运营模式', '网址', '传真', '特色科室', '描述','是否显示于主页', '排序'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
             { name: 'name', index: 'name', align: "center", editable: true,editoptions:{style: "width:156px"}},
@@ -155,8 +155,17 @@
             { name: 'operation_mode', index: 'operation_mode', align: "center", editable: true, edittype: 'select', editoptions:{value:"国有:国有;民营:民营", style: "width:166px"}},
             { name: 'hospital_site', index: 'hospital_site', align: "center", editable: true, editrules: {url: true, required: false},editoptions:{style: "width:156px"}},
             { name: 'fax_number', index: 'fax_number', align: "center", editable: true,editoptions:{style: "width:156px"}},
-            { name: 'key_departments', index: 'key_departments', align: "center", editable: true,editoptions:{style: "width:156px"}},
-            { name: 'description', index: 'description', align: "center", hidden: true, editrules: {edithidden: true}, editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:300px"}}
+            { name: 'key_departments', index: 'key_departments', align: "center", editable: true,editoptions:{style: "width:156px"}},// :, :
+            { name: 'description', index: 'description', align: "center", hidden: true, editrules: {edithidden: true}, editable: true, edittype: 'textarea', editoptions: {rows: 5, style: "width:300px"}},
+            { name: 'indexpage', index: 'indexpage', align: "center", viewable: false, editable: false, edittype: 'custom',
+                formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                    if (colpos.indexpage == true) {
+                        return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setIndexPage(" + colpos.id + ", 'false')\">显示</button>";
+                    } else {
+                        return "<button style=\"background-color: #ddd;text-align: center;width:100%\" onclick=\"setIndexPage(" + colpos.id + ", 'true')\">不显示</button>";
+                    }
+                }},
+            { name: 'sort', index: 'sort', align: "center", editable: true}
         ],
         rowList: [10, 15, 20,50,100],
         sortname: 'id',
@@ -352,5 +361,19 @@
         } else {
             return [true, ""];
         }
+    }
+    function setIndexPage(id, bl){
+        $.ajax({
+                    type: "post",
+                    url: '/hospitals/change_index_page?id=' + id + '&indexpage=' + bl,
+                    success: function (data) {
+                        if (data.success == true) {
+                            jQuery("#hospital_list").jqGrid('setGridParam', {url: "/hospitals/index_show"}).trigger("reloadGrid");
+                        } else {
+                            alert('操作失败！');
+                        }
+                    }
+                }
+        );
     }
 </script>
