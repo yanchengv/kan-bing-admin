@@ -12,8 +12,8 @@ development:
   username: root
   password: 123
 #development:
-  host: 166.111.131.96
-  port: 3307
+  host: localhost
+  port: 3306
 #  adapter: mysql2
 #  #encoding: unicode
 #  database: mimas_production

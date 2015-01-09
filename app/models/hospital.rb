@@ -18,7 +18,7 @@ class Hospital < ActiveRecord::Base
          docs.update_all(:hospital_name => self.name)
        end
 
-       if !self.province_id.empty?
+       if !self.province_id.to_s.empty?
          docs.update_all(:province_id => self.province_id)
        end
 
@@ -26,7 +26,7 @@ class Hospital < ActiveRecord::Base
          docs.update_all(:province_name => self.province_name)
        end
 
-       if !self.city_id.empty?
+       if !self.city_id.to_s.empty?
          docs.update_all(:city_id => self.city_id)
        end
 
