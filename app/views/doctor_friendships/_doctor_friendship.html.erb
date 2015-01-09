@@ -34,13 +34,12 @@
                     },
                     style: "width:166px",
                     value: function () {
-                        var positions = {'':'---请选择---'};
+                        var positions;
                         $.ajax({
                             url: "/doctor_friendships/get_provinces",
                             async: false,
                             success: function (data) {
-                                console.log(data.provinces);
-                                positions.push(data.provinces);
+                                positions = data.provinces;
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) {
                                 alert(textStatus);
@@ -54,7 +53,6 @@
                                 var thisval = $(e.target).val();
                                 $.get('/doctor_friendships/get_cities?province_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['cities']) {
                                         if (data['cities'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['cities'][k] + '</option> '
@@ -65,7 +63,6 @@
                                 }); // end get
                                 $.get('/doctor_friendships/get_hospitals?province_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['hospitals']) {
                                         if (data['hospitals'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
@@ -76,7 +73,6 @@
                                 });
                                 $.get('/doctor_friendships/get_departments?province_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['departments']) {
                                         if (data['departments'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
@@ -116,7 +112,6 @@
                                 var thisval = $(e.target).val();
                                 $.get('/doctor_friendships/get_hospitals?province_id='+ province_id +'&city_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['hospitals']) {
                                         if (data['hospitals'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
@@ -127,7 +122,6 @@
                                 });
                                 $.get('/doctor_friendships/get_departments?province_id=' + province_id + '&city_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['departments']) {
                                         if (data['departments'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
@@ -167,7 +161,6 @@
                                 var thisval = $(e.target).val();
                                 $.get('/doctor_friendships/get_departments?province_id=' + province_id + '&city_id=' + city_id + '&hospital_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['departments']) {
                                         if (data['departments'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
@@ -178,7 +171,6 @@
                                 });
                                 $.get('/doctor_friendships/get_doctors?hospital_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['doctors']) {
                                         if (data['doctors'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['doctors'][k] + '</option> '
@@ -217,7 +209,6 @@
                                 var thisval = $(e.target).val();
                                 $.get('/doctor_friendships/get_doctors?hospital_id=' + hospital_id + '&department_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['doctors']) {
                                         if (data['doctors'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['doctors'][k] + '</option> '
@@ -276,7 +267,6 @@
                                 var thisval = $(e.target).val();
                                 $.get('/doctor_friendships/get_cities?province_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['cities']) {
                                         if (data['cities'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['cities'][k] + '</option> '
@@ -287,7 +277,6 @@
                                 }); // end get
                                 $.get('/doctor_friendships/get_hospitals?province_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['hospitals']) {
                                         if (data['hospitals'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
@@ -298,7 +287,6 @@
                                 });
                                 $.get('/doctor_friendships/get_departments?province_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['departments']) {
                                         if (data['departments'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
@@ -338,7 +326,6 @@
                                 var thisval = $(e.target).val();
                                 $.get('/doctor_friendships/get_hospitals?province_id=' + province_id + '&city_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['hospitals']) {
                                         if (data['hospitals'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
@@ -349,7 +336,6 @@
                                 });
                                 $.get('/doctor_friendships/get_departments?province_id=' + province_id + '&city_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['departments']) {
                                         if (data['departments'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
@@ -389,7 +375,6 @@
                                 var thisval = $(e.target).val();
                                 $.get('/doctor_friendships/get_departments?province_id=' + province_id + '&city_id=' + city_id + '&hospital_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['departments']) {
                                         if (data['departments'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
@@ -400,7 +385,6 @@
                                 });
                                 $.get('/doctor_friendships/get_doctors?hospital_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['doctors']) {
                                         if (data['doctors'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['doctors'][k] + '</option> '
@@ -439,7 +423,6 @@
                                 var thisval = $(e.target).val();
                                 $.get('/doctor_friendships/get_doctors?hospital_id=' + hospital_id + '&department_id=' + thisval, function (data) {
                                     var res = '<select width=300>';
-                                    res += '<option value="">---请选择---</option>';
                                     for (var k in data['doctors']) {
                                         if (data['doctors'].hasOwnProperty(k)) {
                                             res += '<option value="' + k + '">' + data['doctors'][k] + '</option> '
