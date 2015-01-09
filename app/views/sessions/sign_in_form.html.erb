@@ -9,6 +9,15 @@
       <%= f.submit '', :class => "login_button", :style => "" %>
   <% end %>
   <div class="clearfix"></div>
+  <% if flash[:notice] %>
+      <div class="notice" style="text-align:center; color: #ff0000;font-size:12px;" id="login_notice"><%= flash[:notice] %></div>
+      <script>
+          function disappear(){
+              document.getElementById('login_notice').style.display='none'
+          }
+          setTimeout(disappear,3000);
+      </script>
+  <% end %>
 </div>
 <script type="text/javascript">
     window.onresize = window.onload = function(){

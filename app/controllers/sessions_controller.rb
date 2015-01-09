@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
       p 'success'
       redirect_to '/'
     else
-      flash.now[:error] = 'Invalid email/password combination'
+      flash[:notice] = '帐号或密码错误！'
       redirect_to :back
     end
   end
