@@ -55,11 +55,11 @@ class TreatmentRelationshipsController < ApplicationController
 
     #获取患者
     def get_patients
-      if  params[:hospital_id] && params[:hospital_id] != '' && params[:department_id] && params[:department_id] != ''
-        if params[:hospital_id] && params[:hospital_id] != ''
+      if  params[:hospital_id] && params[:hospital_id] != '' && params[:department_id] && params[:department_id] != '' && params[:hospital_id] != 'null' && params[:department_id] != 'null'
+        if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'null'
           @patients = Patient.where(:hospital_id => params[:hospital_id])
         end
-        if params[:department_id] && params[:department_id] != ''
+        if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'null'
           if @patients.nil?
             @patients = Patient.where(:department_id => params[:department_id])
           else
