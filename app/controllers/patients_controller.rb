@@ -148,6 +148,22 @@ class PatientsController < ApplicationController
   # POST /patients
   # POST /patients.json
   def create
+    @hospital = Hospital.where(id:params[:patient][:hospital_id]).first
+    @department = Department.where(id:params[:patient][:department_id]).first
+    @province = Province.where(id:params[:patient][:province_id]).first
+    @city = City.where(id:params[:patient][:city_id]).first
+    if !@hospital.nil?
+      params[:patient][:hospital_name] = @hospital.name
+    end
+    if !@department.nil?
+      params[:patient][:department_name] = @department.name
+    end
+    if !@province.nil?
+      params[:patient][:province_name] = @province.name
+    end
+    if !@city.nil?
+      params[:patient][:city_name] = @city.name
+    end
     @patient = Patient.new(patient_params)
     # render json:{success:true,data:@patient}
     if @patient.save
@@ -169,7 +185,22 @@ class PatientsController < ApplicationController
   # PATCH/PUT /patients/1
   # PATCH/PUT /patients/1.json
   def update
+    if params[:patient][:professional_title] == ''
+      params[:patient][:professional_title] = @patient.professional_title
+    end
     if @patient.update(patient_params)
+      if !@patient.province2.nil?
+        @patient.update_attributes(province_name: @patient.province2.name)
+      end
+      if !@patient.city.nil?
+        @patient.update_attributes(city_name: @patient.city.name)
+      end
+      if !@patient.hospital.nil?
+        @patient.update_attributes(hospital_name: @patient.hospital.name)
+      end
+      if !@patient.department.nil?
+        @patient.update_attributes(department_name: @patient.department.name)
+      end
       render json:{success:true}
     else
       render json:{success:false}

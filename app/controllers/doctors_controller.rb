@@ -317,6 +317,18 @@ class DoctorsController < ApplicationController
       params[:doctor][:professional_title] = @doctor.professional_title
     end
     if @doctor.update(doctor_params)
+      if !@doctor.province2.nil?
+        @doctor.update_attributes(province_name: @doctor.province2.name)
+      end
+      if !@doctor.city.nil?
+        @doctor.update_attributes(city_name: @doctor.city.name)
+      end
+      if !@doctor.hospital.nil?
+        @doctor.update_attributes(hospital_name: @doctor.hospital.name)
+      end
+      if !@doctor.department.nil?
+        @doctor.update_attributes(department_name: @doctor.department.name)
+      end
       render json:{success:true}
     else
       render json:{success:false}
