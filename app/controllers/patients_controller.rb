@@ -73,18 +73,21 @@ class PatientsController < ApplicationController
     if is_public=='1'
       sql << " and is_public=1"
     end
-    @patients = Patient.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
     records=0
     @total=0
     records = Patient.select("count(id) as rows_count").where(sql)
     records = records[0].rows_count
-      if !noOfRows.nil?
-        if records%noOfRows.to_i == 0
-          @total = records/noOfRows.to_i
-        else
-          @total = (records/noOfRows.to_i)+1
-        end
+    if !noOfRows.nil?
+      if records%noOfRows.to_i == 0
+        @total = records/noOfRows.to_i
+      else
+        @total = (records/noOfRows.to_i)+1
       end
+    end
+    if page.to_i>@total.to_i
+      page = 1
+    end
+    @patients = Patient.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
       @rows=[]
       @rows=@patients.as_json(:include => [{:hospital => {:only => [:id,:name]}},{:department => {:only => [:id,:name]}}])
     @objJSON = {total:@total,patients:@rows,page:page,records:records}
@@ -193,10 +196,12 @@ class PatientsController < ApplicationController
     @patients = Patient.where(id:ids_arr)
     if !@patients.empty?
       @patients.each do |pat|
-        if !pat.photo.nil? && pat.photo != ''
-          deleteFromAliyun('avatar/'+pat.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+        if !pat.nil?
+          if !pat.photo.nil? && pat.photo != ''
+            deleteFromAliyun('avatar/'+pat.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+          end
+          pat.destroy
         end
-        pat.destroy
       end
     end
     render json:{success:true}

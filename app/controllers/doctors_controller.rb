@@ -31,13 +31,19 @@ class DoctorsController < ApplicationController
       page = params[:page].to_i
       records = Doctor.where(sql).count
       @total =records % params[:rows].to_i == 0 ? records / params[:rows].to_i : records / params[:rows].to_i + 1
-      @rows = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+      if page.to_i>@total.to_i
+        page = 1
+      end
+      @rows = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(page-1))
     elsif params[:str] == 'department'
       sql = "department_id is null or department_id = 0 or department_id = '' or department_name is null or department_name = ''"
       page = params[:page].to_i
       records = Doctor.where(sql).count
       @total =records % params[:rows].to_i == 0 ? records / params[:rows].to_i : records / params[:rows].to_i + 1
-      @rows = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+      if page.to_i>@total.to_i
+        page = 1
+      end
+      @rows = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(page.to_i-1))
     else
           hos_id = current_user.hospital_id
           dep_id = current_user.department_id
@@ -106,7 +112,6 @@ class DoctorsController < ApplicationController
             sql << " and is_public=1"
           end
           # @doctors = Doctor.find_by_sql("select SQL_CALC_FOUND_ROWS * from doctors where #{sql} order by #{params[:sidx]} #{params[:sord]} limit #{noOfRows.to_i*(page.to_i-1)},#{noOfRows.to_i}")
-          @doctors = Doctor.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
           @total=0
           # records = Doctor.find_by_sql("SELECT FOUND_ROWS() as rows_count")
           # records = records[0].rows_count
@@ -120,6 +125,10 @@ class DoctorsController < ApplicationController
               @total = (records/noOfRows.to_i)+1
             end
           end
+          if page.to_i>@total.to_i
+            page = 1
+          end
+          @doctors = Doctor.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
           # if !@doctors.empty?
           #   @doctors.each do |doc|
           #     if (doc.province_name.nil? || doc.province_name == '') && !doc.province2.nil?
@@ -353,10 +362,12 @@ class DoctorsController < ApplicationController
     @doctors = Doctor.where(id:ids_arr)
     if !@doctors.empty?
       @doctors.each do |doc|
-        if !doc.photo.nil?
-          deleteFromAliyun('avatar/'+doc.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+        if !doc.nil?
+          if !doc.photo.nil?
+            deleteFromAliyun('avatar/'+doc.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+          end
+          doc.destroy
         end
-        doc.destroy
       end
     end
     render json:{success:true}

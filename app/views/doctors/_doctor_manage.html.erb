@@ -592,13 +592,13 @@
             success: function (data) {
                 if (data['success']) {
                     window.parent.$("#consoleDlg").dialog("close");
+                    $('#refresh_list12').click()
 //                    alert('删除成功!')
                 } else {
                     alert('删除失败!')
                 }
             }
         })
-        $('#refresh_list12').click()
 //        var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
 //        jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     }
