@@ -25,6 +25,9 @@ class DepartmentsController < ApplicationController
     @departments = Department.where(sql)
     count = @departments.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @departments = @departments.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:departments => @departments.as_json(:include => [{:hospital => {:only => [:id,:name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end

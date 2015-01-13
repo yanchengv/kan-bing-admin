@@ -42,6 +42,9 @@ class EduVideosController < ApplicationController
     @edu_videos = EduVideo.where(sql).order('created_at desc')
     count = @edu_videos.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @edu_videos = @edu_videos.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:edu_videos => @edu_videos.as_json(:include => [{:doctor => {:only => [:id, :name]}}, {:video_type => {:only => [:id, :type_name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end

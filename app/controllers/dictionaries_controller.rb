@@ -16,6 +16,9 @@ class DictionariesController < ApplicationController
     @dictionaries = Dictionary.where(sql)
     count = @dictionaries.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @dictionaries = @dictionaries.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:dictionaries => @dictionaries.as_json(:include => [{:dictionary_type => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end

@@ -15,8 +15,10 @@ class ProvincesController < ApplicationController
     end
     @provinces = Province.where(sql)
     count = @provinces.count
-    puts "#{params[:rows].to_i}"
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @provinces = @provinces.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:provinces => @provinces.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end

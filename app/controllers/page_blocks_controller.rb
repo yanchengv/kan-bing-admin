@@ -18,10 +18,12 @@ class PageBlocksController < ApplicationController
         sql << " and hospital_id=#{hos_id}"
       end
     end
-    @page_blocks = PageBlock.where(sql).order('created_at desc')
-    count = @page_blocks.count
+    count = PageBlock.where(sql).order('created_at desc').count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
-    @page_blocks = @page_blocks.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
+    @page_blocks = PageBlock.where(sql).order('created_at desc').limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:page_blocks => @page_blocks.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 

@@ -29,6 +29,9 @@ class TreatmentRelationshipsController < ApplicationController
       @treatment_relationships = TreatmentRelationship.where(sql)
       count = @treatment_relationships.count
       totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+      if params[:page].to_i > totalpages
+        params[:page] = 1
+      end
       @treatment_relationships = @treatment_relationships.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
       render :json => {:treatment_relationships => @treatment_relationships.as_json(:include => [{:doctor => {:only => [:id, :name]}}, {:patient => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
     end

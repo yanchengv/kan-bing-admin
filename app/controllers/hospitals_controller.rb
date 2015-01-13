@@ -30,10 +30,12 @@ class HospitalsController < ApplicationController
     if !params[:name].nil? && params[:name] != '' && params[:name] != 'null'
       sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%' or short_name like '%#{params[:name]}%')"
     end
-    @hospitals = Hospital.where(sql)
-    count = @hospitals.count
+    count = Hospital.where(sql).count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
-    @hospitals = @hospitals.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
+    @hospitals = Hospital.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:hospitals => @hospitals.as_json(:include => [{:province => {:only => [:id, :name]}}, {:city => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 

@@ -22,6 +22,9 @@ class NationalInformationsController < ApplicationController
     @national_informations = NationalInformation.where(sql)
     count = @national_informations.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @national_informations = @national_informations.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:national_informations => @national_informations.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
