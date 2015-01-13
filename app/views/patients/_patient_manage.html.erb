@@ -443,13 +443,13 @@
             success: function (data) {
                 if (data['success']) {
                     window.parent.$("#consoleDlg2").dialog("close");
+                    $('#refresh_list10').click()
 //                    alert('删除成功!')
                 } else {
                     alert('删除失败!')
                 }
             }
         })
-        $('#refresh_list10').click()
 //        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
 //        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
     }
