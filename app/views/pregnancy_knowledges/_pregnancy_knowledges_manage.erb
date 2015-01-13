@@ -1,12 +1,12 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    类型名称:<input type="text" id="type_name">&nbsp;<button id="search_type_btn">搜索</button>&nbsp;<button id="clear_type_btn">清空</button>
+    类型名称:<input type="text" id="type_name" onkeydown="search_keydown(event,'type')">&nbsp;<button id="search_type_btn">搜索</button>&nbsp;<button id="clear_type_btn">清空</button>
     <br>
     <table id="knowledge_type_list"></table>
     <div id="knowledge_type_pager"></div>
   </div>
   <div style="margin-left: 20px;margin-right: 20px;margin-top: 10px;">
-    标题:<input type="text" id="knowledge_title">&nbsp;<button id="search_knowledge_btn">搜索</button>&nbsp;<button id="clear_knowledge_btn">清空</button>
+    标题:<input type="text" id="knowledge_title" onkeydown="search_keydown(event,'title')">&nbsp;<button id="search_knowledge_btn">搜索</button>&nbsp;<button id="clear_knowledge_btn">清空</button>
     <br>
     <table id="knowledge_list"></table>
     <div id="knowledge_pager"></div>
@@ -16,7 +16,16 @@
 
 </div>
 <script type="text/javascript">
-//:id,:parent_id,:title,:content
+    function search_keydown(event, str) {
+        if (event.keyCode == 13) {
+            if (str == 'type') {
+                search_types();
+            }
+            if (str == 'title') {
+                search_knowledges();
+            }
+        }
+    }
     $(document).ready(function () {
         jQuery("#knowledge_type_list").jqGrid({
             url: '/pregnancy_knowledges/index_show?str=knowledge_type',
@@ -147,18 +156,24 @@
         )
     });
 //搜索类型
+    function search_types(){
+        var type = $('#type_name').val();
+        jQuery("#knowledge_type_list").jqGrid('setGridParam', {url: "/pregnancy_knowledges/index_show?str=knowledge_type&title=" + type }).trigger("reloadGrid");
+    }
 $('#search_type_btn').click(function () {
-    var type = $('#type_name').val();
-    jQuery("#knowledge_type_list").jqGrid('setGridParam', {url: "/pregnancy_knowledges/index_show?str=knowledge_type&title=" + type }).trigger("reloadGrid")
+    search_types();
 });
 //清空类型条件
 $('#clear_type_btn').click(function () {
     $('#type_name').val('');
 });
 //搜索标题
+    function search_knowledges(){
+        var title = $('#knowledge_title').val();
+        jQuery("#knowledge_list").jqGrid('setGridParam', {url: "/pregnancy_knowledges/index_show?str=knowledge&title=" + title }).trigger("reloadGrid")
+    }
 $('#search_knowledge_btn').click(function () {
-    var title = $('#knowledge_title').val();
-    jQuery("#knowledge_list").jqGrid('setGridParam', {url: "/pregnancy_knowledges/index_show?str=knowledge&title=" + title }).trigger("reloadGrid")
+    search_knowledges();
 });
 //清空标题条件
 $('#clear_knowledge_btn').click(function () {

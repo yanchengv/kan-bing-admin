@@ -1,12 +1,22 @@
 <div style="width: 100%"><div style="width: 48%;float:left;margin-left: 20px;">
-  <div style="margin-bottom: 10px;">咨询内容：<input type="text" id="question_content">&nbsp;<button id="search_question_btn">搜索</button>&nbsp;<button id="clear_question_btn">清空</button></div>
+  <div style="margin-bottom: 10px;">咨询内容：<input type="text" id="question_content" onkeydown="search_keydown(event, 'question')">&nbsp;<button id="search_question_btn">搜索</button>&nbsp;<button id="clear_question_btn">清空</button></div>
   <table id="list_ques"></table>
   <div id="page_ques"></div></div><div style="width: 48%;float:left;margin-left: 20px;">
-  <div style="margin-bottom: 10px;">回复内容：<input type="text" id="result_content">&nbsp;<button id="search_result_btn">搜索</button>&nbsp;<button id="clear_result_btn">清空</button></div>
+  <div style="margin-bottom: 10px;">回复内容：<input type="text" id="result_content" onkeydown="search_keydown(event,'result')">&nbsp;<button id="search_result_btn">搜索</button>&nbsp;<button id="clear_result_btn">清空</button></div>
   <table id="list_result"></table>
   <div id="page_result"></div></div> </div>
 
 <script type="text/javascript">
+  function search_keydown(event, str){
+      if (event.keyCode == 13){
+          if (str == 'question'){
+              search_question();
+          }
+          if (str == 'result') {
+              search_result();
+          }
+      }
+  }
     jQuery("#list_ques").jqGrid({
         url: '/consult_accuses/index_accuses',
         datatype: "json",
@@ -159,18 +169,24 @@
     });
     jQuery("#list_result").jqGrid('navGrid', '#page_result', {add: false, edit: false, deltext: "删除", deltitle: "删除"});
     //搜索咨询
-    $('#search_question_btn').click(function () {
+    function search_question(){
         var text = $('#question_content').val();
-        jQuery("#list_ques").jqGrid('setGridParam', {url: "/consult_accuses/index_accuses?content=" + text }).trigger("reloadGrid")
+        jQuery("#list_ques").jqGrid('setGridParam', {url: "/consult_accuses/index_accuses?content=" + text }).trigger("reloadGrid");
+    }
+    $('#search_question_btn').click(function () {
+        search_question();
     });
     //清空搜索咨询条件
     $('#clear_question_btn').click(function () {
         $('#question_content').val('');
     });
     //搜索回复
-    $('#search_result_btn').click(function () {
+    function search_result(){
         var text = $('#result_content').val();
-        jQuery("#list_result").jqGrid('setGridParam', {url: "/consult_accuses/index_results?content=" + text }).trigger("reloadGrid")
+        jQuery("#list_result").jqGrid('setGridParam', {url: "/consult_accuses/index_results?content=" + text }).trigger("reloadGrid");
+    }
+    $('#search_result_btn').click(function () {
+        search_result();
     });
     //清空搜索回复条件
     $('#clear_result_btn').click(function () {

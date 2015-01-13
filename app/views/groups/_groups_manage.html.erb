@@ -5,7 +5,7 @@
 </div>
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">组名称：<input type="text" id="group_search">&nbsp;&nbsp;<button id="search_group_btn">搜索</button>&nbsp;<button id="clear_group_btn" >清空</button>
+    <div style="margin-bottom: 10px;">组名称：<input type="text" id="group_search" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_group_btn">搜索</button>&nbsp;<button id="clear_group_btn" >清空</button>
     </div>
     <table id="group_list"></table>
     <div id="page_group"></div>
@@ -13,6 +13,10 @@
 </div>
 
 <script type="text/javascript">
+    function search_keydown(event){
+        if (event.keyCode == 13)
+            search_groups();
+    }
     jQuery("#group_list").jqGrid({
         url: '/groups/index_show',
         datatype: "json",
@@ -92,9 +96,12 @@
             }, position: "last"});
    
     //搜索group
-    $('#search_group_btn').click(function () {
+    function search_groups(){
         var group = $('#group_search').val();
-        jQuery("#group_list").jqGrid('setGridParam', {url: "/groups/index_show?name=" + group}).trigger("reloadGrid")
+        jQuery("#group_list").jqGrid('setGridParam', {url: "/groups/index_show?name=" + group}).trigger("reloadGrid");
+    }
+    $('#search_group_btn').click(function () {
+        search_groups();
     });
     //清空k
     $('#clear_group_btn').click(function () {

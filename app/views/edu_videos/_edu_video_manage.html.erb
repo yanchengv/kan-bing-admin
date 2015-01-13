@@ -4,12 +4,12 @@
 </div>
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">视频类型：<select id="video_search_id" style="width: 139px;">
+    <div style="margin-bottom: 10px;">视频类型：<select id="video_search_id" style="width: 139px;" onchange="search_videos()">
       <option value="0">---全部---</option>
       <% @video_types.each do |type|%>
           <option value="<%= type.id%>"><%= type.type_name %></option>
       <% end %>
-    </select>&nbsp;&nbsp;视频名称：<input type="text" id="search_video_name">&nbsp;&nbsp;<button id="search_video_btn">搜索</button>&nbsp;
+    </select>&nbsp;&nbsp;视频名称：<input type="text" id="search_video_name" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_video_btn">搜索</button>&nbsp;
       <button id="clear_type_btn">清空</button>
     </div>
     <% link_to '上传视频', '/edu_videos/new_video'%>
@@ -19,6 +19,15 @@
 </div>
 
 <script type="text/javascript">
+    function search_keydown(event) {
+        if (event.keyCode == 13)
+            search_videos();
+    }
+    function search_videos(){
+        var video_search_id = $('#video_search_id').val();
+        var video_name = $('#search_video_name').val();
+        jQuery("#edu_video_list").jqGrid('setGridParam', {url: "/edu_videos/index_show?type=" + video_search_id + '&name=' + video_name }).trigger("reloadGrid");
+    }
     $(function () {
         $("#video_search_id").select2();
     });
@@ -166,9 +175,7 @@
             }, position: "last"});
     //搜索视频
     $('#search_video_btn').click(function () {
-        var video_search_id = $('#video_search_id').val();
-        var video_name = $('#search_video_name').val();
-        jQuery("#edu_video_list").jqGrid('setGridParam', {url: "/edu_videos/index_show?type=" + video_search_id +'&name=' + video_name }).trigger("reloadGrid")
+       search_videos();
     });
     //清空搜索医院的查询条件
     $('#clear_type_btn').click(function () {
