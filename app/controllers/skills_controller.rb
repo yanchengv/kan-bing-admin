@@ -15,6 +15,9 @@ class SkillsController < ApplicationController
     end
     count = Skill.where(sql).count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @skills = Skill.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:skills => @skills.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
@@ -24,6 +27,9 @@ class SkillsController < ApplicationController
     @groups = @skill.groups
     count = @groups.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @skills = @groups.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:groups => @groups.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
@@ -68,6 +74,9 @@ class SkillsController < ApplicationController
     @doctors = Doctor.where(sql)
     count = @doctors.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @doctors = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
@@ -92,6 +101,9 @@ class SkillsController < ApplicationController
     @doctors = @skill.doctors
     count = @doctors.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @doctors = @doctors.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end

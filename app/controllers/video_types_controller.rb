@@ -16,6 +16,9 @@ class VideoTypesController < ApplicationController
     @video_types = VideoType.where(sql)
     count = @video_types.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @video_types = @video_types.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:video_types => @video_types.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end

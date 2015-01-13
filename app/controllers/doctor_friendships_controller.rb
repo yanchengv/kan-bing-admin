@@ -23,10 +23,12 @@ class DoctorFriendshipsController < ApplicationController
       if !params[:name].nil? && params[:name] != '' && params[:name] != 'null'
         sql << " and doctor1_id in (select id from doctors where name = '#{params[:name]}') or doctor2_id in (select id from doctors where name = '#{params[:name]}')"
       end
-      @doctor_friendships = DoctorFriendship.where(sql)
-      count = @doctor_friendships.count
+      count = DoctorFriendship.where(sql).count
       totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
-      @doctor_friendships = @doctor_friendships.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+      if params[:page].to_i > totalpages
+        params[:page] = 1
+      end
+      @doctor_friendships = DoctorFriendship.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
       render :json => {:doctor_friendships => @doctor_friendships.as_json(:include => [{:doctor1 => {:only => [:id, :name]}}, {:doctor2 => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
     end
 

@@ -29,6 +29,9 @@ class ConsultAccusesController < ApplicationController
     @consult_questions = ConsultQuestion.where( sql )
     count = @consult_questions.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     render :json => {:consult_questions => @consult_questions.as_json,:totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
   #被举报的回复
@@ -53,6 +56,9 @@ class ConsultAccusesController < ApplicationController
     @consult_results = ConsultResult.where(sql)
     count = @consult_results.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     render :json => {:consult_results => @consult_results.as_json,:totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
   #操作转向

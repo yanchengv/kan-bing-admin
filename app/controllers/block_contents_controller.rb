@@ -13,6 +13,9 @@ class BlockContentsController < ApplicationController
     @block_contents = BlockContent.where(:block_id => params[:block_id])
     count = @block_contents.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
     @block_contents = @block_contents.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:block_contents => @block_contents.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end

@@ -44,10 +44,13 @@ class UsersController < ApplicationController
     if params[:is_enabled] && params[:is_enabled] != '' && params[:is_enabled] != 'null'
       sql << " and is_enabled = #{params[:is_enabled]}"
     end
-    @users = User.where(sql)
-    count = @users.count
+   # @users = User.where(sql)
+    count = User.where(sql).count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
-    @users = @users.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
+    @users = User.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
     render :json => {:users => @users.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
