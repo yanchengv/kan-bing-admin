@@ -1,6 +1,6 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">医生名：<input type="text" id="doc_name">患者名：<input type="text" id="pat_name">
+    <div style="margin-bottom: 10px;">医生名：<input type="text" id="doc_name" onkeydown="search_keydown(event)">患者名：<input type="text" id="pat_name" onkeydown="search_keydown(event)">
       <button id="search_ships_btn">搜索</button>&nbsp;<button id="clear_ships_btn">清空</button>
     </div>
 
@@ -10,11 +10,18 @@
 </div>
 
 <script type="text/javascript">
+    function search_keydown(event) {
+        if (event.keyCode == 13)
+            search_friendship();
+    }
     //搜索
-    $('#search_ships_btn').click(function () {
+    function search_friendship(){
         var doc_name = $('#doc_name').val();
         var pat_name = $('#pat_name').val();
-        jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "/treatment_relationships/index_show?patient_name=" + pat_name + "&doctor_name=" + doc_name}).trigger("reloadGrid")
+        jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "/treatment_relationships/index_show?patient_name=" + pat_name + "&doctor_name=" + doc_name}).trigger("reloadGrid");
+    }
+    $('#search_ships_btn').click(function () {
+        search_friendship();
     });
     //清空
     $('#clear_ships_btn').click(function () {

@@ -35,7 +35,7 @@
           <% end %>
       <% end %>
     </select></span>
-    姓名：<input type="text" id="search_name">
+    姓名：<input type="text" id="search_name" onkeydown="search_keydown(event)">
     <button id="search_doc_btn">搜索</button>
     &nbsp;
     <button id="clear_doc_btn">清空</button>
@@ -43,6 +43,10 @@
 <table id="doc_list"></table>
 <div id="page_doc"></div>
 <script>
+    function search_keydown(event) {
+        if (event.keyCode == 13)
+            search_docs();
+    }
     jQuery("#doc_list").jqGrid({
         url: '/skills/get_unrelated_doctors?skill_id=<%= @skill.id  %>',
         datatype: "json",

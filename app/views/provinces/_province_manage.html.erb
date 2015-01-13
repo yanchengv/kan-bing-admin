@@ -12,8 +12,8 @@
     <button title="all" onclick="click_btn('all')">全部</button>
   </div>
   <div id="search_div" style="margin:10px;">
-    省：<input type="text" id="province_name"> 市：<input type="text" id="city_name">
-    县：<input type="text" id="county_name">
+    省：<input type="text" id="province_name" onkeydown="search_keydown(event)"> 市：<input type="text" id="city_name" onkeydown="search_keydown(event)">
+    县：<input type="text" id="county_name" onkeydown="search_keydown(event)">
     <button id="search_btn">搜索</button>
   </div>
   <div id="province_city_county">
@@ -32,6 +32,11 @@
   </div>
 </div>
 <script>
+    function search_keydown(event) {
+        if (event.keyCode == 13) {
+            search_provinces();
+        }
+    }
         jQuery("#list_province").jqGrid({
             url: '/provinces/test_index',
             datatype: "json",
@@ -103,28 +108,27 @@
                 },{
                     closeAfterAdd:true
                 })
-
-    $(function(){
-//        $( "#search_btn" ).button().on( "click", function() {
-        $("#search_btn" ).click(function () {
+        function search_provinces(){
             var province_name = $('#province_name').val();
             var city_name = $('#city_name').val();
             var county_name = $('#county_name').val();
-            if($('#search_div input').attr('disabled')!='disabled'){
+            if ($('#search_div input').attr('disabled') != 'disabled') {
                 jQuery("#list_province").jqGrid('setGridParam', {url: "/provinces/test_index?province_name=" + province_name}).trigger("reloadGrid")
                 jQuery("#list_city").jqGrid('setGridParam', {url: "/cities/test_index?city_name=" + city_name}).trigger("reloadGrid")
                 jQuery("#list_county").jqGrid('setGridParam', {url: "/counties/test_index?county_name=" + county_name}).trigger("reloadGrid")
             }
-            if($('#province_name').attr('disabled')!='disabled'){
+            if ($('#province_name').attr('disabled') != 'disabled') {
                 jQuery("#list_province").jqGrid('setGridParam', {url: "/provinces/test_index?province_name=" + province_name}).trigger("reloadGrid")
-            }else if($('#city_name').attr('disabled')!='disabled'){
+            } else if ($('#city_name').attr('disabled') != 'disabled') {
                 jQuery("#list_city").jqGrid('setGridParam', {url: "/cities/test_index?city_name=" + city_name}).trigger("reloadGrid")
-            }else{
+            } else {
                 jQuery("#list_county").jqGrid('setGridParam', {url: "/counties/test_index?county_name=" + county_name}).trigger("reloadGrid")
             }
+        }
+        $("#search_btn" ).click(function () {
+            search_provinces();
         });
 
-    });
     function click_btn(value){
         $('#btn button[title='+value+']').addClass("blue_btn");
         $('#btn button[title!='+value+']').removeClass("blue_btn");

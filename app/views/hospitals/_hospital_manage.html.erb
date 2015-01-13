@@ -5,17 +5,17 @@
 </style>
 <div style="width: 100%">
   <div style="hight: 48%;margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">省：<select id="province_search_id" style="width: 139px;">
+    <div style="margin-bottom: 10px;">省：<select id="province_search_id" style="width: 139px;" onchange="search_hospitals()">
       <option value="0">---全部---</option>
       <% @provinces.each do |pro|%>
           <option value="<%= pro.id %>"><%= pro.name %></option>
       <%end if !@provinces.empty?%>
-    </select>&nbsp;&nbsp;市：<select id="city_search_id" style="width: 139px;">
+    </select>&nbsp;&nbsp;市：<select id="city_search_id" style="width: 139px;" onchange="search_hospitals()">
       <option value="0">---全部---</option>
       <% @cities.each do |city| %>
           <option value="<%= city.id %>"><%= city.name %></option>
       <% end if !@cities.empty? %>
-    </select>&nbsp;&nbsp;医院名称：<input type="text" id="hospital_name">&nbsp;&nbsp;<button id="search_hos_btn">搜索</button>&nbsp;<button id="clear_hos_btn">清空</button>
+    </select>&nbsp;&nbsp;医院名称：<input type="text" id="hospital_name" onkeydown="search_keydown(event, 'hospital')">&nbsp;&nbsp;<button id="search_hos_btn">搜索</button>&nbsp;<button id="clear_hos_btn">清空</button>
     </div>
     <div style="margin-bottom: 10px;" id="tmpsearch" hidden="true">
       <span> 选择为空选项</span>
@@ -33,7 +33,7 @@
   </div>
   <div style="height: 48%;margin-top: 10px;margin-left: 20px;margin-right: 20px;">
     <div style="margin-bottom: 10px;">
-      科室名称：<input type="text" id="dept_name_search">&nbsp;&nbsp;<button id="search_dept_btn" class="btn btn-default btn-sm" role="button">搜索</button>&nbsp;<button id="clear_dept_btn" class="btn btn-default btn-sm" role="button">清空</button>
+      科室名称：<input type="text" id="dept_name_search" onkeydown="search_keydown(event, 'department')">&nbsp;&nbsp;<button id="search_dept_btn" class="btn btn-default btn-sm" role="button">搜索</button>&nbsp;<button id="clear_dept_btn" class="btn btn-default btn-sm" role="button">清空</button>
     </div>
     <table id="department_list"></table>
     <div id="page_dept"></div>
@@ -41,6 +41,16 @@
 </div>
 
 <script type="text/javascript">
+    function search_keydown(event, str) {
+        if (event.keyCode == 13) {
+            if (str == 'hospital') {
+                search_hospitals();
+            }
+            if (str == 'department') {
+                search_departments();
+            }
+        }
+    }
     $(function () {
         $("#province_search_id").select2();
         $("#city_search_id").select2();
@@ -302,11 +312,14 @@
         }
     }
     //搜索医院
-    $('#search_hos_btn').click(function () {
+    function search_hospitals(){
         var pro_id = $('#province_search_id').val();
         var city_id = $('#city_search_id').val();
         var hos_name = $('#hospital_name').val();
-        jQuery("#hospital_list").jqGrid('setGridParam', {url: "/hospitals/index_show?province_id=" + pro_id +'&city_id=' + city_id + '&name=' + hos_name }).trigger("reloadGrid")
+        jQuery("#hospital_list").jqGrid('setGridParam', {url: "/hospitals/index_show?province_id=" + pro_id + '&city_id=' + city_id + '&name=' + hos_name }).trigger("reloadGrid");
+    }
+    $('#search_hos_btn').click(function () {
+        search_hospitals();
     });
 
     //搜索医院tmp
@@ -348,10 +361,13 @@
         $('#hospital_name').val('');
     });
     //搜索科室
-    $('#search_dept_btn').click(function () {
+    function search_departments(){
         var name = $('#dept_name_search').val();
         var hos_id = jQuery("#hospital_list").jqGrid('getGridParam', 'selrow');
-        jQuery("#department_list").jqGrid('setGridParam', {url: "/departments/index_show?name=" + name + '&hospital_id=' + hos_id }).trigger("reloadGrid")
+        jQuery("#department_list").jqGrid('setGridParam', {url: "/departments/index_show?name=" + name + '&hospital_id=' + hos_id }).trigger("reloadGrid");
+    }
+    $('#search_dept_btn').click(function () {
+        search_departments();
     });
     //清空搜索科室
     $('#clear_dept_btn').click(function () {

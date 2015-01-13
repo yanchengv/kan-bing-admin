@@ -1,6 +1,6 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">版本号：<input type="text" id="version_num_search">&nbsp;&nbsp;<button id="search_apk_btn">搜索</button>&nbsp;<button id="clear_apk_btn" >清空</button>
+    <div style="margin-bottom: 10px;">版本号：<input type="text" id="version_num_search" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_apk_btn">搜索</button>&nbsp;<button id="clear_apk_btn" >清空</button>
     </div>
     <table id="apk_list"></table>
     <div id="page_apk"></div>
@@ -94,11 +94,18 @@
             );
         }
     }
+    function search_apk(){
+        var version_num = $('#version_num_search').val();
+        jQuery("#apk_list").jqGrid('setGridParam', {url: "/apk_versions/index_show?version_num=" + version_num }).trigger("reloadGrid");
+    }
     //搜索apk
     $('#search_apk_btn').click(function () {
-        var version_num = $('#version_num_search').val();
-        jQuery("#apk_list").jqGrid('setGridParam', {url: "/apk_versions/index_show?version_num=" + version_num }).trigger("reloadGrid")
+        search_apk();
     });
+    function search_keydown(event) {
+        if (event.keyCode == 13)
+            search_apk();
+    }
     //清空k
     $('#clear_apk_btn').click(function () {
         $('#version_num_search').val('');

@@ -5,7 +5,7 @@
 </div>
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">技术名称：<input type="text" id="skill_search">&nbsp;&nbsp;<button id="search_skill_btn">搜索</button>&nbsp;<button id="clear_skill_btn" >清空</button>
+    <div style="margin-bottom: 10px;">技术名称：<input type="text" id="skill_search" onkeydown="search_keydown(event)" >&nbsp;&nbsp;<button id="search_skill_btn">搜索</button>&nbsp;<button id="clear_skill_btn" >清空</button>
     </div>
     <table id="skill_list"></table>
     <div id="page_skill"></div>
@@ -13,6 +13,10 @@
 </div>
 
 <script type="text/javascript">
+    function search_keydown(event) {
+        if (event.keyCode == 13)
+            search_skills();
+    }
     jQuery("#skill_list").jqGrid({
         url: '/skills/index_show',
         datatype: "json",
@@ -102,9 +106,12 @@
             }, position: "last"});
    
     //搜索skill
-    $('#search_skill_btn').click(function () {
+    function search_skills(){
         var skill = $('#skill_search').val();
-        jQuery("#skill_list").jqGrid('setGridParam', {url: "/skills/index_show?name=" + skill}).trigger("reloadGrid")
+        jQuery("#skill_list").jqGrid('setGridParam', {url: "/skills/index_show?name=" + skill}).trigger("reloadGrid");
+    }
+    $('#search_skill_btn').click(function () {
+        search_skills();
     });
     //清空k
     $('#clear_skill_btn').click(function () {
