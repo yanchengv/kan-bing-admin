@@ -182,7 +182,6 @@ class ApplicationController < ActionController::Base
         :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
     )
     # @flag=OSSObject.exists? '00b3d574-e16f-400f-854a-d6ade58ec75e.png','mimas-img'
-    puts "=============#{OSSObject.exists? file_name, bucket}"
     @flag=OSSObject.exists? file_name, bucket
   end
 
