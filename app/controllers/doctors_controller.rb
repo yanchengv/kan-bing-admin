@@ -34,7 +34,7 @@ class DoctorsController < ApplicationController
       if page.to_i>@total.to_i
         page = 1
       end
-      @rows = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(page-1))
+      @rows = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(page.to_i-1))
     elsif params[:str] == 'department'
       sql = "department_id is null or department_id = 0 or department_id = '' or department_name is null or department_name = ''"
       page = params[:page].to_i
@@ -175,7 +175,6 @@ class DoctorsController < ApplicationController
     if params[:credential_type_number] && params[:credential_type_number] != ''
       sql << " and credential_type_number like '%#{params[:credential_type_number]}%'"
     end
-    @doctors = Doctor.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
     @total=0
     # records = Doctor.find_by_sql("SELECT FOUND_ROWS() as rows_count")
     # records = records[0].rows_count
@@ -189,6 +188,10 @@ class DoctorsController < ApplicationController
         @total = (records/noOfRows.to_i)+1
       end
     end
+    if page.to_i>@total.to_i
+      page = 1
+    end
+    @doctors = Doctor.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
     if !@doctors.empty?
       @doctors.each do |doc|
         if (doc.province_name.nil? || doc.province_name == '') && !doc.province2.nil?
@@ -242,11 +245,11 @@ class DoctorsController < ApplicationController
     hos_id = current_user.hospital_id
     dep_id = current_user.department_id
     if !hos_id.nil? && hos_id != ''
-      @hospitals = Hospital.where(id:hos_id)
+      @hospitals = Hospital.select("id","name").where(id:hos_id)
       if !dep_id.nil? && dep_id != ''
-        @departments = Department.where(id:dep_id)
+        @departments = Department.select("id","name").where(id:dep_id)
       else
-        @departments = Department.where(hospital_id:hos_id)
+        @departments = Department.select("id","name").where(hospital_id:hos_id)
       end
     else
       @hospitals = Hospital.select("id","name").all
@@ -254,7 +257,7 @@ class DoctorsController < ApplicationController
     @doctor = Doctor.new
     photo=@doctor.photo
     default_access_url_prefix = Settings.aliyunOSS.photo_url
-    if photo.nil?||photo==''
+    if photo.nil?||photo==''||!aliyun_file_exit('avatar/'+photo,Settings.aliyunOSS.image_bucket)
       photo='/default.png'
     else
       photo= default_access_url_prefix + photo
@@ -268,11 +271,11 @@ class DoctorsController < ApplicationController
     hos_id = current_user.hospital_id
     dep_id = current_user.department_id
     if !hos_id.nil? && hos_id != ''
-      @hospitals = Hospital.where(id:hos_id)
+      @hospitals = Hospital.select("id","name").where(id:hos_id)
       if !dep_id.nil? && dep_id != ''
-        @departments = Department.where(id:dep_id)
+        @departments = Department.select("id","name").where(id:dep_id)
       else
-        @departments = Department.where(hospital_id:hos_id)
+        @departments = Department.select("id","name").where(hospital_id:hos_id)
       end
     else
       @hospitals = Hospital.select("id","name").all
@@ -281,7 +284,7 @@ class DoctorsController < ApplicationController
     @doctor = Doctor.where(id:params[:id]).first
     photo=@doctor.photo
     default_access_url_prefix = Settings.aliyunOSS.photo_url
-    if photo.nil?||photo==''
+    if photo.nil?||photo==''||!aliyun_file_exit('avatar/'+photo,Settings.aliyunOSS.image_bucket)
       photo='/default.png'
     else
       photo= default_access_url_prefix + photo
@@ -373,7 +376,7 @@ class DoctorsController < ApplicationController
     if !@doctors.empty?
       @doctors.each do |doc|
         if !doc.nil?
-          if !doc.photo.nil?
+          if !doc.photo.nil? && doc.photo !='' && aliyun_file_exit('avatar/'+doc.photo,Settings.aliyunOSS.image_bucket)
             deleteFromAliyun('avatar/'+doc.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
           end
           doc.destroy
@@ -389,9 +392,10 @@ class DoctorsController < ApplicationController
   end
 
   def get_department
-    @departments = Department.where(hospital_id:params[:hospital_id])
     if !current_user.department_id.nil? && current_user.department_id != ''
-      @departments = Department.where(id:current_user.department_id)
+      @departments = Department.select("id","name").where(id:current_user.department_id)
+    else
+      @departments = Department.select("id","name").where(hospital_id:params[:hospital_id])
     end
     if params[:model_class] == 'patient'
       render partial: 'patients/department_partial'
@@ -401,9 +405,8 @@ class DoctorsController < ApplicationController
   end
 
   def get_city
-    @city = City.all
     if !params[:province_id].nil? && params[:province_id] != ''
-      @city = City.where(province_id:params[:province_id])
+      @city = City.select("id","name").where(province_id:params[:province_id])
     end
     if params[:model_class] == 'hospital'
       render partial: 'hospitals/city_partial'
@@ -419,15 +422,15 @@ class DoctorsController < ApplicationController
   def get_hospital
     if !params[:province_id].nil? && params[:province_id] != '' && params[:province_id]!='undefined'
       if !params[:city_id].nil? && params[:city_id] != '' && params[:city_id]!='undefined'
-        @hospitals = Hospital.where(province_id:params[:province_id],city_id:params[:city_id])
+        @hospitals = Hospital.select("id","name").where(province_id:params[:province_id],city_id:params[:city_id])
       else
-        @hospitals = Hospital.where(province_id:params[:province_id])
+        @hospitals = Hospital.select("id","name").where(province_id:params[:province_id])
       end
     else
       if !params[:city_id].nil? && params[:city_id] != '' && params[:city_id]!='undefined'
-        @hospitals = Hospital.where(city_id:params[:city_id])
+        @hospitals = Hospital.select("id","name").where(city_id:params[:city_id])
       else
-        @hospitals = Hospital.all
+        @hospitals = Hospital.select("id","name").all
       end
     end
     if params[:model_class] == 'department'

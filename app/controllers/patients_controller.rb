@@ -101,19 +101,19 @@ class PatientsController < ApplicationController
     hos_id = current_user.hospital_id
     dep_id = current_user.department_id
     if !hos_id.nil? && hos_id != ''
-      @hospitals = Hospital.where(id:hos_id)
+      @hospitals = Hospital.select("id","name").where(id:hos_id)
       if !dep_id.nil? && dep_id != ''
-        @departments = Department.where(id:dep_id)
+        @departments = Department.select("id","name").where(id:dep_id)
       else
-        @departments = Department.where(hospital_id:hos_id)
+        @departments = Department.select("id","name").where(hospital_id:hos_id)
       end
     else
-      @hospitals = Hospital.all
+      @hospitals = Hospital.select("id","name").all
     end
     @patient = Patient.new
     photo=@patient.photo
     default_access_url_prefix = Settings.aliyunOSS.photo_url
-    if photo.nil?||photo==''
+    if photo.nil?||photo==''||!aliyun_file_exit('avatar/'+photo,Settings.aliyunOSS.image_bucket)
       photo='/default.png'
     else
       photo= default_access_url_prefix + photo
@@ -127,19 +127,19 @@ class PatientsController < ApplicationController
     hos_id = current_user.hospital_id
     dep_id = current_user.department_id
     if !hos_id.nil? && hos_id != ''
-      @hospitals = Hospital.where(id:hos_id)
+      @hospitals = Hospital.select("id","name").where(id:hos_id)
       if !dep_id.nil? && dep_id != ''
-        @departments = Department.where(id:dep_id)
+        @departments = Department.select("id","name").where(id:dep_id)
       else
-        @departments = Department.where(hospital_id:hos_id)
+        @departments = Department.select("id","name").where(hospital_id:hos_id)
       end
     else
-      @hospitals = Hospital.all
+      @hospitals = Hospital.select("id","name").all
     end
     @patient = Patient.where(id:params[:id]).first
     photo=@patient.photo
     default_access_url_prefix = Settings.aliyunOSS.photo_url
-    if photo.nil?||photo==''
+    if photo.nil?||photo==''||!aliyun_file_exit('avatar/'+photo,Settings.aliyunOSS.image_bucket)
       photo='/default.png'
     else
       photo= default_access_url_prefix + photo
