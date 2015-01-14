@@ -34,43 +34,70 @@ class DoctorFriendshipsController < ApplicationController
 
     #获取非医友关系的医生
     def get_doctors
-      if  params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'null' && params[:department_id] && params[:department_id] != '' && params[:department_id] != 'null'
-        if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'null'
-          @doctors = Doctor.where(:hospital_id => params[:hospital_id])
-        end
-        if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'null'
-          if @doctors.nil?
-            @doctors = Doctor.where(:department_id => params[:department_id])
-          else
-            @doctors = @doctors.where(:department_id => params[:department_id])
-          end
-        end
+      if params[:str] == 'default'
+        @doctors = {}
+        totalpages = 0
+        params[:page] = 1
+        count = 0
       else
         sql = 'true'
-        hos_id = current_user.hospital_id
-        dep_id = current_user.department_id
-        if !hos_id.nil? && hos_id != ''
-          if !dep_id.nil? && dep_id != ''
-            sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
+        if !current_user.nil?
+          if current_user.admin_type == '医院管理员'
+            if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+              sql << " and hospital_id = #{current_user.hospital_id}"
+            end
+          elsif current_user.admin_type == '科室管理员'
+            if !current_user.department_id.nil? && !current_user.department_id != ''
+              sql << " and department_id = #{current_user.department_id}"
+            end
           else
-            sql << " and hospital_id=#{hos_id}"
+            if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'all' && params[:hospital_id] != 'null' && params[:hospital_id] != 'undefined'
+              sql << " and hospital_id = #{params[:hospital_id]}"
+            end
+            if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'all' && params[:department_id] != 'null' && params[:department_id] != 'undefined'
+              sql << " and department_id = #{params[:department_id]}"
+            end
           end
         end
-        @doctors = Doctor.select(:id, :name).where(sql)
+        if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'all' && params[:province_id] != 'null' && params[:province_id] != 'undefined'
+          sql << " and province_id = #{params[:province_id]}"
+        end
+        if params[:city_id] && params[:city_id] != '' && params[:city_id] != 'all' && params[:city_id] != 'null' && params[:city_id] != 'undefined'
+          sql << " and city_id = #{params[:city_id]}"
+        end
+        if params[:name] && params[:name] != '' && params[:name] != 'null' && params[:name] != 'undefined'
+          sql << " and name like '%#{params[:name]}%' "
+        end
+        if params[:doctor_id] && params[:doctor_id] != '' && params[:doctor_id] != 'null' && params[:doctor_id] != 'undefined'
+          sql << " and id not in (select doctor1_id from doctor_friendships where doctor2_id = #{params[:doctor_id]}) and id not in (select doctor2_id from doctor_friendships where doctor1_id = #{params[:doctor_id]})"
+        end
+        count = Doctor.where(sql).count
+        totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+        if params[:page].to_i > totalpages
+          params[:page] = 1
+        end
+        @doctors = Doctor.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
       end
-      doctors = {}
-      @doctors.each do |doc|
-        doctors[doc.id] = doc.name
-      end
-      render :json => {:doctors => doctors.as_json}
+      render :json => {:doctors => @doctors.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
     end
+  #保存关系
+  def save_friendship
+    if params[:doctor1_id] && params[:doctor2_ids]
+      params[:doctor2_ids].each do |doc|
+        DoctorFriendship.create(:doctor1_id => params[:doctor1_id], :doctor2_id => doc)
+      end
+      render :json => {:success => true}
+    else
+      render :json => {:success => false}
+    end
+  end
 
   #获取省
   def get_provinces
     @pros = Province.select(:id, :name).all
     pros = {}
     @pros.each do |pro|
-      pros[pro.id] = pro.name
+      pros[pro.id] = pro.namee
     end
     render :json => {:provinces => pros.as_json}
   end
@@ -91,10 +118,12 @@ class DoctorFriendshipsController < ApplicationController
   #获取医院
   def get_hospitals
 
+=begin
     if  params[:province_id] && params[:province_id] != '' && params[:city_id] && params[:city_id] != '' && params[:province_id] != 'null' && params[:city_id] != 'null'
       if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'null'
         @hospitals = Hospital.where(:province_id => params[:province_id])
       end
+=end
       if params[:city_id] && params[:city_id] != '' && params[:city_id] != 'null'
         if @hospitals.nil?
           @hospitals = Hospital.where(:city_id => params[:city_id])
@@ -102,9 +131,11 @@ class DoctorFriendshipsController < ApplicationController
           @hospitals = @hospitals.where(:city_id => params[:city_id])
         end
       end
+=begin
     else
       @hospitals = Hospital.select(:id, :name).all.limit(50)
     end
+=end
     hospitals = {}
     @hospitals.each do |hos|
       hospitals[hos.id] = hos.name
@@ -114,6 +145,7 @@ class DoctorFriendshipsController < ApplicationController
 
   #获取科室
   def get_departments
+=begin
     if params[:province_id] && params[:province_id] != '' && params[:city_id] && params[:city_id] != '' && params[:hospital_id] && params[:hospital_id] != '' && params[:province_id] != 'null' && params[:city_id] != 'null' && params[:hospital_id] != 'null'
       if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'null'
         @departments = Department.where(:province_id => params[:province_id])
@@ -125,6 +157,7 @@ class DoctorFriendshipsController < ApplicationController
           @departments = @departments.where(:city_id => params[:city_id])
         end
       end
+=end
       if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'null'
         if @departments.nil?
           @departments = Department.where(:hospital_id => params[:hospital_id])
@@ -132,9 +165,11 @@ class DoctorFriendshipsController < ApplicationController
           @departments = @departments.where(:hospital_id => params[:hospital_id])
         end
       end
+=begin
     else
       @departments = Department.select(:id, :name).all.limit(50)
     end
+=end
     departments = {}
     @departments.each do |dept|
       departments[dept.id] = dept.name
@@ -161,7 +196,13 @@ class DoctorFriendshipsController < ApplicationController
 
     # GET /doctor_friendships/new
     def new
-      @doctor_friendship = DoctorFriendship.new
+      @provinces = Province.select(:id, :name).all
+=begin
+      @cities = City.select(:id, :name).all
+      @hospitals = Hospital.select(:id, :name).all
+      @departments = Department.select(:id, :name).all
+=end
+      render :partial => 'doctor_friendships/doctor1s_list'
     end
 
     # GET /doctor_friendships/1/edit
@@ -249,6 +290,6 @@ class DoctorFriendshipsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def doctor_friendship_params
-      params.permit(:id, :doctor1_id, :doctor2_id, :province1_id, :city1_id, :hospital1_id, :department1_id, :province2_id, :city2_id, :hospital2_id, :department2_id)
+      params.permit(:id, :doctor1_id, :doctor2_id)
     end
   end

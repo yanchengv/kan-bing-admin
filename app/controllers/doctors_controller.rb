@@ -214,6 +214,16 @@ class DoctorsController < ApplicationController
   #获取首页面上医生的显示信息
   def get_doctor_to_page
     @doctor = Doctor.find(params[:id])
+    if !@doctor.photo.nil? && @doctor.photo != ''
+      if aliyun_file_exit(@doctor.photo, 'mimas-img')
+        @doctor.photo = "http://mimas-img.oss-cn-beijing.aliyuncs.com/avatar/#{@doctor.photo}"
+      else
+        @doctor.photo = 'default.png'
+      end
+    else
+      @doctor.photo = 'default.png'
+    end
+
     if @doctor
       render :json => {:success => true, :doctor => @doctor.as_json(:include => [{:hospital => {:only => [:id, :name]}}, {:department => {:only => [:id, :name]}}])}
     else

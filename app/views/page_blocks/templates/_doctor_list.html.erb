@@ -122,7 +122,7 @@
             dataType: 'json',
             success: function (data) {
                 if(data['success'] == true){
-                    document.getElementById("img_url").src = "http://mimas-img.oss-cn-beijing.aliyuncs.com/avatar/" + data['doctor'].photo;
+                    document.getElementById("img_url").src = data['doctor'].photo;
                     document.getElementById("img_url").alt = data['doctor'].name;
                     document.getElementById("img_url").title = data['doctor'].name;
                     var introduction;

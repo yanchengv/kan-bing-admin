@@ -54,6 +54,13 @@ class GroupsController < ApplicationController
         if !current_user.department_id.nil? && !current_user.department_id != ''
           sql << " and department_id = #{current_user.department_id}"
         end
+      else
+        if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'all' && params[:hospital_id] != 'null'
+          sql << " and hospital_id = #{params[:hospital_id]}"
+        end
+        if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'all' && params[:department_id] != 'null'
+          sql << " and department_id = #{params[:department_id]}"
+        end
       end
     end
     if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'all' && params[:province_id] != 'null'
@@ -62,15 +69,10 @@ class GroupsController < ApplicationController
     if params[:city_id] && params[:city_id] != '' && params[:city_id] != 'all' && params[:city_id] != 'null'
       sql << " and city_id = #{params[:city_id]}"
     end
-    if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'all' && params[:hospital_id] != 'null'
-      sql << " and hospital_id = #{params[:hospital_id]}"
-    end
-    if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'all' && params[:department_id] != 'null'
-      sql << " and department_id = #{params[:department_id]}"
-    end
     if params[:name] && params[:name] != '' && params[:name] != 'null'
       sql << " and name like '%#{params[:name]}%' "
     end
+
     @group = Group.find(params[:group_id])
     if @group
       sql << " and id not in (select doctor_id from doctors_groups where group_id = #{params[:group_id]})"

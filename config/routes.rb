@@ -225,6 +225,7 @@ Rails.application.routes.draw do
       get 'get_cities', to: 'doctor_friendships#get_cities'
       get 'get_hospitals', to: 'doctor_friendships#get_hospitals'
       get 'get_departments', to: 'doctor_friendships#get_departments'
+      post 'save_friendship', to: 'doctor_friendships#save_friendship'
     end
 
   end
@@ -234,7 +235,7 @@ Rails.application.routes.draw do
       get 'get_patients', to: 'treatment_relationships#get_patients'
       post 'oper_action', to: 'treatment_relationships#oper_action'
       post 'batch_delete', to: 'treatment_relationships#batch_delete'
-      get 'get_doctors', to: 'treatment_relationships#get_doctors'
+      post 'save_relationship', to: 'treatment_relationships#save_relationship'
     end
 
   end

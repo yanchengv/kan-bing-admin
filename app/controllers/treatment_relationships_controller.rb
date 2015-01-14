@@ -36,58 +36,66 @@ class TreatmentRelationshipsController < ApplicationController
       render :json => {:treatment_relationships => @treatment_relationships.as_json(:include => [{:doctor => {:only => [:id, :name]}}, {:patient => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
     end
 
-    #获取医生
-    def get_doctors
-      sql = 'true'
-      hos_id = current_user.hospital_id
-      dep_id = current_user.department_id
-      if !hos_id.nil? && hos_id != ''
-        if !dep_id.nil? && dep_id != ''
-          sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
-        else
-          sql << " and hospital_id=#{hos_id}"
-        end
-      end
-      @doctors = Doctor.select(:id, :name).where(sql)
-      docs = {}
-      @doctors.each do |doc|
-        docs[doc.id] = doc.name
-      end
-      render :json => {:doctors => docs.as_json}
-    end
-
     #获取患者
     def get_patients
-      if  params[:hospital_id] && params[:hospital_id] != '' && params[:department_id] && params[:department_id] != '' && params[:hospital_id] != 'null' && params[:department_id] != 'null'
-        if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'null'
-          @patients = Patient.where(:hospital_id => params[:hospital_id])
-        end
-        if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'null'
-          if @patients.nil?
-            @patients = Patient.where(:department_id => params[:department_id])
-          else
-            @patients = @patients.where(:department_id => params[:department_id])
-          end
-        end
+      if params[:str] == 'default'
+        @patients = {}
+        totalpages = 0
+        params[:page] = 1
+        count = 0
       else
         sql = 'true'
-        hos_id = current_user.hospital_id
-        dep_id = current_user.department_id
-        if !hos_id.nil? && hos_id != ''
-          if !dep_id.nil? && dep_id != ''
-            sql << " and hospital_id=#{hos_id} and department_id=#{dep_id}"
+        if !current_user.nil?
+          if current_user.admin_type == '医院管理员'
+            if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+              sql << " and hospital_id = #{current_user.hospital_id}"
+            end
+          elsif current_user.admin_type == '科室管理员'
+            if !current_user.department_id.nil? && !current_user.department_id != ''
+              sql << " and department_id = #{current_user.department_id}"
+            end
           else
-            sql << " and hospital_id=#{hos_id}"
+            if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'all' && params[:hospital_id] != 'null' && params[:hospital_id] != 'undefined'
+              sql << " and hospital_id = #{params[:hospital_id]}"
+            end
+            if params[:department_id] && params[:department_id] != '' && params[:department_id] != 'all' && params[:department_id] != 'null' && params[:department_id] != 'undefined'
+              sql << " and department_id = #{params[:department_id]}"
+            end
           end
         end
-        @patients = Patient.select(:id, :name).where(sql)
+        if params[:province_id] && params[:province_id] != '' && params[:province_id] != 'all' && params[:province_id] != 'null' && params[:province_id] != 'undefined'
+          sql << " and province_id = #{params[:province_id]}"
+        end
+        if params[:city_id] && params[:city_id] != '' && params[:city_id] != 'all' && params[:city_id] != 'null' && params[:city_id] != 'undefined'
+          sql << " and city_id = #{params[:city_id]}"
+        end
+        if params[:name] && params[:name] != '' && params[:name] != 'null' && params[:name] != 'undefined'
+          sql << " and name like '%#{params[:name]}%' "
+        end
+        if params[:doctor_id] && params[:doctor_id] != '' && params[:doctor_id] != 'null' && params[:doctor_id] != 'undefined'
+          sql << " and id not in (select patient_id from treatment_relationships where doctor_id = #{params[:doctor_id]})"
+        end
+        count = Patient.where(sql).count
+        totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+        if params[:page].to_i > totalpages
+          params[:page] = 1
+        end
+        @patients = Patient.where(sql).limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
       end
-      patients = {}
-      @patients.each do |pat|
-        patients[pat.id] = pat.name
-      end
-      render :json => {:patients => patients.as_json}
+      render :json => {:patients => @patients.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
     end
+
+   #保存关系
+  def save_relationship
+    if params[:doctor_id] && params[:patient_ids]
+      params[:patient_ids].each do |pat_id|
+        TreatmentRelationship.create(:doctor_id => params[:doctor_id], :patient_id => pat_id)
+      end
+      render :json => {:success => true}
+    else
+      render :json => {:success => false}
+    end
+  end
 
     def oper_action
       if params[:oper] == 'add'
@@ -108,7 +116,8 @@ class TreatmentRelationshipsController < ApplicationController
 
     # GET /treatment_relationships/new
     def new
-      @treatment_relationship = TreatmentRelationship.new
+      @provinces = Province.select(:id, :name).all
+      render :partial => 'treatment_relationships/doctors_list'
     end
 
     # GET /treatment_relationships/1/edit
@@ -194,6 +203,6 @@ class TreatmentRelationshipsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def treatment_relationship_params
-      params.permit(:id, :doctor_id, :patient_id, :d_province_id, :d_city_id, :d_hospital_id, :d_department_id, :p_province_id, :p_city_id, :p_hospital_id, :p_department_id )
+      params.permit(:id, :doctor_id, :patient_id)
     end
   end

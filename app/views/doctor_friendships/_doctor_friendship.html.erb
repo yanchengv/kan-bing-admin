@@ -1,3 +1,8 @@
+<div id="friendship_console">
+  <div id="friendship_div">
+
+  </div>
+</div>
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
     <div style="margin-bottom: 10px;">医生名：<input type="text" id="doc_name" onkeydown="search_keydown(event)">
@@ -31,437 +36,10 @@
         datatype: "json",
         autowidth:true,
         height: 'auto',
-        colNames: ['ID', '医生1所属省ID', '医生1所属市ID', '医生1所属医院ID', '医生1所属科室ID','医生1ID', '医生1', '医生2所属省ID', '医生2所属市ID', '医生2所属医院ID', '医生2所属科室ID','医生2ID', '医生2'],
+        colNames: ['ID', '医生1', '医生2'],
         colModel: [
             {name: 'id', index: 'id', editable: true, hidden: true, align: "center"},
-            {name: 'province1_id', index: 'province1_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).select2();
-                    },
-                    style: "width:166px",
-                    value: function () {
-                        var positions;
-                        $.ajax({
-                            url: "/doctor_friendships/get_provinces",
-                            async: false,
-                            success: function (data) {
-                                positions = data.provinces;
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert(textStatus);
-                            }
-                        });
-                        return positions;
-                    },
-                    dataEvents: [
-                        { type: 'change',
-                            fn: function (e) {
-                                var thisval = $(e.target).val();
-                                $.get('/doctor_friendships/get_cities?province_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['cities']) {
-                                        if (data['cities'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['cities'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#city1_id").html(res);
-                                }); // end get
-                                $.get('/doctor_friendships/get_hospitals?province_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['hospitals']) {
-                                        if (data['hospitals'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#hospital1_id").html(res);
-                                });
-                                $.get('/doctor_friendships/get_departments?province_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['departments']) {
-                                        if (data['departments'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#department1_id").html(res);
-                                });
-                            }
-
-                        }
-                    ]} },
-            {name: 'city1_id', index: 'city1_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).select2();
-                    },
-                    style: "width:166px",
-                    value: function () {
-                        var positions;
-                        $.ajax({
-                            url: "/doctor_friendships/get_cities",
-                            async: false,
-                            success: function (data) {
-                                positions = data.cities;
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert(textStatus);
-                            }
-                        });
-                        return positions;
-                    },
-                    dataEvents: [
-                        { type: 'change',
-                            fn: function (e) {
-                                var province_id = $("#province1_id").val();
-                                var thisval = $(e.target).val();
-                                $.get('/doctor_friendships/get_hospitals?province_id='+ province_id +'&city_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['hospitals']) {
-                                        if (data['hospitals'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#hospital1_id").html(res);
-                                });
-                                $.get('/doctor_friendships/get_departments?province_id=' + province_id + '&city_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['departments']) {
-                                        if (data['departments'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#department1_id").html(res);
-                                });
-                            }
-                        }
-                    ]} },
-            {name: 'hospital1_id', index: 'hospital1_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).select2();
-                    },
-                    style: "width:166px",
-                    value: function () {
-                        var positions;
-                        $.ajax({
-                            url: "/doctor_friendships/get_hospitals",
-                            async: false,
-                            success: function (data) {
-                                positions = data.hospitals;
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert(textStatus);
-                            }
-                        });
-                        return positions;
-                    },
-                    dataEvents: [
-                        { type: 'change',
-                            fn: function (e) {
-                                var province_id = $("#province1_id").val();
-                                var city_id = $("#city1_id").val();
-                                var thisval = $(e.target).val();
-                                $.get('/doctor_friendships/get_departments?province_id=' + province_id + '&city_id=' + city_id + '&hospital_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['departments']) {
-                                        if (data['departments'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#department1_id").html(res);
-                                });
-                                $.get('/doctor_friendships/get_doctors?hospital_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['doctors']) {
-                                        if (data['doctors'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['doctors'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#doctor1_id").html(res);
-                                });
-                            }
-                        }
-                    ]} },
-            {name: 'department1_id', index: 'department1_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).select2();
-                    },
-                    style: "width:166px",
-                    value: function () {
-                        var positions;
-                        $.ajax({
-                            url: "/doctor_friendships/get_departments",
-                            async: false,
-                            success: function (data) {
-                                positions = data.departments;
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert(textStatus);
-                            }
-                        });
-                        return positions;
-                    },
-                    dataEvents: [
-                        { type: 'change',
-                            fn: function (e) {
-                                var hospital_id = $("#hospital1_id").val();
-                                var thisval = $(e.target).val();
-                                $.get('/doctor_friendships/get_doctors?hospital_id=' + hospital_id + '&department_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['doctors']) {
-                                        if (data['doctors'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['doctors'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#doctor1_id").html(res);
-                                });
-                            }
-                        }
-                    ]} },
-            {name: 'doctor1_id', index: 'doctor1_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).select2();
-                    },
-                    style: "width:166px",
-                    value: function () {
-                        var positions;
-                        $.ajax({
-                            url: "/doctor_friendships/get_doctors",
-                            async: false,
-                            success: function (data) {
-                                positions = data.doctors;
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert(textStatus);
-                            }
-                        });
-                        return positions;
-                    }}},
             {name: 'doctor1_name', index: 'doctor1_name', align: "center", jsonmap: 'doctor1.name'},
-            {name: 'province2_id', index: 'province2_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).select2();
-                    },
-                    style: "width:166px",
-                    value: function () {
-                        var positions;
-                        $.ajax({
-                            url: "/doctor_friendships/get_provinces",
-                            async: false,
-                            success: function (data) {
-                                positions = data.provinces;
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert(textStatus);
-                            }
-                        });
-                        return positions;
-                    },
-                    dataEvents: [
-                        { type: 'change',
-                            fn: function (e) {
-                                var thisval = $(e.target).val();
-                                $.get('/doctor_friendships/get_cities?province_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['cities']) {
-                                        if (data['cities'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['cities'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#city2_id").html(res);
-                                }); // end get
-                                $.get('/doctor_friendships/get_hospitals?province_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['hospitals']) {
-                                        if (data['hospitals'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#hospital2_id").html(res);
-                                });
-                                $.get('/doctor_friendships/get_departments?province_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['departments']) {
-                                        if (data['departments'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#department2_id").html(res);
-                                });
-                            }
-
-                        }
-                    ]} },
-            {name: 'city2_id', index: 'city2_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).select2();
-                    },
-                    style: "width:166px",
-                    value: function () {
-                        var positions;
-                        $.ajax({
-                            url: "/doctor_friendships/get_cities",
-                            async: false,
-                            success: function (data) {
-                                positions = data.cities;
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert(textStatus);
-                            }
-                        });
-                        return positions;
-                    },
-                    dataEvents: [
-                        { type: 'change',
-                            fn: function (e) {
-                                var province_id = $("#province2_id").val();
-                                var thisval = $(e.target).val();
-                                $.get('/doctor_friendships/get_hospitals?province_id=' + province_id + '&city_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['hospitals']) {
-                                        if (data['hospitals'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#hospital2_id").html(res);
-                                });
-                                $.get('/doctor_friendships/get_departments?province_id=' + province_id + '&city_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['departments']) {
-                                        if (data['departments'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#department2id").html(res);
-                                });
-                            }
-                        }
-                    ]} },
-            {name: 'hospital2_id', index: 'hospital2_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).select2();
-                    },
-                    style: "width:166px",
-                    value: function () {
-                        var positions;
-                        $.ajax({
-                            url: "/doctor_friendships/get_hospitals",
-                            async: false,
-                            success: function (data) {
-                                positions = data.hospitals;
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert(textStatus);
-                            }
-                        });
-                        return positions;
-                    },
-                    dataEvents: [
-                        { type: 'change',
-                            fn: function (e) {
-                                var province_id = $("#province2_id").val();
-                                var city_id = $("#city2_id").val();
-                                var thisval = $(e.target).val();
-                                $.get('/doctor_friendships/get_departments?province_id=' + province_id + '&city_id=' + city_id + '&hospital_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['departments']) {
-                                        if (data['departments'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#department2_id").html(res);
-                                });
-                                $.get('/doctor_friendships/get_doctors?hospital_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['doctors']) {
-                                        if (data['doctors'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['doctors'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#doctor2_id").html(res);
-                                });
-                            }
-                        }
-                    ]} },
-            {name: 'department2_id', index: 'department2_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: 'select',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).select2();
-                    },
-                    style: "width:166px",
-                    value: function () {
-                        var positions;
-                        $.ajax({
-                            url: "/doctor_friendships/get_departments",
-                            async: false,
-                            success: function (data) {
-                                positions = data.departments;
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert(textStatus);
-                            }
-                        });
-                        return positions;
-                    },
-                    dataEvents: [
-                        { type: 'change',
-                            fn: function (e) {
-                                var hospital_id = $("#hospital2_id").val();
-                                var thisval = $(e.target).val();
-                                $.get('/doctor_friendships/get_doctors?hospital_id=' + hospital_id + '&department_id=' + thisval, function (data) {
-                                    var res = '<select width=300>';
-                                    for (var k in data['doctors']) {
-                                        if (data['doctors'].hasOwnProperty(k)) {
-                                            res += '<option value="' + k + '">' + data['doctors'][k] + '</option> '
-                                        }
-                                    }
-                                    res += '</select>';
-                                    $("#doctor2_id").html(res);
-                                });
-                            }
-                        }
-                    ]} },
-            {name: 'doctor2_id', index: 'doctor2_id', editable: true, hidden: true, jsonmap: 'doctor2.id', editrules: {edithidden: true}, align: "center", edittype: 'select',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).select2();
-                    },
-                    style: "width:166px",
-                    value: function () {
-                        var positions;
-                        $.ajax({
-                            url: "/doctor_friendships/get_doctors",
-                            async: false,
-                            success: function (data) {
-                                positions = data.doctors;
-                            },
-                            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert(textStatus);
-                            }
-                        });
-                        return positions;
-                    }}
-            },
             {name: 'doctor2_name', index: 'doctor2_name', jsonmap: 'doctor2.name', align: "center" }
         ],
         rowNum: 20,
@@ -495,8 +73,8 @@
         }
     });
     jQuery("#list_doctors_ships").jqGrid('navGrid', '#page_docs', {
-                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
-                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                cloneToTop: true, add: false, edit:false,
+                deltext: "删除", deltitle: "删除", view: false, search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
                 closeAfterEdit: true
@@ -506,7 +84,52 @@
             }//add
     ).navButtonAdd('#page_docs', { title: '批量删除', caption: '批量删除', onClickButton: function () {
                 batch_delete()
-            }, position: "last"});
+            }, position: "last"}).navButtonAdd('#page_docs', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                add_friend_ship();
+            }, position: "first"});
+    $("#friendship_console").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: false,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function (pos) {
+                var topOffset = $(this).css(pos).offset().top;
+                if (topOffset < 0) {
+                    $(this).css("top", pos.top - topOffset);
+                } else {
+                    $(this).css("top", 100);
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "保存": save_friendship,
+            "取消": function () {
+                $("#friendship_console").dialog("close")
+            }
+        }
+    });
+    //打开添加界面
+    function add_friend_ship(){
+        $.ajax({
+            url: "/doctor_friendships/new",
+            type: 'get',
+            success: function (data) {
+                $("#friendship_div").html(data);
+                var video_consoleDlg = $("#friendship_console");
+                var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                dialogButtonPanel.find("button:contains('保存')").show();
+                video_consoleDlg.dialog("option", "width", "800");
+                video_consoleDlg.dialog("option", "title", "添加").dialog("open");
+            }
+        });
+    }
     //批量删除
     function batch_delete() {
         var ids = $('#list_doctors_ships').jqGrid('getGridParam', 'selarrrow');
@@ -528,4 +151,31 @@
             );
         }
     }
+    //保存医友关系
+        function save_friendship(){
+            var doc1_id = jQuery("#doctor1s_list").jqGrid('getGridParam', 'selrow');
+            var doc2_ids = jQuery("#doctor2_list").jqGrid('getGridParam', 'selarrrow');
+            if (doc1_id){
+                if (doc2_ids){
+                    $.ajax({
+                        type: 'post',
+                        url: '/doctor_friendships/save_friendship',
+                        data: {doctor1_id: doc1_id, doctor2_ids: doc2_ids},
+                        success: function (data) {
+                            if (data.success == true) {
+                                jQuery("#list_doctors_ships").jqGrid('setGridParam', {url: "/doctor_friendships/index_show"}).trigger("reloadGrid");
+                                $("#friendship_console").dialog("close");
+                            } else {
+                                alert('操作失败！');
+                            }
+                        }
+                    }
+                    );
+                }else{
+                    alert('请选择医生2!');
+                }
+            }else{
+               alert('请选择医生1!');
+            }
+        }
 </script>

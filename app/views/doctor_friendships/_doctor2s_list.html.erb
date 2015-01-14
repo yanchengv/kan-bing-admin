@@ -1,0 +1,181 @@
+<style>
+    .select2-container {
+        width: 150px;
+
+    }
+</style>
+<hr>
+<% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员' %>
+    省：<select id="doctor2_pro_id" name="doctor2_pro_id" style="width: 150px;">
+  <option value="">---请选择---</option>
+  <% if !@provinces.nil? && !@provinces.empty? %>
+      <% @provinces.each do |pro| %>
+          <option id='serch_pro2_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
+      <% end %>
+  <% end %>
+</select>
+    市：
+    <span id="search_city2_id"><select id="doctor2_city_id" name="doctor[city_id]" style="width: 150px;">
+      <option value="all">---请选择---</option>
+      <%# if !@cities.nil? && !@cities.empty? %>
+          <%# @cities.each do |city| %>
+             <!-- <option id='serch_city2_<%#= city.id %>' value="<%#= city.id %>"><%#= city.name %></option>-->
+          <%# end %>
+      <%# end %>
+    </select></span>
+    医院：
+    <span id="search_hos2_id"><select id="doctor2_hos_id" name="doctor2_hos_id" style="width: 150px;">
+      <option value="">---请选择---</option>
+      <%# if !@hospitals.nil? && !@hospitals.empty? %>
+          <%# @hospitals.each do |hos| %>
+              <!--<option id='serch_hos2_<%#= hos.id %>' value="<%#= hos.id %>"><%#= hos.name %></option>-->
+          <%# end %>
+      <%# end %>
+    </select></span><br>
+    科室：
+    <span id="search_dep2_id"><select id="doctor2_dep" name="doctor[department_id]" style="width: 150px;">
+      <option value="all">---请选择---</option>
+      <%# if !@departments.nil? && !@departments.empty? %>
+          <%# @departments.each do |dep| %>
+              <!--<option id='serch_dep2_<%#= dep.id %>' value="<%#= dep.id %>"><%#= dep.name %></option>-->
+          <%# end %>
+      <%# end %>
+    </select></span>
+    姓名：<input type="text" id="search_doctor2_name" onkeydown="search_keydown2(event)">
+    <button id="search_doc2_btn">搜索</button>
+    &nbsp;
+    <button id="clear_doc2_btn">清空</button>
+<% end %>
+<table id="doctor2_list"></table>
+<div id="page_doctor2"></div>
+<script>
+    function search_keydown2(event) {
+        if (event.keyCode == 13)
+            search_doc2s();
+    }
+    jQuery("#doctor2_list").jqGrid({
+        url: '/doctor_friendships/get_doctors?str=default',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '姓名', '省', '市', '医院', '科室'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true, width: 120},
+            { name: 'name', index: 'name', align: "center", width: 120},
+            {name: 'province_name', index: 'province_name', editable: true, search: false, width: 120 },
+            {name: 'city_name', index: 'city_name', editable: true, search: false, width: 120},
+            {name: 'hospital_name', index: 'hospital_name', editable: true, search: false, width: 120 },
+            {name: 'department_name', index: 'department_name', editable: true, search: false, width: 120 }
+        ],
+        rownumbers: true,
+        page: 1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "doctors",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        closeAfterAdd: true,
+        pager: jQuery('#page_doctor2'),
+        multiselect: true,
+        rowNum: 10,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "医生2列表"
+    });
+    jQuery("#doctor2_list").jqGrid('navGrid', '#page_doctor2', {
+                cloneToTop: true, add: false, edit: false,
+                del: false, view: false, search: false,
+                refreshtext: "更新", refreshtitle: "更新"}
+    );
+    $("#doctor2_pro_id").on("change", function (event) {
+        var pro_id = $('#doctor2_pro_id').val();
+        $.get('/doctor_friendships/get_cities?province_id=' + pro_id, function (data) {
+            var res = '<select width=300><option value="">---请选择---</option>';
+            for (var k in data['cities']) {
+                if (data['cities'].hasOwnProperty(k)) {
+                    res += '<option value="' + k + '">' + data['cities'][k] + '</option> '
+                }
+            }
+            res += '</select>';
+            $("#doctor2_city_id").html(res);
+            search_doc2s();
+        }); // end get
+    });
+    $("#doctor2_city_id").on("change", function (event) {
+        var city_id = $('#doctor2_city_id').val();
+        $.get('/doctor_friendships/get_hospitals?city_id=' + city_id, function (data) {
+            var res = '<select width=300><option value="">---请选择---</option>';
+            for (var k in data['hospitals']) {
+                if (data['hospitals'].hasOwnProperty(k)) {
+                    res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
+                }
+            }
+            res += '</select>';
+            $("#doctor2_hos_id").html(res);
+            search_doc2s();
+        }); // end get
+    });
+    $("#doctor2_hos_id").on("change", function (event) {
+        var hos_id = $('#doctor2_hos_id').val();
+        $.get('/doctor_friendships/get_departments?hospital_id=' + hos_id, function (data) {
+            var res = '<select width=300><option value="">---请选择---</option>';
+            for (var k in data['departments']) {
+                if (data['departments'].hasOwnProperty(k)) {
+                    res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
+                }
+            }
+            res += '</select>';
+            $("#doctor2_dep").html(res);
+            search_doc2s();
+        }); // end get
+    });
+    $("#doctor2_dep").on("change", function (event) {
+        search_doc2s();
+    });
+
+
+    $(function () {
+        $("#doctor2_hos_id").select2();
+        $("#doctor2_dep").select2();
+        $('#doctor2_pro_id').select2();
+        $('#doctor2_city_id').select2();
+    })
+    //搜索
+    function search_doc2s() {
+        var province = $('#doctor2_pro_id').val();
+        var city = $('#doctor2_city_id').val();
+        var hospital = $('#doctor2_hos_id').val();
+        var department = $('#doctor2_dep').val();
+        var name = $('#search_doctor2_name').val();
+        jQuery("#doctor2_list").jqGrid('setGridParam', {url: '/doctor_friendships/get_doctors?province_id=' + province + '&city_id=' + city + '&hospital_id=' + hospital + '&department_id=' + department + '&name=' + name}).trigger("reloadGrid")
+    }
+    $('#search_doc2_btn').click(function () {
+        search_doc2s()
+    });
+    //清空k
+    $('#clear_doc2_btn').click(function () {
+        $('#doctor2_pro_id').select2("val", "");
+        $('#doctor2_city_id').select2("val", "");
+        $('#doctor2_hos_id').select2("val", "");
+        $('#doctor2_dep').select2("val", "");
+        $('#search_doctor2_name').val('');
+    });
+
+</script>

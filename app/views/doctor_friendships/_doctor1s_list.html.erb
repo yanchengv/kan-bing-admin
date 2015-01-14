@@ -1,0 +1,203 @@
+<style>
+    .select2-container {
+        width: 150px;
+
+    }
+</style>
+<div style="width: 100%">
+  <div style="margin-left: 20px;margin-right: 20px;">
+    <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员' %>
+        省：<select id="doctor1_pro_id" name="doctor1_pro_id" style="width: 150px;">
+    <option value="">---请选择---</option>
+    <% if !@provinces.nil? && !@provinces.empty? %>
+        <% @provinces.each do |pro| %>
+            <option id='serch_pro1_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
+        <% end %>
+    <% end %>
+  </select>
+        市：
+    <span id="search_city1_id"><select id="doctor1_city_id" name="doctor[city_id]" style="width: 150px;">
+      <option value="all">---请选择---</option>
+      <%# if !@cities.nil? && !@cities.empty? %>
+          <%# @cities.each do |city| %>
+             <!-- <option id='serch_city1_<%#= city.id %>' value="<%#= city.id %>"><%#= city.name %></option>-->
+          <%# end %>
+      <%# end %>
+    </select></span>
+        医院：
+    <span id="search_hos1_id"><select id="doctor1_hos_id" name="doctor1_hos_id" style="width: 150px;">
+      <option value="">---请选择---</option>
+      <%# if !@hospitals.nil? && !@hospitals.empty? %>
+          <%# @hospitals.each do |hos| %>
+             <!-- <option id='serch_hos1_<%#= hos.id %>' value="<%#= hos.id %>"><%#= hos.name %></option>-->
+          <%# end %>
+      <%# end %>
+    </select></span><br>
+        科室：
+    <span id="search_dep1_id"><select id="doctor1_dep" name="doctor[department_id]" style="width: 150px;">
+      <option value="all">---请选择---</option>
+      <%# if !@departments.nil? && !@departments.empty? %>
+          <%# @departments.each do |dep| %>
+             <!-- <option id='serch_dep1_<%#= dep.id %>' value="<%#= dep.id %>"><%#= dep.name %></option>-->
+          <%# end %>
+      <%# end %>
+    </select></span>
+        姓名：<input type="text" id="search_doctor1_name" onkeydown="search_keydown1(event)">
+        <button id="search_doc1_btn">搜索</button>
+        &nbsp;
+        <button id="clear_doc1_btn">清空</button>
+    <% end %>
+    <table id="doctor1s_list"></table>
+    <div id="page_doctor1s"></div>
+    <%= render :partial => 'doctor_friendships/doctor2s_list'%>
+  </div>
+</div>
+
+<script type="text/javascript">
+    function search_keydown1(event) {
+        if (event.keyCode == 13)
+            search_doc1s();
+    }
+    jQuery("#doctor1s_list").jqGrid({
+        url: '/doctor_friendships/get_doctors?str=default',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '姓名', '省', '市', '医院', '科室'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true, width: 120},
+            { name: 'name', index: 'name', align: "center", width: 120},
+            {name: 'province_name', index: 'province_name', editable: true, search: false, width: 120 },
+            {name: 'city_name', index: 'city_name', editable: true, search: false, width: 120},
+            {name: 'hospital_name', index: 'hospital_name', editable: true, search: false, width: 120 },
+            {name: 'department_name', index: 'department_name', editable: true, search: false, width: 120 }
+        ],
+        rownumbers: true,
+        page: 1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "doctors",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        onSelectRow: function (rowid) {
+            jQuery("#doctor2_list").jqGrid('setGridParam', {url: "/doctor_friendships/get_doctors?doctor_id=" + rowid }).trigger("reloadGrid");
+        },
+        editurl: '',
+        closeAfterAdd: true,
+        pager: jQuery('#page_doctor1s'),
+        //   multiselect: true,
+        rowNum: 10,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "医生1列表"
+    });
+    jQuery("#doctor1s_list").jqGrid('navGrid', '#page_doctor1s', {
+                cloneToTop: true, add: false, edit: false,
+                del: false, view: false, search: false,
+                refreshtext: "更新", refreshtitle: "更新"}
+    );
+  
+    function myelem(value, options) {
+        var el = document.createElement("input");
+        el.type = "text";
+        el.value = value;
+        return el;
+    }
+
+    function myvalue(elem, operation, value) {
+        if (operation === 'get') {
+            return $(elem).val();
+        } else if (operation === 'set') {
+            $('input', elem).val(value);
+        }
+    }
+    $("#doctor1_pro_id").on("change", function (event) {
+        var pro_id = $('#doctor1_pro_id').val();
+        $.get('/doctor_friendships/get_cities?province_id=' + pro_id, function (data) {
+            var res = '<select width=300><option value="">---请选择---</option>';
+            for (var k in data['cities']) {
+                if (data['cities'].hasOwnProperty(k)) {
+                    res += '<option value="' + k + '">' + data['cities'][k] + '</option> '
+                }
+            }
+            res += '</select>';
+            $("#doctor1_city_id").html(res);
+            search_doc1s();
+        }); // end get
+    });
+    $("#doctor1_city_id").on("change", function (event) {
+        var city_id = $('#doctor1_city_id').val();
+        $.get('/doctor_friendships/get_hospitals?city_id=' + city_id, function (data) {
+            var res = '<select width=300><option value="">---请选择---</option>';
+            for (var k in data['hospitals']) {
+                if (data['hospitals'].hasOwnProperty(k)) {
+                    res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
+                }
+            }
+            res += '</select>';
+            $("#doctor1_hos_id").html(res);
+            search_doc1s();
+        }); // end get
+    });
+    $("#doctor1_hos_id").on("change", function (event) {
+        var hos_id = $('#doctor1_hos_id').val();
+        $.get('/doctor_friendships/get_departments?hospital_id=' + hos_id, function (data) {
+            var res = '<select width=300><option value="">---请选择---</option>';
+            for (var k in data['departments']) {
+                if (data['departments'].hasOwnProperty(k)) {
+                    res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
+                }
+            }
+            res += '</select>';
+            $("#doctor1_dep").html(res);
+            search_doc1s();
+        }); // end get
+    });
+    $("#doctor1_dep").on("change", function (event) {
+            search_doc1s();
+    });
+
+    $(function () {
+        $("#doctor1_hos_id").select2();
+        $("#doctor1_dep").select2();
+        $('#doctor1_pro_id').select2();
+        $('#doctor1_city_id').select2();
+    })
+    //搜索
+    function search_doc1s() {
+        var province = $('#doctor1_pro_id').val();
+        var city = $('#doctor1_city_id').val();
+        var hospital = $('#doctor1_hos_id').val();
+        var department = $('#doctor1_dep').val();
+        var name = $('#search_doctor1_name').val();
+        jQuery("#doctor1s_list").jqGrid('setGridParam', {url: '/doctor_friendships/get_doctors?province_id=' + province + '&city_id=' + city + '&hospital_id=' + hospital + '&department_id=' + department + '&name=' + name}).trigger("reloadGrid")
+    }
+    $('#search_doc1_btn').click(function () {
+        search_doc1s()
+    });
+    //清空k
+    $('#clear_doc1_btn').click(function () {
+        $('#doctor1_pro_id').select2("val", "");
+        $('#doctor1_city_id').select2("val", "");
+        $('#doctor1_hos_id').select2("val", "");
+        $('#doctor1_dep').select2("val", "");
+        $('#search_doctor1_name').val('');
+    });
+</script>

@@ -171,4 +171,19 @@ class ApplicationController < ActionController::Base
     return id
   end
 
+  # 判断文件或者图片时否存在
+  # 参数bucket用于判断要在云存储的哪个bucket里面找
+  def aliyun_file_exit(file_name, bucket)
+
+    # 链接阿里云方法
+    Aliyun::OSS::Base.establish_connection!(
+        :server => Settings.aliyunOSS.beijing_service, #可不填,默认为此项
+        :access_key_id => 'h17xgVZatOgQ6IeJ',
+        :secret_access_key => '6RrQAXRaurcitBPzdQ18nrvEWjWuWO'
+    )
+    # @flag=OSSObject.exists? '00b3d574-e16f-400f-854a-d6ade58ec75e.png','mimas-img'
+    puts "=============#{OSSObject.exists? file_name, bucket}"
+    @flag=OSSObject.exists? file_name, bucket
+  end
+
 end

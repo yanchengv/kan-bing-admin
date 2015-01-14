@@ -1,0 +1,166 @@
+<style>
+    .select2-container {
+        width: 150px;
+
+    }
+</style>
+<hr>
+<% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员' %>
+    省：<select id="patient_pro_id" name="patient_pro_id" style="width: 150px;">
+  <option value="">---请选择---</option>
+  <% if !@provinces.nil? && !@provinces.empty? %>
+      <% @provinces.each do |pro| %>
+          <option value="<%= pro.id %>"><%= pro.name %></option>
+      <% end %>
+  <% end %>
+</select>
+    市：
+    <span><select id="patient_city_id" style="width: 150px;">
+      <option value="all">---请选择---</option>
+    </select></span>
+    医院：
+    <span><select id="patient_hos_id" style="width: 150px;">
+      <option value="">---请选择---</option>
+    </select></span><br>
+    科室：
+    <span><select id="patient_dep" style="width: 150px;">
+      <option value="all">---请选择---</option>
+    </select></span>
+    姓名：<input type="text" id="search_patient_name" onkeydown="search_keydown2(event)">
+    <button id="search_pat_btn">搜索</button>
+    &nbsp;
+    <button id="clear_pat_btn">清空</button>
+<% end %>
+<table id="patients_list"></table>
+<div id="page_patient"></div>
+<script>
+    function search_keydown2(event) {
+        if (event.keyCode == 13)
+            search_patients();
+    }
+    jQuery("#patients_list").jqGrid({
+        url: '/treatment_relationships/get_patients?str=default',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '姓名', '省', '市', '医院', '科室'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true, width: 120},
+            { name: 'name', index: 'name', align: "center", width: 120},
+            {name: 'province_name', index: 'province_name', editable: true, search: false, width: 120 },
+            {name: 'city_name', index: 'city_name', editable: true, search: false, width: 120},
+            {name: 'hospital_name', index: 'hospital_name', editable: true, search: false, width: 120 },
+            {name: 'department_name', index: 'department_name', editable: true, search: false, width: 120 }
+        ],
+        rownumbers: true,
+        page: 1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "patients",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        closeAfterAdd: true,
+        pager: jQuery('#page_patient'),
+        multiselect: true,
+        rowNum: 10,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "患者列表"
+    });
+    jQuery("#patients_list").jqGrid('navGrid', '#page_patient', {
+                cloneToTop: true, add: false, edit: false,
+                del: false, view: false, search: false,
+                refreshtext: "更新", refreshtitle: "更新"}
+    );
+    $("#patient_pro_id").on("change", function (event) {
+        var pro_id = $('#patient_pro_id').val();
+        $.get('/doctor_friendships/get_cities?province_id=' + pro_id, function (data) {
+            var res = '<select width=300><option value="">---请选择---</option>';
+            for (var k in data['cities']) {
+                if (data['cities'].hasOwnProperty(k)) {
+                    res += '<option value="' + k + '">' + data['cities'][k] + '</option> '
+                }
+            }
+            res += '</select>';
+            $("#patient_city_id").html(res);
+            search_patients();
+        }); // end get
+    });
+    $("#patient_city_id").on("change", function (event) {
+        var city_id = $('#patient_city_id').val();
+        $.get('/doctor_friendships/get_hospitals?city_id=' + city_id, function (data) {
+            var res = '<select width=300><option value="">---请选择---</option>';
+            for (var k in data['hospitals']) {
+                if (data['hospitals'].hasOwnProperty(k)) {
+                    res += '<option value="' + k + '">' + data['hospitals'][k] + '</option> '
+                }
+            }
+            res += '</select>';
+            $("#patient_hos_id").html(res);
+            search_patients();
+        }); // end get
+    });
+    $("#patient_hos_id").on("change", function (event) {
+        var hos_id = $('#patient_hos_id').val();
+        $.get('/doctor_friendships/get_departments?hospital_id=' + hos_id, function (data) {
+            var res = '<select width=300><option value="">---请选择---</option>';
+            for (var k in data['departments']) {
+                if (data['departments'].hasOwnProperty(k)) {
+                    res += '<option value="' + k + '">' + data['departments'][k] + '</option> '
+                }
+            }
+            res += '</select>';
+            $("#patient_dep").html(res);
+            search_patients();
+        }); // end get
+    });
+    $("#patient_dep").on("change", function (event) {
+        search_patients();
+    });
+
+
+    $(function () {
+        $("#patient_hos_id").select2();
+        $("#patient_dep").select2();
+        $('#patient_pro_id').select2();
+        $('#patient_city_id').select2();
+    })
+    //搜索
+    function search_patients() {
+        var province = $('#patient_pro_id').val();
+        var city = $('#patient_city_id').val();
+        var hospital = $('#patient_hos_id').val();
+        var department = $('#patient_dep').val();
+        var name = $('#search_patient_name').val();
+        jQuery("#patients_list").jqGrid('setGridParam', {url: '/treatment_relationships/get_patients?province_id=' + province + '&city_id=' + city + '&hospital_id=' + hospital + '&department_id=' + department + '&name=' + name}).trigger("reloadGrid")
+    }
+    $('#search_pat_btn').click(function () {
+        search_patients()
+    });
+    //清空k
+    $('#clear_pat_btn').click(function () {
+        $('#patient_pro_id').select2("val", "");
+        $('#patient_city_id').select2("val", "");
+        $('#patient_hos_id').select2("val", "");
+        $('#patient_dep').select2("val", "");
+        $('#search_patient_name').val('');
+    });
+
+</script>
