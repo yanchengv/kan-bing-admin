@@ -94,6 +94,52 @@ class PatientsController < ApplicationController
     render :json => @objJSON.as_json
   end
 
+  def show_oth_pat
+    # hos_id = current_user.hospital_id
+    # dep_id = current_user.department_id
+    noOfRows = params[:rows]
+    page = params[:page]
+    sql = 'true'
+    # if !hos_id.nil? && hos_id != ''
+    #   @hos = Hospital.find(hos_id)
+    #   sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%')"
+    # end
+    if params[:name] && params[:name] != ''
+      sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
+    end
+    if params[:email] && params[:email] != ''
+      sql << " and email like '%#{params[:email]}%'"
+    end
+    if params[:mobile_phone] && params[:mobile_phone] != ''
+      sql << " and mobile_phone like '%#{params[:mobile_phone]}%'"
+    end
+    if params[:credential_type_number] && params[:credential_type_number] != ''
+      sql << " and credential_type_number like '%#{params[:credential_type_number]}%'"
+    end
+    @total=0
+    # records = Patient.find_by_sql("SELECT FOUND_ROWS() as rows_count")
+    # records = records[0].rows_count
+    # records = Patient.select("id").where(sql).count
+    records = Patient.select("count(id) as rows_count").where(sql)
+    records = records[0].rows_count
+    if !noOfRows.nil?
+      if records%noOfRows.to_i == 0
+        @total = records/noOfRows.to_i
+      else
+        @total = (records/noOfRows.to_i)+1
+      end
+    end
+    if page.to_i>@total.to_i
+      page = 1
+    end
+    @patients = Patient.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
+    @rows=@patients.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}}])
+    @objJSON = {total:@total,patients:@rows,page:page,records:records}
+
+    render :json => @objJSON.as_json
+  end
+
+
   def show
   end
 
@@ -151,10 +197,25 @@ class PatientsController < ApplicationController
   # POST /patients
   # POST /patients.json
   def create
-    @patient = Patient.new(patient_params)
-    # render json:{success:true,data:@patient}
-    if @patient.save
-      render json: {success:true,data:@patient}
+    sql = 'false'
+    if params[:patient][:email] && params[:patient][:email] != ''
+      sql << " or email = '#{params[:patient][:email]}'"
+    end
+    if params[:patient][:mobile_phone] && params[:patient][:mobile_phone] != ''
+      sql << " or mobile_phone = '#{params[:patient][:mobile_phone]}'"
+    end
+    if params[:patient][:credential_type_number] && params[:patient][:credential_type_number] != ''
+      sql << " or credential_type_number = '#{params[:patient][:credential_type_number]}'"
+    end
+    @sear_pat = Patient.select("id").where(sql).first
+    if @sear_pat.nil? && !params[:patient][:name].nil? && params[:patient][:name] != ''
+      @patient = Patient.new(patient_params)
+      # render json:{success:true,data:@patient}
+      if @patient.save
+        render json: {success:true,data:@patient}
+      else
+        render json: {success:false,data:'保存失败.'}
+      end
     else
       render json: {success:false,data:'保存失败.'}
     end
@@ -172,8 +233,23 @@ class PatientsController < ApplicationController
   # PATCH/PUT /patients/1
   # PATCH/PUT /patients/1.json
   def update
-    if @patient.update(patient_params)
-      render json:{success:true}
+    sql = 'false'
+    if params[:patient][:email] && params[:patient][:email] != ''
+      sql << " or email = '#{params[:patient][:email]}'"
+    end
+    if params[:patient][:mobile_phone] && params[:patient][:mobile_phone] != ''
+      sql << " or mobile_phone = '#{params[:patient][:mobile_phone]}'"
+    end
+    if params[:patient][:credential_type_number] && params[:patient][:credential_type_number] != ''
+      sql << " or credential_type_number = '#{params[:patient][:credential_type_number]}'"
+    end
+    @sear_pat = Patient.select("id").where(sql).first
+    if (@sear_pat.nil? || @sear_pat.id.to_i == @patient.id.to_i) && !params[:patient][:name].nil? && params[:patient][:name] != ''
+      if @patient.update(patient_params)
+        render json:{success:true}
+      else
+        render json:{success:false}
+      end
     else
       render json:{success:false}
     end
@@ -197,10 +273,16 @@ class PatientsController < ApplicationController
     if !@patients.empty?
       @patients.each do |pat|
         if !pat.nil?
-          if !pat.photo.nil? && pat.photo != ''
-            deleteFromAliyun('avatar/'+pat.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+          if current_user.admin_type == '网站管理员'
+            if !pat.photo.nil? && pat.photo != '' && aliyun_file_exit('avatar/'+pat.photo,Settings.aliyunOSS.image_bucket)
+              deleteFromAliyun('avatar/'+pat.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+            end
+            pat.destroy
+          elsif current_user.admin_type == '医院管理员'
+            pat.update_attributes(hospital_id:nil,department_id:nil)
+          elsif current_user.admin_type == '科室管理员'
+            pat.update_attributes(department_id:nil)
           end
-          pat.destroy
         end
       end
     end
@@ -346,6 +428,49 @@ class PatientsController < ApplicationController
         render json:{success:true,content:'此证件号可以使用'}
       end
     end
+  end
+
+  def matchPatient
+    if !current_user.hospital_id.nil? && current_user.hospital_id != ''
+      @hospitals = Hospital.where(id:current_user.hospital_id)
+      if !current_user.department_id.nil? && current_user.department_id != ''
+        @departments = Department.select("id","name").where(id:current_user.department_id)
+      else
+        @departments = Department.select("id","name").where(hospital_id:current_user.hospital_id)
+      end
+    else
+      @hospitals = Hospital.select("id","name").all
+      # @departments = Department.all
+    end
+    render partial: 'patients/matchPatient'
+  end
+
+  def forPatients
+    pat_ids = params[:pat_ids].to_s
+    p params[:pat_ids]
+    p pat_ids
+    pat_ids_arr=pat_ids.split(',')
+    p pat_ids_arr
+    if pat_ids_arr.length > 0
+      @patients = Patient.where(id:pat_ids_arr)
+      if !@patients.empty?
+        @patients.each do |pat|
+          if params[:hos_id] != ''
+            pat.update(hospital_id:params[:hos_id])
+            # if !pat.hospital.nil?
+            #   pat.update_attributes(:hospital_name => pat.hospital.name)
+            # end
+          end
+          if params[:dep_id] != ''
+            pat.update(department_id:params[:dep_id])
+            # if !pat.department.nil?
+            #   pat.update_attributes(:department_name => pat.department.name)
+            # end
+          end
+        end
+      end
+    end
+    render json: {success:true}
   end
 
   def delete_image     #点击取消按钮执行该方法

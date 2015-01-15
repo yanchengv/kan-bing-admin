@@ -45,7 +45,7 @@
     <div class="">
       <div style="display:inline-block;width:49%">
         <%= f.label '证件类型' %><br>
-        <select id="patient_credential_type" name="patient[credential_type]" >
+        <select id="patient_credential_type" name="patient[credential_type]" onchange="change_type()">
           <option value="">---请选择---</option>
           <option id='居民身份证' value="居民身份证">居民身份证</option>
           <option id='军官证' value="军官证">军官证</option>
@@ -385,7 +385,7 @@
 //                    var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val()
 //                    jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }else{
-                    alert('失败!')
+                    alert('修改失败!')
                 }
 
             }
@@ -404,7 +404,7 @@
 //                    var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val()
 //                    jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
                 }else{
-                    alert('失败!')
+                    alert('添加失败!')
                 }
 
             }

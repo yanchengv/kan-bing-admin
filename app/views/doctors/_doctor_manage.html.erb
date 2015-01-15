@@ -9,14 +9,16 @@
   <div id="doc_create_or_edit_form">
   </div>
 </div>
+<div id="warn"></div>
 <div style="margin:10px 20px;">
 <!--<h1>Listing doctors</h1>-->
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
-      <% if current_user.admin_type == '科室管理员'%>
+      <%# if current_user.admin_type == '科室管理员'%>
       <div style="margin-bottom: 10px;" id="search_f_doc">
         姓名：<input type="text" id="search_oth_name"> 证件号码：<input type="text" id="search_oth_number" >
         邮箱：<input type="text" id="search_oth_email"> 手机号：<input type="text" id="search_oth_tel">
-        <button id="search_btn2" onclick="search_by2()">本科室搜索</button>&nbsp;<button id="search_hos_btn2" onclick="search_hos_by2()" >本医院搜索</button>&nbsp;<button id="clear_btn2" >清空</button>
+        <button id="search_btn2" onclick="search_by2()">本医院/科室搜索</button>&nbsp;
+        <button id="search_hos_btn2" onclick="search_hos_by2()" >全库搜索</button>&nbsp;<button id="clear_btn2" >清空</button>
       </div>
       <script>
           function search_hos_by2(){
@@ -28,14 +30,14 @@
               var url= "/doctors/show_oth_doc?name=" + name + "&email=" + email + "&mobile_phone=" + tel+ "&credential_type_number=" + number
              url = encodeURI(url)  //处理 ｕｒｌ中文问题
              jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
-             $('#add_list12').css('display','none')
+//             $('#add_list12').css('display','none')
              $('#edit_list12').css('display','none')
              $('#view_list12').css('display','none')
              $('#del_list12').css('display','none')
              $('#refresh_list12').css('display','none')
              $('#sendPhoneDoctor').css('display','none')
              $('#sendEmailDoctor').css('display','none')
-             $("#list12").navButtonAdd('#pager12', {position: 'last', title: '添加为本科室医生', caption: '添加为本科室医生',id:'matchDoctor', onClickButton: matchDoctor});
+             $("#list12").navButtonAdd('#pager12', {position: 'last', title: '添加为本医院/本科室医生', caption: '添加为本医院/本科室医生',id:'matchDoctor', onClickButton: matchDoctor});
           }
           function search_by2() {
               var dep_flag = $("input[type=radio]:checked").val()
@@ -65,7 +67,7 @@
               $('#search_oth_number').val('');
           });
       </script>
-    <% end %>
+    <%# end %>
 <% else %>
 <div id="search_div" style="margin-bottom: 10px">
   省：<select  id="doctor_pro_id" name="doctor_pro_id" onchange="doc_search_pro()" >
@@ -300,6 +302,40 @@
             "取消": cancelContact
         }
     });
+    $("#warn").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        height:800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "查看该医生": search_doc,
+            "修改证件号": function() {$("#warn").dialog("close")}
+    }
+    });
+    function search_doc(){
+        console.log($('#doctor_credential_type_number').val())
+        $('#search_oth_number').val($('#doctor_credential_type_number').val());
+        search_hos_by2()
+        $("#warn").dialog("close")
+        $("#consoleDlg").dialog("close")
+        $("#warn").dialog("close")
+    }
 
     var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
     //    自定义按钮
@@ -326,6 +362,7 @@
     $("#list12").navButtonAdd('#pager12', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhoneDoctor', onClickButton: sendPhoneDoctor});
 
     function matchDoctor() {
+        selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
         if (selectedIds.length>0) {
             $.ajax({
                 type:'get',
@@ -348,6 +385,7 @@
     }
 
     function forDoctor() {
+        selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
         $.ajax({
             type: 'get',
             url: '/doctors/forDoctors?doc_ids=' + selectedIds + '&hos_id=' +$('#doctor_hospital_id').val() + '&dep_id=' + $('#doctor_department_id').val(),
@@ -359,6 +397,7 @@
     }
 
     function openDialog4Adding() {
+        selectedIds  = null
         $.ajax({
             type:'get',
             url:'/doctors/new',
@@ -377,6 +416,7 @@
 
     };
     function openDialog4Updating(rowid) {
+        selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
         if (selectedIds.length==1){
             $.ajax({
                 type: 'get',
@@ -423,11 +463,11 @@
     var birthday_flag=false
     var two_blank=true
     function check_credential_type_number(value){
-        row_id = jQuery("#list12").jqGrid('getGridParam', 'selrow');
+        row_id = selectedIds//jQuery("#list12").jqGrid('getGridParam', 'selrow');
         if ($('#doctor_credential_type').val()=='居民身份证') {
             var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
             if (reg.test(value) === false) {
-                alert('生份证号格式错误!')
+                alert('身份证号格式错误!')
                 credential_type_number_flag = false
                 $('#doctor_credential_type_number').addClass('error_remind')
             } else {
@@ -445,7 +485,19 @@
                         }else{
                             credential_type_number_flag=false;
                             $('#doctor_credential_type_number').addClass('error_remind')
-                            alert('身份证号码重复!')
+                            <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+                                var consoleDlg = $("#warn");
+                                $('#warn').html('该身份证医生已存在!')
+                                var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+                                dialogButtonPanel.find("button:not(:contains('证件号'))").hide();
+                                dialogButtonPanel.find("button:contains('查看该医生')").show();
+                                dialogButtonPanel.find("button:contains('修改证件号')").show();
+                                consoleDlg.dialog("option", "height", "240");
+                                consoleDlg.dialog("option", "width", "460");
+                                consoleDlg.dialog("option", "title", "提示").dialog("open");
+                            <% else %>
+                                alert('身份证号码重复!')
+                            <% end %>
                         }
                     }
                 })
@@ -453,7 +505,7 @@
         }
     }
     function check_phone(phone,a){
-        row_id = jQuery("#list12").jqGrid('getGridParam', 'selrow');
+        row_id = selectedIds//jQuery("#list12").jqGrid('getGridParam', 'selrow');
         var c_phone=/1[3|5|7|8|][0-9]{9}/;
         var re_phone= new RegExp(c_phone);
         if (phone!=''){
@@ -503,7 +555,7 @@
         };
     };
     function check_email(email,a) {
-        row_id = jQuery("#list12").jqGrid('getGridParam', 'selrow');
+        row_id = selectedIds//jQuery("#list12").jqGrid('getGridParam', 'selrow');
         var c_email=/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
         var re_email = new RegExp(c_email);
         if (email!=''){
@@ -586,6 +638,7 @@
         addContact()
     }
     function deleteContact(){
+        selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
         $.ajax({
             type: 'delete',
             url: '/doctors/' + selectedIds,
@@ -604,6 +657,7 @@
     }
 
     function cancelContact() {
+        selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
         var image = $('#user_photo_image').val()
         if ($.trim(image)==''){
             window.parent.$("#consoleDlg").dialog("close");
@@ -622,53 +676,6 @@
             })
         }
     }
-
-//    添加医生
-    function addDoctor(){
-        $.ajax({
-            type:'get',
-            url:'/doctors/new',
-            success:function(data){
-                $('#create_or_edit_form').html(data)
-
-            }
-        })
-        $('#create_or_edit_form').modal('show')
-    };
-// 删除医生
-    function deleteDoctor(){
-        if(confirm("确定要删除吗？") ) {
-            $.ajax({
-                type: 'delete',
-                url: '/doctors/' + selectedIds + '',
-                success: function (data) {
-                    if (data['success']) {
-                        alert('删除成功!')
-                    } else {
-                        alert('删除失败!')
-                    }
-                }
-            })
-        }
-        $('#refresh_list12').click()
-//        var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
-//        jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
-    };
-// 修改医生
-    function updateDoctor(){
-        if (selectedIds.length==1){
-            $.ajax({
-                type:'get',
-                url:'/doctors/'+selectedIds+'/edit',
-                success:function(data){
-                    $('#create_or_edit_form').html(data)
-                }
-            })
-            $('#create_or_edit_form').modal('show')
-        }else{
-            alert('必须且只能选择一条记录!')
-        }
-    };
 
 // 发送邮箱验证码
     function sendEmailDoctor(){
