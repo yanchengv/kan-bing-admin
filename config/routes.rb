@@ -357,6 +357,9 @@ Rails.application.routes.draw do
       get 'check_email', to:'patients#check_email'
       get 'check_credential_type_number', to:'patients#check_credential_type_number'
       post 'delete_image', to:'patients#delete_image'
+      get 'show_oth_pat', to:'patients#show_oth_pat'
+      get 'forPatients', to: 'patients#forPatients'
+      get 'matchPatient', to: 'patients#matchPatient'
     end
   end
 

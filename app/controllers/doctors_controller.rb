@@ -66,12 +66,27 @@ class DoctorsController < ApplicationController
           @doctors_all = nil
           sql = "true"
           if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
-            @hos = Hospital.find(hos_id)
-            @dep = Department.find(dep_id)
-            sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%') and (department_id=#{dep_id} or department_name like '%#{@dep.name}%')"
+            @hos = Hospital.where(id:hos_id).first
+            @dep = Department.where(id:dep_id).first
+            if !@hos.nil?
+              hos_name = @hos.name
+            else
+              hos_name = '不存在'
+            end
+            if !@dep.nil?
+              dep_name = @dep.name
+            else
+              dep_name = '不存在'
+            end
+            sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{hos_name}%') and (department_id=#{dep_id} or department_name like '%#{dep_name}%')"
           elsif !hos_id.nil? && hos_id != ''
-            @hos = Hospital.find(hos_id)
-            sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%')"
+            @hos = Hospital.where(id:hos_id).first
+            if !@hos.nil?
+              hos_name = @hos.name
+            else
+              hos_name = '不存在'
+            end
+            sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{hos_name}%')"
           end
           if !pro_id.nil? && pro_id != '' && !city_id.nil? && city_id != ''
             @pro = Province.find(pro_id)
@@ -154,15 +169,15 @@ class DoctorsController < ApplicationController
   end
 
   def show_oth_doc
-    hos_id = current_user.hospital_id
-    dep_id = current_user.department_id
+    # hos_id = current_user.hospital_id
+    # dep_id = current_user.department_id
     noOfRows = params[:rows]
     page = params[:page]
     sql = 'true'
-    if !hos_id.nil? && hos_id != ''
-      @hos = Hospital.find(hos_id)
-      sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%')"
-    end
+    # if !hos_id.nil? && hos_id != ''
+    #   @hos = Hospital.find(hos_id)
+    #   sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%')"
+    # end
     if params[:name] && params[:name] != ''
       sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
     end
@@ -314,9 +329,24 @@ class DoctorsController < ApplicationController
     if !@city.nil?
       params[:doctor][:city_name] = @city.name
     end
-    @doctor = Doctor.new(doctor_params)
-    if @doctor.save
-      render json:{success:'true',data:@doctor}
+    sql = 'false'
+    if params[:doctor][:email] && params[:doctor][:email] != ''
+      sql << " or email = '#{params[:doctor][:email]}'"
+    end
+    if params[:doctor][:mobile_phone] && params[:doctor][:mobile_phone] != ''
+      sql << " or mobile_phone = '#{params[:doctor][:mobile_phone]}'"
+    end
+    if params[:doctor][:credential_type_number] && params[:doctor][:credential_type_number] != ''
+      sql << " or credential_type_number = '#{params[:doctor][:credential_type_number]}'"
+    end
+    @sear_doc = Doctor.select("id").where(sql).first
+    if @sear_doc.nil? && !params[:doctor][:name].nil? && params[:doctor][:name] != ''
+      @doctor = Doctor.new(doctor_params)
+      if @doctor.save
+        render json:{success:'true',data:@doctor}
+      else
+        render json:{success:'false',data:'保存失败!'}
+      end
     else
       render json:{success:'false',data:'保存失败!'}
     end
@@ -338,20 +368,35 @@ class DoctorsController < ApplicationController
     if params[:doctor][:professional_title] == ''
       params[:doctor][:professional_title] = @doctor.professional_title
     end
-    if @doctor.update(doctor_params)
-      if !@doctor.province2.nil?
-        @doctor.update_attributes(province_name: @doctor.province2.name)
+    sql = 'false'
+    if params[:doctor][:email] && params[:doctor][:email] != ''
+      sql << " or email = '#{params[:doctor][:email]}'"
+    end
+    if params[:doctor][:mobile_phone] && params[:doctor][:mobile_phone] != ''
+      sql << " or mobile_phone = '#{params[:doctor][:mobile_phone]}'"
+    end
+    if params[:doctor][:credential_type_number] && params[:doctor][:credential_type_number] != ''
+      sql << " or credential_type_number = '#{params[:doctor][:credential_type_number]}'"
+    end
+    @sear_doc = Doctor.select("id").where(sql).first
+    if (@sear_doc.nil? || @sear_doc.id.to_i  == @doctor.id.to_i) && !params[:doctor][:name].nil? && params[:doctor][:name] != ''
+      if @doctor.update(doctor_params)
+        if !@doctor.province2.nil?
+          @doctor.update_attributes(province_name: @doctor.province2.name)
+        end
+        if !@doctor.city.nil?
+          @doctor.update_attributes(city_name: @doctor.city.name)
+        end
+        if !@doctor.hospital.nil?
+          @doctor.update_attributes(hospital_name: @doctor.hospital.name)
+        end
+        if !@doctor.department.nil?
+          @doctor.update_attributes(department_name: @doctor.department.name)
+        end
+        render json:{success:true}
+      else
+        render json:{success:false}
       end
-      if !@doctor.city.nil?
-        @doctor.update_attributes(city_name: @doctor.city.name)
-      end
-      if !@doctor.hospital.nil?
-        @doctor.update_attributes(hospital_name: @doctor.hospital.name)
-      end
-      if !@doctor.department.nil?
-        @doctor.update_attributes(department_name: @doctor.department.name)
-      end
-      render json:{success:true}
     else
       render json:{success:false}
     end
@@ -376,10 +421,16 @@ class DoctorsController < ApplicationController
     if !@doctors.empty?
       @doctors.each do |doc|
         if !doc.nil?
-          if !doc.photo.nil? && doc.photo !='' && aliyun_file_exit('avatar/'+doc.photo,Settings.aliyunOSS.image_bucket)
-            deleteFromAliyun('avatar/'+doc.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+          if current_user.admin_type == '网站管理员'
+            if !doc.photo.nil? && doc.photo !='' && aliyun_file_exit('avatar/'+doc.photo,Settings.aliyunOSS.image_bucket)
+              deleteFromAliyun('avatar/'+doc.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+            end
+            doc.destroy
+          elsif current_user.admin_type == '医院管理员'
+            doc.update_attributes(hospital_id:nil,hospital_name:nil,department_id:nil,department_name:nil)
+          elsif current_user.admin_type == '科室管理员'
+            doc.update_attributes(department_id:nil,department_name:nil)
           end
-          doc.destroy
         end
       end
     end
