@@ -207,22 +207,6 @@ class DoctorsController < ApplicationController
       page = 1
     end
     @doctors = Doctor.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
-    if !@doctors.empty?
-      @doctors.each do |doc|
-        if (doc.province_name.nil? || doc.province_name == '') && !doc.province2.nil?
-          doc.update(province_name:doc.province2.name)
-        end
-        if (doc.city_name.nil? || doc.city_name == '') && !doc.city.nil?
-          doc.update(city_name:doc.city.name)
-        end
-        if (doc.hospital_name.nil? || doc.hospital_name == '' )&& !doc.hospital.nil?
-          doc.update(hospital_name:doc.hospital.name)
-        end
-        if (doc.department_name.nil? || doc.department_name == '') && !doc.department.nil?
-          doc.update(department_name:doc.department.name)
-        end
-      end
-    end
     @rows=@doctors#.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}}])
     @objJSON = {total:@total,doctors:@rows,page:page,records:records}
 
@@ -336,7 +320,7 @@ class DoctorsController < ApplicationController
     if params[:doctor][:mobile_phone] && params[:doctor][:mobile_phone] != ''
       sql << " or mobile_phone = '#{params[:doctor][:mobile_phone]}'"
     end
-    if params[:doctor][:credential_type_number] && params[:doctor][:credential_type_number] != ''
+    if params[:doctor][:credential_type] == '居民身份证' && params[:doctor][:credential_type_number] && params[:doctor][:credential_type_number] != ''
       sql << " or credential_type_number = '#{params[:doctor][:credential_type_number]}'"
     end
     @sear_doc = Doctor.select("id").where(sql).first
@@ -375,7 +359,7 @@ class DoctorsController < ApplicationController
     if params[:doctor][:mobile_phone] && params[:doctor][:mobile_phone] != ''
       sql << " or mobile_phone = '#{params[:doctor][:mobile_phone]}'"
     end
-    if params[:doctor][:credential_type_number] && params[:doctor][:credential_type_number] != ''
+    if params[:doctor][:credential_type] == '居民身份证' && params[:doctor][:credential_type_number] && params[:doctor][:credential_type_number] != ''
       sql << " or credential_type_number = '#{params[:doctor][:credential_type_number]}'"
     end
     @sear_doc = Doctor.select("id").where(sql).first
