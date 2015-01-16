@@ -11,7 +11,7 @@
                           '#', :onclick => "showDoctorPage(#{@doctor.id}, 'str');return false;" %>
 
           <% else %>
-              <%= link_to image_tag("default.png", size: "75x105", alt: @doctor.name, class: "img-responsive index_doc_photo", id: 'img_url'),
+              <%= link_to image_tag("http://mimas-img.oss-cn-beijing.aliyuncs.com/352460d5-f56c-4439-99a1-0c17f8964e41.png", size: "75x105", alt: @doctor.name, class: "img-responsive index_doc_photo", id: 'img_url'),
                           '#', :onclick => "showDoctorPage(#{@doctor.id}, 'str');return false;" %>
           <% end %></dt>
         <dd><b class="doctor_list_name" id="md_doc_name"><%= @doctor.name %></b></dd>
@@ -49,7 +49,7 @@
                                   :class => "pl"
                       %>
                   <% else %>
-                      <%= link_to image_tag("default.png",
+                      <%= link_to image_tag("http://mimas-img.oss-cn-beijing.aliyuncs.com/352460d5-f56c-4439-99a1-0c17f8964e41.png",
                                             id: "img_url",
                                             src: doctor.photo,
                                             size: "55x77",
