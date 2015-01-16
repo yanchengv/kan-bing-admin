@@ -215,7 +215,7 @@ class DoctorsController < ApplicationController
   def get_doctor_to_page
     @doctor = Doctor.find(params[:id])
     if !@doctor.photo.nil? && @doctor.photo != ''
-      if aliyun_file_exit("avatar/#{@doctor.photo}" , Settings.aliyunOSS.image_bucket)
+      if aliyun_file_exit("avatar/#{@doctor.photo.strip}" , Settings.aliyunOSS.image_bucket) || aliyun_file_exit("avatar/#{@doctor.photo}", Settings.aliyunOSS.image_bucket)
         @doctor.photo = Settings.aliyunOSS.photo_url + @doctor.photo
       else
         @doctor.photo = 'default.png'
