@@ -204,7 +204,7 @@ class PatientsController < ApplicationController
     if params[:patient][:mobile_phone] && params[:patient][:mobile_phone] != ''
       sql << " or mobile_phone = '#{params[:patient][:mobile_phone]}'"
     end
-    if params[:patient][:credential_type_number] && params[:patient][:credential_type_number] != ''
+    if params[:patient][:credential_type] == '居民身份证' && params[:patient][:credential_type_number] && params[:patient][:credential_type_number] != ''
       sql << " or credential_type_number = '#{params[:patient][:credential_type_number]}'"
     end
     @sear_pat = Patient.select("id").where(sql).first
@@ -240,7 +240,7 @@ class PatientsController < ApplicationController
     if params[:patient][:mobile_phone] && params[:patient][:mobile_phone] != ''
       sql << " or mobile_phone = '#{params[:patient][:mobile_phone]}'"
     end
-    if params[:patient][:credential_type_number] && params[:patient][:credential_type_number] != ''
+    if params[:patient][:credential_type] == '居民身份证' && params[:patient][:credential_type_number] && params[:patient][:credential_type_number] != ''
       sql << " or credential_type_number = '#{params[:patient][:credential_type_number]}'"
     end
     @sear_pat = Patient.select("id").where(sql).first
