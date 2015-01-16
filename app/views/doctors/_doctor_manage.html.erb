@@ -462,17 +462,20 @@
     var email_flag=true
     var birthday_flag=false
     var two_blank=true
-    function check_credential_type_number(value){
+    function check_credential_type_number(value,a){
         row_id = selectedIds//jQuery("#list12").jqGrid('getGridParam', 'selrow');
         if ($('#doctor_credential_type').val()=='居民身份证') {
             var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
             if (reg.test(value) === false) {
-                alert('身份证号格式错误!')
+                if (a=='true') {
+                    alert('身份证号格式错误!')
+                }
                 credential_type_number_flag = false
                 $('#doctor_credential_type_number').addClass('error_remind')
             } else {
                 $.ajax({
                     type:'get',
+                    async:false,
                     url:'/doctors/check_credential_type_number?doctor_id='+row_id,
                     data:{credential_type_number:value},
                     success:function(data){
@@ -496,7 +499,9 @@
                                 consoleDlg.dialog("option", "width", "460");
                                 consoleDlg.dialog("option", "title", "提示").dialog("open");
                             <% else %>
+                            if (a=='true') {
                                 alert('身份证号码重复!')
+                            }
                             <% end %>
                         }
                     }
@@ -512,6 +517,7 @@
             if (re_phone.test(phone) && phone.length==11){
                 $.ajax({
                     type:'get',
+                    async:false,
                     url:'/doctors/check_phone?doctor_id='+row_id,
                     data:{phone:phone},
                     success:function(data){
@@ -562,6 +568,7 @@
             if(re_email.test(email)){
                 $.ajax({
                     type:'get',
+                    async:false,
                     url:'/doctors/check_email?doctor_id='+row_id,
                     data:{email:email},
                     success:function(data){
@@ -619,6 +626,8 @@
         var phone = $('#doctor_mobile_phone').val()
         var email = $('#doctor_email').val()
         var name = $('#doctor_name').val()
+        var credential_type_number = $('#doctor_credential_type_number').val()
+        check_credential_type_number(credential_type_number)
         check_phone(phone)
         check_name(name)
         check_email(email)
@@ -631,13 +640,19 @@
         if(credential_type_number_flag && name_flag&&email_flag && phone_flag){
             create_or_update()
         }else{
-            alert("表单填写有误，不能提交表单！");
+            if(credential_type_number_flag){
+                alert("表单填写有误，不能提交表单！");
+            } else {
+                <% if current_user.admin_type == '网站管理员'%>
+                    alert("表单填写有误，不能提交表单！");
+                <% end %>
+            }
         }
     }
     function updateContact(){ // 修改医生
         addContact()
     }
-    function deleteContact(){
+    function deleteContact(){       //删除医生
         selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
         $.ajax({
             type: 'delete',
