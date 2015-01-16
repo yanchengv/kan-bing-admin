@@ -400,12 +400,15 @@
         if ($('#patient_credential_type').val()=='居民身份证') {
             var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
             if (reg.test(value) === false) {
-                alert('身份证号格式错误!')
+                if (a=='true') {
+                    alert('身份证号格式错误!')
+                }
                 $('#patient_credential_type_number').addClass('error_remind')
                 credential_type_number_flag = false
             } else {
                 $.ajax({
                     type:'get',
+                    async:false,
                     url:'/patients/check_credential_type_number?patient_id='+row_id,
                     data:{credential_type_number:value},
                     success:function(data){
@@ -430,7 +433,9 @@
                                 consoleDlg.dialog("option", "width", "460");
                                 consoleDlg.dialog("option", "title", "提示").dialog("open");
                             <% else %>
+                            if (a=='true') {
                                 alert('身份证号码重复!')
+                            }
                             <% end %>
                         }
                     }
@@ -447,6 +452,7 @@
             if (re_phone.test(phone) && phone.length==11){
                 $.ajax({
                     type:'get',
+                    async:false,
                     url:'/patients/check_phone?patient_id='+row_id,
                     data:{phone:phone},
                     success:function(data){
@@ -497,6 +503,7 @@
             if(re_email.test(email)){
                 $.ajax({
                     type:'get',
+                    async:false,
                     url:'/patients/check_email?patient_id='+row_id,
                     data:{email:email},
                     success:function(data){
@@ -552,6 +559,8 @@
         var phone = $('#patient_mobile_phone').val()
         var email = $('#patient_email').val()
         var name = $('#patient_name').val()
+        var credential_type_number = $('#patient_credential_type_number').val()
+        check_credential_type_number(credential_type_number)
         check_phone(phone)
         check_name(name)
         check_email(email)
@@ -562,7 +571,13 @@
             two_blank = true
         }
         if(credential_type_number_flag!=true||name_flag!=true||email_flag==false||phone_flag==false||credential_type_number_flag==false){
-            alert("表单填写有误，不能提交表单！");
+            if(credential_type_number_flag){
+                alert("表单填写有误，不能提交表单！");
+            } else {
+                <% if current_user.admin_type == '网站管理员'%>
+                alert("表单填写有误，不能提交表单！");
+                <% end %>
+            }
         }else{
             create_or_update()
         }
@@ -573,7 +588,7 @@
 
     }
 
-    function deleteContact(id) {    //    编辑患者
+    function deleteContact(id) {    //    删除患者
         $.ajax({
             type: 'delete',
             url: '/patients/' + selectedIds,
