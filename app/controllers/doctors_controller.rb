@@ -218,10 +218,10 @@ class DoctorsController < ApplicationController
       if aliyun_file_exit("avatar/#{@doctor.photo.strip}" , Settings.aliyunOSS.image_bucket) || aliyun_file_exit("avatar/#{@doctor.photo}", Settings.aliyunOSS.image_bucket)
         @doctor.photo = Settings.aliyunOSS.photo_url + @doctor.photo
       else
-        @doctor.photo = 'default.png'
+        @doctor.photo = 'http://mimas-img.oss-cn-beijing.aliyuncs.com/352460d5-f56c-4439-99a1-0c17f8964e41.png'
       end
     else
-      @doctor.photo = 'default.png'
+      @doctor.photo = 'http://mimas-img.oss-cn-beijing.aliyuncs.com/352460d5-f56c-4439-99a1-0c17f8964e41.png' #默认图片
     end
 
     if @doctor
