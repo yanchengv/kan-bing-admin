@@ -1,6 +1,9 @@
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">医嘱名：<input type="text" id="advice_title" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_advice_btn">搜索</button>&nbsp;<button id="clear_advice_btn" >清空</button>
+    <table id="advice_type_list"></table>
+    <div id="page_advice_type"></div>
+    <br>
+    <div style="margin-bottom: 10px;">医嘱类型:<select id="advice_type"><option value="">---请选择---</option> <% @advice_types.each do |type|%><option value="<%= type.id%>"><%= type.type_name %></option> <%end%></select>&nbsp;医嘱名：<input type="text" id="advice_title" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_advice_btn">搜索</button>&nbsp;<button id="clear_advice_btn" >清空</button>
     </div>
     <table id="advice_list"></table>
     <div id="page_advice"></div>
@@ -8,17 +11,97 @@
 </div>
 
 <script type="text/javascript">
+    $(function () {
+        $("#advice_type").select2();
+    })
+    jQuery("#advice_type_list").jqGrid({
+        url: '/advice_types/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '类型名称'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'type_name', index: 'type_name', align: "center", editable: true}
+        ],
+        rownumbers: true,
+        hiddengrid: true,
+        page: 1,
+        rowList: [5, 10, 15],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "advice_types",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        onSelectRow: function (rowid) {
+            jQuery("#advice_list").jqGrid('setGridParam', {url: "/medical_advices/index_show?advice_type_id=" + rowid }).trigger("reloadGrid");
+        },
+        editurl: '/advice_types/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_advice_type'),
+        rowNum: 10,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "医嘱类型管理"
+    });
+    jQuery("#advice_type_list").jqGrid('navGrid', '#page_advice_type', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+    );
     jQuery("#advice_list").jqGrid({
         url: '/medical_advices/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: [ 'ID', '医嘱名', '创建人', '创建时间', '类型'],
+        colNames: [ 'ID', '医嘱名', '创建人', '创建时间', '类型', '所属类型'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
             { name: 'title', index: 'title', align: "center", editable: true},
             { name: 'created_by_name', index: 'created_by_name', align: "center", editable: false},
             { name: 'created_at', index: 'created_at', align: "center", editable: false, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }},
-            { name: 'advice_type', index: 'advice_type', align: "center", editable: true}
+            { name: 'advice_type_id', index: 'advice_type_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: "select", editoptions: {
+                dataInit: function (element) {
+                    $(element).select2();
+                },
+                style: "width:158px",
+                value: function () {
+                    var positions;
+                    $.ajax({
+                        url: "/medical_advices/get_advice_types",
+                        async: false,
+                        success: function (data) {
+                            positions = data.advice_types;
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert(textStatus);
+                        }
+                    });
+                    return positions;
+                }
+            }},
+            { name: 'type_name', index: 'type_name', align: "center", editable: false, jsonmap: 'advice_type.type_name'}
         ],
         rownumbers: true,
         page:1,
@@ -89,8 +172,9 @@
         }
     }
     function search_advice(){
-        var version_num = $('#advice_title').val();
-        jQuery("#advice_list").jqGrid('setGridParam', {url: "/medical_advices/index_show?version_num=" + version_num }).trigger("reloadGrid");
+        var title = $('#advice_title').val();
+        var type = $('#advice_type').val();
+        jQuery("#advice_list").jqGrid('setGridParam', {url: "/medical_advices/index_show?title=" + title + '&advice_type_id=' + type }).trigger("reloadGrid");
     }
     //搜索advice
     $('#search_advice_btn').click(function () {
@@ -103,5 +187,6 @@
     //清空k
     $('#clear_advice_btn').click(function () {
         $('#advice_title').val('');
+        $('#advice_type').select2("val", "");
     });
 </script>

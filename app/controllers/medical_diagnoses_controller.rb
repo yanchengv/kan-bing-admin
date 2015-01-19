@@ -5,6 +5,7 @@ class MedicalDiagnosesController < ApplicationController
   # GET /medical_diagnoses
   # GET /medical_diagnoses.json
   def index
+    @diagnose_types = DiagnoseType.all
     render :partial => 'medical_diagnoses/medical_diagnoses_manage'
   end
 
@@ -13,8 +14,8 @@ class MedicalDiagnosesController < ApplicationController
     if params[:title] && params[:title] != '' && params[:title] != 'null'
       sql << " and title like '%#{params[:title]}%'"
     end
-    if params[:diagnose_type] && params[:diagnose_type] != '' && params[:diagnose_type] != 'null'
-      sql << " and diagnose_type = #{params[:diagnose_type]}"
+    if params[:diagnose_type_id] && params[:diagnose_type_id] != '' && params[:diagnose_type_id] != 'null'
+      sql << " and diagnose_type_id = #{params[:diagnose_type_id]}"
     end
     @medical_diagnoses = MedicalDiagnose.where(sql)
     count = @medical_diagnoses.count
@@ -23,7 +24,16 @@ class MedicalDiagnosesController < ApplicationController
       params[:page] = 1
     end
     @medical_diagnoses = @medical_diagnoses.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-    render :json => {:medical_diagnoses => @medical_diagnoses.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+    render :json => {:medical_diagnoses => @medical_diagnoses.as_json(:include => [{:diagnose_type => {:only => [:id, :type_name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
+  def get_diagnose_types
+    @diagnose_types = DiagnoseType.all
+    diagnose_types = {}
+    @diagnose_types.each do |type|
+      diagnose_types[type.id] = type.type_name
+    end
+    render :json => {:diagnose_types => diagnose_types.as_json}
   end
 
   def oper_action
@@ -126,6 +136,6 @@ class MedicalDiagnosesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def medical_diagnose_params
-      params.permit(:id, :title,:created_by_id,  :created_by_name, :diagnose_type)
+      params.permit(:id, :title,:created_by_id,  :created_by_name, :diagnose_type_id)
     end
 end
