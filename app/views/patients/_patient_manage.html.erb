@@ -396,7 +396,7 @@
     var email_flag=true
     var birthday_flag=false
     var two_blank=true
-    function check_credential_type_number(value){
+    function check_credential_type_number(value,a){
         row_id = selectedIds//jQuery("#list10").jqGrid('getGridParam', 'selrow');
         if ($('#patient_credential_type').val()=='居民身份证') {
             var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;

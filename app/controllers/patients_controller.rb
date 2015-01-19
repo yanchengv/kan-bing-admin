@@ -379,10 +379,10 @@ class PatientsController < ApplicationController
     email=params[:email]
     @user=Patient.where('email=?',email)
     if !@patient.nil?
-      if !@user.empty? && @patient.email!=email
-        render json:{success:false,content:'此邮箱已注册'}
-      else
+      if @user.empty? || @user.first.id.to_i == params[:doctor_id].to_i
         render json:{success:true,content:'此邮箱可以使用'}
+      else
+        render json:{success:false,content:'此邮箱已注册'}
       end
     else
       if !@user.empty?
@@ -398,10 +398,10 @@ class PatientsController < ApplicationController
     @user=Patient.where('mobile_phone=?',mobile_phone)
     p @user
     if !@patient.nil?
-      if !@user.empty? && @patient.mobile_phone!=mobile_phone
-        render json:{success:false,content:'此电话已占用'}
-      else
+      if @user.empty? || @user.first.id.to_i == params[:doctor_id].to_i
         render json:{success:true,content:'电话可以使用'}
+      else
+        render json:{success:false,content:'此电话已占用'}
       end
     else
       if !@user.empty?
@@ -416,10 +416,10 @@ class PatientsController < ApplicationController
     credential_type_number = params[:credential_type_number]
     @user=Patient.where('credential_type_number=?',credential_type_number)
     if !@patient.nil?
-      if !@user.empty? && @patient.credential_type_number!=credential_type_number
-        render json:{success:false,content:'此证件号已占用'}
-      else
+      if @user.empty? || @user.first.id.to_i == params[:doctor_id].to_i
         render json:{success:true,content:'此证件号可以使用'}
+      else
+        render json:{success:false,content:'此证件号已占用'}
       end
     else
       if !@user.empty?
