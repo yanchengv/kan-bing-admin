@@ -5,6 +5,7 @@ class MedicalAdvicesController < ApplicationController
   # GET /medical_advices
   # GET /medical_advices.json
   def index
+    @advice_types = AdviceType.all
     render :partial => 'medical_advices/medical_advices_manage'
   end
 
@@ -13,8 +14,8 @@ class MedicalAdvicesController < ApplicationController
     if params[:title] && params[:title] != '' && params[:title] != 'null'
       sql << " and title like '%#{params[:title]}%'"
     end
-    if params[:advice_type] && params[:advice_type] != '' && params[:advice_type] != 'null'
-      sql << " and advice_type = #{params[:advice_type]}"
+    if params[:advice_type_id] && params[:advice_type_id] != '' && params[:advice_type_id] != 'null'
+      sql << " and advice_type_id = #{params[:advice_type_id]}"
     end
     @medical_advices = MedicalAdvice.where(sql)
     count = @medical_advices.count
@@ -23,7 +24,16 @@ class MedicalAdvicesController < ApplicationController
       params[:page] = 1
     end
     @medical_advices = @medical_advices.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-    render :json => {:medical_advices => @medical_advices.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+    render :json => {:medical_advices => @medical_advices.as_json(:include => [{:advice_type => {:only => [:id, :type_name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
+
+  def get_advice_types
+    @advice_types = AdviceType.all
+    advice_types = {}
+    @advice_types.each do |type|
+      advice_types[type.id] = type.type_name
+    end
+    render :json => {:advice_types => advice_types.as_json}
   end
 
   def oper_action
@@ -125,6 +135,6 @@ class MedicalAdvicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def medical_advice_params
-      params.permit(:id, :title, :created_by_id, :created_by_name, :advice_type)
+      params.permit(:id, :title, :created_by_id, :created_by_name, :advice_type_id)
     end
 end

@@ -130,11 +130,24 @@ Rails.application.routes.draw do
       post 'batch_delete', to: 'apk_versions#batch_delete'
     end
   end
+  resources :advice_types do
+    collection do
+      get 'index_show', to: 'advice_types#show_index'
+      post 'oper_action', to: 'advice_types#oper_action'
+    end
+  end
+  resources :diagnose_types do
+    collection do
+      get 'index_show', to: 'diagnose_types#show_index'
+      post 'oper_action', to: 'diagnose_types#oper_action'
+    end
+  end
   resources :medical_advices do
     collection do
       get 'index_show', to: 'medical_advices#show_index'
       post 'oper_action', to: 'medical_advices#oper_action'
       post 'batch_delete', to: 'medical_advices#batch_delete'
+      get 'get_advice_types', to: 'medical_advices#get_advice_types'
     end
   end
   resources :medical_diagnoses do
@@ -142,6 +155,7 @@ Rails.application.routes.draw do
       get 'index_show', to: 'medical_diagnoses#show_index'
       post 'oper_action', to: 'medical_diagnoses#oper_action'
       post 'batch_delete', to: 'medical_diagnoses#batch_delete'
+      get 'get_diagnose_types', to: 'medical_diagnoses#get_diagnose_types'
     end
   end
   resources :skills do
