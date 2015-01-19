@@ -130,6 +130,20 @@ Rails.application.routes.draw do
       post 'batch_delete', to: 'apk_versions#batch_delete'
     end
   end
+  resources :medical_advices do
+    collection do
+      get 'index_show', to: 'medical_advices#show_index'
+      post 'oper_action', to: 'medical_advices#oper_action'
+      post 'batch_delete', to: 'medical_advices#batch_delete'
+    end
+  end
+  resources :medical_diagnoses do
+    collection do
+      get 'index_show', to: 'medical_diagnoses#show_index'
+      post 'oper_action', to: 'medical_diagnoses#oper_action'
+      post 'batch_delete', to: 'medical_diagnoses#batch_delete'
+    end
+  end
   resources :skills do
     collection do
       get 'index_show', to: 'skills#show_index'
