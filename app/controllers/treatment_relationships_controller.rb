@@ -84,6 +84,17 @@ class TreatmentRelationshipsController < ApplicationController
       end
       render :json => {:patients => @patients.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
     end
+  #获取主治关系
+  def get_main_relations
+    @patients = Patient.where('(doctor_id is not null) and doctor_id != \'\' and doctor_id != 0')
+    count = @patients.count
+    totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
+    if params[:page].to_i > totalpages
+      params[:page] = 1
+    end
+    @patients = @patients.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    render :json => {:patients => @patients.as_json(:include => [{:doctor => {:only => [:id, :name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+  end
 
    #保存关系
   def save_relationship
@@ -91,7 +102,13 @@ class TreatmentRelationshipsController < ApplicationController
       params[:patient_ids].each do |pat_id|
         @treatment_relationships = TreatmentRelationship.where(:patient_id => pat_id, :doctor_id => params[:doctor_id])
         if @treatment_relationships.empty? || @treatment_relationships.nil?
-          TreatmentRelationship.create(:doctor_id => params[:doctor_id], :patient_id => pat_id)
+          if params[:type] == 'ordinary'
+            TreatmentRelationship.create(:doctor_id => params[:doctor_id], :patient_id => pat_id)
+          end
+          if params[:type] == 'main'
+            @patient = Patient.find(pat_id)
+            @patient.update_attributes(:doctor_id => params[:doctor_id])
+          end
         end
       end
       render :json => {:success => true}

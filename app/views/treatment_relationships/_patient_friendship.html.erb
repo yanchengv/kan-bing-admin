@@ -11,6 +11,9 @@
 
     <table id="list_doc2pat_ships"></table>
     <div id="page_doc2pats"></div>
+    <br>
+    <table id="patient_main_doctor"></table>
+    <div id="page_main_docotr"></div>
   </div>
 </div>
 
@@ -45,15 +48,15 @@
             {name: 'doctor_name', index: 'doctor_name',align: "center", jsonmap: 'doctor.name' },
             {name: 'patient_name', index: 'patient_iname', jsonmap:'patient.name', align: "center" }
         ],
-        rowNum: 20,
-        rowList: [10, 20, 30],
+        rowNum: 15,
+        rowList: [10, 15, 20],
         pager: '#page_doc2pats',
         sortname: 'id',
         viewrecords: true,
         sortorder: "desc",
         multiselect: true,
         subGrid: false,
-        caption: "医患关系管理",
+        caption: "医患关系(普通关系)管理",
         rownumbers: true,
         page: 1,
         prmNames: {
@@ -138,12 +141,14 @@
     function save_relationship(){
         var doc_id = jQuery("#doctors_list").jqGrid('getGridParam', 'selrow');
         var pat_ids = jQuery("#patients_list").jqGrid('getGridParam', 'selarrrow');
+        var radio_val = $("input[name='radio_name'][checked]").val();
+        alert(radio_val);
         if (doc_id) {
             if (pat_ids) {
                 $.ajax({
                         type: 'post',
                         url: '/treatment_relationships/save_relationship',
-                        data: {doctor_id: doc_id, patient_ids: pat_ids},
+                        data: {doctor_id: doc_id, patient_ids: pat_ids, type: radio_val},
                         success: function (data) {
                             if (data.success == true) {
                                 jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "/treatment_relationships/index_show"}).trigger("reloadGrid");
@@ -182,4 +187,60 @@
             );
         }
     }
+
+    jQuery("#patient_main_doctor").jqGrid({
+        url: '/treatment_relationships/get_main_relations',
+        datatype: "json",
+        autowidth: true,
+        height: 'auto',
+        colNames: ['ID', '医生名', '患者名'],
+        colModel: [
+            {name: 'id', index: 'id', sorttype: "int", align: "center", hidden: true},
+            {name: 'doctor_name', index: 'doctor_name', align: "center", jsonmap: 'doctor.name' },
+            {name: 'name', index: 'name', align: "center" }
+        ],
+        rowNum: 15,
+        rowList: [10, 15, 20],
+        pager: '#page_main_docotr',
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+     //   multiselect: true,
+        subGrid: false,
+        caption: "医患关系(主治关系)管理",
+        rownumbers: true,
+        page: 1,
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del", // 当在delete模式中提交数据时，操作的名称
+            subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+        },
+        editurl: '/treatment_relationships/oper_action',
+        jsonReader: {
+            root: "patients",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        }
+    });
+    jQuery("#patient_main_doctor").jqGrid('navGrid', '#page_main_docotr', {
+                cloneToTop: true, add: false, edit: false,
+                deltext: "删除", deltitle: "删除", view: false, search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+    ).navButtonAdd('#page_main_docotr', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                add_relation_ship();
+            }, position: "first"});
 </script>
