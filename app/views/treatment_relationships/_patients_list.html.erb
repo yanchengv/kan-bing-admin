@@ -149,7 +149,8 @@
         var hospital = $('#patient_hos_id').val();
         var department = $('#patient_dep').val();
         var name = $('#search_patient_name').val();
-        jQuery("#patients_list").jqGrid('setGridParam', {url: '/treatment_relationships/get_patients?province_id=' + province + '&city_id=' + city + '&hospital_id=' + hospital + '&department_id=' + department + '&name=' + name}).trigger("reloadGrid")
+        var doc_id = jQuery("#doctors_list").jqGrid('getGridParam', 'selrow');
+        jQuery("#patients_list").jqGrid('setGridParam', {url: '/treatment_relationships/get_patients?doctor_id='+ doc_id +'&province_id=' + province + '&city_id=' + city + '&hospital_id=' + hospital + '&department_id=' + department + '&name=' + name}).trigger("reloadGrid")
     }
     $('#search_pat_btn').click(function () {
         search_patients()

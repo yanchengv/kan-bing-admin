@@ -89,7 +89,10 @@ class TreatmentRelationshipsController < ApplicationController
   def save_relationship
     if params[:doctor_id] && params[:patient_ids]
       params[:patient_ids].each do |pat_id|
-        TreatmentRelationship.create(:doctor_id => params[:doctor_id], :patient_id => pat_id)
+        @treatment_relationships = TreatmentRelationship.where(:patient_id => pat_id, :doctor_id => params[:doctor_id])
+        if @treatment_relationships.empty? || @treatment_relationships.nil?
+          TreatmentRelationship.create(:doctor_id => params[:doctor_id], :patient_id => pat_id)
+        end
       end
       render :json => {:success => true}
     else

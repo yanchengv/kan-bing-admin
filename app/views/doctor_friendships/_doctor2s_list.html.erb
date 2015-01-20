@@ -164,7 +164,8 @@
         var hospital = $('#doctor2_hos_id').val();
         var department = $('#doctor2_dep').val();
         var name = $('#search_doctor2_name').val();
-        jQuery("#doctor2_list").jqGrid('setGridParam', {url: '/doctor_friendships/get_doctors?province_id=' + province + '&city_id=' + city + '&hospital_id=' + hospital + '&department_id=' + department + '&name=' + name}).trigger("reloadGrid")
+        var doc_id = $('#doctor1s_list').jqGrid('getGridParam', 'selrow');
+        jQuery("#doctor2_list").jqGrid('setGridParam', {url: '/doctor_friendships/get_doctors?doctor_id='+ doc_id +'&province_id=' + province + '&city_id=' + city + '&hospital_id=' + hospital + '&department_id=' + department + '&name=' + name}).trigger("reloadGrid")
     }
     $('#search_doc2_btn').click(function () {
         search_doc2s()

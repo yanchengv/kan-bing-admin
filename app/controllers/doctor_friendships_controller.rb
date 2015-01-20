@@ -84,7 +84,10 @@ class DoctorFriendshipsController < ApplicationController
   def save_friendship
     if params[:doctor1_id] && params[:doctor2_ids]
       params[:doctor2_ids].each do |doc|
-        DoctorFriendship.create(:doctor1_id => params[:doctor1_id], :doctor2_id => doc)
+        @doctor_friendships = DoctorFriendship.where(:doctor1_id => params[:doctor1_id], :doctor2_id => doc)
+        if @doctor_friendships.empty? || @doctor_friendships.nil?
+          DoctorFriendship.create(:doctor1_id => params[:doctor1_id], :doctor2_id => doc)
+        end
       end
       render :json => {:success => true}
     else
