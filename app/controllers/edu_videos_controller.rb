@@ -123,6 +123,7 @@ class EduVideosController < ApplicationController
     para[:doctor_id]=params[:doctor_id]
     para[:hospital_id] = params[:hospital_id]
     para[:department_id] = params[:department_id]
+    para[:view_permission] = params[:view_permission]
     if !params[:doctor_id].nil?
       @doc = Doctor.find_by_id(params[:doctor_id])
       if !@doc.nil?
@@ -158,7 +159,7 @@ class EduVideosController < ApplicationController
     department_id = params[:department_id]
     if @video.update_attributes(:name => params[:name], :content => params[:content], :doctor_name => @doc.nil? ? '' : @doc.name,
                                 :video_time => params[:video_time], :image_url => params[:image_url], :video_url => params[:video_url],
-                                :doctor_id => params[:doctor_id], :video_type_id => params[:video_type_id], :hospital_id => hospital_id, :department_id => department_id)
+                                :doctor_id => params[:doctor_id], :video_type_id => params[:video_type_id], :hospital_id => hospital_id, :department_id => department_id,:view_permission => params[:view_permission])
       @video_types = VideoType.all
       render :partial => 'edu_videos/edu_video_manage'
     else
@@ -344,6 +345,6 @@ class EduVideosController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def edu_video_params
-      params.permit(:id, :name, :content, :doctor_name, :video_time, :image_url, :video_url, :doctor_id, :video_type_id)
+      params.permit(:id, :name, :content, :doctor_name, :video_time, :image_url, :video_url, :doctor_id, :video_type_id,:view_permission,:department_id,:hospital_id)
     end
 end

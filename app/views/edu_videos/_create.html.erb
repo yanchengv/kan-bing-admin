@@ -76,6 +76,12 @@
           <option value="">请选择</option><%= options_for_select(types_array) %></select></td>
     </tr>
     <tr class="FormData">
+      <td class="CaptionTD">范围:</td>
+      <td class="DataTD">
+       <input type="radio" name="view_permission" value='公开' /> 公开&nbsp;&nbsp;<input type="radio" name="view_permission" value="本医院"/>本医院&nbsp;&nbsp;<input type="radio" name="view_permission" value="本科室"/>本科室
+      </td>
+    </tr>
+    <tr class="FormData">
       <td class="CaptionTD">缩略图:</td>
       <td class="DataTD">
         <input id="image_path2" type="text" disabled="disabled" class='FormElement ui-widget-content ui-corner-all' style="display:inline"/><input id="fakebtn1" style="display:inline" type="button" value="选择图片文件"/>
