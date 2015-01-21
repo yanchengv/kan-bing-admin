@@ -185,7 +185,7 @@ class UsersController < ApplicationController
       sql << " and department_id=#{dep_id}"
     end
     if params[:name] && params[:name] != ''
-      sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
+      sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%')"
     end
     if params[:email] && params[:email] != ''
       sql << " and email like '%#{params[:email]}%'"
@@ -215,7 +215,7 @@ class UsersController < ApplicationController
       sql << " and department_id=#{dep_id}"
     end
     if params[:name] && params[:name] != ''
-      sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
+      sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%')"
     end
     if params[:email] && params[:email] != ''
       sql << " and email like '%#{params[:email]}%'"

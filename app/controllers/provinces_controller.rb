@@ -9,9 +9,7 @@ class ProvincesController < ApplicationController
   def test_index
     sql = 'true'
     if params[:province_name] && params[:province_name] != ''
-      sql << " and name like '%#{params[:province_name]}%'"
-      sql << " or short_name like '%#{params[:province_name]}%'"
-      sql << " or spell_name like '%#{params[:province_name]}%'"
+      sql << " and (name like '%#{params[:province_name]}%' or short_name like '%#{params[:province_name]}%' or spell_name like '%#{params[:province_name]}%')"
     end
     @provinces = Province.where(sql)
     count = @provinces.count
