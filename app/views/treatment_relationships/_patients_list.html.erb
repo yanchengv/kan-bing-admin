@@ -1,13 +1,13 @@
 <style>
     .select2-container {
-        width: 150px;
-
+        width: 120px;
     }
 </style>
+<br>
 <hr>
 <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员' %>
-    省：<select id="patient_pro_id" name="patient_pro_id" style="width: 150px;">
-  <option value="">---请选择---</option>
+    省：<select id="patient_pro_id" name="patient_pro_id" style="width: 120px;">
+  <option value="">--请选择--</option>
   <% if !@provinces.nil? && !@provinces.empty? %>
       <% @provinces.each do |pro| %>
           <option value="<%= pro.id %>"><%= pro.name %></option>
@@ -15,22 +15,23 @@
   <% end %>
 </select>
     市：
-    <span><select id="patient_city_id" style="width: 150px;">
-      <option value="all">---请选择---</option>
+    <span><select id="patient_city_id" style="width: 120px;">
+      <option value="all">--请选择--</option>
     </select></span>
     医院：
-    <span><select id="patient_hos_id" style="width: 150px;">
-      <option value="">---请选择---</option>
-    </select></span><br>
+    <span><select id="patient_hos_id" style="width: 120px;">
+      <option value="">--请选择--</option>
+    </select></span>
     科室：
     <span><select id="patient_dep" style="width: 150px;">
-      <option value="all">---请选择---</option>
+      <option value="all">--请选择--</option>
     </select></span>
-    姓名：<input type="text" id="search_patient_name" onkeydown="search_keydown2(event)">
+    姓名：<input type="text" id="search_patient_name" style="width: 120px;" onkeydown="search_keydown2(event)">
     <button id="search_pat_btn">搜索</button>
     &nbsp;
     <button id="clear_pat_btn">清空</button>
 <% end %>
+<br><br>
 <table id="patients_list"></table>
 <div id="page_patient"></div>
 <br>
@@ -47,12 +48,12 @@
         mtype: 'GET',
         colNames: [ 'ID', '姓名', '省', '市', '医院', '科室'],
         colModel: [
-            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true, width: 120},
-            { name: 'name', index: 'name', align: "center", width: 120},
-            {name: 'province_name', index: 'province_name', editable: true, search: false, width: 120 },
-            {name: 'city_name', index: 'city_name', editable: true, search: false, width: 120},
-            {name: 'hospital_name', index: 'hospital_name', editable: true, search: false, width: 120 },
-            {name: 'department_name', index: 'department_name', editable: true, search: false, width: 120 }
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'name', index: 'name', align: "center", width: 195},
+            {name: 'province_name', index: 'province_name', editable: true, search: false, width: 195, align: "center"},
+            {name: 'city_name', index: 'city_name', editable: true, search: false, width: 195, align: "center"},
+            {name: 'hospital_name', index: 'hospital_name', editable: true, search: false, width: 195, align: "center"},
+            {name: 'department_name', index: 'department_name', editable: true, search: false, width: 195, align: "center"}
         ],
         rownumbers: true,
         page: 1,
@@ -83,7 +84,6 @@
         multiselect: true,
         rowNum: 10,
         altclass: 'altRowsColour',
-        width: '500',
         height: 'auto',
         caption: "患者列表"
     });

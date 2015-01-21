@@ -8,12 +8,11 @@
     <div style="margin-bottom: 10px;">医生名：<input type="text" id="doc_name" onkeydown="search_keydown1(event)">患者名：<input type="text" id="pat_name" onkeydown="search_keydown1(event)">
       <button id="search_ships_btn">搜索</button>&nbsp;<button id="clear_ships_btn">清空</button>
     </div>
-
-    <table id="list_doc2pat_ships"></table>
-    <div id="page_doc2pats"></div>
-    <br>
     <table id="patient_main_doctor"></table>
     <div id="page_main_docotr"></div>
+    <br>
+    <table id="list_doc2pat_ships"></table>
+    <div id="page_doc2pats"></div>
   </div>
 </div>
 
@@ -100,7 +99,7 @@
         autoOpen: false,
         modal: false,    // 设置对话框为模态（modal）对话框
         resizable: true,
-        width: 800,
+        width: 1100,
         position: {
             my: "center",
             at: "center",
@@ -134,7 +133,7 @@
                 var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
                 dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                 dialogButtonPanel.find("button:contains('保存')").show();
-                video_consoleDlg.dialog("option", "width", "800");
+                video_consoleDlg.dialog("option", "width", "1100");
                 video_consoleDlg.dialog("option", "title", "添加").dialog("open");
             }
         });
@@ -152,8 +151,8 @@
                         data: {doctor_id: doc_id, patient_ids: pat_ids, type: radio_val},
                         success: function (data) {
                             if (data.success == true) {
-//                                jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "/treatment_relationships/index_show"}).trigger("reloadGrid");
-//                                jQuery("#patient_main_doctor").jqGrid('setGridParam', {url: "/treatment_relationships/get_main_relations"}).trigger("reloadGrid");
+                                jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "/treatment_relationships/index_show?doctor_id=" + doc_id}).trigger("reloadGrid");
+                                jQuery("#patient_main_doctor").jqGrid('setGridParam', {url: "/treatment_relationships/get_main_relations?doctor_id=" + doc_id}).trigger("reloadGrid");
                                 search_friendship();
                                 $("#relationship_console").dialog("close");
                             } else {

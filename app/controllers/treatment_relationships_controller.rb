@@ -26,6 +26,9 @@ class TreatmentRelationshipsController < ApplicationController
       if !params[:doctor_name].nil? && params[:doctor_name] != '' && params[:doctor_name] != 'null'
         sql << " and doctor_id in (select id from doctors where name = '#{params[:doctor_name]}')"
       end
+      if !params[:doctor_id].nil? && params[:doctor_id] != '' && params[:doctor_id] != 'null'
+        sql << " and doctor_id = #{params[:doctor_id]}"
+      end
       @treatment_relationships = TreatmentRelationship.where(sql)
       count = @treatment_relationships.count
       totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
@@ -92,6 +95,9 @@ class TreatmentRelationshipsController < ApplicationController
     end
     if !params[:patient_name].nil? && params[:patient_name] != ''
       sql << " and name = '#{params[:patient_name]}'"
+    end
+    if !params[:doctor_id].nil? && params[:doctor_id] != ''
+      sql << " and doctor_id = #{params[:doctor_id]}"
     end
     @patients = Patient.where(sql)
     count = @patients.count
