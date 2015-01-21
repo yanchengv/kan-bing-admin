@@ -265,6 +265,7 @@ Rails.application.routes.draw do
       post 'batch_delete', to: 'treatment_relationships#batch_delete'
       post 'save_relationship', to: 'treatment_relationships#save_relationship'
       get 'get_main_relations', to: 'treatment_relationships#get_main_relations'
+      post 'delete_main_associate', to: 'treatment_relationships#delete_main_associate'
     end
 
   end
