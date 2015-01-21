@@ -1,10 +1,13 @@
 <%= javascript_include_tag 'update_password' %>
 <div id="reminder"></div>
-<%= form_for 'admin', :remote => true, :url=>{:action=>'password_update'}, :html => { :method => :post} do |f| %>
+<div class="setting_form">
+<div class="title">密码修改</div>
+<%= form_for 'admin', :remote => true, :url=>{:action=>'password_update'},:html => { :method => :post,:class => ""} do |f| %>
+
     <div class="form-group">
       <label for="old_pass" style="line-height:34px;color:#6b6b6d;"><%= f.label :old_password, '旧密码'%></label>
       <div>
-        <%= f.password_field :old_password, :id=>'old_pass',:style => "", :onblur=> 'check_old(this.value)' %>
+        <%= f.password_field :old_password, :id=>'old_pass',:style => "",:class => 'text_input pull-left', :onblur=> 'check_old(this.value)' %>
         <div id="old_pwd_div" class='pull-left'></div>
       </div>
     </div>
@@ -12,7 +15,7 @@
     <div class="form-group" style="margin-top:10px;clear:both;">
       <label for="pass" style="line-height:34px;color:#6b6b6d;"><%= f.label :new_password,'新密码' %></label>
       <div>
-        <%= f.password_field :new_password, :id=>'pass', :style => "", :onkeyup => 'set_new2(this.value)',:onfocus => 'check_remind(this.value)',:onblur=> 'check_new(this.value)' %>
+        <%= f.password_field :new_password, :id=>'pass', :style => "",:class => 'text_input', :onkeyup => 'set_new2(this.value)',:onfocus => 'check_remind(this.value)',:onblur=> 'check_new(this.value)' %>
         <div id="new_pwd_div" class='pull-left'></div>
       </div>
     </div>
@@ -20,7 +23,7 @@
     <div class="form-group" style="margin-top:10px;clear:both;">
       <label for="pass_con" style="line-height:34px;color:#6b6b6d;"><%= f.label :password_confirmation, '确认密码'%></label>
       <div>
-        <%= f.password_field :password_confirmation , :id=>'pass_con', :style => "",:onblur=> 'check_new2(this.value)'%>
+        <%= f.password_field :password_confirmation , :id=>'pass_con',:class => 'text_input', :style => "",:onblur=> 'check_new2(this.value)'%>
         <div id="new_pwd2_div" class='pull-left'></div>
       </div>
     </div>
@@ -31,3 +34,4 @@
       </div>
     </div>
 <% end %>
+</div>

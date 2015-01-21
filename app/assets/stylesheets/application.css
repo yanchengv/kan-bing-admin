@@ -23,6 +23,7 @@
  *= require admin2s_role2s
  *= require block_contents
  *= require home_menu
+  *= require setting
  */
 .ui-jqdialog-content .DataTD {
     padding: 2px;
@@ -32,12 +33,25 @@
     height: auto;
     margin-right: 30px;
 }
-body{background:url('') #f3f3f3;}
-
+body{background:url('') #f3f3f3;font-family:"Microsoft YaHei",Arial;}
+button,table td,table th,input,a,.ztree *,textarea{font-family:"Microsoft YaHei",Arial !important;}
 .clear {
     clear: both;
     height: 0px;
     overflow: hidden;
     font-size: 0px;
 }
-
+.ui-jqgrid tr.ui-row-ltr td{
+    height:30px;
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space: nowrap;
+}
+.ui-widget{
+    font-family:"Microsoft YaHei",Arial !important;
+    font-size:1em !important;
+}
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight{
+    border:1px solid #9c9d9f !important;/*{borderColorHighlight}*/
+    background:#a8aaad !important;
+}
