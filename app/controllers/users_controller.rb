@@ -87,17 +87,33 @@ class UsersController < ApplicationController
     if @user.password.nil? || @user.password == ''
       @user.password = '123456'
     end
-    if @user.save
-      if @user.doctor
-        @user.doctor.update(is_public:true)
+    if !@user.patient_id.nil? && @user.patient_id != ''
+      @u_p = User.where(:patient_id => @user.patient_id)
+      if @u_p.empty? || @u_p.nil?
+        if @user.save
+          if @user.patient
+            @user.patient.update(is_public: true)
+          end
+          render :json => {:success => true}
+        else
+          render :json => {:success => false, :errors => '患者用户添加失败！'}
+        end
       end
-      if @user.patient
-        @user.patient.update(is_public:true)
-      end
-      render :json => {:success => true}
-    else
-      render :json => {:success => false, :errors => '添加失败！'}
     end
+    if !@user.doctor_id.nil? && @user.doctor_id != ''
+      @u_d = User.where(:doctor_id => @user.doctor_id)
+      if @u_d.empty? || @u_d.nil?
+        if @user.save
+          if @user.doctor
+            @user.doctor.update(is_public: true)
+          end
+          render :json => {:success => true}
+        else
+          render :json => {:success => false, :errors => '医生用户添加失败！'}
+        end
+      end
+    end
+
 
     #respond_to do |format|
     #  if @user.save
