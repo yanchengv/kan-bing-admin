@@ -13,6 +13,12 @@ class UsersController < ApplicationController
     sql = 'true'
     hos_id = current_user.hospital_id
     dep_id = current_user.department_id
+    if params[:user_type] == 'doctor'
+      sql << " and (doctor_id is not null or doctor_id != '')"
+    end
+    if params[:user_type] == 'patient'
+      sql << " and (patient_id is not null or patient_id != '')"
+    end
     if !hos_id.nil? && hos_id != ''
       if !dep_id.nil? && dep_id != ''
         doc = "select id from doctors where hospital_id=#{hos_id} and department_id=#{dep_id}"

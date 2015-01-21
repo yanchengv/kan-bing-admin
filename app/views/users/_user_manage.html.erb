@@ -43,6 +43,7 @@
 </div>
 
 <script type="text/javascript">
+    var user_type = 'doctor'
     function search_keydown(event) {
         if (event.keyCode == 13)
             search_users();
@@ -59,6 +60,19 @@
             $('#patient_div').css('display', 'none');
             $("#pat_list").resetSelection(); //重围选中行
         }
+        var name = $('#search_name').val();
+        var email = $('#search_email').val();
+        var tel = $('#search_tel').val();
+        var search_IDs = $('#search_IDs').val();
+        user_type = value
+        var states = document.getElementsByName("state");
+        var state = '';
+        for (var i = 0; i < states.length; i++) {
+            if (states[i].checked) {
+                state = states[i].value;
+            }
+        }
+        jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?name=" + name + "&email=" + email + "&mobile_phone=" + tel + '&verification_code=' + search_IDs + '&is_enabled=' + state + '&user_type=' + user_type}).trigger("reloadGrid");
         //切换患者或医生时清空form表单
         var grid = $("#user_list");
         grid.setColProp("doctor_id", { editoptions: { defaultValue: ''} });
@@ -74,7 +88,7 @@
                     data: 'text',
                     success: function (data) {
                         if (data.success == true){
-                            jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show"}).trigger("reloadGrid");
+                            jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?user_type=" + user_type}).trigger("reloadGrid");
                         }else{
                             alert('操作失败！');
                         }
@@ -83,10 +97,10 @@
         );
     }
     function search_state(bl){
-        jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?is_enabled=" + bl}).trigger("reloadGrid");
+        jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?is_enabled=" + bl+ "&user_type=" + user_type}).trigger("reloadGrid");
     }
         jQuery("#user_list").jqGrid({
-            url: '/users/index_show',
+            url: '/users/index_show?user_type=doctor',
             datatype: "json",
             mtype: 'GET',
             colNames: ['ID', '用户名', '昵称', '真实姓名', '密码', '确认密码', '证件号', '手机号', '邮箱', '患者ID', '医生ID', '状态值', '状态', '操作'],
@@ -189,7 +203,7 @@
                         data: {ids: ids},
                         success: function (data) {
                             if (data.success == true) {
-                                jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show"}).trigger("reloadGrid");
+                                jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?user_type=" + user_type}).trigger("reloadGrid");
                             } else {
                                 alert('操作失败！');
                             }
@@ -210,7 +224,7 @@
                         data: {ids: ids, is_enabled: bl},
                         success: function (data) {
                             if (data.success == true) {
-                                jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show"}).trigger("reloadGrid");
+                                jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?user_type=" + user_type}).trigger("reloadGrid");
                             } else {
                                 alert('操作失败！');
                             }
@@ -246,7 +260,7 @@
                 state = states[i].value;
             }
         }
-        jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?name=" + name + "&email=" + email + "&mobile_phone=" + tel + '&verification_code=' + search_IDs + '&is_enabled=' + state}).trigger("reloadGrid");
+        jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?name=" + name + "&email=" + email + "&mobile_phone=" + tel + '&verification_code=' + search_IDs + '&is_enabled=' + state + '&user_type=' + user_type}).trigger("reloadGrid");
     }
     $('#search_btn').click(function () {
         search_users();
@@ -361,7 +375,7 @@
             {
                 closeAfterAdd: true,
                 afterSubmit: function () {
-                    jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show" }).trigger("reloadGrid");
+                    jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?user_type="+user_type }).trigger("reloadGrid");
                     jQuery("#doc_list").jqGrid('setGridParam', {url: "/users/get_doctors" }).trigger("reloadGrid");
                 }
             }//add
@@ -441,7 +455,7 @@
             {
                 closeAfterAdd: true,
                 afterSubmit: function () {
-                    jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show" }).trigger("reloadGrid");
+                    jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?user_type="+user_type }).trigger("reloadGrid");
                     jQuery("#pat_list").jqGrid('setGridParam', {url: "/users/get_patients" }).trigger("reloadGrid");
                 }
             }//add
