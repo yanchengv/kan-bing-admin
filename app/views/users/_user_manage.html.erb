@@ -340,6 +340,7 @@
 
                 var grid = $("#user_list");
                 grid.setColProp("doctor_id", { editoptions: { defaultValue: id} });
+                grid.setColProp("patient_id", { editoptions: { defaultValue: ''} });
                 grid.setColProp("real_name", { editoptions: { defaultValue: name} });
                 grid.setColProp("email", { editoptions: { defaultValue: email} });
                 grid.setColProp("mobile_phone", { editoptions: { defaultValue: tel} });
@@ -354,7 +355,17 @@
         del:false,
         search:false,
         refreshtext:'刷新'
-    })
+    }, {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true,
+                afterSubmit: function () {
+                    jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show" }).trigger("reloadGrid");
+                    jQuery("#doc_list").jqGrid('setGridParam', {url: "/users/get_doctors" }).trigger("reloadGrid");
+                }
+            }//add
+             )
     //患者
         jQuery("#pat_list").jqGrid({
             url: '/users/get_patients',
@@ -408,6 +419,7 @@
 
                 var grid = $("#user_list");
                 grid.setColProp("patient_id", { editoptions: { defaultValue: id} });
+                grid.setColProp("doctor_id", { editoptions: { defaultValue: ''} });
                 grid.setColProp("real_name", { editoptions: { defaultValue: name} });
                 grid.setColProp("email", { editoptions: { defaultValue: email} });
                 grid.setColProp("mobile_phone", { editoptions: { defaultValue: tel} });
@@ -422,9 +434,19 @@
         del:false,
         search:false,
         refreshtext:'刷新'
-    })
+    },
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true,
+                afterSubmit: function () {
+                    jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show" }).trigger("reloadGrid");
+                    jQuery("#pat_list").jqGrid('setGridParam', {url: "/users/get_patients" }).trigger("reloadGrid");
+                }
+            }//add
+             )
     function add_to_user() {
-        console.log('')
        $('#add_user_list').click()
     }
 
