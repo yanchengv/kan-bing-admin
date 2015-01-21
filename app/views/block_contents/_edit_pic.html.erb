@@ -20,7 +20,7 @@
     <input type=" text" name="image_url"  id='image_path' style='visibility:hidden;' value="<%= @block_content.url %>">
     <input type="hidden" id='content_id' name="content_id" value="<%= @block_content.id %>">
     <input type="hidden" id="block_id" name="block_id" value="<%= @block_content.block_id %>">
-    <table class="EditTable" style="margin-top: -80px;">
+    <table class="EditTable" style="margin-top: -50px;">
       <% if @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'pic_text1'%>
           <tr class="FormData">
             <td class="CaptionTD">图片标题:</td>

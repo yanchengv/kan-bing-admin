@@ -1,0 +1,23 @@
+.setting_form{
+ width:400px;
+    position:absolute;
+    left:50%;
+    margin-left:-227px;
+    top:100px;
+    background:#fff;
+    border:1px solid #dcdcdc;
+
+}
+.setting_form form{
+    margin: 20px 0 20px 70px;
+}
+.setting_form .text_input{
+    width:240px;
+}
+.error-icon{
+  color:#f00;
+}
+.huanying_img{
+    max-width:1200px;
+    width:100%;
+}
