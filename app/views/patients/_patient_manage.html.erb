@@ -9,7 +9,9 @@
   <div id="pat_create_or_edit_form">
   </div>
 </div>
-<div id="warn2"></div>
+<div id="warn2_1"></div>
+<div id="warn2_2"></div>
+<div id="warn2_3"></div>
 <div style="margin:10px 20px;">
 <div id="search_div" style="margin-bottom:10px;">
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
@@ -244,7 +246,7 @@
             "取消": cancelContact
         }
     });
-    $("#warn2").dialog({
+    $("#warn2_1").dialog({
         autoOpen: false,
         modal: true,    // 设置对话框为模态（modal）对话框
         resizable: true,
@@ -266,17 +268,92 @@
             }
         },
         buttons: {  // 为对话框添加按钮
-            "查看该患者": search_pat,
-            "修改证件号": function() {$("#warn2").dialog("close")}
+            "查看该患者": search_pat_by_number,
+            "修改证件号": function() {$("#warn2_1").dialog("close")}
         }
     });
-    function search_pat(){
-        console.log($('#patient_credential_type_number').val())
+    $("#warn2_2").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        height:800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "查看该患者": search_pat_by_tel,
+            "修改手机号": function() {$("#warn2_2").dialog("close")}
+        }
+    });
+    $("#warn2_3").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        height:800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "查看该患者": search_pat_by_email,
+            "修改邮箱号": function() {$("#warn2_3").dialog("close")}
+        }
+    });
+    function search_pat_by_number(){
+        $('#search_oth_name').val('');
+        $('#search_oth_email').val('');
+        $('#search_oth_tel').val('');
+        $('#search_oth_number').val('');
         $('#search_oth_number').val($('#patient_credential_type_number').val());
         search_hos_by2()
-        $("#warn2").dialog("close")
+        $("#warn2_1").dialog("close")
         $("#consoleDlg2").dialog("close")
-        $("#warn2").dialog("close")
+        $("#warn2_1").dialog("close")
+    }
+    function search_pat_by_tel() {
+        $('#search_oth_name').val('');
+        $('#search_oth_email').val('');
+        $('#search_oth_tel').val('');
+        $('#search_oth_number').val('');
+        $('#search_oth_tel').val($('#patient_mobile_phone').val());
+        search_hos_by2()
+        $("#warn2_2").dialog("close")
+        $("#consoleDlg2").dialog("close")
+    }
+    function search_pat_by_email() {
+        $('#search_oth_name').val('');
+        $('#search_oth_email').val('');
+        $('#search_oth_tel').val('');
+        $('#search_oth_number').val('');
+        $('#search_oth_email').val($('#patient_email').val());
+        search_hos_by2()
+        $("#warn2_3").dialog("close")
+        $("#consoleDlg2").dialog("close")
     }
     //    自定义按钮
     $("#list10").jqGrid("navGrid", "#pager10", {
@@ -423,9 +500,10 @@
                         }else{
                             credential_type_number_flag=false;
                             $('#patient_credential_type_number').addClass('error_remind')
-                            <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
-                            var consoleDlg = $("#warn2");
-                            $('#warn2').html('该身份证患者已存在!')
+                            if (a=='true') {
+                                <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+                                var consoleDlg = $("#warn2_1");
+                                $('#warn2_1').html('该身份证患者已存在!')
                                 var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
                                 dialogButtonPanel.find("button:not(:contains('证件号'))").hide();
                                 dialogButtonPanel.find("button:contains('查看该患者')").show();
@@ -433,11 +511,10 @@
                                 consoleDlg.dialog("option", "height", "240");
                                 consoleDlg.dialog("option", "width", "460");
                                 consoleDlg.dialog("option", "title", "提示").dialog("open");
-                            <% else %>
-                            if (a=='true') {
+                                <% else %>
                                 alert('身份证号码重复!')
+                                <% end %>
                             }
-                            <% end %>
                         }
                     }
                 })
@@ -468,7 +545,18 @@
                             phone_flag=false;
                             $('#patient_mobile_phone').addClass('error_remind')
                             if (a=='true') {
+                                <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+                                var consoleDlg = $("#warn2_2");
+                                $('#warn2_2').html('该手机号患者已存在!')
+                                var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+                                dialogButtonPanel.find("button:contains('查看该患者')").show();
+                                dialogButtonPanel.find("button:contains('修改手机号')").show();
+                                consoleDlg.dialog("option", "height", "240");
+                                consoleDlg.dialog("option", "width", "460");
+                                consoleDlg.dialog("option", "title", "提示").dialog("open");
+                                <% else %>
                                 alert('手机号重复!')
+                                <% end %>
                             }
                         }
                     }
@@ -521,7 +609,18 @@
                             email_flag=false;
                             $('#patient_email').addClass('error_remind')
                             if (a=='true') {
+                                <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+                                var consoleDlg = $("#warn2_3");
+                                $('#warn2_3').html('该邮箱号患者已存在!')
+                                var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+                                dialogButtonPanel.find("button:contains('查看该患者')").show();
+                                dialogButtonPanel.find("button:contains('修改邮箱号')").show();
+                                consoleDlg.dialog("option", "height", "240");
+                                consoleDlg.dialog("option", "width", "460");
+                                consoleDlg.dialog("option", "title", "提示").dialog("open");
+                                <% else %>
                                 alert('邮箱已注册!')
+                                <% end %>
                             }
                         }
 
@@ -576,13 +675,7 @@
             two_blank = true
         }
         if(credential_type_number_flag!=true||name_flag!=true||email_flag==false||phone_flag==false||credential_type_number_flag==false){
-            if(credential_type_number_flag){
-                alert("表单填写有误，不能提交表单！");
-            } else {
-                <% if current_user.admin_type == '网站管理员'%>
-                alert("表单填写有误，不能提交表单！");
-                <% end %>
-            }
+            alert("表单填写有误，不能提交表单！");
         }else{
             create_or_update()
         }

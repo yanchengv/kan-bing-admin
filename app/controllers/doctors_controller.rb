@@ -103,7 +103,7 @@ class DoctorsController < ApplicationController
           #   sql << " and #{field} like '%#{value]}%'"
           # end
           if params[:name] && params[:name] != ''
-            sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
+            sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%')"
           end
           if params[:email] && params[:email] != ''
             sql << " and email like '%#{params[:email]}%'"
@@ -179,7 +179,7 @@ class DoctorsController < ApplicationController
     #   sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{@hos.name}%')"
     # end
     if params[:name] && params[:name] != ''
-      sql << " and name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%'"
+      sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%')"
     end
     if params[:email] && params[:email] != ''
       sql << " and email like '%#{params[:email]}%'"

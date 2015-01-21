@@ -10,6 +10,8 @@
   </div>
 </div>
 <div id="warn"></div>
+<div id="warn2"></div>
+<div id="warn3"></div>
 <div style="margin:10px 20px;">
 <!--<h1>Listing doctors</h1>-->
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
@@ -324,17 +326,92 @@
             }
         },
         buttons: {  // 为对话框添加按钮
-            "查看该医生": search_doc,
+            "查看该医生": search_doc_by_number,
             "修改证件号": function() {$("#warn").dialog("close")}
     }
     });
-    function search_doc(){
-        console.log($('#doctor_credential_type_number').val())
+    $("#warn2").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        height:800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "查看该医生": search_doc_by_tel,
+            "修改手机号": function() {$("#warn2").dialog("close")}
+        }
+    });
+    $("#warn3").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        height:800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "查看该医生": search_doc_by_email,
+            "修改邮箱号": function() {$("#warn3").dialog("close")}
+        }
+    });
+    function search_doc_by_number(){
+        $('#search_oth_name').val('');
+        $('#search_oth_email').val('');
+        $('#search_oth_tel').val('');
+        $('#search_oth_number').val('');
         $('#search_oth_number').val($('#doctor_credential_type_number').val());
         search_hos_by2()
         $("#warn").dialog("close")
         $("#consoleDlg").dialog("close")
         $("#warn").dialog("close")
+    }
+    function search_doc_by_tel() {
+        $('#search_oth_name').val('');
+        $('#search_oth_email').val('');
+        $('#search_oth_tel').val('');
+        $('#search_oth_number').val('');
+        $('#search_oth_tel').val($('#doctor_mobile_phone').val());
+        search_hos_by2()
+        $("#warn2").dialog("close")
+        $("#consoleDlg").dialog("close")
+    }
+    function search_doc_by_email() {
+        $('#search_oth_name').val('');
+        $('#search_oth_email').val('');
+        $('#search_oth_tel').val('');
+        $('#search_oth_number').val('');
+        $('#search_oth_email').val($('#doctor_email').val());
+        search_hos_by2()
+        $("#warn3").dialog("close")
+        $("#consoleDlg").dialog("close")
     }
 
     var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
@@ -488,6 +565,7 @@
                         }else{
                             credential_type_number_flag=false;
                             $('#doctor_credential_type_number').addClass('error_remind')
+                            if (a=='true') {
                             <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
                                 var consoleDlg = $("#warn");
                                 $('#warn').html('该身份证医生已存在!')
@@ -499,10 +577,9 @@
                                 consoleDlg.dialog("option", "width", "460");
                                 consoleDlg.dialog("option", "title", "提示").dialog("open");
                             <% else %>
-                            if (a=='true') {
                                 alert('身份证号码重复!')
-                            }
                             <% end %>
+                            }
                         }
                     }
                 })
@@ -532,7 +609,19 @@
                             phone_flag=false;
                             $('#doctor_mobile_phone').addClass('error_remind')
                             if (a=='true') {
+                            <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+                            var consoleDlg = $("#warn2");
+                            $('#warn2').html('该手机号医生已存在!')
+                            var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+//                            dialogButtonPanel.find("button").hide();
+                            dialogButtonPanel.find("button:contains('查看该医生')").show();
+                            dialogButtonPanel.find("button:contains('修改手机号')").show();
+                            consoleDlg.dialog("option", "height", "240");
+                            consoleDlg.dialog("option", "width", "460");
+                            consoleDlg.dialog("option", "title", "提示").dialog("open");
+                            <% else %>
                                 alert('手机号重复!')
+                            <% end %>
                             }
                         }
                     }
@@ -585,7 +674,19 @@
                             email_flag=false;
                             $('#doctor_email').addClass('error_remind')
                             if (a=='true') {
+                            <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+                            var consoleDlg = $("#warn3");
+                            $('#warn3').html('该邮箱号医生已存在!')
+                            var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+//                            dialogButtonPanel.find("button").hide();
+                            dialogButtonPanel.find("button:contains('查看该医生')").show();
+                            dialogButtonPanel.find("button:contains('修改邮箱号')").show();
+                            consoleDlg.dialog("option", "height", "240");
+                            consoleDlg.dialog("option", "width", "460");
+                            consoleDlg.dialog("option", "title", "提示").dialog("open");
+                            <% else %>
                                 alert('邮箱已注册!')
+                            <% end %>
                             }
                         }
 
@@ -644,13 +745,7 @@
         if(credential_type_number_flag && name_flag&&email_flag && phone_flag){
             create_or_update()
         }else{
-            if(credential_type_number_flag){
-                alert("表单填写有误，不能提交表单！");
-            } else {
-                <% if current_user.admin_type == '网站管理员'%>
-                    alert("表单填写有误，不能提交表单！");
-                <% end %>
-            }
+            alert("表单填写有误，不能提交表单！");
         }
     }
     function updateContact(){ // 修改医生
