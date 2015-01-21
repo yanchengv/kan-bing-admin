@@ -73,7 +73,7 @@ class TreatmentRelationshipsController < ApplicationController
           sql << " and name like '%#{params[:name]}%' "
         end
         if params[:doctor_id] && params[:doctor_id] != '' && params[:doctor_id] != 'null' && params[:doctor_id] != 'undefined'
-          sql << " and id not in (select patient_id from treatment_relationships where doctor_id = #{params[:doctor_id]})"
+          sql << " and id not in (select patient_id from treatment_relationships where doctor_id = #{params[:doctor_id]}) and doctor_id != #{params[:doctor_id]}"
         end
         count = Patient.where(sql).count
         totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
@@ -86,7 +86,14 @@ class TreatmentRelationshipsController < ApplicationController
     end
   #获取主治关系
   def get_main_relations
-    @patients = Patient.where('(doctor_id is not null) and doctor_id != \'\' and doctor_id != 0')
+    sql = 'doctor_id is not null and doctor_id != \'\' and doctor_id != 0'
+    if !params[:doctor_name].nil? && params[:doctor_name] != ''
+      sql << " and doctor_id in (select id from doctors where name = '#{params[:doctor_name]}')"
+    end
+    if !params[:patient_name].nil? && params[:patient_name] != ''
+      sql << " and name = '#{params[:patient_name]}'"
+    end
+    @patients = Patient.where(sql)
     count = @patients.count
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
     if params[:page].to_i > totalpages
@@ -200,6 +207,24 @@ class TreatmentRelationshipsController < ApplicationController
       #  format.json { head :no_content }
       #end
     end
+
+  #删除主治关系
+  def delete_main_associate
+    if !params[:patient_id].nil? && params[:patient_id] != ''
+      @patient = Patient.find(params[:patient_id])
+      if @patient
+        if @patient.update_attributes(:doctor_id => '')
+          render :json => {:success => true}
+        else
+          render :json => {:success => false, :error => '关系解除失败!'}
+        end
+      else
+        render :json => {:success => false, :error => '没有找到对应的关系!'}
+      end
+    else
+      render :json => {:success => false, :error => '没有选择要删除的关系!'}
+    end
+  end
     #批量删除
     def batch_delete
       if params[:ids]

@@ -5,7 +5,7 @@
 </div>
 <div style="width: 100%">
   <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">医生名：<input type="text" id="doc_name" onkeydown="search_keydown(event)">患者名：<input type="text" id="pat_name" onkeydown="search_keydown(event)">
+    <div style="margin-bottom: 10px;">医生名：<input type="text" id="doc_name" onkeydown="search_keydown1(event)">患者名：<input type="text" id="pat_name" onkeydown="search_keydown1(event)">
       <button id="search_ships_btn">搜索</button>&nbsp;<button id="clear_ships_btn">清空</button>
     </div>
 
@@ -18,15 +18,17 @@
 </div>
 
 <script type="text/javascript">
-    function search_keydown(event) {
-        if (event.keyCode == 13)
+    function search_keydown1(event) {
+        if (event.keyCode == 13){
             search_friendship();
+        }
     }
     //搜索
     function search_friendship(){
         var doc_name = $('#doc_name').val();
         var pat_name = $('#pat_name').val();
         jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "/treatment_relationships/index_show?patient_name=" + pat_name + "&doctor_name=" + doc_name}).trigger("reloadGrid");
+        jQuery("#patient_main_doctor").jqGrid('setGridParam', {url: "/treatment_relationships/get_main_relations?patient_name=" + pat_name + "&doctor_name=" + doc_name}).trigger("reloadGrid");
     }
     $('#search_ships_btn').click(function () {
         search_friendship();
@@ -141,8 +143,7 @@
     function save_relationship(){
         var doc_id = jQuery("#doctors_list").jqGrid('getGridParam', 'selrow');
         var pat_ids = jQuery("#patients_list").jqGrid('getGridParam', 'selarrrow');
-        var radio_val = $("input[name='radio_name'][checked]").val();
-        alert(radio_val);
+        var radio_val = $("input[name='radio_name']:checked").val();
         if (doc_id) {
             if (pat_ids) {
                 $.ajax({
@@ -151,7 +152,9 @@
                         data: {doctor_id: doc_id, patient_ids: pat_ids, type: radio_val},
                         success: function (data) {
                             if (data.success == true) {
-                                jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "/treatment_relationships/index_show"}).trigger("reloadGrid");
+//                                jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "/treatment_relationships/index_show"}).trigger("reloadGrid");
+//                                jQuery("#patient_main_doctor").jqGrid('setGridParam', {url: "/treatment_relationships/get_main_relations"}).trigger("reloadGrid");
+                                search_friendship();
                                 $("#relationship_console").dialog("close");
                             } else {
                                 alert('操作失败！');
@@ -178,7 +181,7 @@
                         data: {ids: ids},
                         success: function (data) {
                             if (data.success == true) {
-                                jQuery("#list_doc2pat_ships").jqGrid('setGridParam', {url: "/treatment_relationships/index_show"}).trigger("reloadGrid");
+                                search_friendship();
                             } else {
                                 alert('操作失败！');
                             }
@@ -193,11 +196,15 @@
         datatype: "json",
         autowidth: true,
         height: 'auto',
-        colNames: ['ID', '医生名', '患者名'],
+        colNames: ['ID', '医生名', '患者名', '解除主治关系'],
         colModel: [
             {name: 'id', index: 'id', sorttype: "int", align: "center", hidden: true},
             {name: 'doctor_name', index: 'doctor_name', align: "center", jsonmap: 'doctor.name' },
-            {name: 'name', index: 'name', align: "center" }
+            {name: 'name', index: 'name', align: "center" },
+            { align: "center", edittype: 'custom', formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                return "<button value=\"解除\" onclick=\"delete_main_associate(" + colpos.id + ")\">解除</button>";
+            }
+            }
         ],
         rowNum: 15,
         rowList: [10, 15, 20],
@@ -232,7 +239,7 @@
     });
     jQuery("#patient_main_doctor").jqGrid('navGrid', '#page_main_docotr', {
                 cloneToTop: true, add: false, edit: false,
-                deltext: "删除", deltitle: "删除", view: false, search: false,
+                del:false, view: false, search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
                 closeAfterEdit: true
@@ -243,4 +250,19 @@
     ).navButtonAdd('#page_main_docotr', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
                 add_relation_ship();
             }, position: "first"});
+    function delete_main_associate(id){
+        $.ajax({
+                    type: 'post',
+                    url: '/treatment_relationships/delete_main_associate',
+                    data: {patient_id: id},
+                    success: function (data) {
+                        if (data.success == true) {
+                            search_friendship();
+                        } else {
+                            alert(data.error);
+                        }
+                    }
+                }
+        );
+    }
 </script>

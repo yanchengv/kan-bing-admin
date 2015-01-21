@@ -23,7 +23,7 @@
             { name: 'name', index: 'name', align: "center", width: 120},
             {name: 'hospital_name', index: 'hospital_name', editable: true, search: false, width: 160 },
             {name: 'department_name', index: 'department_name', editable: true, search: false, width: 160 },
-            { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
+            { align: "center", edittype: 'custom', formatter: function (rowId, cellval, colpos, rwdat, _act) {
                 return "<button value=\"删除\" onclick=\"delete_associate(" + colpos.id + ")\">删除</button>";
             }
             }
@@ -85,19 +85,5 @@
                 }
             }
         })
-    }
-    function myelem(value, options) {
-        var el = document.createElement("input");
-        el.type = "text";
-        el.value = value;
-        return el;
-    }
-
-    function myvalue(elem, operation, value) {
-        if (operation === 'get') {
-            return $(elem).val();
-        } else if (operation === 'set') {
-            $('input', elem).val(value);
-        }
     }
 </script>
