@@ -35,7 +35,7 @@
         url: '/edu_videos/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: [ 'ID', '视频名称', '概要', '缩略图地址',  '视频地址', '医生ID', '医生', '时间', '类型ID', '视频类型'],
+        colNames: [ 'ID', '视频名称', '概要', '缩略图地址',  '视频地址', '医生ID', '医生', '时间', '类型ID', '视频类型','查看范围'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
             { name: 'name', index: 'name', align: "center", editable: true},
@@ -92,7 +92,8 @@
                         return positions;
                     }
                 }},
-            { name: 'video_type', index: 'video_type', align: "center", editable: false, jsonmap: 'video_type.type_name'}
+            { name: 'video_type', index: 'video_type', align: "center", editable: false, jsonmap: 'video_type.type_name'} ,
+            { name: 'view_permission', index: 'view_permission', align: "center", editable: false},
 
         ],
         rowList: [10, 15, 20],
@@ -221,6 +222,18 @@
 
     }
     function addContact(){   //保存视频信息
+        var New=document.getElementsByName("view_permission");
+        var strNew;
+        for(var i=0;i<New.length;i++)
+        {
+            if(New.item(i).checked){
+                strNew=New.item(i).getAttribute("value");
+                break;
+            }else{
+                continue;
+            }
+        }
+        console.log(strNew)
         $.ajax({
             url: "/edu_videos/upload",
             type: 'post',
@@ -233,7 +246,8 @@
                 hospital_id:$('#doctor_hos_id').val(),
                 department_id:$('#doctor_dep_id').val(),
                 doctor_id: $('#video_doctor_id').val(),
-                video_type_id: $('#video_type_id').val()
+                video_type_id: $('#video_type_id').val(),
+                view_permission:strNew
             },
             async: false,
             success: function (data) {
@@ -247,6 +261,17 @@
         });
     }
     function updateContact(){   //修改视频信息
+        var New=document.getElementsByName("view_permission");
+        var strNew;
+        for(var i=0;i<New.length;i++)
+        {
+            if(New.item(i).checked){
+                strNew=New.item(i).getAttribute("value");
+                break;
+            }else{
+                continue;
+            }
+        }
         $.ajax({
             url: "/edu_videos/video_edit",
             type: 'post',
@@ -259,7 +284,8 @@
                 hospital_id:$('#doctor_hos_id').val(),
                 department_id:$('#doctor_dep_id').val(),
                 doctor_id:$('#video_doctor_id').val(),
-                video_type_id:$('#video_type_id').val()
+                video_type_id:$('#video_type_id').val(),
+                view_permission:strNew
             },
             async: false,
             success: function (data) {
