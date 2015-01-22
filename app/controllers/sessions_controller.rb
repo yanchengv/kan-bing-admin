@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  skip_before_action :update_activity_time,:only => [:sign_page,:destroy]
+  skip_before_action :session_expiry
   def sign_page
     render template: 'sessions/sign_in_form'
   end

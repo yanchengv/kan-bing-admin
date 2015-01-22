@@ -7,6 +7,21 @@ class ApplicationController < ActionController::Base
   require 'open-uri'
   require 'aliyun/oss/bucket'
   include Aliyun::OSS
+  before_filter :session_expiry
+  before_filter :update_activity_time
+
+  def session_expiry
+    @time_left = (session[:expires_at].to_time - Time.now.to_time).to_i
+    unless @time_left > 0
+      # reset_session
+      sign_out
+      redirect_to '/sessions/sign_in'
+    end
+  end
+
+  def update_activity_time
+    session[:expires_at] = 15.minutes.from_now
+  end
 
   def access_flag
     menu_name = params[:menu_name]

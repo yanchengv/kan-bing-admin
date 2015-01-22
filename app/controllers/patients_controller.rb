@@ -89,7 +89,7 @@ class PatientsController < ApplicationController
     end
     @patients = Patient.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
       @rows=[]
-      @rows=@patients.as_json(:include => [{:hospital => {:only => [:id,:name]}},{:department => {:only => [:id,:name]}}])
+      @rows=@patients.as_json(:include => [{:hospital => {:only => [:id,:name]}},{:department => {:only => [:id,:name]}},{:doctor => {:only => [:id, :name]}}])
     @objJSON = {total:@total,patients:@rows,page:page,records:records}
     render :json => @objJSON.as_json
   end
@@ -133,7 +133,7 @@ class PatientsController < ApplicationController
       page = 1
     end
     @patients = Patient.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
-    @rows=@patients.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}}])
+    @rows=@patients.as_json(:include => [{:hospital => {:only => [:id, :name]}},{:department => {:only => [:id, :name]}},{:doctor => {:only => [:id, :name]}}])
     @objJSON = {total:@total,patients:@rows,page:page,records:records}
 
     render :json => @objJSON.as_json
