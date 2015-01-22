@@ -1,6 +1,6 @@
 include SessionsHelper
 class Patient < ActiveRecord::Base
-  before_create :set_pk_code,:pinyin,:set_default_value
+  before_create :set_pk_code,:pinyin,:set_default_value, :auto_assign_doctor
   before_update :update_default_value
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city
@@ -57,4 +57,13 @@ class Patient < ActiveRecord::Base
     @menu=Menu.where(name:menu_name).first
     @hospitals=Hospital.find_by_sql("select h.id,h.name from hospitals h,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{admin_id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.id} and mp.menu_id=menus.id and h.id=mp.hospital_id GROUP BY h.id;")
   end
+
+  #创建患者后自动分配医生(医生助手)
+  def auto_assign_doctor
+    unless !self.doctor_id.nil? && self.doctor_id != ''
+      @doctors = Doctor.where(:doctor_type => 'aide_doctor').shuffle
+      self.doctor_id = @doctors.first.id
+    end
+  end
+
 end
