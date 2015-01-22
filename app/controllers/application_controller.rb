@@ -11,6 +11,9 @@ class ApplicationController < ActionController::Base
   before_filter :update_activity_time
 
   def session_expiry
+    if session[:expires_at].nil?
+      session[:expires_at]=15.minutes.from_now
+    end
     @time_left = (session[:expires_at].to_time - Time.now.to_time).to_i
     unless @time_left > 0
       # reset_session
