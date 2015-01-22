@@ -1,12 +1,12 @@
 <style>
     .select2-container {
-        width: 150px;
+        width: 120px;
 
     }
 </style>
 <hr>
 <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员' %>
-    省：<select id="doctor2_pro_id" name="doctor2_pro_id" style="width: 150px;">
+    省：<select id="doctor2_pro_id" name="doctor2_pro_id" style="width: 120px;">
   <option value="">---请选择---</option>
   <% if !@provinces.nil? && !@provinces.empty? %>
       <% @provinces.each do |pro| %>
@@ -15,7 +15,7 @@
   <% end %>
 </select>
     市：
-    <span id="search_city2_id"><select id="doctor2_city_id" name="doctor[city_id]" style="width: 150px;">
+    <span id="search_city2_id"><select id="doctor2_city_id" name="doctor[city_id]" style="width: 120px;">
       <option value="all">---请选择---</option>
       <%# if !@cities.nil? && !@cities.empty? %>
           <%# @cities.each do |city| %>
@@ -24,16 +24,16 @@
       <%# end %>
     </select></span>
     医院：
-    <span id="search_hos2_id"><select id="doctor2_hos_id" name="doctor2_hos_id" style="width: 150px;">
+    <span id="search_hos2_id"><select id="doctor2_hos_id" name="doctor2_hos_id" style="width: 120px;">
       <option value="">---请选择---</option>
       <%# if !@hospitals.nil? && !@hospitals.empty? %>
           <%# @hospitals.each do |hos| %>
               <!--<option id='serch_hos2_<%#= hos.id %>' value="<%#= hos.id %>"><%#= hos.name %></option>-->
           <%# end %>
       <%# end %>
-    </select></span><br>
+    </select></span>
     科室：
-    <span id="search_dep2_id"><select id="doctor2_dep" name="doctor[department_id]" style="width: 150px;">
+    <span id="search_dep2_id"><select id="doctor2_dep" name="doctor[department_id]" style="width: 120px;">
       <option value="all">---请选择---</option>
       <%# if !@departments.nil? && !@departments.empty? %>
           <%# @departments.each do |dep| %>
@@ -41,7 +41,7 @@
           <%# end %>
       <%# end %>
     </select></span>
-    姓名：<input type="text" id="search_doctor2_name" onkeydown="search_keydown2(event)">
+    姓名：<input type="text" id="search_doctor2_name" style="width: 120px;" onkeydown="search_keydown2(event)">
     <button id="search_doc2_btn">搜索</button>
     &nbsp;
     <button id="clear_doc2_btn">清空</button>
@@ -59,12 +59,12 @@
         mtype: 'GET',
         colNames: [ 'ID', '姓名', '省', '市', '医院', '科室'],
         colModel: [
-            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true, width: 120},
-            { name: 'name', index: 'name', align: "center", width: 120},
-            {name: 'province_name', index: 'province_name', editable: true, search: false, width: 120 },
-            {name: 'city_name', index: 'city_name', editable: true, search: false, width: 120},
-            {name: 'hospital_name', index: 'hospital_name', editable: true, search: false, width: 120 },
-            {name: 'department_name', index: 'department_name', editable: true, search: false, width: 120 }
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'name', index: 'name', width: 195, align: "center"},
+            {name: 'province_name', index: 'province_name', editable: true, search: false, width: 195, align: "center"},
+            {name: 'city_name', index: 'city_name', editable: true, search: false, width: 195, align: "center"},
+            {name: 'hospital_name', index: 'hospital_name', editable: true, search: false, width: 195, align: "center"},
+            {name: 'department_name', index: 'department_name', editable: true, search: false, width: 195, align: "center" }
         ],
         rownumbers: true,
         page: 1,

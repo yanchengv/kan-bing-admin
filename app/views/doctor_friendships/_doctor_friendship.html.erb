@@ -91,7 +91,7 @@
         autoOpen: false,
         modal: false,    // 设置对话框为模态（modal）对话框
         resizable: true,
-        width: 800,
+        width: 1100,
         position: {
             my: "center",
             at: "center",
@@ -125,7 +125,7 @@
                 var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
                 dialogButtonPanel.find("button:not(:contains('取消'))").hide();
                 dialogButtonPanel.find("button:contains('保存')").show();
-                video_consoleDlg.dialog("option", "width", "800");
+                video_consoleDlg.dialog("option", "width", "1100");
                 video_consoleDlg.dialog("option", "title", "添加").dialog("open");
             }
         });
