@@ -158,7 +158,7 @@
         url: "/patients/show_index",
         datatype: "json",
         height: "auto",
-        colNames:['ID','','姓名','姓名首字母简拼','证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','受教育程度','最后就诊时间'],
+        colNames:['ID','','姓名','姓名首字母简拼','证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','主治医生','受教育程度','最后就诊时间','说明'],
         colModel:[
 //            {name:'act',index:'act', width:75,sortable:false},
             {name:'id',index:'id', width:120, sorttype:"int",hidden:true,search:false },
@@ -189,9 +189,10 @@
             {name:'nationality',index:'nationality', width:50,search:false  ,hidden:true},
             {name:'mobile_phone',index:'mobile_phone', width:100, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
             {name:'email',index:'email', width:130, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
+            {name:'doctor.name',index:'doctor_id', width:130, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
             {name:'education',index:'education', width:100, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
-            {name:'last_treat_time',index:'last_treat_time', width:100,align:"right",sorttype:"float",search:false }
-//            {name:'introduction',index:'introduction', width:260, sortable:false}
+            {name:'last_treat_time',index:'last_treat_time', width:100,align:"right",sorttype:"float",search:false },
+            {name:'introduction',index:'introduction', width:260, sortable:false}
         ],
         pager: jQuery('#pager10'),
         sortname: 'id',
