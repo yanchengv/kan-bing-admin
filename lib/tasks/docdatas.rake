@@ -163,16 +163,16 @@ namespace :db do
 
 
 ########################################################################################
-  Doctor.where("birthday like '2014%' and  (province_id is null or city_id is null  or  hospital_name is null  )    ").update_all(
-      :province_id => 5648 ,
-      :city_id => 8103,
-      :province_name =>'北京市' ,
-      :city_name =>  '石景山区',
-      :hospital_id =>1 ,
-      :hospital_name =>'清华大学玉泉医院' )
-
-
-  Doctor.where("hospital_id is nil")
+  # Doctor.where("birthday like '2014%' and  (province_id is null or city_id is null  or  hospital_name is null  )    ").update_all(
+  #     :province_id => 5648 ,
+  #     :city_id => 8103,
+  #     :province_name =>'北京市' ,
+  #     :city_name =>  '石景山区',
+  #     :hospital_id =>1 ,
+  #     :hospital_name =>'清华大学玉泉医院' )
+  #
+  #
+  # Doctor.where("hospital_id is nil")
 
 
 end
