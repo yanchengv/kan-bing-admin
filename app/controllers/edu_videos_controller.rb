@@ -123,6 +123,9 @@ class EduVideosController < ApplicationController
     para[:doctor_id]=params[:doctor_id]
     para[:hospital_id] = params[:hospital_id]
     para[:department_id] = params[:department_id]
+    if params[:view_permission].nil? || params[:view_permission]==''
+      params[:view_permission]='公开'
+    end
     para[:view_permission] = params[:view_permission]
     if !params[:doctor_id].nil?
       @doc = Doctor.find_by_id(params[:doctor_id])

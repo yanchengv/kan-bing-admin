@@ -82,7 +82,7 @@ namespace :db do
 
 
   #通过科室更新对应的
-  task  docupdatebyDep :environment do
+  task  docupdatebyDep: :environment do
     Department.all.each  do |dep|
       department_id = dep.id
       department_name = dep.name
