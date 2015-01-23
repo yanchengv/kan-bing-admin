@@ -90,26 +90,44 @@ class UsersController < ApplicationController
     if !@user.patient_id.nil? && @user.patient_id != ''
       @u_p = User.where(:patient_id => @user.patient_id)
       if @u_p.empty? || @u_p.nil?
-        if @user.save
-          if @user.patient
-            @user.patient.update(is_public: true)
+        if @user.check_obj(user_params) == 'ok'
+          if @user.save
+            if @user.patient
+              @user.patient.update(is_public: true)
+              #如果该患者有医生身份,同时改变医生的is_public的值
+              @doctors = Doctor.where(:patient_id => @user.patient.id)
+              if !@doctors.empty?
+                @doctors.first.update_attributes(:is_public => true)
+              end
+            end
+            render :json => {:success => true}
+          else
+            render :json => {:success => false, :errors => '患者用户添加失败！'}
           end
-          render :json => {:success => true}
         else
-          render :json => {:success => false, :errors => '患者用户添加失败！'}
+          render :json => {:success => false, :errors => @user.check_obj(user_params)}
         end
       end
     end
     if !@user.doctor_id.nil? && @user.doctor_id != ''
       @u_d = User.where(:doctor_id => @user.doctor_id)
       if @u_d.empty? || @u_d.nil?
-        if @user.save
-          if @user.doctor
-            @user.doctor.update(is_public: true)
+        if @user.check_obj(user_params) == 'ok'
+          if @user.save
+            if @user.doctor
+              @user.doctor.update(is_public: true)
+              #如果该医生有患者身份,同时改变患者的is_public的值
+              @patients = Patient.where(:id => @user.doctor.patient_id)
+              if !@patients.empty?
+                @patients.first.update_attributes(:is_public => true)
+              end
+            end
+            render :json => {:success => true}
+          else
+            render :json => {:success => false, :errors => '医生用户添加失败！'}
           end
-          render :json => {:success => true}
         else
-          render :json => {:success => false, :errors => '医生用户添加失败！'}
+          render :json => {:success => false, :errors => @user.check_obj(user_params)}
         end
       end
     end
@@ -132,11 +150,16 @@ class UsersController < ApplicationController
     if params[:password].nil? && params[:password] == ''    #密码为空时,表示不修改密码
       params[:password] = @user.password
     end
-    if @user.update(user_params)
-      render :json => {:success => true}
+    if @user.check_obj(user_params) == 'ok'
+      if @user.update(user_params)
+        render :json => {:success => true}
+      else
+        render :json => {:success => false, :errors => '修改失败！'}
+      end
     else
-      render :json => {:success => false, :errors => '修改失败！'}
+      render :json => {:success => false, :errors => @user.check_obj(user_params)}
     end
+
     #respond_to do |format|
     #  if @user.update(user_params)
     #    format.html { redirect_to @user, notice: 'Admin was successfully updated.' }
@@ -151,6 +174,28 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
+    if !@user.doctor_id.nil? && @user.doctor_id != ''
+      @doctors = Doctor.where(:id => @user.doctor_id)
+      if !@doctors.nil? && !@doctors.empty?
+        @doctors.first.update_attributes(:is_public => false)
+        if !@doctors.first.patient_id.nil? && @doctors.first.patient_id != ''
+          @patients = Patient.where(:id => @doctors.first.patient_id)
+          if !@patients.nil? && !@patients.empty?
+            @patients.first.update_attributes(:is_public => false)
+          end
+        end
+      end
+    end
+    if !@user.patient_id.nil? && @user.patient_id != ''
+      @patients = Patient.where(:id => @user.patient_id)
+      if !@patients.nil? && !@patients.empty?
+        @patients.first.update_attributes(:is_public => false)
+        @doctors = Doctor.where(:patient_id => @patients.first.id)
+        if !@doctors.empty?
+          @doctors.first.update_attributes(:is_public => false)
+        end
+      end
+    end
     if @user.destroy
       render :json => {:success => true}
     end
@@ -163,6 +208,32 @@ class UsersController < ApplicationController
   def batch_delete
     if params[:ids]
       @users = User.where("id in (#{params[:ids].join(',')}) ")
+      if !@users.empty?
+        @users.each do |user|
+          if !user.doctor_id.nil? && user.doctor_id != ''
+            @doctors = Doctor.where(:id => user.doctor_id)
+            if !@doctors.nil? && !@doctors.empty?
+              @doctors.first.update_attributes(:is_public => false)
+              if !@doctors.first.patient_id.nil? && @doctors.first.patient_id != ''
+                @patients = Patient.where(:id => @doctors.first.patient_id)
+                if !@patients.nil? && !@patients.empty?
+                  @patients.first.update_attributes(:is_public => false)
+                end
+              end
+            end
+          end
+          if !user.patient_id.nil? && user.patient_id != ''
+            @patients = Patient.where(:id => user.patient_id)
+            if !@patients.nil? && !@patients.empty?
+              @patients.first.update_attributes(:is_public => false)
+              @doctors = Doctor.where(:patient_id => @patients.first.id)
+              if !@doctors.empty?
+                @doctors.first.update_attributes(:is_public => false)
+              end
+            end
+          end
+        end
+      end
       if @users.delete_all
         render :json => {:success => true}
       end
@@ -175,7 +246,7 @@ class UsersController < ApplicationController
 
   #医生
   def get_doctors
-    sql="id not in (select doctor_id from users where doctor_id is not null)"
+    sql="is_public = false"
     hos_id = current_user.hospital_id
     dep_id = current_user.department_id
     if !hos_id.nil? && hos_id != ''
@@ -205,7 +276,7 @@ class UsersController < ApplicationController
 
   #患者
   def get_patients
-    sql="id not in (select patient_id from users where patient_id is not null)"
+    sql="is_public = false"
     hos_id = current_user.hospital_id
     dep_id = current_user.department_id
     if !hos_id.nil? && hos_id != ''
