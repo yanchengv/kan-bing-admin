@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
    before_create :set_pk_code
   belongs_to :doctor, :foreign_key => :doctor_id
   belongs_to :patient, :foreign_key => :patient_id
-   validates :name, presence: true, uniqueness: {case_sensitive: true, message: "该用户名已被使用！"}
+  # validates :name, presence: true, uniqueness: {case_sensitive: true, message: "该用户名已被使用！"}
    attr_reader :password
    has_secure_password :validations => false
   #获取登录用户收到的文章分享
@@ -44,4 +44,55 @@ class User < ActiveRecord::Base
      image_path = folder_4+uuid[10,100]
      image_path
    end
+  #检查用户名,证件号,手机号,邮箱是否重复
+  def check_obj(user_params)
+    str = ''
+    user = User.new(user_params)
+    if !user.name.nil? && user.name != ''
+      if !user.id.nil? && user.id != '' && user.id != 0
+        @user_ns = User.where("id != ? and name = ?", user.id, user.name)
+      else
+        @user_ns = User.where(:name => user.name)
+      end
+    end
+    if !user.mobile_phone.nil? && user.mobile_phone != ''
+      if !user.id.nil? && user.id != '' && user.id != 0
+        @user_mps = User.where("id != ? and mobile_phone = ?", user.id, user.mobile_phone)
+      else
+        @user_mps = User.where(:mobile_phone => user.mobile_phone)
+      end
+    end
+    if !user.verification_code.nil? && user.verification_code != ''
+      if !user.id.nil? && user.id != '' && user.id != 0
+        @user_ctns = User.where("id != ? and verification_code = ?", user.id, user.verification_code)
+      else
+        @user_ctns = User.where(:verification_code => user.verification_code)
+      end
+    end
+    if !user.email.nil? && user.email != ''
+      if !user.id.nil? && user.id != '' && user.id != 0
+        @user_es = User.where("id != ? and email = ?", user.id, user.email)
+      else
+        @user_es = User.where(:email => user.email)
+      end
+    end
+
+    if !@user_ns.nil? && !@user_ns.empty?
+      str += '用户名、'
+    end
+    if !@user_mps.nil? && !@user_mps.empty?
+      str += '手机号、'
+    end
+    if !@user_ctns.nil? && !@user_ctns.empty?
+      str += '证件号、'
+    end
+    if !@user_es.nil? && !@user_es.empty?
+      str += '邮箱、'
+    end
+    if str == ''
+      return 'ok'
+    else
+      return str[0, str.length-1] + '不能重复!'
+    end
+  end
 end
