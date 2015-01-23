@@ -55,3 +55,23 @@ button,table td,table th,input,a,.ztree *,textarea{font-family:"Microsoft YaHei"
     border:1px solid #9c9d9f !important;/*{borderColorHighlight}*/
     background:#a8aaad !important;
 }
+#ViewTbl_dictionary_type_list td,
+#ViewTbl_dictionary_list td,
+#ViewTbl_hospital_list td,
+#ViewTbl_department_list td,
+#ViewTbl_national_list td,
+#ViewTbl_advice_list td,
+#ViewTbl_diagnose_list td,
+#ViewTbl_knowledge_type_list td,
+#ViewTbl_knowledge_list td,
+#ViewTbl_list td,
+#ViewTbl_list12 td,
+#ViewTbl_list10 td,
+#ViewTbl_user_list td,
+#ViewTbl_edu_video_list td,
+#ViewTbl_skill_list td,
+#ViewTbl_video_type_list td
+{
+  border-bottom:1px solid #ececec;
+  padding:3px 0;
+}
