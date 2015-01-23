@@ -1,3 +1,3 @@
 class VideoType < ActiveRecord::Base
-  has_many :edu_videos, dependent: :destroy
+  has_many :edu_videos
 end
