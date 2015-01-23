@@ -3,7 +3,7 @@ class Doctor < ActiveRecord::Base
   self.table_name = "doctors"
   self.inheritance_column = "ruby_type"
   before_create :set_pk_code,:pinyin,:set_default_value
-  before_update :update_default_value
+  before_update :update_default_value,:after_update_do
   after_create :save_patient
   has_one :user, :dependent => :destroy
   # belongs_to :patient, :dependent => :destroy, :foreign_key => :patient_id
@@ -26,6 +26,7 @@ class Doctor < ActiveRecord::Base
   has_many :appointments,:dependent => :destroy
   has_many :appointment_arranges,:dependent => :destroy
   has_many :appointment_schedules,:dependent => :destroy
+  has_many :edu_videos,:dependent => :destroy
   def pinyin
     self.spell_code = PinYin.abbr(self.name)
   end
@@ -76,4 +77,14 @@ class Doctor < ActiveRecord::Base
     @menu=Menu.where(name:menu_name).first
     @hospitals=Hospital.find_by_sql("select h.id,h.name from hospitals h,role2s r, menu_permissions mp , admin2s_role2s ar,role2s_menu_permissions rmp, menus where  mp.id=rmp.menu_permission_id and ar.admin2_id=#{admin_id} and ar.role2_id=r.id and r.id=rmp.role2_id and menus.id=mp.menu_id and menus.parent_id=#{@menu.id} and mp.menu_id=menus.id and h.id=mp.hospital_id GROUP BY h.id;")
   end
+
+  def after_update_do
+    @doc_videos = self.edu_videos
+    if !@doc_videos.empty?
+      @doc_videos .each do |video|
+        video.update_attributes(hospital_id:self.hospital_id,department_id:self.department_id)
+      end
+    end
+  end
+
 end
