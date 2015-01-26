@@ -14,10 +14,9 @@ class ApplicationController < ActionController::Base
     if session[:expires_at].nil?
       session[:expires_at]=Time.now
     end
-    p session[:expires_at]
     @time_left = (session[:expires_at].to_time - Time.now.to_time).to_i
     unless @time_left > 0
-      reset_session
+      # reset_session
       sign_out
       redirect_to '/sessions/sign_in'
     end
