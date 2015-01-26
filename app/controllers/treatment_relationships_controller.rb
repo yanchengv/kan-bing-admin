@@ -76,7 +76,7 @@ class TreatmentRelationshipsController < ApplicationController
           sql << " and name like '%#{params[:name]}%' "
         end
         if params[:doctor_id] && params[:doctor_id] != '' && params[:doctor_id] != 'null' && params[:doctor_id] != 'undefined'
-          sql << " and id not in (select patient_id from treatment_relationships where doctor_id = #{params[:doctor_id]}) and doctor_id != #{params[:doctor_id]}"
+          sql << " and id not in (select patient_id from treatment_relationships where doctor_id = #{params[:doctor_id]}) and ( doctor_id != #{params[:doctor_id]} or doctor_id is null )"
         end
         count = Patient.where(sql).count
         totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
