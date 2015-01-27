@@ -12,6 +12,9 @@
 <div id="warn2_1"></div>
 <div id="warn2_2"></div>
 <div id="warn2_3"></div>
+<div id="search_form">
+  <%= render partial: 'patients/search_form' %>
+</div>
 <div style="margin:10px 20px;">
 <div id="search_div" style="margin-bottom:10px;">
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
@@ -158,11 +161,11 @@
         url: "/patients/show_index",
         datatype: "json",
         height: "auto",
-        colNames:['ID','','姓名','姓名首字母简拼','证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','主治医生','受教育程度','最后就诊时间','说明'],
+        colNames:['ID','','姓名','姓名首字母简拼','证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','市','医院','科室','国籍','民族','手机号','邮箱','主治医生','主治医生类型','受教育程度','最后就诊时间','说明'],
         colModel:[
 //            {name:'act',index:'act', width:75,sortable:false},
             {name:'id',index:'id', width:120, sorttype:"int",hidden:true,search:false },
-            {name:'photo',index:'photo',width:20,
+            {name:'photo',index:'photo',width:20,search:false,
                 formatter: function (rowId, cellval, colpos, rwdat, _act) {
                     var value = colpos.photo;
                     if (value==null || value=='') {
@@ -177,7 +180,7 @@
             {name:'spell_code',index:'spell_code', width:120, search:true , hidden:true,searchoptions: {searchhidden:true, sopt: ['in']}},
             {name:'credential_type',index:'credential_type', width:80,search:false },
             {name:'credential_type_number',index:'credential_type_number', width:150,searchoptions: { sopt: ['in']}},
-            {name:'gender',index:'gender', width:30,search:false },
+            {name:'gender',index:'gender', width:30,searchoptions: {searchhidden:true, sopt: ['in']} },
             {name:'birthday',index:'birthday', width:90,search:false },
             {name:'birthplace',index:'birthplace', width:100,search:false },
             {name:'marriage',index:'marriage', width:80,search:false ,hidden:true,editrules:{edithidden:true}},
@@ -190,6 +193,7 @@
             {name:'mobile_phone',index:'mobile_phone', width:100, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
             {name:'email',index:'email', width:130, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
             {name:'doctor.name',index:'doctor_id', width:130, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
+            {name:'doctor.doctor_type',index:'doctor_type', width:100,hidden:true,searchoptions: {searchhidden:true, sopt: ['in']}},
             {name:'education',index:'education', width:100, align:"right",sorttype:"float",searchoptions: { sopt: ['in']}},
             {name:'last_treat_time',index:'last_treat_time', width:100,align:"right",sorttype:"float",search:false },
             {name:'introduction',index:'introduction', width:260, sortable:false}
@@ -325,6 +329,28 @@
             "修改邮箱号": function() {$("#warn2_3").dialog("close")}
         }
     });
+    $("#search_form").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        height:800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        }
+    });
     function search_pat_by_number(){
         $('#search_oth_name').val('');
         $('#search_oth_email').val('');
@@ -366,7 +392,9 @@
         viewtext: '查看',
         deltext:    '删除',
         delfunc : openDialog4Deleting, // (3) 点击删除按钮，则调用openDialog4Deleting方法
-        search:false,
+        search:true,
+        searchtext:'条件查询',
+        searchfunc :openDialogSearch,
         refreshtext:"刷新",
         refreshstate:'current',
         alerttext : "请选择记录!"
@@ -466,6 +494,14 @@
         consoleDlg2.dialog("option", "height", "180");
         consoleDlg2.dialog("option", "width", "260");
         consoleDlg2.dialog("option", "title", "删除").dialog("open");
+    }
+
+    function openDialogSearch() {
+        var consoleDlg2 = $("#search_form");
+        var dialogButtonPanel = consoleDlg2.siblings(".ui-dialog-buttonpane");
+        consoleDlg2.dialog("option", "height", "150");
+        consoleDlg2.dialog("option", "width", "560");
+        consoleDlg2.dialog("option", "title", "搜索...").dialog("open");
     }
 
     var credential_type_number_flag=true

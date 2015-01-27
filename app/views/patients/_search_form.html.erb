@@ -1,0 +1,26 @@
+范围: <select id="search_field" onchange="changetype(this.value)" style="width:150px;">
+  <option value="doctor_name">主治医生</option>
+  <option value="doctor_type">主治医生类型</option>
+  <option value="gender">性别</option>
+</select>
+值: <span id="search_value"><input id='search_string' style='width:150px;height:22px;'></span>
+<button onclick="search_by_type()">搜索</button>
+<script>
+    $(function() {
+        $('#search_field').select2();
+        $("select[id='search_string']").select2();
+    })
+  function changetype(value){
+      if (value=='gender') {
+          $('#search_value').html("<select id='search_string' style='width:150px;height:28px;'><option value='男'>男</option><option value='女'>女</option></select>")
+      }else if (value=='doctor_type') {
+          $('#search_value').html("<select id='search_string' style='width:150px;height:28px;'><option value='real_doctor'>真实医生</option><option value='aide_doctor'>助手医生</option></select>")
+      } else {
+          $('#search_value').html("<input id='search_string' style='width:150px;height:22px;'>")
+      }
+  }
+    function search_by_type() {
+        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()+'&searchField='+$('#search_field').val()+'&searchString='+$('#search_string').val()
+        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+    }
+</script>

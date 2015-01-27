@@ -42,12 +42,18 @@ class PatientsController < ApplicationController
     elsif !hos_id.nil? && hos_id != ''
       sql << " and hospital_id = #{hos_id}"
     end
-    # field = params[:searchField]
-    # p params[:searchOper]
-    # value = params[:searchString]
-    # if !field.nil? && field!='' && !value.nil?
-    #   sql << "#{field} like ''%#{value}%''")
-    # end
+    field = params[:searchField]
+    p params[:searchOper]
+    value = params[:searchString]
+    if !field.nil? && field!='' && !value.nil? && value != ''
+      if field == 'doctor_type'
+        sql << " and doctor_id in (select id from doctors where doctor_type = '#{value}')"
+      elsif field == 'doctor_name'
+        sql << " and doctor_id in (select id from doctors where name like '%#{value}%')"
+      else
+        sql << " and #{field} like '%#{value}%'"
+      end
+    end
     # sql = 'true'
     if params[:name] && params[:name] != ''
       sql << " and (name like '%#{params[:name]}%' or spell_code like '%#{params[:name]}%')"
@@ -89,7 +95,7 @@ class PatientsController < ApplicationController
     end
     @patients = Patient.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
       @rows=[]
-      @rows=@patients.as_json(:include => [{:hospital => {:only => [:id,:name]}},{:department => {:only => [:id,:name]}},{:doctor => {:only => [:id, :name]}}])
+      @rows=@patients.as_json(:include => [{:hospital => {:only => [:id,:name]}},{:department => {:only => [:id,:name]}},{:doctor => {:only => [:id, :name, :doctor_type]}}])
     @objJSON = {total:@total,patients:@rows,page:page,records:records}
     render :json => @objJSON.as_json
   end
