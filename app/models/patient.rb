@@ -61,8 +61,10 @@ class Patient < ActiveRecord::Base
   #创建患者后自动分配医生(医生助手)
   def auto_assign_doctor
     unless !self.doctor_id.nil? && self.doctor_id != ''
-      @doctors = Doctor.where(:doctor_type => 'aide_doctor').shuffle
-      self.doctor_id = @doctors.first.id
+      @doctors = Doctor.where(:doctor_type => 'aide_doctor', :is_public => true).shuffle
+      if !@doctors.nil? && !@doctors.empty?
+        self.doctor_id = @doctors.first.id
+      end
     end
   end
 
