@@ -166,6 +166,14 @@
         <%= f.text_field :mobile_phone,class:"form-control",onblur:"check_phone(this.value,'true')"  %>
       </div>
     </div>
+    <div>
+      <div class="">
+        <%= f.label :医生类型 %>
+        <br>
+        <%= f.radio_button :doctor_type, 'real_doctor', :checked => true %> 真实医生
+        <%= f.radio_button :doctor_type, 'aide_doctor' %> 助手医生
+      </div>
+    </div>
     <!--<div>-->
       <!--<div style="display:inline-block;width:49%">-->
         <!--<%#= f.label :职位 %><br>
@@ -315,12 +323,6 @@
     <div class="">
       <%= f.label :执业经历 %><br>
       <%= f.text_area :introduction, cols:"53", rows:"6" %>
-    </div>
-    <div class="">
-      <%= f.label :医生类型 %>
-      <br>
-      <%= f.radio_button :doctor_type, 'real_doctor', :checked => true %> 真实医生
-      <%= f.radio_button :doctor_type, 'aide_doctor' %> 助手医生
     </div>
     <div class="actions" style="display:none;">
       <%= f.submit id:'new_or_edit_doctor'%>
