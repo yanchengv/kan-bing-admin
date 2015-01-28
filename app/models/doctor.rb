@@ -4,9 +4,9 @@ class Doctor < ActiveRecord::Base
   self.inheritance_column = "ruby_type"
   before_create :set_pk_code,:pinyin,:set_default_value
   before_update :update_default_value,:after_update_do
+  before_destroy :destroy_patient
   after_create :save_patient
   has_one :user, :dependent => :destroy
-  # belongs_to :patient, :dependent => :destroy, :foreign_key => :patient_id
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city
   belongs_to :hospital
@@ -83,6 +83,15 @@ class Doctor < ActiveRecord::Base
     if !@doc_videos.empty?
       @doc_videos .each do |video|
         video.update_attributes(hospital_id:self.hospital_id,department_id:self.department_id)
+      end
+    end
+  end
+
+  def destroy_patient
+    @patient = Patient.where(id:self.patient_id)
+    if !@patient.empty?
+      @patient.each do |pat|
+        pat.destroy
       end
     end
   end
