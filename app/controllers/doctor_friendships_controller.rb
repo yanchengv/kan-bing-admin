@@ -69,7 +69,7 @@ class DoctorFriendshipsController < ApplicationController
           sql << " and name like '%#{params[:name]}%' "
         end
         if params[:doctor_id] && params[:doctor_id] != '' && params[:doctor_id] != 'null' && params[:doctor_id] != 'undefined'
-          sql << " and id not in (select doctor1_id from doctor_friendships where doctor2_id = #{params[:doctor_id]}) and id not in (select doctor2_id from doctor_friendships where doctor1_id = #{params[:doctor_id]})"
+          sql << " and id != #{params[:doctor_id]} and id not in (select doctor1_id from doctor_friendships where doctor2_id = #{params[:doctor_id]}) and id not in (select doctor2_id from doctor_friendships where doctor1_id = #{params[:doctor_id]})"
         end
         count = Doctor.where(sql).count
         totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
