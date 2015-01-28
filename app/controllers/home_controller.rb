@@ -1,4 +1,7 @@
 class HomeController < ApplicationController
+  skip_before_action :update_activity_time
+  skip_before_action :session_expiry
+  before_filter :session_expiry_root
   def index
     if signed_in?
       @menus=current_user.admin2_menus
