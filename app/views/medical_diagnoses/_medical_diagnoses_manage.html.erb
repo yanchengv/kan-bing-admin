@@ -6,7 +6,7 @@
     <div style="margin-bottom: 10px;">诊断类型:<select id="diagnose_type">
       <option value="">---请选择---</option>
       <% @diagnose_types.each do |type| %><option value="<%= type.id %>"><%= type.type_name %></option>
-      <% end %></select>&nbsp;诊断名：<input type="text" id="diagnose_search" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_diagnose_btn">搜索</button>&nbsp;<button id="clear_diagnose_btn" >清空</button>
+      <% end %></select>&nbsp;诊断内容：<input type="text" id="diagnose_search" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_diagnose_btn">搜索</button>&nbsp;<button id="clear_diagnose_btn" >清空</button>
     </div>
     <table id="diagnose_list"></table>
     <div id="page_diagnose"></div>
@@ -21,13 +21,13 @@
         url: '/diagnose_types/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: [ 'ID', '类型名称'],
+        colNames: [ 'ID', '诊断类型'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
             { name: 'type_name', index: 'type_name', align: "center", editable: true}
         ],
         rownumbers: true,
-        hiddengrid: true,
+      //  hiddengrid: true,
         page: 1,
         rowList: [5, 10, 15],
         sortname: 'id',
@@ -78,12 +78,9 @@
         url: '/medical_diagnoses/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: [ 'ID', '诊断名', '创建人', '创建时间', '类型', '所属类型'],
+        colNames: [ 'ID', '诊断类型', '诊断内容', '创建人', '创建时间', '所属类型'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
-            { name: 'title', index: 'title', align: "center", editable: true},
-            { name: 'created_by_name', index: 'created_by_name', align: "center", editable: false },
-            { name: 'created_at', index: 'created_at', align: "center", editable: false, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }},
             { name: 'diagnose_type_id', index: 'diagnose_type_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: "select", editoptions: {
                 dataInit: function (element) {
                     $(element).select2();
@@ -105,6 +102,9 @@
                     return positions;
                 }
             }},
+            { name: 'title', index: 'title', align: "center", editable: true},
+            { name: 'created_by_name', index: 'created_by_name', align: "center", editable: false },
+            { name: 'created_at', index: 'created_at', align: "center", editable: false, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }},
             { name: 'type_name', index: 'type_name', align: "center", editable: false, jsonmap: 'diagnose_type.type_name' }
         ],
         rownumbers: true,
