@@ -182,6 +182,17 @@
                     deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
                 {
                     closeAfterEdit: true,
+                    beforeShowForm: function(){
+                        var myGrid = $('#user_list');
+                        var id = myGrid.jqGrid('getGridParam', 'selrow');
+                        var name = myGrid.jqGrid('getCell', id, 'real_name');
+                        if (!name || name == '' || name == null){
+                            name = ' ';
+                        }else{
+                            name = name;
+                        }
+                        $('#real_name').val(name);
+                    },
                     afterSubmit:function(data){
                         var str = JSON.parse(data.responseText).success;
                         if(str != true){
