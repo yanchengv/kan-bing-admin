@@ -1,7 +1,7 @@
 include SessionsHelper
 class Patient < ActiveRecord::Base
   before_create :set_pk_code,:pinyin,:set_default_value, :auto_assign_doctor
-  before_update :update_default_value
+  before_update :update_default_value ,:after_update_user
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city
   belongs_to :doctor
@@ -65,6 +65,13 @@ class Patient < ActiveRecord::Base
       if !@doctors.nil? && !@doctors.empty?
         self.doctor_id = @doctors.first.id
       end
+    end
+  end
+
+  def after_update_user    #患者修改信息时,同步修改相关用户信息
+    @user = self.user
+    if !@user.nil?
+      @user.update_attributes(real_name:self.name,email:self.email,mobile_phone:self.mobile_phone,credential_type_number:self.credential_type_number)
     end
   end
 

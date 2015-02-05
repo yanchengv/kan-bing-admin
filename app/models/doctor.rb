@@ -3,7 +3,7 @@ class Doctor < ActiveRecord::Base
   self.table_name = "doctors"
   self.inheritance_column = "ruby_type"
   before_create :set_pk_code,:pinyin,:set_default_value
-  before_update :update_default_value,:after_update_do
+  before_update :update_default_value,:after_update_do,:after_update_user
   before_destroy :destroy_patient
   after_create :save_patient
   has_one :user, :dependent => :destroy
@@ -84,6 +84,13 @@ class Doctor < ActiveRecord::Base
       @doc_videos .each do |video|
         video.update_attributes(hospital_id:self.hospital_id,department_id:self.department_id)
       end
+    end
+  end
+
+  def after_update_user    #医生修改信息时,同步修改相关用户信息
+    @user = self.user
+    if !@user.nil?
+      @user.update_attributes(real_name:self.name,email:self.email,mobile_phone:self.mobile_phone,credential_type_number:self.credential_type_number)
     end
   end
 

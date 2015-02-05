@@ -88,7 +88,8 @@
                     data: 'text',
                     success: function (data) {
                         if (data.success == true){
-                            jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?user_type=" + user_type}).trigger("reloadGrid");
+                            $('#refresh_user_list').click()
+//                            jQuery("#user_list").jqGrid('setGridParam', {url: "/users/index_show?user_type=" + user_type}).trigger("reloadGrid");
                         }else{
                             alert('操作失败！');
                         }
@@ -108,15 +109,15 @@
                 { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden: true },
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true, custom_func: check_name}},
                 { name: 'nick_name', index: 'nick_name', width: 100, align: "center", editable: true },
-                { name: 'real_name', index: 'real_name', width: 100, align: "center", editable: true },
+                { name: 'real_name', index: 'real_name', width: 100, align: "center", editable: true, editoptions: { readonly: 'readonly'} },
                 { name: 'password', index: 'password', width: 100, align: "center", editable: true,
                     edittype: "password", hidden: true, editrules: {edithidden: true} },
                 { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
                     editable: true, edittype: "password", hidden: true, editrules: {edithidden: true,custom: true, custom_func: check_pwd2} },
-                // {name: 'credential_type_number', index: 'credential_type_number', width: 100, align: "center", editable: true },
-                { name: 'verification_code', index: 'verification_code', width: 100, align: "center", editable: true },
-                { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone}},
-                { name: 'email', index: 'email', width: 100, align: "center", editable: true, editrules: {email: true, required: false} },
+                {name: 'credential_type_number', index: 'credential_type_number', width: 100, align: "center", editable: true, editoptions: { readonly: 'readonly'} },
+//                { name: 'verification_code', index: 'verification_code', width: 100, align: "center", editable: true, editoptions: { readonly: 'readonly'} },
+                { name: 'mobile_phone', index: 'mobile_phone', width: 150, align: "center", search: false, editable: true, editoptions: { readonly: 'readonly'}, editrules: {custom: true, required: false, custom_func: check_phone}},
+                { name: 'email', index: 'email', width: 100, align: "center", editable: true, editoptions: { readonly: 'readonly'}, editrules: {email: true, required: false} },
                 { name: 'patient_id', index: 'name', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
                 { name: 'doctor_id', index: 'doctor_id', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
                 { name: 'is_enabled', index: 'is_enabled', align: "center", hidden:true},
@@ -385,7 +386,7 @@
                 grid.setColProp("real_name", { editoptions: { defaultValue: name} });
                 grid.setColProp("email", { editoptions: { defaultValue: email} });
                 grid.setColProp("mobile_phone", { editoptions: { defaultValue: tel} });
-                grid.setColProp("verification_code", { editoptions: { defaultValue: ids} });
+                grid.setColProp("credential_type_number", { editoptions: { defaultValue: ids} });
             }
         });
     $("#doc_list").jqGrid("navGrid", "#doc_page", {
