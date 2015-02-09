@@ -422,6 +422,29 @@ Rails.application.routes.draw do
   end
   resource :home_pages
 
+  resources :health_records do
+    collection do
+      get 'index', to:'health_records#index'
+      get 'show_index', to:'health_records#show_index'
+
+      post '/ct2',to: 'health_records#ct2'
+      post '/mri2',to: 'health_records#mri2'
+      post '/ultrasound2',to: 'health_records#ultrasound2'
+      post '/inspection_report2',to: 'health_records#inspection_report2'
+      post '/dicom',to:'health_records#dicom'
+      post '/get_data',to: 'health_records#get_data'
+      # post '/undefined_other', to: 'health_records#undefined_other'
+
+      get 'go_where', to: 'health_records#go_where'
+      get '/play_video', to: 'health_records#play_video'
+      get '/ct', to: 'health_records#ct'
+      get '/get_video', to: 'health_records#get_video'
+      get '/inspection_report', to: 'health_records#inspection_report'
+      get 'mri',to:'health_records#mri'
+      get '/ultrasound', to: 'health_records#ultrasound'
+    end
+  end
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

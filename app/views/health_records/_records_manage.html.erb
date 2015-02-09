@@ -1,0 +1,59 @@
+<table id="health_records_list"></table>
+<div id="page_health_records"></div>
+<script>
+    jQuery("#health_records_list").jqGrid({
+        url: '<%= @url_path %>',
+        datatype: "json",
+        mtype: 'post',
+        colNames: [ '医院', '科室','医生',  '类别', '日期', '查看'],
+        colModel: [
+            { name: 'hospital', index: 'hospital', align: "center"},
+            { name: 'department', index: 'department', align: "center", editable: true},
+            { name: 'doctor', index: 'doctor', align: "center", editable: true},
+            { name: 'child_type', index: 'child_type', align: "center", editable: true,  editrules: {edithidden: true}},
+            { name: 'checked_at', index: 'checked_at', align: "center", editable: true},
+            { name: 'thumbnail', index: '', align: "center", editable: true,
+                formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                    var value = colpos.thumbnail;
+                    if (value!=null) {
+                        return "<a style=\"color:blue;text-align: center;width:100%\" target=\"_Blank\" href=\"/health_records/go_where?uuid="+value+"&child_type="+colpos.child_type+"&child_id="+colpos.child_id+"\">查看</a>";
+//                        return '<%#= link_to("查看", {controller: "health_records", action: "go_where", child_type: r.child_type, uuid: r.thumbnail, child_id: r.child_id}, :target => "_blank") %>'
+                    }else {
+                        return '无法查看'
+                    }
+//                    return "<a style=\"color:blue;text-align: center;width:100%\" href=\"/health_records/inspection_report?uuid="+value+"\"　target=\"_Blank\">查看</a>";
+                }
+            }
+        ],
+        rownumbers: true,
+        page:1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "health_records",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+//        editurl: '/groups/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_health_records'),
+        //   multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "健康档案管理"
+    });
+</script>

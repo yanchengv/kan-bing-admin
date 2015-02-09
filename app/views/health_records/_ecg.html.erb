@@ -1,0 +1,36 @@
+<%= javascript_include_tag 'paginate' %>
+<div class="panel panel-default" style="padding:15px;">
+  <table class="table font-yahei table_align_left">
+    <tr>
+      <!--<th style="border-top-width:0px;">医院</th>-->
+      <!--<th style="border-top-width:0px;">科室</th>-->
+      <!--<th style="border-top-width:0px;">医生</th>-->
+      <th style="border-top-width:0px;">类别</th>
+      <th style="border-top-width:0px;">日期</th>
+      <th style="border-top-width:0px;">查看</th>
+      <th style="border-top-width:0px;">删除</th>
+    </tr>
+    <%if !@ecgs.empty?%>
+    <% @ecgs.each do |e| %>
+        <tr>
+          <!--<td><%#= e.hospital %></td>-->
+          <!--<td><%#= e.department %></td>-->
+          <!--<td><%#= e.doctor %></td>-->
+          <td><%= e.child_type %></td>
+          <td>
+            <%if !e.measure_time.nil? %>
+                <%= e.measure_time.strftime("%Y-%m-%d %H:%M") %>
+            <%end%>
+          </td>
+          <td><a href="/ecg/show?ecg_id=<%=e.id %>" target="_blank">查看</a></td>
+          <%if current_user.doctor_id.nil?%>
+          <td><a href="/ecg/delete?ecg_id=<%=e.id %>" target="_blank">删除</a></td>
+              <%end%>
+        </tr>
+    <% end %>
+    <% end %>
+  </table>
+  <div class="text-center">
+    <%= will_paginate @ecgs,:previous_label => '<', :next_label => '>',:class=>'pagination-mini page num unstyled',:style=>'margin-left:300px;margin-bottom:40px;' %>
+  </div>
+</div>

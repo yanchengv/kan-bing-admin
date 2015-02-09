@@ -3,6 +3,7 @@ defaults: &defaults
   mimas: 'http://fitark.org'
   block_content: '/block_content/show'
   block_content_list: '/block_content/list'
+  jsdicom: '/dicom/show/'
   hospital_code:
     yuquan: '00001'
 
@@ -27,6 +28,7 @@ production:
   block_content_list: '/block_content/list'
   files_mount: '/dfs/'
   mimas: 'http://www.kanbing365.com'
+  jsdicom: '/dicom/show/'
   hospital_code:
     yuquan: '00001'
 

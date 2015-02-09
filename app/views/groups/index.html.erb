@@ -1,0 +1,202 @@
+<%= javascript_include_tag 'health_records' %>
+<%#= javascript_include_tag 'js/ajaxfileupload' %>
+<div class="container" style="margin-top:-20px;">
+  <!--<div class="row" style="margin-top:10px;">-->
+    <!--<p class="health_title">健康档案-->
+      <!--<button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#myModal">创建健康档案</button>-->
+    <!--</p>-->
+  <!--</div>-->
+  <div id="createHealthRecord" hidden="true">
+    <img id="loading" src="http://ww2.sinaimg.cn/large/80dce472jw1em19pqgl8qg200w00w3yc.gif" style="display:none;">
+  </div>
+  <div class="row index_box" style="background:#f2f5f8;margin-top:-10px;border-top-left-radius:0px;border-top-right-radius:0px;">
+    <div class="col-md-2 col-sm-3 left_box" style="padding:0px;">
+
+      <div style="clear:both"></div>
+      <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+          <div id="inspection_all" class="panel-head allinfo_icon" data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseZero">
+            <span class="pull-right font-14" style="font-weight:normal;color:#9ba3a8;">></span><span id="all">所有信息</span>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div id="inspection" class="panel-head jc_icon" data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+            <!--<span class="pull-right space3">></span><span id="dicom">影像数据</span>-->
+            <span class="pull-right font-14" style="font-weight:normal;color:#9ba3a8;">></span><span id="dicom">影像数据</span>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse">
+            <div class="panel-body">
+              <ul class="list-unstyled type_list">
+                <li>
+                  <a id="ult" href="javaScript:showHealthRecordsData('/health_records/ultrasound2')">超声</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a id="ct" href="javaScript:showHealthRecordsData('/health_records/ct2')">CT</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a id="nm" href="javaScript:showHealthRecordsData('/health_records/mri2')">核磁</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">X射线</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div id="checkout" class="panel-head jy_icon" data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+            <span class="pull-right font-14" style="font-weight:normal;color:#9ba3a8;">></span><span id="ins">检验</span>
+          </div>
+          <div id="collapseThree" class="panel-collapse collapse">
+            <div class="panel-body">
+              <ul class="list-unstyled type_list">
+                <li>
+                  <a id="ins_report" href="javaScript:showHealthRecordsData('/health_records/inspection_report2')">检验报告</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div id="common-data" class="panel-head zb_icon" data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+            <span class="pull-right font-14" style="font-weight:normal;color:#9ba3a8;">></span>生理指标
+          </div>
+          <div id="collapseFive" class="panel-collapse collapse">
+            <div class="panel-body">
+              <ul class="list-unstyled type_list">
+                <li>
+                  <a href="javaScript:showHealthRecordsData('/blood_pressure/show')">血压</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/blood_oxygen/show')">血氧</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/weight/show')">体重</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/highcharts/bme/show')">基础代谢</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/highcharts/body_age/show')">身体年龄</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/highcharts/bmi/show')">质量指数</a> <!--身体质量指数-->
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/highcharts/bfr/show')">脂肪率</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/highcharts/smrwb/show')">肌肉率</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/highcharts/vfl/show')">内脏脂肪指数</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/ecg/ecg_list')">心电图</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="panel panel-default">
+          <div id="common-data" class="panel-head zb_icon" data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseFive2">
+            <span class="pull-right font-14" style="font-weight:normal;color:#9ba3a8;">></span>生化指标
+          </div>
+          <div id="collapseFive2" class="panel-collapse collapse">
+            <div class="panel-body">
+              <ul class="list-unstyled type_list">
+                <li>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/blood_glucose/show')">血糖</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/blood_fat/show')">血脂</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="undefined panel-head zd_icon" data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
+            <span class="pull-right font-14" style="font-weight:normal;color:#9ba3a8;">></span>诊断
+          </div>
+          <div id="collapseSix" class="panel-collapse collapse">
+            <div class="panel-body">
+              <ul class="list-unstyled type_list">
+                <li>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">诊断证明书</a>
+
+                </li>
+
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="undefined panel-head jz_icon" data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
+            <span class="pull-right font-14" style="font-weight:normal;color:#9ba3a8;">></span>就诊
+          </div>
+          <div id="collapseSeven" class="panel-collapse collapse">
+            <div class="panel-body">
+              <ul class="list-unstyled type_list">
+                <li>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">门诊</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">住院</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">急诊</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="undefined panel-head jz_icon" data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
+            <span class="pull-right font-14" style="font-weight:normal;color:#9ba3a8;">></span>医嘱
+          </div>
+          <div id="collapseEight" class="panel-collapse collapse">
+            <div class="panel-body">
+              <ul class="list-unstyled type_list">
+                <li>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">临时医嘱</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">长期医嘱</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="undefined panel-head blws_icon" data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseNine">
+            <span class="pull-right font-14" style="font-weight:normal;color:#9ba3a8;">></span>病历文书
+          </div>
+          <div id="collapseNine" class="panel-collapse collapse">
+            <div class="panel-body">
+              <ul class="list-unstyled type_list">
+                <li>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">门诊病历</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">病案首页</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">入院记录</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">病程记录</a>
+                  <span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>
+                  <a href="javaScript:showHealthRecordsData('/health_records/undefined_other')">出院小结</a>
+                  <!--<span style="color:#dcdcdc;margin:0px 10px;display:inline-block;">|</span>-->
+                  <!--<a>医嘱</a>-->
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+
+    </div>
+    <div class="col-md-10 col-sm-9 right_shadow" style="min-height:410px;padding:0px;margin-top:0px;background:#fff;">
+      <div id="div_right" class="">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+

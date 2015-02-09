@@ -406,6 +406,7 @@
 //    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '编辑', caption: '编辑',id:'edit', onClickButton: editPatient})
     $("#list10").navButtonAdd('#pager10', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailPatient', onClickButton: sendEmailPatient})
     $("#list10").navButtonAdd('#pager10', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhonePatient', onClickButton: sendPhonePatient})
+    $("#list10").navButtonAdd('#pager10', {position: 'last', title: '健康档案', caption: '健康档案',id:'showHealthRecords', onClickButton: showHealthRecords})
 
     function matchPatient() {
         selectedIds  = jQuery("#list10").jqGrid("getGridParam","selarrrow");
@@ -803,6 +804,14 @@
         $('#refresh_list10').click()
 //        var url= "/patients/show_index?hos_id=" + $('#patient_hos_id').val() + "&dep_id=" + $('#patient_dep').val()
 //        jQuery("#list10").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+    }
+
+    function showHealthRecords() {
+        if (selectedIds.length>0) {
+            window.open('/health_records/index?id='+selectedIds)
+        }else{
+            alert('请至少选择一条记录!')
+        }
     }
 
     function pat_search_hos(){

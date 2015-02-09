@@ -1,0 +1,138 @@
+
+<% if signed_in? %>
+    <%= stylesheet_link_tag 'menus/left_menu'%>
+    <script type="text/javascript">
+        var zNodes =[
+            { id:'dicom', pId:0, name:"所有信息",uri:"/health_records/show_index?type=dicom", open:true},
+            { id:1, pId:0, name:"影像数据",uri:""},
+            { id:'ultrasound2', pId:1, name:"超声",uri:"/health_records/show_index?type=ultrasound2"},
+            { id:'ct2', pId:1, name:"CT",uri:"/health_records/show_index?type=ct2"},
+            { id:'mri2', pId:1, name:"核磁",uri:"/health_records/show_index?type=mri2"},
+            { id:2, pId:0, name:"检验"},
+            { id:'inspection_report2', pId:2, name:"检验报告",uri:"/health_records/show_index?type=inspection_report2"}
+        ];
+        var curMenu = null, zTree_Menu = null;
+        function leftMeunsOnClick(event, treeId, treeNode) {
+                $.ajax({
+                    url:treeNode.uri,
+                    type:'get',
+                    beforeSend:function(response){
+                        $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#ebeced;line-height:100px;font-weight:bold;"><img src="/loading.gif" style="margin-top:40px;"/></div>')
+                    },
+                    success:function (response,data){
+                        $('#rightContent').html(response)
+                    },
+                    error:function(response){
+                        $('#rightContent').html('response')
+                    }
+                })
+
+        };
+        var setting = {
+            view: {
+                showLine: true,
+                showIcon: false,
+                selectedMulti: false,
+                dblClickExpand: false
+
+
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                onClick: leftMeunsOnClick,
+                beforeClick: this.beforeClick
+            }
+
+        };
+        function beforeClick(treeId, node) {
+            if (node.isParent) {
+                if (node.level === 0) {
+                    var pNode = curMenu;
+                    while (pNode && pNode.level !==0) {
+                        pNode = pNode.getParentNode();
+                    }
+                    if (pNode !== node) {
+                        var a = $("#" + pNode.tId + "_a");
+                        a.removeClass("cur");
+                        zTree_Menu.expandNode(pNode, false);
+                    }
+                    a = $("#" + node.tId + "_a");
+                    a.addClass("cur");
+
+                    var isOpen = false;
+                    for (var i=0,l=node.children.length; i<l; i++) {
+                        if(node.children[i].open) {
+                            isOpen = true;
+                            break;
+                        }
+                    }
+                    if (isOpen) {
+                        zTree_Menu.expandNode(node, true);
+                        curMenu = node;
+                    } else {
+                        zTree_Menu.expandNode(node.children[0].isParent?node.children[0]:node, true);
+                        curMenu = node.children[0];
+                    }
+                } else {
+                    zTree_Menu.expandNode(node);
+                }
+            }
+            return !node.isParent;
+        }
+
+
+        $(document).ready(function(){
+            $.fn.zTree.init($("#leftMenus"), setting, zNodes);
+            zTree_Menu = $.fn.zTree.getZTreeObj("leftMenus");
+//                  curMenu = zTree_Menu.getNodes()[0].children[0].children[0];
+            if (zTree_Menu.getNodes() != undefined) {
+                if (zTree_Menu.getNodes()[0] != undefined && zTree_Menu.getNodes()[0].children != undefined) {
+                    curMenu = zTree_Menu.getNodes()[0].children[0];
+                }
+                else {
+                    curMenu = zTree_Menu.getNodes()[0]
+                }
+
+                zTree_Menu.selectNode(curMenu);
+                var a = $("#" + zTree_Menu.getNodes()[0].tId + "_a");
+                a.addClass("cur");
+            }
+
+            $.ajax({
+                url: '/health_records/show_index?type=dicom',
+                type: 'get',
+                beforeSend: function (response) {
+                    $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#ebeced;line-height:100px;font-weight:bold;"><img src="/loading.gif" style="margin-top:40px;"/></div>')
+                },
+                success: function (response, data) {
+                    $('#rightContent').html(response)
+                },
+                error: function (response) {
+                    $('#rightContent').html('response')
+                }
+            })
+        });
+
+
+        window.onload = function(){
+            var h=window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+            document.getElementById("homeLeftMenus").style.height = (h-57)+"px";
+        };
+
+
+    </script>
+    <%#= javascript_include_tag 'menus/left_menu'%>
+    <div class="zleftMenusBackground left" style="height:100%;float:left;width:15% !important;margin-top:0px !important;overflow:hidden;" id="homeLeftMenus">
+      <ul id="leftMenus" class="ztree" style="width:100%;height:100%;margin-top:0px !important;"></ul>
+    </div>
+    <div id="rightContent" style="float:right;width:82% !important;padding:10px;position:relative;">
+      <div style="text-align:center">
+
+      </div>
+    </div>
+<%end%>

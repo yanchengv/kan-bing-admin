@@ -11,6 +11,9 @@ Rails.application.config.assets.precompile += %w( dialog-min.js )
 Rails.application.config.assets.precompile += %w( update_password.js )
 Rails.application.config.assets.precompile += %w( ajax_image_crop_upload.js )
 Rails.application.config.assets.precompile += %w( pat_ajax_image_crop_upload.js)
+Rails.application.config.assets.precompile += %w( health_records.js)
+Rails.application.config.assets.precompile += %w( paginate.js)
+Rails.application.config.assets.precompile += ['jquery.fancybox-1.3.1.pack.js','fancybox.css']
 # Rails.application.config.assets.precompile += %w(  domain_manage.js)
 
 Rails.application.config.assets.precompile += ['page_blocks/*','domain_manage.js','home_menu/*','menus/*']

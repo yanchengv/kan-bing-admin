@@ -1,0 +1,151 @@
+
+<style>
+    body{ text-align:center}
+</style>
+<canvas id="ecg" width="1050px" height="660px" ></canvas>
+<script type="text/javascript">
+
+    function drawGrid(){
+        var c_canvas = document.getElementById("ecg");
+        drawSmallGrid(c_canvas);
+        drawMediumGrid(c_canvas)
+        drawBigGrid(c_canvas);
+        drawLabel(c_canvas)
+        drawLine();
+        return;
+    }
+//画最小方格
+    function drawSmallGrid(c_canvas){
+        var context = c_canvas.getContext("2d");
+        context.strokeStyle = "#f1dedf";
+        context.strokeWidth=1;
+        context.beginPath();
+        for (var x = 0.5; x < 1000; x += 4) {
+            context.moveTo(x, 0);
+            context.lineTo(x, 600);
+            context.stroke();
+        }
+
+        for (var y = 0.5; y < 600; y += 4) {
+            context.moveTo(0, y);
+            context.lineTo(1000, y);
+            context.stroke();
+        }
+        context.closePath();
+        return;
+    }
+//画中等方格
+    function drawMediumGrid(c_canvas){
+        var context = c_canvas.getContext("2d");
+        context.strokeStyle = "#f0adaa";
+        context.strokeWidth=1;
+        context.beginPath();
+        for (var x = 0.5; x < 1000; x += 20) {
+            context.moveTo(x, 0);
+            context.lineTo(x, 600);
+            context.stroke();
+        };
+
+        for (var y = 0.5; y < 600; y += 20) {
+            context.moveTo(0, y);
+            context.lineTo(1000, y);
+
+            context.stroke();
+        };
+        context.closePath();
+        return;
+    }
+   //画最大方格  1001这样可以画出最右面的竖线
+    function drawBigGrid(c_canvas){
+        var context = c_canvas.getContext("2d");
+        context.strokeStyle = "#e0514b";
+        context.strokeWidth=1;
+        context.beginPath();
+        for (var x = 0.5; x < 1001; x += 100) {
+            context.moveTo(x, 0);
+            context.lineTo(x, 600);
+            context.stroke();
+        };
+
+        for (var y = 0.5; y < 1000; y += 100) {
+            context.moveTo(0, y);
+            context.lineTo(1000, y);
+            context.stroke();
+        };
+        context.closePath();
+        return;
+    }
+//    画出标注的时间（1s,2s等）
+    function drawLabel(c_canvas){
+        var context = c_canvas.getContext("2d");
+        context.strokeStyle = "#e0514b";
+        context.strokeWidth=1;
+        context.beginPath();
+        context.fillText('0s',0,610);
+        context.fillText('1s',100,610);
+        context.fillText('2s',200,610);
+        context.fillText('3s',300,610);
+        context.fillText('4s',400,610);
+        context.fillText('5s',500,610);
+        context.fillText('6s',600,610);
+        context.fillText('7s',700,610);
+        context.fillText('8s',800,610);
+        context.fillText('9s',900,610);
+        context.fillText('10s',1000,610);
+
+        context.fillText('心电图',490,630);
+        context.fillText('-从第0秒到第10秒的心电图 -从第10秒到第20秒的心电图 -从第20秒到第30秒的心电图',250,650);
+        context.closePath();
+        return;
+    }
+    function drawLine(){
+
+        var c=document.getElementById("ecg");
+        var cxt=c.getContext("2d");
+        cxt.strokeStyle = "#000000";
+        cxt.beginPath();
+        var x=0.5;
+        var y=75
+        //var  y= 0.04901960784
+        //var y=[75,175,69,89,132,20,89,98,63,32,75,175,69,89,132,20,89,98,63,32,200,165,30,97,68,165,99,100,58,165]
+        //var y=[75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75,75]
+        var data1=<%= @ecg_data1%>
+        for(var i=1;i<2000;i++){
+
+            x=x+0.5
+            var xx=x-0.5
+            cxt.moveTo(xx,data1[i-1]);
+            cxt.lineTo(x,data1[i]);
+
+        }
+        var x2=0.5
+        var data2=<%= @ecg_data2%>
+        for(var i=1;i<2000;i++){
+
+            x2=x2+0.5
+            var xx2=x2-0.5
+            cxt.moveTo(xx2,data2[i-1]);
+            cxt.lineTo(x2,data2[i]);
+//            cxt.moveTo(xx,300);
+//            cxt.lineTo(x2,300);
+
+        }
+        var x3=0.5
+        var data3=<%= @ecg_data3%>
+        for(var i=1;i<2000;i++){
+
+            x3=x3+0.5
+            var xx3=x3-0.5
+            cxt.moveTo(xx3,data3[i-1]);
+            cxt.lineTo(x3,data3[i]);
+
+        }
+        cxt.stroke();
+        cxt.closePath();
+
+    }
+
+
+
+    drawGrid()
+</script>
