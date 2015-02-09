@@ -23,7 +23,8 @@
  *= require admin2s_role2s
  *= require block_contents
  *= require home_menu
-  *= require setting
+ *= require setting
+ *= require home.css.erb
  */
 .ui-jqdialog-content .DataTD {
     padding: 2px;

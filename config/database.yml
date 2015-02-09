@@ -30,8 +30,8 @@ test:
   password: 123
 
 production:
-  template: template0
-  host: fitark.org
+  host: 166.111.131.96
+  port: 3307
   adapter: mysql2
   database: mimas_production
   pool: 5
