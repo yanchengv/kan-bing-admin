@@ -13,7 +13,7 @@ namespace :db do
 #政治面貌   行政支撑
   end
 
-    exp_data
+   # exp_data
   end
 
 
