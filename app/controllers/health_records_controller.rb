@@ -28,15 +28,13 @@ class HealthRecordsController < ApplicationController
     if  !params[:uuid].nil? && !params[:child_type].nil?
       case params[:child_type]
         when 'CT'
-          redirect_to "/health_records/ct?child_id=#{params[:child_id]}&inspection_type=CT"
-          #redirect_to '/health_records/ct?uuid='+params[:uuid]
+          redirect_to :action => :ct, :child_id => params[:child_id],  :inspection_type => 'CT'
         when '超声'
-            redirect_to "/health_records/ultrasound?uuid=#{params[:uuid]}&child_id=#{params[:child_id]}"
+            redirect_to :action => :ultrasound, :uuid => params[:uuid], :child_id => params[:child_id]
         when '检验报告'
-          redirect_to '/health_records/inspection_report?uuid='+params[:uuid]
+          redirect_to :action => :inspection_report, :uuid => params[:uuid]
         when '核磁','MR'
-          redirect_to "/health_records/mri?child_id=#{params[:child_id]}&inspection_type=MR"
-          #redirect_to '/health_records/mri?uuid='+params[:uuid]
+          redirect_to :action => :mri, :child_id => params[:child_id], :inspection_type => 'MR'
         when '心电图'
           redirect_to '/ecg/show?ecg_id='+params[:uuid]
       end
@@ -48,14 +46,14 @@ class HealthRecordsController < ApplicationController
   def ct
     @obj ||= params[:child_id]
     @inspection_type = params[:inspection_type]
-    #@obj ||= params[:uuid]
+    render :template => 'health_records/ct', layout: "application3"
   end
 
   # 核磁
   def mri
     @obj ||= params[:child_id]
     @inspection_type = params[:inspection_type]
-    #@obj ||= params[:uuid]
+    render "health_records/mri", layout: "application3"
   end
 
 
@@ -65,6 +63,7 @@ class HealthRecordsController < ApplicationController
     @pics = @iu.image_list.split(',')
     @videos = @iu.video_list.split(',')
     @flag=aliyun_file_exit(@uuid,'mimas-img')
+    render "health_records/ultrasound", layout: "application3"
 
     #uuid = @uuid.split('.')[0]
     #@uuid = uuid+'.png'
@@ -87,6 +86,7 @@ class HealthRecordsController < ApplicationController
   def inspection_report
     @uuid = params[:uuid]
     @uuid = @uuid.split('.')[0]+'.png'
+    render "health_records/inspection_report", layout: "application3"
   end
 
   def get_video

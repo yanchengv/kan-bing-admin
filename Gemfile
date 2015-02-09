@@ -60,4 +60,5 @@ gem 'rails_kindeditor', git: 'git@fitark.org:saturn/rails_kindeditor.git', :ref 
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+gem 'jsdicom', git: 'git@fitark.org:saturn/jsdicom-rails4.1.x.git'
 

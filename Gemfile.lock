@@ -1,4 +1,11 @@
 GIT
+  remote: git@fitark.org:saturn/jsdicom-rails4.1.x.git
+  revision: 31fe8d1926df2c3e48cf708a4b7bd2693c38d833
+  specs:
+    jsdicom (0.0.8)
+      rails (~> 4.1.6)
+
+GIT
   remote: git@fitark.org:saturn/rails_kindeditor.git
   revision: 199347f47faee5143628581b5a809e7339e22719
   ref: 199347f4
@@ -179,6 +186,7 @@ DEPENDENCIES
   jcrop-rails-v2 (~> 0.9.12.3)
   jquery-rails
   jquery-ui-rails (~> 5.0.0)
+  jsdicom!
   mina
   mini_magick (~> 3.7.0)
   mysql2

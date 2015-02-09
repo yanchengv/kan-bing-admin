@@ -371,7 +371,7 @@ Rails.application.routes.draw do
       post 'delete_image', to:'doctors#delete_image'
     end
   end
-
+  mount Jsdicom::Engine, :at => '/dicom'
   resources :patients do
     collection do
       get 'get_department', to:'doctors#get_department'
