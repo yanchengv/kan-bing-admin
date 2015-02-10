@@ -16,7 +16,12 @@
                 formatter: function (rowId, cellval, colpos, rwdat, _act) {
                     var value = colpos.thumbnail;
                     if (value!=null) {
-                        return "<a style=\"color:blue;text-align: center;width:100%\" target=\"_blank\" href=\"/health_records/go_where?uuid="+value+"&child_type="+colpos.child_type+"&child_id="+colpos.child_id+"\">查看</a>";
+                        if(colpos.child_id){
+                            return "<a style=\"color:blue;text-align: center;width:100%\" target=\"_blank\" href=\"/health_records/go_where?uuid=" + value + "&child_type=" + colpos.child_type + "&child_id=" + colpos.child_id + "\">查看</a>";
+                        }else{
+                            return "<a style=\"color:blue;text-align: center;width:100%\" target=\"_blank\" href=\"/health_records/go_where?uuid=" + value + "&child_type=" + colpos.child_type + "&child_id=" + colpos.id + "\">查看</a>";
+                        }
+
 //                        return '<%#= link_to("查看", {controller: "health_records", action: "go_where", child_type: r.child_type, uuid: r.thumbnail, child_id: r.child_id}, :target => "_blank") %>'
                     }else {
                         return '无法查看'
