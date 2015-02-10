@@ -445,6 +445,18 @@ Rails.application.routes.draw do
     end
   end
 
+  # 心电图
+  resource :ecg do
+    collection do
+      get 'show2',to:'ecg#show2'
+      post 'ecg_list',to:'ecg#ecg_list'
+      get 'show',to:'ecg#show'
+      post 'create',to:'ecg#create'
+      get 'delete',to:'ecg#delete'
+    end
+  end
+
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

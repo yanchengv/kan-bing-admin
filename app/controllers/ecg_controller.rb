@@ -139,4 +139,13 @@ class EcgController < ApplicationController
        @ecg.destroy
        redirect_to :back
   end
+
+
+  private
+
+  def ecg_params
+    params.permit(:id,:patient_id,:ecg_img ,:device_type ,:measure_time,:ahdId,:mdevice,:is_true,:int_ecg_img,:bit_ecg_img)
+  end
 end
+
+
