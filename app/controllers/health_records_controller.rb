@@ -63,9 +63,6 @@ class HealthRecordsController < ApplicationController
     @pics = @iu.image_list.split(',')
     @videos = @iu.video_list.split(',')
     @flag=aliyun_file_exit(@uuid,'mimas-img')
-    puts "=====@pics==#{@pics.as_json}============="
-    puts "=====@@videos==#{@videos.as_json}============="
-    puts "=================flag===#{@flag}"
     render "health_records/ultrasound", layout: "application3"
 
     #uuid = @uuid.split('.')[0]
