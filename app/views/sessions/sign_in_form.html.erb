@@ -1,42 +1,37 @@
-
-<div style="margin-top:85px;margin-bottom:10px;" class="login_box">
-  <% provide(:title, "Sign in") %>
-  <%= form_for(:session, :class => '', :url => {:action => 'create', :controller => 'sessions'}, :html => {:id => 'sess_form'}) do |f| %>
-      <%#= f.label :username,"用户名"%>
-      <%= f.text_field :username, :id => "us", :placeholder => "用户名/邮箱", :class => "input_box username", :style => "" %>
-      <%#= f.label :password,"密码"%>
-      <%= f.password_field :password, :id => "pa", :placeholder => "密码", :class => "input_box password", :style => "" %>
-      <%= f.submit '', :class => "login_button", :style => "" %>
-  <% end %>
-  <div class="clearfix"></div>
-  <% if flash[:notice] %>
-      <div class="notice" style="text-align:center; color: #ff0000;font-size:12px;" id="login_notice"><%= flash[:notice] %></div>
-      <script>
-          function disappear(){
-              document.getElementById('login_notice').style.display='none'
-          }
-          setTimeout(disappear,3000);
-      </script>
-  <% end %>
+<div class="container" style="margin-top:100px;">
+  <div class="col-md-10 col-offset-1">
+    <% if flash[:notice] %>
+        <div class="alert alert-danger alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <%= flash[:notice] %>
+        </div>
+        <script>
+            function disappear(){
+                document.getElementById('login_notice').style.display='none'
+            }
+            setTimeout(disappear,6000);
+        </script>
+    <% end %>
+    <div class="row">
+      <div class="col-md-7 col-sm-7 col-xs-0">
+        <h1>欢迎登陆后台管理系统</h1>
+        <h2><small>专注医院信息建设，以科技回报社会，将最新的IT前沿技术与临床实践相结合，为21世纪以患者为中心的个性化医疗服务提供全方位的技术支持。</small></h2>
+      </div>
+      <div class="col-md-5 col-sm-5 col-xs-12">
+        <div class="login-box">
+          <%= form_for(:session, :class => '', :url => {:action => 'create', :controller => 'sessions'}, :html => {:id => 'sess_form'}) do |f| %>
+              <%#= f.label :username,"用户名"%>
+              <%= f.text_field :username, :id => "us", :placeholder => "用户名/邮箱", :class => "form-control top"%>
+              <%#= f.label :password,"密码"%>
+              <%= f.password_field :password, :id => "pa", :placeholder => "密码", :class => "form-control bottom"%>
+              <%= f.submit '登 录', :class => "btn-primary btn", :style => "" %>
+          <% end %>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    window.onresize = window.onload = function(){
-        var w,h
-        if(!!(window.attachEvent && !window.opera))
-        {
-            h = document.documentElement.clientHeight;
-            w = document.documentElement.clientWidth;
-        }else{
-            h = window.innerHeight;
-            w = window.innerWidth;
-        }
-        var bgImg = document.getElementById('bg').getElementsByTagName('img')[0];
-        bgImg.width = (w);
-        bgImg.height= (h) ;
 
-    }
-</script>
 
-<div id="bg">
-  <%=image_tag("bg.jpg", alt:"default", style:"margin:0;padding:0;position:absolute;left:0;top:0;z-index:-1;") %>
-</div>
+

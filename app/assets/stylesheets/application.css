@@ -23,7 +23,10 @@
  *= require admin2s_role2s
  *= require block_contents
  *= require home_menu
-  *= require setting
+ *= require setting
+ *= require font-awesome.min
+ *= require themes/defalut
+ *= require  bootstrap
  */
 .ui-jqdialog-content .DataTD {
     padding: 2px;
@@ -34,7 +37,7 @@
     margin-right: 30px;
 }
 body{background:url('') #f3f3f3;font-family:"Microsoft YaHei",Arial;}
-button,table td,table th,input,a,.ztree *,textarea{font-family:"Microsoft YaHei",Arial !important;}
+button,table td,table th,input,a,.ztree *,textarea,h1,h2,h3,h4,h5,h6{font-family:"Microsoft YaHei",Arial !important;font-weight:normal;}
 .clear {
     clear: both;
     height: 0px;

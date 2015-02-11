@@ -1,4 +1,5 @@
 body{margin:0;padding:0;}
+
 .yahei{
     font-family: "Microsoft YaHei", Arial;
 }
@@ -48,13 +49,13 @@ body{margin:0;padding:0;}
     background: transparent;
 }
 
-.logo,.logo a {
-    margin-left: 20px;
-    font-size: 24px;
-    color: #fff;
-    line-height: 50px;
-    font-family: "Microsoft YaHei", Arial;
-}
+/*.logo,.logo a {*/
+    /*margin-left: 20px;*/
+    /*font-size: 24px;*/
+    /*color: #fff;*/
+    /*line-height: 50px;*/
+    /*font-family: "Microsoft YaHei", Arial;*/
+/*}*/
 
 
 
@@ -124,3 +125,55 @@ body{margin:0;padding:0;}
 }
 .fr{float:right;}
 .fl{float:left;}
+/*--------------------logo--------------------*/
+.logo{
+
+    height:50px;
+    margin:0;padding:0;
+}
+
+.logo a{
+    background:url(http://fitark.org:8089/assets/logo-white-96c5cdf684c799df72c830d36ecc7fec.png) no-repeat center center #222222;
+    background-size:32px;
+    width:50px;
+    height:50px;
+    display:inline-block;
+    margin:0;
+    padding:0;
+}
+/*--------------------logo end--------------------*/
+/*-------------------------header nav-------------------*/
+#nav .navbar-brand{
+    color:#ffffff;
+    font-family: "Microsoft YaHei","黑体";
+}
+#nav .navbar-nav > li > a{
+    color:#aaaaaa;
+    font-family: "Microsoft YaHei","黑体";
+}
+#nav .navbar-nav > li > a:hover{
+    color:#ffffff;
+    font-family: "Microsoft YaHei","黑体";
+}
+#nav .nav > li > a{
+    padding-left:10px;
+    padding-right:10px;
+}
+#nav .tooltip{
+    min-width:50px;
+    white-space:nowrap;
+    word-break:normal;
+}
+.left_line{
+    border-left:1px solid #2e2e2e;
+}
+.no-hand{
+    cursor:default;
+}
+.default_color:hover{
+     color:#aaa !important;
+}
+.margin_right{
+    margin-right:10px;
+}
+/*-------------------------nav end-------------------*/

@@ -1,30 +1,105 @@
 
 <%= stylesheet_link_tag 'menus/header'%>
-
-<header class="">
-  <div class="nologin_nav">
-    <div class="nologin_logo">后台管理系统</div>
-    <% if signed_in? %>
-    <div class="fl nologin_user"><%= current_user.admin_type%>:<%= current_user.name%></div>
-    <div class="nologin_menu">
-      <ul id="menu">
-
-            <li id="fat-menu" class="pull-right">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <span class="yahei">帐户管理</span><b class="caret"></b>
-              </a>
-              <ul>
-                <li><a href="JAVASCRIPT:update_password()" class="yahei">设置</a><%#= link_to "setting", '/admin2s/setting' %></li>
-                <li>
-                  <%= link_to "退出", '/sessions/sign_out', method: "delete" ,:class => "yahei"%>
-                </li>
-              </ul>
-            </li>
-
-      </ul>
+<!--header-->
+<nav id="nav" class="navbar navbar-default navbar-inverse navbar-fixed-top navbar-gitlab" role="navigation" style="border-radius: 0px">
+  <div class="container-fluid">
+    <!--Brand and toggle get grouped for better mobile display-->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">
+                            Toggle navigation
+     </span>
+                        <span class="icon-bar">
+                        </span>
+                        <span class="icon-bar">
+                        </span>
+                        <span class="icon-bar">
+                        </span>
+      </button>
+      <div class="logo pull-left">
+        <a href="#">
+          <span>
+          </span>
+        </a>
+      </div>
+      <div class="navbar-brand pull-left" href="#">
+        后台管理系统
+      </div>
     </div>
-    <% end %>
+    <!--Collect the nav links,forms,and other content for toggling-->
+    <div class="collapse navbar-collapse pull-right" id="bs-example-navbar-collapse-1">
+      <% if signed_in? %>
+      <ul class="nav navbar-nav">
+        <!--<li>-->
+          <!--<a href="#" data-toggle="tooltip" data-placement="bottom" title="字典管理">-->
+            <!--<i class="icon-book"></i>-->
+          <!--</a>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<a href="#" data-toggle="tooltip" data-placement="bottom" title="文章管理">-->
+            <!--<i class="icon-file"></i>-->
+          <!--</a>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<a href="#" data-toggle="tooltip" data-placement="bottom" title="权限管理">-->
+            <!--<i class="icon-lock"></i>-->
+          <!--</a>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<a href="#" data-toggle="tooltip" data-placement="bottom" title="人员管理">-->
+            <!--<i class="icon-group"></i>-->
+          <!--</a>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<a href="#" data-toggle="tooltip" data-placement="bottom" title="用户关系">-->
+            <!--<i class="icon-magnet"></i>-->
+          <!--</a>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<a href="#" data-toggle="tooltip" data-placement="bottom" title="视频管理">-->
+            <!--<i class="icon-facetime-video"></i>-->
+          <!--</a>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<a href="#" data-toggle="tooltip" data-placement="bottom" title="界面管理">-->
+            <!--<i class="icon-desktop"></i>-->
+          <!--</a>-->
+        <!--</li>-->
+        <!--<li>-->
+          <!--<a href="#" data-toggle="tooltip" data-placement="bottom" title="治疗技术管理">-->
+            <!--<i class="icon-beaker"></i>-->
+          <!--</a>-->
+        <!--</li>-->
+        <li class="dropdown">
+          <a href="JAVASCRIPT:update_password()" data-toggle="tooltip" data-placement="bottom" title="设置">
+            <i class="icon-cogs"></i>
+          </a>
+        </li>
+        <li>
+          <a data-method="delete" href="/sessions/sign_out" rel="nofollow" data-toggle="tooltip" data-placement="bottom" data-original-title="退出">
+            <i class="icon-signout"></i>
+          </a>
+        </li>
+        <li class="left_line">
+          <a href="#" class="no-hand default_color" data-toggle="tooltip" data-placement="bottom" data-original-title='<%= current_user.admin_type%>'>
+            <span class="margin_right"><%= current_user.name%></span>
+          </a>
+        </li>
+      </ul>
+      <% end %>
+      <script>
+          $(function () {
+              $('[data-toggle="tooltip"]').tooltip()
+          })
+      </script>
+    </div>
+    <!--/.navbar-collapse-->
   </div>
+  <!--/.container-fluid-->
+</nav>
+<!--header end-->
 
-</header>
+
+
 <%= javascript_include_tag 'menus/header'%>
