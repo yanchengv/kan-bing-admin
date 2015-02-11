@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   get 'home_menu/create'
-
   resources :role2_menus do
     collection do
       get 'menus_to_roles', to: 'role2_menus#menus_to_roles'
@@ -329,7 +328,7 @@ Rails.application.routes.draw do
       get 'sign_in',to:'sessions#sign_page'
     end
   end
-
+  get 'home/index2',to:'home#index2'
   resources :admin2s do
     collection do
       get 'setting', to:'admin2s#setting'

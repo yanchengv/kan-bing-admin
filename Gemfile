@@ -31,9 +31,10 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 # gem 'spring',        group: :development
 
-gem 'bootstrap-sass','3.0.2'
+#gem 'bootstrap-sass','3.0.2'
 #  gem 'backbone-on-rails'
-gem 'bootstrap-will_paginate'
+
+#gem 'bootstrap-will_paginate'
 gem 'jquery-ui-rails', '~> 5.0.0'
 # Use ActiveModel has_secure_password
 gem 'bcrypt', '~> 3.1.7'
@@ -61,4 +62,6 @@ gem 'rails_kindeditor', git: 'git@fitark.org:saturn/rails_kindeditor.git', :ref 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 gem 'jsdicom', git: 'git@fitark.org:saturn/jsdicom-rails4.1.x.git'
+
+gem 'bootstrap-sass', '3.0.2'
 

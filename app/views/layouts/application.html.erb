@@ -2,6 +2,15 @@
 <html>
 <head>
   <title>后台管理系统</title>
+  <title>WebAdmin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--[if lte IE 8]-->
+  <meta http-equiv=”x-ua-compatible” content=”ie=9″ />
+  <!--[endif]-->
+  <!--[if IE 9]-->
+  <meta http-equiv=”x-ua-compatible” content=”ie=9″ />
+  <!--[endif]-->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
@@ -9,7 +18,9 @@
 <body>
 <%= render partial: 'layouts/header'%>
 <%= render partial: 'menus/left_menu'%>
-<div style="margin-top: 80px;"><%= yield %></div>
+<div style="margin-top: 50px;">
+<%= yield %>
+</div>
 
 </body>
 </html>
