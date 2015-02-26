@@ -32,6 +32,21 @@
       <% if signed_in? %>
           <ul class="nav navbar-nav">
             <li>
+              <a href="?id=<%=params[:id]%>&flag=all" data-toggle="tooltip" data-placement="bottom" title="所有信息">
+                <i class="icon-tablet"></i>
+              </a>
+            </li>
+            <li>
+              <a href="?id=<%=params[:id]%>&flag=yx" data-toggle="tooltip" data-placement="bottom" title="影像数据">
+                <i class="icon-globe"></i>
+              </a>
+            </li>
+            <li>
+              <a href="?id=<%=params[:id]%>&flag=jy" data-toggle="tooltip" data-placement="bottom" title="检验">
+                <i class="icon-user-md"></i>
+              </a>
+            </li>
+            <li>
               <a href="JAVASCRIPT:update_password()" data-toggle="tooltip" data-placement="bottom" title="设置">
                 <i class="icon-cogs"></i>
               </a>

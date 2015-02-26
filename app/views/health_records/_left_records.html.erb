@@ -12,9 +12,11 @@
             { id:'inspection_report2', pId:2, name:"检验报告",uri:"/health_records/show_index?type=inspection_report2"}
         ];
         var curMenu = null, zTree_Menu = null;
-        function leftMeunsOnClick(event, treeId, treeNode) {
+        function leftMeunsOnClick(URL,menu_id) {
+            $('#accordion li').removeClass("active");
+            $('#'+menu_id).addClass('active')
                 $.ajax({
-                    url:treeNode.uri,
+                    url:URL,
                     type:'get',
                     beforeSend:function(response){
                         $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#ebeced;line-height:100px;font-weight:bold;"><img src="/loading.gif" style="margin-top:40px;"/></div>')
@@ -28,80 +30,8 @@
                 })
 
         };
-        var setting = {
-            view: {
-                showLine: true,
-                showIcon: false,
-                selectedMulti: false,
-                dblClickExpand: false
-
-
-            },
-            data: {
-                simpleData: {
-                    enable: true
-                }
-            },
-            callback: {
-                onClick: leftMeunsOnClick,
-                beforeClick: this.beforeClick
-            }
-
-        };
-        function beforeClick(treeId, node) {
-            if (node.isParent) {
-                if (node.level === 0) {
-                    var pNode = curMenu;
-                    while (pNode && pNode.level !==0) {
-                        pNode = pNode.getParentNode();
-                    }
-                    if (pNode !== node) {
-                        var a = $("#" + pNode.tId + "_a");
-                        a.removeClass("cur");
-                        zTree_Menu.expandNode(pNode, false);
-                    }
-                    a = $("#" + node.tId + "_a");
-                    a.addClass("cur");
-
-                    var isOpen = false;
-                    for (var i=0,l=node.children.length; i<l; i++) {
-                        if(node.children[i].open) {
-                            isOpen = true;
-                            break;
-                        }
-                    }
-                    if (isOpen) {
-                        zTree_Menu.expandNode(node, true);
-                        curMenu = node;
-                    } else {
-                        zTree_Menu.expandNode(node.children[0].isParent?node.children[0]:node, true);
-                        curMenu = node.children[0];
-                    }
-                } else {
-                    zTree_Menu.expandNode(node);
-                }
-            }
-            return !node.isParent;
-        }
-
 
         $(document).ready(function(){
-            $.fn.zTree.init($("#leftMenus"), setting, zNodes);
-            zTree_Menu = $.fn.zTree.getZTreeObj("leftMenus");
-//                  curMenu = zTree_Menu.getNodes()[0].children[0].children[0];
-            if (zTree_Menu.getNodes() != undefined) {
-                if (zTree_Menu.getNodes()[0] != undefined && zTree_Menu.getNodes()[0].children != undefined) {
-                    curMenu = zTree_Menu.getNodes()[0].children[0];
-                }
-                else {
-                    curMenu = zTree_Menu.getNodes()[0]
-                }
-
-                zTree_Menu.selectNode(curMenu);
-                var a = $("#" + zTree_Menu.getNodes()[0].tId + "_a");
-                a.addClass("cur");
-            }
-
             $.ajax({
                 url: '/health_records/show_index?type=dicom',
                 type: 'get',
@@ -118,21 +48,91 @@
         });
 
 
-        window.onload = function(){
-            var h=window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-
-            document.getElementById("homeLeftMenus").style.height = (h-57)+"px";
-        };
-
-
     </script>
-    <%#= javascript_include_tag 'menus/left_menu'%>
-    <div class="zleftMenusBackground left" style="height:100%;float:left;width:15% !important;margin-top:0px !important;overflow:hidden;" id="homeLeftMenus">
-      <ul id="leftMenus" class="ztree" style="width:100%;height:100%;margin-top:0px !important;"></ul>
-    </div>
-    <div id="rightContent" style="float:right;width:82% !important;padding:10px;position:relative;">
-      <div style="text-align:center">
-
+    <div class="page-with-sidebar">
+      <div class="sidebar-wrapper">
+        <ul class="project-navigation nav nav-sidebar" id="accordion">
+            <% if params[:flag]== 'all' %>
+                  <li id="menu_all">
+                    <a class="shortcuts-project" href="javascript:leftMeunsOnClick('/health_records/show_index?type=dicom','menu_all')" title="所有信息">
+                          <i class="icon-comment-alt"></i>
+                      <span>
+                        所有信息
+                        </span>
+                    </a>
+                  </li>
+            <% end %>
+          <% if params[:flag]== 'yx' %>
+              <li id="menu_cs">
+                <a class="shortcuts-project" href="javascript:leftMeunsOnClick('/health_records/show_index?type=ultrasound2','menu_cs')" title="超声">
+                  <i class="icon-comment-alt"></i>
+                      <span>
+                        超声
+                        </span>
+                </a>
+              </li>
+              <li id="menu_ct">
+                <a class="shortcuts-project" href="javascript:leftMeunsOnClick('/health_records/show_index?type=ct2','menu_ct')" title="CT">
+                  <i class="icon-comment-alt"></i>
+                      <span>
+                        CT
+                        </span>
+                </a>
+              </li>
+              <li id="menu_hc">
+                <a class="shortcuts-project" href="javascript:leftMeunsOnClick('/health_records/show_index?type=mri2','menu_hc')" title="核磁">
+                  <i class="icon-comment-alt"></i>
+                      <span>
+                        核磁
+                        </span>
+                </a>
+              </li>
+          <% end %>
+          <% if params[:flag]== 'jy' %>
+              <li id="menu_bg">
+                <a class="shortcuts-project" href="javascript:leftMeunsOnClick('/health_records/show_index?type=inspection_report2','menu_bg')" title="检验报告">
+                  <i class="icon-comment-alt"></i>
+                      <span>
+                        检验报告
+                        </span>
+                </a>
+              </li>
+          <% end %>
+          <!--<li class="active">-->
+          <!--<a class="shortcuts-project" href="home/1" title="基础信息">-->
+          <!--<i class="icon-comment-alt"></i>-->
+          <!--<span>-->
+          <!--基础信息-->
+          <!--</span>-->
+          <!--</a>-->
+          <!--</li>-->
+          <!--<li class="">-->
+          <!--<a class="shortcuts-tree" href="#" title="医院管理">-->
+          <!--<i class="icon-hospital"></i>-->
+          <!--<span>-->
+          <!--医院管理-->
+          <!--</span>-->
+          <!--</a>-->
+          <!--</li>-->
+        </ul>
+        <!--<div class="zleftMenusBackground left" style="height:100%;float:left;width:15% !important;margin-top:0px !important;overflow:hidden;" id="homeLeftMenus">-->
+        <!--<ul id="leftMenus" class="ztree" style="width:100%;height:100%;margin-top:0px !important;"></ul>-->
+        <!--</div>-->
+      </div>
+      <!--右侧内容-->
+      <div class="content-wrapper">
+        <div class="container-fluid" id="rightContent">
+          <div class="row">
+            <div style="text-align:center">
+              <%=image_tag "http://mimas-img.oss-cn-beijing.aliyuncs.com/huanying.jpg",:class=> "huanying_img"%>
+            </div>
+          </div>
+        </div>
+        <!--<div id="rightContent" style="float:right;width:82% !important;padding:10px;position:relative;">-->
+        <!--<div style="text-align:center">-->
+        <!--<%#=image_tag "http://mimas-img.oss-cn-beijing.aliyuncs.com/huanying.jpg",:class=> "huanying_img"%>-->
+        <!--</div>-->
+        <!--</div>-->
       </div>
     </div>
 <%end%>
