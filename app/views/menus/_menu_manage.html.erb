@@ -43,9 +43,18 @@
                     formatter: function (rowId, cellval, colpos, rwdat, _act) {
                         var value = colpos.dep_admin_show;
                         if (value == 1) {
-                            return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'false','dep_admin')\">显示</button>";
+                            if (colpos.parent_id){
+                                return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'false','dep_admin')\">显示</button>";
+                            } else {
+                                return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" disabled>显示</button>";
+                            }
+
                         } else {
-                            return "<button style=\"background-color: #ddd;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'true','dep_admin')\">不显示</button>";
+                            if (colpos.parent_id){
+                                return "<button style=\"background-color: #ddd;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'true','dep_admin')\">不显示</button>";
+                            } else {
+                                return "<button style=\"background-color: #ddd;text-align: center;width:100%\" disabled>不显示</button>";
+                            }
                         }
                     }
                 },
@@ -53,9 +62,17 @@
                     formatter: function (rowId, cellval, colpos, rwdat, _act) {
                         var value = colpos.hos_admin_show;
                         if (value == 1) {
+                            if (colpos.parent_id){
                             return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'false','hos_admin')\">显示</button>";
+                            } else {
+                                return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" disabled>显示</button>";
+                            }
                         } else {
-                            return "<button style=\"background-color: #ddd;text-align: center;width:100%\"onclick=\"setState(" + colpos.id + ", 'true','hos_admin')\">不显示</button>";
+                            if (colpos.parent_id){
+                                return "<button style=\"background-color: #ddd;text-align: center;width:100%\"onclick=\"setState(" + colpos.id + ", 'true','hos_admin')\">不显示</button>";
+                            } else {
+                                return "<button style=\"background-color: #ddd;text-align: center;width:100%\" disabled>不显示</button>";
+                            }
                         }
                     }
                 } ,
@@ -63,9 +80,17 @@
                     formatter: function (rowId, cellval, colpos, rwdat, _act) {
                         var value = colpos.ins_admin_show;
                         if (value == 1) {
-                            return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'false','ins_admin')\">显示</button>";
+                            if (colpos.parent_id){
+                                return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'false','ins_admin')\">显示</button>";
+                            } else {
+                                return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" disabled>显示</button>";
+                            }
                         } else {
-                            return "<button style=\"background-color: #ddd;text-align: center;width:100%\"onclick=\"setState(" + colpos.id + ", 'true','ins_admin')\">不显示</button>";
+                            if (colpos.parent_id){
+                                return "<button style=\"background-color: #ddd;text-align: center;width:100%\"onclick=\"setState(" + colpos.id + ", 'true','ins_admin')\">不显示</button>";
+                        } else {
+                            return "<button style=\"background-color: #ddd;text-align: center;width:100%\" disabled>不显示</button>";
+                        }
                         }
                     }
                 }
