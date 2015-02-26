@@ -595,12 +595,30 @@ class MenusController < ApplicationController
     @menu = Menu.where(id:params[:menu_id]).first
     if params[:admin_type] == 'dep_admin'
       @menu.update(dep_admin_show: params[:flag])
+      @brother_menus = Menu.where(parent_id:@menu.parent_id,dep_admin_show:1)
+      if !@brother_menus.empty?
+        @menu.parent_menu.update(dep_admin_show: 1)
+      else
+        @menu.parent_menu.update(dep_admin_show: 0)
+      end
     end
     if params[:admin_type] == 'hos_admin'
       @menu.update(hos_admin_show:params[:flag])
+      @brother_menus = Menu.where(parent_id:@menu.parent_id,hos_admin_show:1)
+      if !@brother_menus.empty?
+        @menu.parent_menu.update(hos_admin_show: 1)
+      else
+        @menu.parent_menu.update(hos_admin_show: 0)
+      end
     end
     if params[:admin_type] == 'ins_admin'
       @menu.update(ins_admin_show:params[:flag])
+      @brother_menus = Menu.where(parent_id:@menu.parent_id,ins_admin_show:1)
+      if !@brother_menus.empty?
+        @menu.parent_menu.update(ins_admin_show: 1)
+      else
+        @menu.parent_menu.update(ins_admin_show: 0)
+      end
     end
     render json:{success:true}
   end
