@@ -31,6 +31,19 @@
     <div class="collapse navbar-collapse pull-right" id="bs-example-navbar-collapse-1">
       <% if signed_in? %>
       <ul class="nav navbar-nav">
+        <% if !@first_menus.empty?%>
+            <% @first_menus.each do |menu| %>
+                <li>
+                  <a href="?pId=<%= menu.id %>" data-toggle="tooltip" data-placement="bottom" title="<%= menu.name %>">
+                    <% if menu.icon %>
+                        <%= raw menu.icon %>
+                    <% else %>
+                        <i class="icon-comment-alt"></i>
+                    <% end %>
+                  </a>
+                </li>
+            <% end %>
+        <% end %>
         <!--<li>-->
           <!--<a href="#" data-toggle="tooltip" data-placement="bottom" title="字典管理">-->
             <!--<i class="icon-book"></i>-->
