@@ -10,12 +10,45 @@
      });
     </script>
     <%= javascript_include_tag 'menus/left_menu'%>
-    <div class="zleftMenusBackground left" style="height:100%;float:left;width:15% !important;margin-top:0px !important;overflow:hidden;" id="homeLeftMenus">
-      <ul id="leftMenus" class="ztree" style="width:100%;height:100%;margin-top:0px !important;"></ul>
-    </div>
-    <div id="rightContent" style="float:right;width:82% !important;padding:10px;position:relative;">
-      <div style="text-align:center">
-      <%=image_tag "http://mimas-img.oss-cn-beijing.aliyuncs.com/huanying.jpg",:class=> "huanying_img"%>
+    <!--左侧二级菜单-->
+    <div class="page-with-sidebar">
+      <div class="sidebar-wrapper">
+        <ul class="project-navigation nav nav-sidebar" id="accordion">
+          <li class="home active">
+            <a class="shortcuts-project" href="home/1" title="基础信息">
+              <i class="icon-comment-alt"></i>
+        <span>
+        基础信息
+        </span>
+            </a>
+          </li>
+          <li class="">
+            <a class="shortcuts-tree" href="#" title="医院管理">
+              <i class="icon-hospital"></i>
+        <span>
+        医院管理
+        </span>
+            </a>
+          </li>
+        </ul>
+        <!--<div class="zleftMenusBackground left" style="height:100%;float:left;width:15% !important;margin-top:0px !important;overflow:hidden;" id="homeLeftMenus">-->
+          <!--<ul id="leftMenus" class="ztree" style="width:100%;height:100%;margin-top:0px !important;"></ul>-->
+        <!--</div>-->
+      </div>
+      <!--右侧内容-->
+      <div class="content-wrapper">
+        <div class="container-fluid" id="rightContent">
+          <div class="row">
+            <div style="text-align:center">
+              <%=image_tag "http://mimas-img.oss-cn-beijing.aliyuncs.com/huanying.jpg",:class=> "huanying_img"%>
+            </div>
+          </div>
+        </div>
+        <!--<div id="rightContent" style="float:right;width:82% !important;padding:10px;position:relative;">-->
+          <!--<div style="text-align:center">-->
+          <!--<%#=image_tag "http://mimas-img.oss-cn-beijing.aliyuncs.com/huanying.jpg",:class=> "huanying_img"%>-->
+          <!--</div>-->
+        <!--</div>-->
       </div>
     </div>
 <%end%>
