@@ -25,6 +25,7 @@ class MenusController < ApplicationController
     @all_menus = Menu.where(sql)
     count = @all_menus.count
     @menus=[]
+=begin
     if count>0
       @all_menus.each do |menu|
         # @per_names = []
@@ -57,10 +58,11 @@ class MenusController < ApplicationController
         @menus.push(@menu)
       end
     end
+=end
     totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
-    # @menus = @menus.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
-    @menus = @menus.paginate(:per_page => params[:rows], :page => params[:page])
-    render :json => {:menus => @menus.as_json, :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
+    @menus = @all_menus.limit(params[:rows].to_i).offset(params[:rows].to_i*(params[:page].to_i-1))
+    # @menus = @menus.paginate(:per_page => params[:rows], :page => params[:page])
+    render :json => {:menus => @menus.as_json(:include => [{:parent_menu => {:only => [:id,:name]}}]), :totalpages => totalpages, :currpage => params[:page].to_i, :totalrecords => count}
   end
 
   def oper_action
@@ -611,6 +613,6 @@ class MenusController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def menu_params
-      params.permit(:name, :parent_id,:uri, :table_name, :model_class,:dep_admin_show,:hos_admin_show,:ins_admin_show)
+      params.permit(:name, :parent_id,:uri, :table_name, :model_class,:dep_admin_show,:hos_admin_show,:ins_admin_show,:icon)
     end
 end

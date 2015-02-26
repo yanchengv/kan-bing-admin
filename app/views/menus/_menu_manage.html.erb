@@ -9,16 +9,26 @@
             url: '/menus/show_index',
             datatype: "json",
             mtype: 'GET',
-            colNames: ['ID', '菜单名称','父菜单','URI','是否为科室管理员菜单','是否为医院管理员菜单','是否为机构管理员菜单','科室管理员菜单','医院管理员菜单','机构管理员菜单'],
+            colNames: ['ID', '菜单名称','图标','父菜单','父菜单','URI','是否为科室管理员菜单','是否为医院管理员菜单','是否为机构管理员菜单','科室管理员菜单','医院管理员菜单','机构管理员菜单'],
             colModel: [
                 { name: 'id', index: 'id', width: 40, align: "left", key: 'id' },
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name}},
 //                { name: 'parent_name', index: 'parent_name', width: 100, align: "center", editable: true,edittype:"select",editoptions:{maxlength:20,value:"<% if !@all_menu.empty? %> <% @all_menu.each do |menu|%><%= menu.id %>:<%= menu.name %>;<% end %><% end %>"}},
 //                { name: 'priorities', index: 'priorities', width: 100, align: "center", editable: true,edittype:"select",editoptions:{multiple:"multiple",size:"2",maxlength:20,value:"<% if !@priorities.empty? %> <% @priorities.each do |priority|%><%= priority.id %>:<%= priority.name %>;<% end %><% end %>"}},
-                { name: 'parent_id', index: 'parent_id', width: 100, align: "center", editable: true,edittype:"select",editoptions:{dataInit: function (element) {
+                { name: 'icon', index:'icon',width:18, align: "center",editable:true,
+                    formatter: function(rowId, cellval, colpos, rwdat, _act){
+                        if (colpos.icon){
+                            return ""+colpos.icon+""
+                        }else{
+                            return ''
+                        }
+                    }
+                },
+                { name: 'parent_id', index: 'parent_id', width: 100, align: "center", hidden:true,viewable:false,editable: true,editrules: {edithidden: true},edittype:"select",editoptions:{dataInit: function (element) {
                     $(element).select2();
                 },
                     style: "width:147px",value:":<% if !@all_menu.empty? %> <% @all_menu.each do |menu|%>;<%= menu.id %>:<%= menu.name %><% end %><% end %>"}},
+                { name: 'parent_menu.name', index: 'parent_menu.name', width: 100, align: "center", editable: false},
 //                { name: 'priorities', index: 'priorities', width: 100, align: "center", editable: true,edittype:"select",editoptions:{multiple:"multiple",dataUrl:'/menus/form_priority'}},
                 { name: 'uri', index: 'uri', width: 100, align: "center", editable: true,edittype:"select",editoptions:{
                     dataInit: function (element) {
@@ -32,7 +42,7 @@
                 { name: 'dep_admin', index: 'dep_admin', width: 100, align: "center",viewable:false, editable: false,edittype: 'custom',
                     formatter: function (rowId, cellval, colpos, rwdat, _act) {
                         var value = colpos.dep_admin_show;
-                        if (value == '是') {
+                        if (value == 1) {
                             return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'false','dep_admin')\">显示</button>";
                         } else {
                             return "<button style=\"background-color: #ddd;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'true','dep_admin')\">不显示</button>";
@@ -42,7 +52,7 @@
                 { name: 'hos_admin', index: 'hos_admin', width: 100, align: "center",viewable:false, editable: false,
                     formatter: function (rowId, cellval, colpos, rwdat, _act) {
                         var value = colpos.hos_admin_show;
-                        if (value == '是') {
+                        if (value == 1) {
                             return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'false','hos_admin')\">显示</button>";
                         } else {
                             return "<button style=\"background-color: #ddd;text-align: center;width:100%\"onclick=\"setState(" + colpos.id + ", 'true','hos_admin')\">不显示</button>";
@@ -52,7 +62,7 @@
                 { name: 'ins_admin', index: 'ins_admin', width: 100, align: "center",viewable:false, editable: false,
                     formatter: function (rowId, cellval, colpos, rwdat, _act) {
                         var value = colpos.ins_admin_show;
-                        if (value == '是') {
+                        if (value == 1) {
                             return "<button style=\"background-color: lawngreen;text-align: center;width:100%\" onclick=\"setState(" + colpos.id + ", 'false','ins_admin')\">显示</button>";
                         } else {
                             return "<button style=\"background-color: #ddd;text-align: center;width:100%\"onclick=\"setState(" + colpos.id + ", 'true','ins_admin')\">不显示</button>";

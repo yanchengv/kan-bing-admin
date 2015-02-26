@@ -23,6 +23,7 @@ class HomeController < ApplicationController
       #     {name: '子节点2',id:3}
       # ]} ];
       #@menus.as_json
+      render template: 'home/index'
     else
       redirect_to '/sessions/sign_in'
     end
