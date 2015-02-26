@@ -103,8 +103,13 @@
       <% end %>
       <script>
           $(function () {
-              $('[data-toggle="tooltip"]').tooltip()
-          })
+              $('[data-toggle="tooltip"]').tooltip();
+
+          }) ;
+          $('.navbar-collapse a').click(function(){
+              $(".navbar-collapse").collapse('hide');
+          });
+
       </script>
     </div>
     <!--/.navbar-collapse-->
