@@ -164,6 +164,7 @@ body{margin:0;padding:0;}
     white-space:nowrap;
     word-break:normal;
 }
+
 .left_line{
     border-left:1px solid #2e2e2e;
 }
@@ -175,5 +176,11 @@ body{margin:0;padding:0;}
 }
 .margin_right{
     margin-right:10px;
+}
+@media(min-width:769px){
+    .navbar-collapse.in{
+        overflow:visible !important;
+        overflow-y:visible !important;
+    }
 }
 /*-------------------------nav end-------------------*/

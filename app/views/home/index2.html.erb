@@ -4,7 +4,7 @@
     <!--Brand and toggle get grouped for better mobile display-->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-              data-target="#bs-example-navbar-collapse-1">
+              data-target="#bs-example-navbar-collapse-2">
                         <span class="sr-only">
                             Toggle navigation
      </span>
@@ -26,7 +26,7 @@
       </div>
     </div>
     <!--Collect the nav links,forms,and other content for toggling-->
-    <div class="collapse navbar-collapse pull-right" id="bs-example-navbar-collapse-1">
+    <div class="collapse navbar-collapse pull-right" id="bs-example-navbar-collapse-2">
       <ul class="nav navbar-nav">
         <li>
           <a href="#" data-toggle="tooltip" data-placement="bottom" title="字典管理">
@@ -87,7 +87,10 @@
       <script>
           $(function () {
               $('[data-toggle="tooltip"]').tooltip()
-          })
+          });
+          $('.navbar-collapse a').click(function(){
+              $(".navbar-collapse").collapse('hide');
+          });
       </script>
     </div>
     <!--/.navbar-collapse-->
