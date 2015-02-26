@@ -1,5 +1,5 @@
 class MenusController < ApplicationController
-  require 'will_paginate/array'
+  # require 'will_paginate/array'
   before_filter :signed_in_user
   before_action :set_menu, only: [ :edit, :update, :destroy]
 
