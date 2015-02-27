@@ -14,7 +14,7 @@ class HealthRecordsController < ApplicationController
 
   def show_index
     type = params[:type]
-    @url_path = '/health_records/'+type
+    @url_path = '/health_records/'+type+"?flag=#{params[:flag]}"
     render partial: 'health_records/records_manage'
   end
 
@@ -123,7 +123,18 @@ class HealthRecordsController < ApplicationController
     @total=0
     noOfRows = params[:rows]
     page = params[:page]
-    records = InspectionReport.select("count(id) as rows_count").where("patient_id = ?", session["patient_id"])
+    sql="patient_id=#{session['patient_id']}"
+    if params[:flag] == 'jy'
+      sql << " and parent_type='检验'"
+    end
+    if params[:flag] == 'yx'
+      sql << " and parent_type='影像数据'"
+    end
+    if params[:flag] == 'sl'
+      sql << " and parent_type='生理指标'"
+    end
+
+    records = InspectionReport.select("count(id) as rows_count").where(sql)
     records = records[0].rows_count
     if !noOfRows.nil?
       if records%noOfRows.to_i == 0
@@ -135,7 +146,7 @@ class HealthRecordsController < ApplicationController
     if page.to_i>@total.to_i
       page = 1
     end
-    @irs = InspectionReport.where("patient_id = ?", session["patient_id"]).order("checked_at DESC").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
+    @irs = InspectionReport.where(sql).order("checked_at DESC").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
     @objJSON = {total:@total,health_records:@irs,page:page,records:records}
     render :json => @objJSON.as_json
   end
@@ -219,6 +230,28 @@ class HealthRecordsController < ApplicationController
       page = 1
     end
     @irs = InspectionData. where("patient_id = ?",session["patient_id"]).order("checked_at DESC").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
+    @objJSON = {total:@total,health_records:@irs,page:page,records:records}
+    render :json => @objJSON.as_json
+  end
+
+  def ecg2
+    @total=0
+    noOfRows = params[:rows]
+    page = params[:page]
+    sql="patient_id=#{session['patient_id']} and child_type='心电图'"
+    records = InspectionReport.select("count(id) as rows_count").where(sql)
+    records = records[0].rows_count
+    if !noOfRows.nil?
+      if records%noOfRows.to_i == 0
+        @total = records/noOfRows.to_i
+      else
+        @total = (records/noOfRows.to_i)+1
+      end
+    end
+    if page.to_i>@total.to_i
+      page = 1
+    end
+    @irs = InspectionReport.where(sql).order("checked_at DESC").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
     @objJSON = {total:@total,health_records:@irs,page:page,records:records}
     render :json => @objJSON.as_json
   end

@@ -2,16 +2,6 @@
 <% if signed_in? %>
     <%= stylesheet_link_tag 'menus/left_menu'%>
     <script type="text/javascript">
-        var zNodes =[
-            { id:'dicom', pId:0, name:"所有信息",uri:"/health_records/show_index?type=dicom", open:true},
-            { id:1, pId:0, name:"影像数据",uri:""},
-            { id:'ultrasound2', pId:1, name:"超声",uri:"/health_records/show_index?type=ultrasound2"},
-            { id:'ct2', pId:1, name:"CT",uri:"/health_records/show_index?type=ct2"},
-            { id:'mri2', pId:1, name:"核磁",uri:"/health_records/show_index?type=mri2"},
-            { id:2, pId:0, name:"检验"},
-            { id:'inspection_report2', pId:2, name:"检验报告",uri:"/health_records/show_index?type=inspection_report2"}
-        ];
-        var curMenu = null, zTree_Menu = null;
         function leftMeunsOnClick(URL,menu_id) {
             $('#accordion li').removeClass("active");
             $('#'+menu_id).addClass('active')
@@ -33,7 +23,7 @@
 
         $(document).ready(function(){
             $.ajax({
-                url: '/health_records/show_index?type=dicom',
+                url: '/health_records/show_index?type=dicom&flag=<%=params[:flag]%>',
                 type: 'get',
                 beforeSend: function (response) {
                     $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#ebeced;line-height:100px;font-weight:bold;"><img src="/loading.gif" style="margin-top:40px;"/></div>')
@@ -52,16 +42,6 @@
     <div class="page-with-sidebar">
       <div class="sidebar-wrapper">
         <ul class="project-navigation nav nav-sidebar" id="accordion">
-            <% if params[:flag]== 'all' %>
-                  <li id="menu_all">
-                    <a class="shortcuts-project" href="javascript:leftMeunsOnClick('/health_records/show_index?type=dicom','menu_all')" title="所有信息">
-                          <i class="icon-comment-alt"></i>
-                      <span>
-                        所有信息
-                        </span>
-                    </a>
-                  </li>
-            <% end %>
           <% if params[:flag]== 'yx' %>
               <li id="menu_cs">
                 <a class="shortcuts-project" href="javascript:leftMeunsOnClick('/health_records/show_index?type=ultrasound2','menu_cs')" title="超声">
@@ -87,14 +67,31 @@
                         </span>
                 </a>
               </li>
-          <% end %>
-          <% if params[:flag]== 'jy' %>
+          <% elsif params[:flag]== 'jy' %>
               <li id="menu_bg">
                 <a class="shortcuts-project" href="javascript:leftMeunsOnClick('/health_records/show_index?type=inspection_report2','menu_bg')" title="检验报告">
                   <i class="icon-comment-alt"></i>
                       <span>
                         检验报告
                         </span>
+                </a>
+              </li>
+          <% elsif params[:flag]== 'sl' %>
+              <li id="menu_xd">
+                <a class="shortcuts-project" href="javascript:leftMeunsOnClick('/health_records/show_index?type=ecg2','menu_xd')" title="检验报告">
+                  <i class="icon-comment-alt"></i>
+                      <span>
+                        心电图
+                        </span>
+                </a>
+              </li>
+           <% else %>
+              <li id="menu_all" class="active">
+                <a class="shortcuts-project" href="javascript:leftMeunsOnClick('/health_records/show_index?type=dicom','menu_all')" title="所有信息">
+                  <i class="icon-comment-alt"></i>
+                  <span>
+                    所有信息
+                  </span>
                 </a>
               </li>
           <% end %>

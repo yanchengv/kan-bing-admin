@@ -430,6 +430,7 @@ Rails.application.routes.draw do
       post '/mri2',to: 'health_records#mri2'
       post '/ultrasound2',to: 'health_records#ultrasound2'
       post '/inspection_report2',to: 'health_records#inspection_report2'
+      post '/ecg2',to: 'health_records#ecg2'
       post '/dicom',to:'health_records#dicom'
       post '/get_data',to: 'health_records#get_data'
       # post '/undefined_other', to: 'health_records#undefined_other'
