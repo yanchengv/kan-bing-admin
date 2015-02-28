@@ -1,22 +1,20 @@
 <div style="width: 100%">
-  <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom:10px;">
-    类型名称:<input type="text" id="type_name" onkeydown="search_keydown(event,'type')">&nbsp;<button id="search_type_btn">搜索</button>&nbsp;<button id="clear_type_btn">清空</button>
+    <div style="margin-bottom:15px;" class="yahei">
+    类型名称：<input type="text" id="type_name" onkeydown="search_keydown(event,'type')">&nbsp;<button id="search_type_btn">搜索</button>&nbsp;<button id="clear_type_btn">清空</button>
     </div>
+  <div class="jqgride_div">
     <table id="knowledge_type_list"></table>
     <div id="knowledge_type_pager"></div>
   </div>
-  <div style="margin-left: 20px;margin-right: 20px;margin-top: 10px;">
-    <div style="margin-bottom:10px;">
-    标题:<input type="text" id="knowledge_title" onkeydown="search_keydown(event,'title')">&nbsp;<button id="search_knowledge_btn">搜索</button>&nbsp;<button id="clear_knowledge_btn">清空</button>
+    <div style="margin-top:40px;margin-bottom:15px;" class="yahei">
+    标题：<input type="text" id="knowledge_title" onkeydown="search_keydown(event,'title')">&nbsp;<button id="search_knowledge_btn">搜索</button>&nbsp;<button id="clear_knowledge_btn">清空</button>
    </div>
+  <div class="jqgride_div">
     <table id="knowledge_list"></table>
     <div id="knowledge_pager"></div>
   </div>
 </div>
-<div style="margin-left: 20px; margin-right: 20px;">
 
-</div>
 <script type="text/javascript">
     function search_keydown(event, str) {
         if (event.keyCode == 13) {

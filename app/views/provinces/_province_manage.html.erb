@@ -4,33 +4,37 @@
         color: white;
     }
 </style>
-<div style="margin-left: 20px;margin-right: 20px;">
+
   <div id="btn" style="margin:10px;">
     <button title="province" onclick="click_btn('province')">省管理</button>
     <button title="city" onclick="click_btn('city')">市管理</button>
     <button title="county" onclick="click_btn('county')">县管理</button>
     <button title="all" onclick="click_btn('all')">全部</button>
   </div>
-  <div id="search_div" style="margin:10px;">
+
+  <div id="search_div" style="margin:10px;" class="yahei">
     省：<input type="text" id="province_name" onkeydown="search_keydown(event)"> 市：<input type="text" id="city_name" onkeydown="search_keydown(event)">
     县：<input type="text" id="county_name" onkeydown="search_keydown(event)">
     <button id="search_btn">搜索</button>
   </div>
   <div id="province_city_county">
-    <div id="province">
-      <table id="list_province"></table>
-      <div id="page_province"></div><br/>
-    </div>
-    <div id="city">
-      <table id = "list_city"></table>
-      <div id="page_city"></div><br/>
-    </div>
-    <div id="county">
-      <table id = "list_county"></table>
-      <div id="page_county"></div><br/>
-    </div>
+
+      <div id="province" class="jqgride_div">
+        <table id="list_province"></table>
+        <div id="page_province"></div>
+      </div>
+
+      <div id="city" class="jqgride_div">
+        <table id="list_city"></table>
+        <div id="page_city"></div>
+      </div>
+
+      <div id="county" class="jqgride_div">
+        <table id="list_county"></table>
+        <div id="page_county"></div>
+      </div>
+
   </div>
-</div>
 <script>
     function search_keydown(event) {
         if (event.keyCode == 13) {

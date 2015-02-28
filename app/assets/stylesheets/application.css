@@ -28,6 +28,7 @@
  *= require font-awesome.min
  *= require themes/defalut
  *= require  bootstrap
+ *= require  table
  */
 .ui-jqdialog-content .DataTD {
     padding: 2px;
@@ -56,9 +57,14 @@ button,table td,table th,input,a,.ztree *,textarea,h1,h2,h3,h4,h5,h6{font-family
     font-size:1em !important;
 }
 .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight{
-    border:1px solid #9c9d9f !important;/*{borderColorHighlight}*/
-    background:#a8aaad !important;
+    background:#eeeeee !important;
 }
+#menu .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+    border-width: 0px !important;
+    background: #eeeeee !important;
+    color: #000 !important;
+}
+
 #ViewTbl_dictionary_type_list td,
 #ViewTbl_dictionary_list td,
 #ViewTbl_hospital_list td,
@@ -76,6 +82,7 @@ button,table td,table th,input,a,.ztree *,textarea,h1,h2,h3,h4,h5,h6{font-family
 #ViewTbl_skill_list td,
 #ViewTbl_video_type_list td
 {
-  border-bottom:1px solid #ececec;
-  padding:3px 0;
+  border-bottom:1px solid #f0f0f0 !important;
+  padding:8px 0 !important;
+  color:#666 !important;
 }

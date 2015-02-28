@@ -33,15 +33,13 @@ body{margin:0;padding:0;}
     border-color:#252627 !important;
 }
 
-#menu .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
-    border-width: 0px !important;
-    background: #28292d !important;
-    color: #ffffff !important;
-}
 
+.ui-pg-table .ui-state-hover{
+    background:transparent !important;
+}
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
     border-width: 0px !important;
-    background: #28292d !important;
+    background: #eeeeee !important;
     color: #ffffff !important;
 }
 

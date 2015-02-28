@@ -5,6 +5,7 @@
 
     }
 </style>
+<div style="margin-bottom:15px;" class="yahei">
 <div id="consoleDlg2">
   <div id="pat_create_or_edit_form">
   </div>
@@ -15,8 +16,8 @@
 <div id="search_form">
   <%= render partial: 'patients/search_form' %>
 </div>
-<div style="margin:10px 20px;">
-<div id="search_div" style="margin-bottom:10px;">
+
+<div id="search_div" style="margin-top:10px;">
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
       <div style="margin-bottom: 10px;" id="search_f_pat">
         姓名：<input type="text" id="search_oth_name"> 证件号码：<input type="text" id="search_oth_number" >
@@ -80,7 +81,7 @@
       <% end %>
   <% end %>
 </select>
-  科室：<span id="search_dep_id"><select id="patient_dep" onchange="pat_search_dep()" >
+  &nbsp;&nbsp;科室：<span id="search_dep_id"><select id="patient_dep" onchange="pat_search_dep()" >
   <option value="all">全部</option>
   <% if !@departments.nil? && !@departments.empty? %>
       <% @departments.each do |hos| %>
@@ -88,14 +89,14 @@
       <% end %>
   <% end %>
 </select></span>
-  是否激活:<select id="is_activated" onchange="search_activated()">
+      &nbsp;&nbsp;是否激活：<select id="is_activated" onchange="search_activated()">
   <option value="">全部</option>
   <option value="1">已经激活</option>
   <option value="0">未激活</option>
 </select>
       <div style="margin-top: 10px;">
-        姓名：<input type="text" id="search_name" onkeydown="entersearch1(event)"> 证件号码：<input type="text" id="search_number" onkeydown="entersearch1(event)">
-        邮箱：<input type="text" id="search_email" onkeydown="entersearch1(event)"> 手机号：<input type="text" id="search_tel" onkeydown="entersearch1(event)">
+        姓名：<input type="text" id="search_name" onkeydown="entersearch1(event)"> &nbsp;&nbsp;证件号码：<input type="text" id="search_number" onkeydown="entersearch1(event)">
+        &nbsp;&nbsp;邮箱：<input type="text" id="search_email" onkeydown="entersearch1(event)"> &nbsp;&nbsp;手机号：<input type="text" id="search_tel" onkeydown="entersearch1(event)">
         <button id="search_btn" onclick="search_by()">搜索</button>&nbsp;<button id="clear_btn" >清空</button>
         <%#= form_for '', url: {controller: 'patients', action: 'show_index'}, method: 'get',:html => {:multipart => true} do |f| %>
         <!--<div style="padding: 0px;margin-left: 0px;">-->
@@ -149,10 +150,12 @@
       </script>
 <% end %>
 </div>
-
+</div>
+<div class="jqgride_div">
 <table id="list10"></table>
 <div id="pager10"></div>
 </div>
+
 
 <script>
     var row_id;
