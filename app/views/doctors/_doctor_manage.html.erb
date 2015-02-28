@@ -12,7 +12,6 @@
 <div id="warn"></div>
 <div id="warn2"></div>
 <div id="warn3"></div>
-<div style="margin:10px 20px;">
 <!--<h1>Listing doctors</h1>-->
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
       <%# if current_user.admin_type == '科室管理员'%>
@@ -71,7 +70,7 @@
       </script>
     <%# end %>
 <% else %>
-<div id="search_div" style="margin-bottom: 10px">
+<div id="search_div" style="margin-bottom: 15px" class="yahei">
   省：<select  id="doctor_pro_id" name="doctor_pro_id" onchange="doc_search_pro()" >
   <option value="">全部</option>
   <% if !@provinces.nil? && !@provinces.empty? %>
@@ -80,7 +79,7 @@
       <% end %>
   <% end %>
 </select>
-  市：<span id="search_city_id"><select id="doctor_city_id" name="doctor[city_id]" onchange="doc_search_city()" >
+  &nbsp;&nbsp;市：<span id="search_city_id"><select id="doctor_city_id" name="doctor[city_id]" onchange="doc_search_city()" >
   <option value="all">全部</option>
   <% if !@cities.nil? && !@cities.empty? %>
       <% @cities.each do |city| %>
@@ -88,7 +87,7 @@
       <% end %>
   <% end %>
 </select></span>
-  医院：<span id="search_hos_id"><select  id="doctor_hos_id" name="doctor_hos_id" onchange="doc_search_hos()" >
+  &nbsp;&nbsp;医院：<span id="search_hos_id"><select  id="doctor_hos_id" name="doctor_hos_id" onchange="doc_search_hos()" >
   <option value="">全部</option>
   <% if !@hospitals.nil? && !@hospitals.empty? %>
       <% @hospitals.each do |hos| %>
@@ -96,7 +95,7 @@
       <% end %>
   <% end %>
 </select></span>
-  科室：<span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" onchange="doc_search_dep()" >
+  &nbsp;&nbsp;科室：<span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" onchange="doc_search_dep()" >
     <option value="all">全部</option>
   <% if !@departments.nil? && !@departments.empty? %>
       <% @departments.each do |dep| %>
@@ -104,7 +103,7 @@
       <% end %>
   <% end %>
 </select></span>
-  是否激活:<select id="is_activated" onchange="search_activated()">
+  &nbsp;&nbsp;是否激活：<select id="is_activated" onchange="search_activated()">
   <option value="">全部</option>
   <option value="1">已经激活</option>
   <option value="0">未激活</option>
@@ -117,9 +116,9 @@
 <!--</select>-->
 
   <!--<input id='doctor_pro_name' type="hidden"/><input id='doctor_city_name' type="hidden"/><input id='doctor_hos_name' type="hidden"/><input id='doctor_dep_name' type="hidden"/>-->
-  <div style="margin-top: 10px;">
-    姓名：<input type="text" id="search_name" onkeydown="entersearch1(event)"> 证件号码：<input type="text" id="search_number" onkeydown="entersearch1(event)">
-    邮箱：<input type="text" id="search_email" onkeydown="entersearch1(event)"> 手机号：<input type="text" id="search_tel" onkeydown="entersearch1(event)">
+  <div style="margin-top: 15px;margin-bottom:15px;" class="yahei">
+    姓名：<input type="text" id="search_name" onkeydown="entersearch1(event)"> &nbsp;&nbsp;证件号码：<input type="text" id="search_number" onkeydown="entersearch1(event)">
+    &nbsp;&nbsp;邮箱：<input type="text" id="search_email" onkeydown="entersearch1(event)"> &nbsp;&nbsp;手机号：<input type="text" id="search_tel" onkeydown="entersearch1(event)">
     <button id="search_btn" onclick="search_by()" >搜索</button>&nbsp;
     <button id="clear_btn">清空</button>
     &nbsp;
@@ -177,7 +176,7 @@
   </script>
 </div>
 <% end %>
-
+<div class="jqgride_div">
 <table id="list12"></table>
 <div id="pager12"></div>
 </div>

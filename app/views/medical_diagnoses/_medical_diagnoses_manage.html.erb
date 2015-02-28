@@ -1,17 +1,24 @@
-<div style="width: 100%">
-  <div style="margin-left: 20px;margin-right: 20px;">
-    <table id="diagnose_type_list"></table>
-    <div id="page_diagnose_type"></div>
-    <br>
-    <div style="margin-bottom: 10px;">诊断类型:<select id="diagnose_type">
-      <option value="">---请选择---</option>
-      <% @diagnose_types.each do |type| %><option value="<%= type.id %>"><%= type.type_name %></option>
-      <% end %></select>&nbsp;诊断内容：<input type="text" id="diagnose_search" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_diagnose_btn">搜索</button>&nbsp;<button id="clear_diagnose_btn" >清空</button>
+
+    <div class="jqgride_div">
+        <table id="diagnose_type_list"></table>
+        <div id="page_diagnose_type"></div>
     </div>
+
+
+  <div style="margin-top: 40px;margin-bottom:15px;" class="yahei">
+    诊断类型：<select id="diagnose_type">
+    <option value="">---请选择---</option>
+    <% @diagnose_types.each do |type| %><option value="<%= type.id %>"><%= type.type_name %></option>
+    <% end %></select>&nbsp;&nbsp;诊断内容：<input type="text" id="diagnose_search" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_diagnose_btn">搜索</button>&nbsp;<button id="clear_diagnose_btn" >清空</button>
+  </div>
+
+
+
+    <div class="jqgride_div">
     <table id="diagnose_list"></table>
     <div id="page_diagnose"></div>
-  </div>
-</div>
+    </div>
+
 
 <script type="text/javascript">
     $(function () {
@@ -33,6 +40,7 @@
         sortname: 'id',
         viewrecords: true,
         sortorder: "desc",
+        width:"100%",
         autowidth: true,
         jsonReader: {
             root: "diagnose_types",

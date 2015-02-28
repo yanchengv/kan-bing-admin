@@ -5,7 +5,7 @@
     }
 </style>
 <div style="width: 100%">
-  <div >
+  <div style="margin-bottom:15px;" class="yahei">
     <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员' %>
         省：<select id="doctor_pro_id" name="doctor_pro_id" style="width: 120px;">
     <option value="">--请选择--</option>
@@ -32,7 +32,8 @@
         &nbsp;
         <button id="clear_doc_btn">清空</button>
     <% end %>
-    <br><br>
+  </div>
+  <div class="jqgride_div">
     <table id="doctors_list"></table>
     <div id="page_doctors"></div>
     <%= render :partial => 'treatment_relationships/patients_list'%>

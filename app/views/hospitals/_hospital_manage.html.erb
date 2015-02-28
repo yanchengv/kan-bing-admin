@@ -4,41 +4,54 @@
     }
 </style>
 <div style="width: 100%">
-  <div style="hight: 48%;margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">省：<select id="province_search_id" style="width: 139px;" onchange="search_hospitals()">
+  <div style="margin-bottom:15px;" class="yahei">
+      省：
+      <select id="province_search_id" style="width: 139px;" onchange="search_hospitals()">
       <option value="0">---全部---</option>
-      <% @provinces.each do |pro|%>
+      <% @provinces.each do |pro| %>
           <option value="<%= pro.id %>"><%= pro.name %></option>
-      <%end if !@provinces.empty?%>
-    </select>&nbsp;&nbsp;市：<select id="city_search_id" style="width: 139px;" onchange="search_hospitals()">
+      <% end if !@provinces.empty? %>
+      </select>
+      &nbsp;&nbsp;市：
+      <select id="city_search_id" style="width: 139px;" onchange="search_hospitals()">
       <option value="0">---全部---</option>
       <% @cities.each do |city| %>
           <option value="<%= city.id %>"><%= city.name %></option>
       <% end if !@cities.empty? %>
-    </select>&nbsp;&nbsp;医院名称：<input type="text" id="hospital_name" onkeydown="search_keydown(event, 'hospital')">&nbsp;&nbsp;<button id="search_hos_btn">搜索</button>&nbsp;<button id="clear_hos_btn">清空</button>
-    </div>
-    <div style="margin-bottom: 10px;" id="tmpsearch" hidden="true">
-      <span> 选择为空选项</span>
-      省名：<input type="checkbox" id="province_name2" name="province_name"   >
-      市名：<input type="checkbox" id="city_name2" name="city_name" >
-      省id：<input type="checkbox" id="province_id2"  name="province_id" >
-      市id：<input type="checkbox" id="city_id2"  name="city_id" >
-      <button id="clear_tmpsearch">清空</button>
-      <button id="search_btnx2">搜索为空选项</button>
+      </select>
+      &nbsp;&nbsp;医院名称：
+      <input type="text" id="hospital_name" onkeydown="search_keydown(event, 'hospital')">&nbsp;&nbsp;
+      <button id="search_hos_btn">搜索</button>
+      &nbsp;
+      <button id="clear_hos_btn">清空</button>
+      </div>
+      <div style="margin-bottom: 10px;" id="tmpsearch" hidden="true">
+          <span> 选择为空选项</span>
+          省名：<input type="checkbox" id="province_name2" name="province_name">
+          市名：<input type="checkbox" id="city_name2" name="city_name">
+          省id：<input type="checkbox" id="province_id2" name="province_id">
+          市id：<input type="checkbox" id="city_id2" name="city_id">
+          <button id="clear_tmpsearch">清空</button>
+          <button id="search_btnx2">搜索为空选项</button>
+      </div>
+  </div>
 
-    </div>
 
+<div class="jqgride_div">
     <table id="hospital_list"></table>
     <div id="page_hos"></div>
-  </div>
-  <div style="height: 48%;margin-top: 10px;margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">
-      科室名称：<input type="text" id="dept_name_search" onkeydown="search_keydown(event, 'department')">&nbsp;&nbsp;<button id="search_dept_btn" class="btn btn-default btn-sm" role="button">搜索</button>&nbsp;<button id="clear_dept_btn" class="btn btn-default btn-sm" role="button">清空</button>
-    </div>
+</div>
+<div style="margin-bottom:15px;margin-top:40px" class="yahei">
+    科室名称：
+    <input type="text" id="dept_name_search" onkeydown="search_keydown(event, 'department')">&nbsp;&nbsp;
+    <button id="search_dept_btn" >搜索</button>&nbsp;<button id="clear_dept_btn" >清空</button>
+</div>
+
+<div class="jqgride_div">
     <table id="department_list"></table>
     <div id="page_dept"></div>
-  </div>
 </div>
+
 
 <script type="text/javascript">
     function search_keydown(event, str) {

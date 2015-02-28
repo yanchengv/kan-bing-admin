@@ -4,43 +4,50 @@
       color: white;
   }
 </style>
-<div style="margin-left: 20px;margin-right: 20px;">
-  <div >
-    <div id="btn" style="margin:10px;">
+    <div id="btn" style="margin-bottom:15px;">
       <!--<a title="doctor" class="btn btn-primary" role="button" href="javascript:click_btn('doctor')">医生</a>-->
       <!--<a title="patient" class="btn btn-default" role="button" href="javascript:click_btn('patient')">患者</a>-->
       <button title="doctor" onclick="click_btn('doctor')">医生</button>
       <button title="patient" onclick="click_btn('patient')">患者</button>
     </div>
-    <div style="margin:10px;">
-      用户：<input type="text" id="search_name" onkeydown="search_keydown(event)"> 邮箱：<input type="text" id="search_email" onkeydown="search_keydown(event)">
-      手机：<input type="text" id="search_tel" onkeydown="search_keydown(event)"> 身份证：<input type="text" id="search_IDs" onkeydown="search_keydown(event)">
-      状态：激活<input type="radio" name="state" value='true' onclick="search_state('true')" />&nbsp;禁用<input type="radio" name="state" value="false" onclick="search_state('false')"/>
-      <button id="search_btn" >搜索</button>&nbsp;<button id="clear_btn" >清空</button>
-
+    <div style="margin:15px 0;" class="yahei">
+      用户：<input type="text" id="search_name" onkeydown="search_keydown(event)">&nbsp;&nbsp;邮箱：<input type="text" id="search_email" onkeydown="search_keydown(event)">
+      &nbsp;&nbsp;手机：<input type="text" id="search_tel" onkeydown="search_keydown(event)"> &nbsp;&nbsp;身份证：<input type="text" id="search_IDs" onkeydown="search_keydown(event)">
+      &nbsp;&nbsp;状态：激活<input type="radio" name="state" value='true' onclick="search_state('true')" />&nbsp;禁用<input type="radio" name="state" value="false" onclick="search_state('false')"/>
+      &nbsp;&nbsp;<button id="search_btn" >搜索</button>&nbsp;<button id="clear_btn" >清空</button>
     </div>
+    <div class="jqgride_div">
     <table id="user_list"></table>
     <div id="user_page"></div>
-  </div>
+    </div>
 
-  <div style="margin-top: 30px;">
 
     <div id="doctor_div">
-      姓名：<input type="text" id="search_name1" onkeydown="entersearch(event,'doc')"> 证件号码：<input type="text" id="search_number1" onkeydown="entersearch(event,'doc')">
-      邮箱：<input type="text" id="search_email1" onkeydown="entersearch(event,'doc')"> 手机号：<input type="text" id="search_tel1" onkeydown="entersearch(event,'doc')">
+      <div style="margin-top:40px;margin-bottom:15px;" class="yahei">
+      姓名：<input type="text" id="search_name1" onkeydown="entersearch(event,'doc')">&nbsp;&nbsp;证件号码：<input type="text" id="search_number1" onkeydown="entersearch(event,'doc')">
+      &nbsp;&nbsp;邮箱：<input type="text" id="search_email1" onkeydown="entersearch(event,'doc')"> &nbsp;&nbsp;手机号：<input type="text" id="search_tel1" onkeydown="entersearch(event,'doc')">
       <button id="search_btn1" onclick="search_by('doc')" >搜索</button>&nbsp;<button id="clear_btn1" onclick="clearfiled('doc')" >清空</button>
-      <table id="doc_list"></table>
-      <div id="doc_page"></div>
+      </div>
+      <div class="jqgride_div">
+        <table id="doc_list"></table>
+        <div id="doc_page"></div>
+      </div>
     </div>
+
+
     <div id="patient_div">
-      姓名：<input type="text" id="search_name2" onkeydown="entersearch(event,'pat')"> 证件号码：<input type="text" id="search_number2" onkeydown="entersearch(event,'pat')">
-      邮箱：<input type="text" id="search_email2" onkeydown="entersearch(event,'pat')"> 手机号：<input type="text" id="search_tel2" onkeydown="entersearch(event,'pat')">
+      <div style="margin-top:40px;margin-bottom:15px;" class="yahei">
+      姓名：<input type="text" id="search_name2" onkeydown="entersearch(event,'pat')"> &nbsp;&nbsp;证件号码：<input type="text" id="search_number2" onkeydown="entersearch(event,'pat')">
+      &nbsp;&nbsp;邮箱：<input type="text" id="search_email2" onkeydown="entersearch(event,'pat')"> &nbsp;&nbsp;手机号：<input type="text" id="search_tel2" onkeydown="entersearch(event,'pat')">
       <button id="search_btn2" onclick="search_by('pat')" >搜索</button>&nbsp;<button id="clear_btn2" onclick="clearfiled('pat')" >清空</button>
-      <table id="pat_list"></table>
-      <div id="pat_page"></div>
+      </div>
+      <div class="jqgride_div">
+        <table id="pat_list"></table>
+        <div id="pat_page"></div>
+      </div>
     </div>
-  </div>
-</div>
+
+
 
 <script type="text/javascript">
     var user_type = 'doctor'
