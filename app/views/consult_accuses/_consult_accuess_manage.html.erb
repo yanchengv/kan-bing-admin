@@ -74,13 +74,13 @@
                 colModel: [
                     {name: "id", index: "id", key: true},
                     {name: "reason", index: "reason"},
-                    {name: "created_at", index: "created_at", formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, align: "right"}
+                    {name: "created_at", index: "created_at", formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, align: "center"}
                 ],
                 rowNum: 20,
                 pager: pager_id,
                 sortname: 'num',
                 sortorder: "asc",
-                width: '400',
+                autowidth:true,
                 height: 'auto',
                 prmNames: {
                     id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
@@ -147,9 +147,9 @@
                 colModel: [
                     {name: "id", index: "id", key: true},
                     {name: "reason", index: "reason"},
-                    {name: "created_at", index: "created_at", formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, align: "right"}
+                    {name: "created_at", index: "created_at", formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, align: "center"}
                 ],
-                width: '400',
+                autowidth: true,
                 height: 'auto',
                 rowNum: 20,
                 pager: pager_id_r,
