@@ -1,16 +1,33 @@
-<style>
-    .blue_btn{
-        background-color:#1c1d1e;
-        color: white;
-    }
-</style>
+<div id="btn" style="margin-bottom:15px;">
 
-  <div id="btn" style="margin:10px;">
-    <button title="province" onclick="click_btn('province')">省管理</button>
-    <button title="city" onclick="click_btn('city')">市管理</button>
-    <button title="county" onclick="click_btn('county')">县管理</button>
-    <button title="all" onclick="click_btn('all')">全部</button>
-  </div>
+    <ul  class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+        <a href="#"  role="tab" data-toggle="tab" aria-expanded="true" onclick="click_btn('province')" style="font-size:16px;">
+          <b>省管理</b>
+        </a>
+      </li>
+      <li role="presentation">
+        <a href="#" role="tab"  data-toggle="tab" onclick="click_btn('city')" style="font-size:16px;">
+          <b>市管理</b>
+        </a>
+      </li>
+      <li role="presentation" class="dropdown">
+        <a href="#" role="tab"  data-toggle="tab" onclick="click_btn('county')" style="font-size:16px;">
+          <b>县管理</b>
+        </a>
+      </li>
+      <li role="presentation" class="dropdown">
+        <a href="#" role="tab"  data-toggle="tab" onclick="click_btn('all')" style="font-size:16px;">
+          <b>全部</b>
+        </a>
+      </li>
+    </ul>
+
+    <!--<button title="province" onclick="click_btn('province')">省管理</button>-->
+    <!--<button title="city" onclick="click_btn('city')">市管理</button>-->
+    <!--<button title="county" onclick="click_btn('county')">县管理</button>-->
+    <!--<button title="all" onclick="click_btn('all')">全部</button>-->
+</div>
 
   <div id="search_div" style="margin:10px;" class="yahei">
     省：<input type="text" id="province_name" onkeydown="search_keydown(event)"> 市：<input type="text" id="city_name" onkeydown="search_keydown(event)">
