@@ -542,16 +542,36 @@
 </SCRIPT>
 
 <div id="ModuleManage">
-  <div class="zTreeDemoBackground left box" style="display: inline-block;width:30%;float:left;">
-    <div class="title">系统菜单：</div>
-    <ul id="perTree" class="ztree"></ul>
+  <div class=" col-md-5 col-sm-5 col-xs-12" style="padding:0;">
+  <div class="panel panel-info">
+    <div class="panel-heading yahei" style="font-size:16px;"><b>系统菜单</b></div>
+    <div class="panel-body">
+        <ul id="perTree" class="ztree"></ul>
+    </div>
   </div>
-
-    <img src="<%= asset_path '1.png'%>" style="width:30px;height:20px;float:left;margin:200px 15px 0 15px;"/>
-
-  <div class="right box" style="display: inline-block;width:30%;float:left;">
-    <div class="title">系统角色：</div>
-    <ul id="roleTree" class="ztree"></ul>
+  </div>
+  <div id="direction_box" class="col-md-1 col-sm-1 col-xs-12 col-md-offset-1 col-sm-offset-1 direction_box" >
+     <span id="direction" class="glyphicon glyphicon-arrow-right direction"></span>
+     <script>
+         $(function(){
+       if($(window).width() < 768){
+          $("#direction").removeClass("glyphicon-arrow-right").addClass("glyphicon-arrow-down");
+          $("#direction").removeClass("direction").addClass("direction2");
+          $("#direction_box").removeClass("direction_box").addClass("direction_box2");
+       }
+       if($(window).width() > 769){
+           $("#direction").removeClass("glyphicon-arrow-down").addClass("glyphicon-arrow-right");
+       }
+         })
+     </script>
+  </div>
+  <div class="col-md-5 col-sm-5 col-xs-12" style="padding:0;">
+  <div class="panel panel-info">
+    <div class="panel-heading yahei" style="font-size:16px;"><b>系统角色</b></div>
+    <div class="panel-body">
+        <ul id="roleTree" class="ztree"></ul>
+    </div>
+  </div>
   </div>
   <style>
       #ModuleManage ul.ztree {

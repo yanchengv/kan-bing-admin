@@ -1,14 +1,13 @@
-<style>
-  .blue_btn{
-      background-color:#1c1d1e;
-      color: white;
-  }
-</style>
-    <div id="btn" style="margin-bottom:15px;">
+<div id="btn" style="margin-bottom:15px;">
+        <ul id="myTab" class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true" onclick="click_btn('doctor')" style="font-size:16px;"><b>医生</b></a></li>
+          <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" onclick="click_btn('patient')" style="font-size:16px;"><b>患者</b></a></li>
+        </ul>
+
       <!--<a title="doctor" class="btn btn-primary" role="button" href="javascript:click_btn('doctor')">医生</a>-->
       <!--<a title="patient" class="btn btn-default" role="button" href="javascript:click_btn('patient')">患者</a>-->
-      <button title="doctor" onclick="click_btn('doctor')">医生</button>
-      <button title="patient" onclick="click_btn('patient')">患者</button>
+      <!--<button title="doctor" onclick="click_btn('doctor')" class="btn btn-default">医生</button>-->
+      <!--<button title="patient" onclick="click_btn('patient')" class="btn btn-default">患者</button>-->
     </div>
     <div style="margin:15px 0;" class="yahei">
       用户：<input type="text" id="search_name" onkeydown="search_keydown(event)">&nbsp;&nbsp;邮箱：<input type="text" id="search_email" onkeydown="search_keydown(event)">

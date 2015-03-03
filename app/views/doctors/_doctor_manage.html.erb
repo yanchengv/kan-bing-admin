@@ -15,9 +15,9 @@
 <!--<h1>Listing doctors</h1>-->
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
       <%# if current_user.admin_type == '科室管理员'%>
-      <div style="margin-bottom: 10px;" id="search_f_doc">
-        姓名：<input type="text" id="search_oth_name"> 证件号码：<input type="text" id="search_oth_number" >
-        邮箱：<input type="text" id="search_oth_email"> 手机号：<input type="text" id="search_oth_tel">
+      <div style="margin-bottom: 15px;" id="search_f_doc" class="yahei">
+        姓名：<input type="text" id="search_oth_name"> &nbsp;&nbsp;证件号码：<input type="text" id="search_oth_number" >
+        &nbsp;&nbsp;邮箱：<input type="text" id="search_oth_email"> &nbsp;&nbsp;手机号：<input type="text" id="search_oth_tel">
         <button id="search_btn2" onclick="search_by2()">本医院/科室搜索</button>&nbsp;
         <button id="search_hos_btn2" onclick="search_hos_by2()" >全库搜索</button>&nbsp;<button id="clear_btn2" >清空</button>
       </div>

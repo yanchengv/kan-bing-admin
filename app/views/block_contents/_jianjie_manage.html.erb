@@ -1,11 +1,10 @@
 <div style="width: 100%">
   <%= render partial: 'block_contents/update_block_name'%>
-  <div style="margin-left: 20px;margin-right: 20px;">
-    <div>界面默认只显示最新的一条!</div>
+  <div>
+    <div class="alert alert-danger yahei" role="alert" style="margin-bottom:15px;">界面默认只显示最新的一条!</div>
     <table id="jianjie_list"></table>
     <div id="page_jianjie"></div>
   </div>
-  <br>
 </div>
 <script type="text/javascript">
   var cols = [ 'ID', '标题', '内容详情', '内容','区块ID'];
