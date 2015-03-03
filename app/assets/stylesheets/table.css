@@ -88,7 +88,7 @@
 
 
 /*表单*/
-.ui-jqdialog .ui-jqdialog-content .FormElement{
+.ui-jqdialog .ui-jqdialog-content .FormElement,.FormElement{
     border:1px solid #dcdcdc !important;
     width:95% !important;
     margin:3px 0 !important;
@@ -274,4 +274,18 @@
     padding:0;
     position:relative;
     height:80px
+}
+.marginb{
+    margin-bottom:10px;
+    display:inline-block;
+}
+#create_pic_text .EditTable,.ui-dialog-content .EditTable{
+    background:#ffffff !important;
+    border-top:0px !important;
+}
+.CaptionTD{
+  padding:5px 15px 5px 0;
+}
+#ViewTbl_pic_text_list .FormData{
+   border-bottom:1px solid #eee !important;
 }

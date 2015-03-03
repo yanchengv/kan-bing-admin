@@ -8,14 +8,19 @@
 .m_box li {
     float: left;
     width: 33%;
+    min-height:250px;
     list-style: none;
-    margin: 20px 0;
+    padding: 20px 5px;
     text-align: center;
     font-family: "Microsoft YaHei", Verdana;
     line-height: 34px;
     color: #666;
 }
-
+.m_box li img{
+    width:100%;
+    height:auto;
+    max-width:180px;
+}
 .m_box {
     width: 100%;
     margin: 0;

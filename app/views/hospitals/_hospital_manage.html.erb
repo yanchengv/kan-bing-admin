@@ -4,7 +4,8 @@
     }
 </style>
 <div style="width: 100%">
-  <div style="margin-bottom:15px;" class="yahei">
+  <div style="" class="yahei">
+    <span class="marginb">
       省：
       <select id="province_search_id" style="width: 139px;" onchange="search_hospitals()">
       <option value="0">---全部---</option>
@@ -12,6 +13,8 @@
           <option value="<%= pro.id %>"><%= pro.name %></option>
       <% end if !@provinces.empty? %>
       </select>
+    </span>
+    <span class="marginb">
       &nbsp;&nbsp;市：
       <select id="city_search_id" style="width: 139px;" onchange="search_hospitals()">
       <option value="0">---全部---</option>
@@ -19,12 +22,17 @@
           <option value="<%= city.id %>"><%= city.name %></option>
       <% end if !@cities.empty? %>
       </select>
+    </span>
+    <span class="marginb">
       &nbsp;&nbsp;医院名称：
       <input type="text" id="hospital_name" onkeydown="search_keydown(event, 'hospital')">&nbsp;&nbsp;
-      <button id="search_hos_btn">搜索</button>
+    </span>
+    <span class="marginb">
+      <button id="search_hos_btn" class="btn btn-success btn-sm">搜索</button>
       &nbsp;
-      <button id="clear_hos_btn">清空</button>
-      </div>
+      <button id="clear_hos_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
+  </div>
       <div style="margin-bottom: 10px;" id="tmpsearch" hidden="true">
           <span> 选择为空选项</span>
           省名：<input type="checkbox" id="province_name2" name="province_name">
