@@ -6,10 +6,21 @@
 
 
   <div style="margin-top: 40px;margin-bottom:15px;" class="yahei">
-    诊断类型：<select id="diagnose_type">
-    <option value="">---请选择---</option>
-    <% @diagnose_types.each do |type| %><option value="<%= type.id %>"><%= type.type_name %></option>
-    <% end %></select>&nbsp;&nbsp;诊断内容：<input type="text" id="diagnose_search" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_diagnose_btn">搜索</button>&nbsp;<button id="clear_diagnose_btn" >清空</button>
+    <span class="marginb">
+        诊断类型：<select id="diagnose_type">
+        <option value="">---请选择---</option>
+        <% @diagnose_types.each do |type| %>
+        <option value="<%= type.id %>"><%= type.type_name %></option>
+        <% end %>
+        </select>
+    </span>
+    <span class="marginb">
+      &nbsp;&nbsp;诊断内容：<input type="text" id="diagnose_search" onkeydown="search_keydown(event)">
+    </span>
+    <span class="marginb">
+      &nbsp;&nbsp;<button id="search_diagnose_btn" class="btn btn-success btn-sm">搜索</button>
+      &nbsp;<button id="clear_diagnose_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
   </div>
 
 

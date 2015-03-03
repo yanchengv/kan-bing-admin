@@ -29,11 +29,20 @@
     <!--<button title="all" onclick="click_btn('all')">全部</button>-->
 </div>
 
-  <div id="search_div" style="margin:10px;" class="yahei">
-    省：<input type="text" id="province_name" onkeydown="search_keydown(event)"> 市：<input type="text" id="city_name" onkeydown="search_keydown(event)">
-    县：<input type="text" id="county_name" onkeydown="search_keydown(event)">
-    <button id="search_btn">搜索</button>
-  </div>
+<div id="search_div" style="" class="yahei">
+    <span class="marginb">
+        省：<input type="text" id="province_name" onkeydown="search_keydown(event)">
+    </span>
+    <span class="marginb">
+        市：<input type="text" id="city_name" onkeydown="search_keydown(event)">
+    </span>
+    <span class="marginb">
+        县：<input type="text" id="county_name" onkeydown="search_keydown(event)">
+    </span>
+    <span class="marginb">
+        <button id="search_btn" class="btn btn-success btn-sm">搜索</button>
+    </span>
+</div>
   <div id="province_city_county">
 
       <div id="province" class="jqgride_div">
