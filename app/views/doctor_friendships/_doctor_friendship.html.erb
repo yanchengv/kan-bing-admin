@@ -4,9 +4,13 @@
   </div>
 </div>
 <div style="width:100%">
-    <div style="margin-bottom: 15px;" class="yahei">
-      医生名：<input type="text" id="doc_name" onkeydown="search_keydown(event)">
-      <button id="search_ships_btn">搜索</button>&nbsp;<button id="clear_ships_btn">清空</button>
+    <div style="" class="yahei">
+      <span class="marginb">
+        医生名：<input type="text" id="doc_name" onkeydown="search_keydown(event)" class="input_b">
+      </span>
+      <span class="marginb">
+        <button id="search_ships_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;<button id="clear_ships_btn" class="btn btn-default btn-sm">清空</button>
+      </span>
     </div>
     <div class="jqgride_div">
         <table id="list_doctors_ships"></table>

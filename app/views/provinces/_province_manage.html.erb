@@ -31,13 +31,13 @@
 
 <div id="search_div" style="" class="yahei">
     <span class="marginb">
-        省：<input type="text" id="province_name" onkeydown="search_keydown(event)">
+        省：<input type="text" class="input_b" id="province_name" onkeydown="search_keydown(event)">
     </span>
     <span class="marginb">
-        市：<input type="text" id="city_name" onkeydown="search_keydown(event)">
+        市：<input type="text" class="input_b" id="city_name" onkeydown="search_keydown(event)">
     </span>
     <span class="marginb">
-        县：<input type="text" id="county_name" onkeydown="search_keydown(event)">
+        县：<input type="text" class="input_b" id="county_name" onkeydown="search_keydown(event)">
     </span>
     <span class="marginb">
         <button id="search_btn" class="btn btn-success btn-sm">搜索</button>
@@ -45,17 +45,17 @@
 </div>
   <div id="province_city_county">
 
-      <div id="province" class="jqgride_div">
+      <div id="province" class="jqgride_div" style="margin-bottom:15px;">
         <table id="list_province"></table>
         <div id="page_province"></div>
       </div>
 
-      <div id="city" class="jqgride_div">
+      <div id="city" class="jqgride_div" style="margin-bottom:15px;">
         <table id="list_city"></table>
         <div id="page_city"></div>
       </div>
 
-      <div id="county" class="jqgride_div">
+      <div id="county" class="jqgride_div" style="margin-bottom:15px;">
         <table id="list_county"></table>
         <div id="page_county"></div>
       </div>

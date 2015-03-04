@@ -7,7 +7,7 @@
 
   <div style="margin-top: 40px;margin-bottom:15px;" class="yahei">
     <span class="marginb">
-        诊断类型：<select id="diagnose_type">
+        诊断类型：<select id="diagnose_type"  class="select_w">
         <option value="">---请选择---</option>
         <% @diagnose_types.each do |type| %>
         <option value="<%= type.id %>"><%= type.type_name %></option>
@@ -15,7 +15,7 @@
         </select>
     </span>
     <span class="marginb">
-      &nbsp;&nbsp;诊断内容：<input type="text" id="diagnose_search" onkeydown="search_keydown(event)">
+      &nbsp;&nbsp;诊断内容：<input type="text" class="input_b" id="diagnose_search" onkeydown="search_keydown(event)">
     </span>
     <span class="marginb">
       &nbsp;&nbsp;<button id="search_diagnose_btn" class="btn btn-success btn-sm">搜索</button>

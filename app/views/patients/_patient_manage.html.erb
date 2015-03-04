@@ -19,11 +19,24 @@
 
 <div id="search_div" style="margin-top:10px;">
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
-      <div style="margin-bottom: 10px;" id="search_f_pat">
-        姓名：<input type="text" id="search_oth_name"> 证件号码：<input type="text" id="search_oth_number" >
-        邮箱：<input type="text" id="search_oth_email"> 手机号：<input type="text" id="search_oth_tel">
-        <button id="search_btn2" onclick="search_by2()">本医院/科室搜索</button>&nbsp;
-        <button id="search_hos_btn2" onclick="search_hos_by2()" >全库搜索</button>&nbsp;<button id="clear_btn2" >清空</button>
+      <div style="" id="search_f_pat">
+        <span class="marginb">
+            姓名：<input type="text" class="input_b" id="search_oth_name">
+        </span>
+        <span class="marginb">
+          证件号码：<input type="text" class="input_b" id="search_oth_number" >
+        </span>
+        <span class="marginb">
+            邮箱：<input type="text" class="input_b" id="search_oth_email">
+        </span>
+        <span class="marginb">
+            手机号：<input type="text" class="input_b" id="search_oth_tel">
+        </span>
+        <span class="marginb">
+        <button id="search_btn2" onclick="search_by2()" class="btn btn-success btn-sm">本医院/科室搜索</button>
+          &nbsp;<button id="search_hos_btn2" onclick="search_hos_by2()" class="btn btn-success btn-sm">全库搜索</button>
+          &nbsp;<button id="clear_btn2" class="btn btn-default btn-sm">清空</button>
+        </span>
       </div>
       <script>
           function search_hos_by2(){
@@ -73,31 +86,53 @@
           });
       </script>
 <% else %>
-  医院：<select  id="patient_hos_id" onchange="pat_search_hos()" >
+<span class="marginb">
+  医院：
+  <select  id="patient_hos_id" class="select_w" onchange="pat_search_hos()" >
   <option value="">全部</option>
   <% if !@hospitals.empty? && !@hospitals.nil?  %>
       <% @hospitals.each do |hos| %>
           <option id='search_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
       <% end %>
   <% end %>
-</select>
-  &nbsp;&nbsp;科室：<span id="search_dep_id"><select id="patient_dep" onchange="pat_search_dep()" >
-  <option value="all">全部</option>
-  <% if !@departments.nil? && !@departments.empty? %>
-      <% @departments.each do |hos| %>
-          <option id='serach_dep_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+  </select>
+</span>
+<span class="marginb">
+  科室：
+  <span id="search_dep_id">
+    <select id="patient_dep" class="select_w" onchange="pat_search_dep()" >
+      <option value="all">全部</option>
+      <% if !@departments.nil? && !@departments.empty? %>
+          <% @departments.each do |hos| %>
+              <option id='serach_dep_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+          <% end %>
       <% end %>
-  <% end %>
-</select></span>
-      &nbsp;&nbsp;是否激活：<select id="is_activated" onchange="search_activated()">
+    </select>
+  </span>
+</span>
+<span class="marginb">
+  是否激活：
+  <select id="is_activated" class="select_w" onchange="search_activated()">
   <option value="">全部</option>
   <option value="1">已经激活</option>
   <option value="0">未激活</option>
-</select>
-      <div style="margin-top: 10px;">
-        姓名：<input type="text" id="search_name" onkeydown="entersearch1(event)"> &nbsp;&nbsp;证件号码：<input type="text" id="search_number" onkeydown="entersearch1(event)">
-        &nbsp;&nbsp;邮箱：<input type="text" id="search_email" onkeydown="entersearch1(event)"> &nbsp;&nbsp;手机号：<input type="text" id="search_tel" onkeydown="entersearch1(event)">
-        <button id="search_btn" onclick="search_by()">搜索</button>&nbsp;<button id="clear_btn" >清空</button>
+  </select>
+</span>
+<span class="marginb">
+  姓名：<input type="text" id="search_name" onkeydown="entersearch1(event)" class="input_b">
+</span>
+<span class="marginb">
+  证件号码：<input type="text" id="search_number" onkeydown="entersearch1(event)" class="input_b">
+</span>
+<span class="marginb">
+   邮箱：<input type="text" id="search_email" onkeydown="entersearch1(event)" class="input_b">
+</span>
+<span class="marginb">
+   手机号：<input type="text" id="search_tel" onkeydown="entersearch1(event)" class="input_b">
+</span>
+<span class="marginb">
+   <button id="search_btn" class="btn btn-success btn-sm" onclick="search_by()">搜索</button>&nbsp;<button id="clear_btn" class="btn btn-default btn-sm">清空</button>
+</span>
         <%#= form_for '', url: {controller: 'patients', action: 'show_index'}, method: 'get',:html => {:multipart => true} do |f| %>
         <!--<div style="padding: 0px;margin-left: 0px;">-->
         <!-- <%#= f.label :搜索条件 %>:-->
@@ -113,7 +148,6 @@
         <!--<%#= f.text_field :name,id:'searchString',name:'searchString', placeholder: '回车搜索', style:"width:180px;height: 26px;" ,onkeydown:"entersearch1(event)"%>-->
         <!--</div>-->
         <%# end %>
-      </div>
       <script>
           function search_by() {
               var name = $('#search_name').val();
