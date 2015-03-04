@@ -7,7 +7,7 @@
   <div style="" class="yahei">
     <span class="marginb">
       省：
-      <select id="province_search_id" style="width: 139px;" onchange="search_hospitals()">
+      <select id="province_search_id" class="select_w" onchange="search_hospitals()">
       <option value="0">---全部---</option>
       <% @provinces.each do |pro| %>
           <option value="<%= pro.id %>"><%= pro.name %></option>
@@ -15,8 +15,8 @@
       </select>
     </span>
     <span class="marginb">
-      &nbsp;&nbsp;市：
-      <select id="city_search_id" style="width: 139px;" onchange="search_hospitals()">
+      市：
+      <select id="city_search_id" class="select_w" onchange="search_hospitals()">
       <option value="0">---全部---</option>
       <% @cities.each do |city| %>
           <option value="<%= city.id %>"><%= city.name %></option>
@@ -24,8 +24,8 @@
       </select>
     </span>
     <span class="marginb">
-      &nbsp;&nbsp;医院名称：
-      <input type="text" id="hospital_name" onkeydown="search_keydown(event, 'hospital')">&nbsp;&nbsp;
+      医院名称：
+      <input type="text" id="hospital_name"  class="input_b" onkeydown="search_keydown(event, 'hospital')">
     </span>
     <span class="marginb">
       <button id="search_hos_btn" class="btn btn-success btn-sm">搜索</button>
@@ -49,10 +49,14 @@
     <table id="hospital_list"></table>
     <div id="page_hos"></div>
 </div>
-<div style="margin-bottom:15px;margin-top:40px" class="yahei">
+<div style="margin-top:40px" class="yahei">
+  <span class="marginb">
     科室名称：
-    <input type="text" id="dept_name_search" onkeydown="search_keydown(event, 'department')">&nbsp;&nbsp;
-    <button id="search_dept_btn" >搜索</button>&nbsp;<button id="clear_dept_btn" >清空</button>
+    <input type="text" id="dept_name_search" class="input_b" onkeydown="search_keydown(event, 'department')">
+  </span>
+  <span class="marginb">
+    <button id="search_dept_btn" class="btn btn-success btn-sm" >搜索</button>&nbsp;<button id="clear_dept_btn" class="btn btn-default btn-sm">清空</button>
+  </span>
 </div>
 
 <div class="jqgride_div">

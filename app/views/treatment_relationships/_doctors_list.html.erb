@@ -7,14 +7,15 @@
 <div style="width: 100%">
   <div style="margin-bottom:15px;" class="yahei">
     <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员' %>
-        省：<select id="doctor_pro_id" name="doctor_pro_id" style="width: 120px;">
-    <option value="">--请选择--</option>
-    <% if !@provinces.nil? && !@provinces.empty? %>
-        <% @provinces.each do |pro| %>
-            <option value="<%= pro.id %>"><%= pro.name %></option>
-        <% end %>
-    <% end %>
-  </select>
+        省：
+        <select id="doctor_pro_id" name="doctor_pro_id" class="select_w">
+            <option value="">--请选择--</option>
+            <% if !@provinces.nil? && !@provinces.empty? %>
+                <% @provinces.each do |pro| %>
+                    <option value="<%= pro.id %>"><%= pro.name %></option>
+                <% end %>
+            <% end %>
+        </select>
         市：
     <span id="search_city_id"><select id="doctor_city_id" name="doctor[city_id]" style="width: 120px;">
       <option value="all">--请选择--</option>

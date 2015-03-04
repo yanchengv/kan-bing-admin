@@ -76,7 +76,7 @@
                 url:URL,
                 type:'get',
                 beforeSend:function(response){
-                    $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#ebeced;line-height:100px;font-weight:bold;"><img src="/loading.gif" style="margin-top:5px;"/></div>')
+                    $("#rightContent").html('<div style="width:100px;height:90px;border:1px solid #dcdcdc;position:absolute;left:50%;padding-top:10px;background:#ebeced;font-weight:bold;text-align:center;"><img src="/loading.gif" style="margin-top:5px;"/><br />加载中...</div>')
                 },
                 success:function (response,data){
                     $('#rightContent').html(response)

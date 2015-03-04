@@ -6,6 +6,16 @@
 .jqgride_div{
     margin-right:15px;
 }
+@media(max-width:768px){
+    #rightContent .ui-widget{
+        width:100% !important;
+        margin-left: 0 !important;
+        left: 0 !important;
+    }
+    #rightContent .jqgride_div{
+        margin-right:0px !important;
+    }
+}
 .ui-jqgrid-btable td{
     border-right:1px solid #dcdcdc !important;
     border-bottom:1px solid #dcdcdc !important;
@@ -50,15 +60,7 @@
 .ui-widget{
     outline:0px !important;
 }
-@media(max-width:768px){
-    .ui-widget{
-        width:100% !important;
-        left:0px !important;
-    }
-    .FormGrid{
-        width:100% !important;
-    }
-}
+
 
 
 .ui-widget-content .ui-widget-header .ui-jqdialog-title{
@@ -277,6 +279,7 @@
 }
 .marginb{
     margin-bottom:10px;
+    margin-left:5px;
     display:inline-block;
 }
 #create_pic_text .EditTable,.ui-dialog-content .EditTable{
@@ -288,4 +291,12 @@
 }
 #ViewTbl_pic_text_list .FormData{
    border-bottom:1px solid #eee !important;
+}
+.select_w{
+    width:156px;
+}
+#rightContent .input_b{
+    border:1px solid #aaa !important;
+    border-radius:4px !important;
+    height:26px;
 }

@@ -1,12 +1,29 @@
 <div style="width: 100%">
 
-  <div style="margin-bottom: 15px;" class="yahei">咨询内容：<input type="text" id="question_content" onkeydown="search_keydown(event, 'question')">&nbsp;<button id="search_question_btn">搜索</button>&nbsp;<button id="clear_question_btn">清空</button></div>
+  <div style="" class="yahei">
+    <span class="marginb">
+    咨询内容：
+    <input type="text" id="question_content" class="input_b" onkeydown="search_keydown(event, 'question')">
+    </span>
+    <span class="marginb">
+    <button id="search_question_btn" class="btn btn-success btn-sm">搜索</button>
+    &nbsp;<button id="clear_question_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
+  </div>
   <div class="">
   <table id="list_ques"></table>
   <div id="page_ques"></div>
   </div>
 
-  <div style="margin-top: 40px;margin-bottom:15px" class="yahei">回复内容：<input type="text" id="result_content" onkeydown="search_keydown(event,'result')">&nbsp;<button id="search_result_btn">搜索</button>&nbsp;<button id="clear_result_btn">清空</button></div>
+  <div style="margin-top: 40px;" class="yahei">
+    <span class="marginb">
+    回复内容：<input type="text" class="input_b" id="result_content" onkeydown="search_keydown(event,'result')">
+    </span>
+    <span class="marginb">
+      <button id="search_result_btn" class="btn btn-success btn-sm">搜索</button>
+      &nbsp;<button id="clear_result_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
+  </div>
   <div class="">
   <table id="list_result"></table>
   <div id="page_result"></div>

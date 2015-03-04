@@ -1,13 +1,23 @@
 <div style="width: 100%">
-    <div style="margin-bottom:15px;" class="yahei">
-    类型名称：<input type="text" id="type_name" onkeydown="search_keydown(event,'type')">&nbsp;<button id="search_type_btn">搜索</button>&nbsp;<button id="clear_type_btn">清空</button>
+    <div  class="yahei">
+      <span class="marginb">
+        类型名称：<input type="text" id="type_name"  class="input_b" onkeydown="search_keydown(event,'type')">
+      </span>
+      <span class="marginb">
+        <button id="search_type_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;<button id="clear_type_btn" class="btn btn-default btn-sm">清空</button>
+      </span>
     </div>
   <div class="jqgride_div">
     <table id="knowledge_type_list"></table>
     <div id="knowledge_type_pager"></div>
   </div>
-    <div style="margin-top:40px;margin-bottom:15px;" class="yahei">
-    标题：<input type="text" id="knowledge_title" onkeydown="search_keydown(event,'title')">&nbsp;<button id="search_knowledge_btn">搜索</button>&nbsp;<button id="clear_knowledge_btn">清空</button>
+    <div style="margin-top:40px;" class="yahei">
+      <span class="marginb">
+      标题：<input type="text" id="knowledge_title" class="input_b" onkeydown="search_keydown(event,'title')">
+      </span>
+      <span class="marginb">
+        &nbsp;<button id="search_knowledge_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;<button id="clear_knowledge_btn" class="btn btn-default btn-sm">清空</button>
+      </span>
    </div>
   <div class="jqgride_div">
     <table id="knowledge_list"></table>

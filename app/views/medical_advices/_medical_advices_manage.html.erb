@@ -5,8 +5,21 @@
     </div>
 
   <div style="margin-top:40px;margin-bottom:15px;" class="yahei">
-    医嘱类型：<select id="advice_type"><option value="">---请选择---</option> <% @advice_types.each do |type|%><option value="<%= type.id%>"><%= type.type_name %></option> <%end%></select>
-      &nbsp;&nbsp;医嘱内容：<input type="text" id="advice_title" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_advice_btn">搜索</button>&nbsp;<button id="clear_advice_btn" >清空</button>
+   <span class="marginb">
+    医嘱类型：
+     <select id="advice_type" class="select_w">
+       <option value="">---请选择---</option>
+       <% @advice_types.each do |type|%>
+           <option value="<%= type.id%>"><%= type.type_name %></option>
+       <%end%>
+     </select>
+    </span>
+    <span class="marginb">
+     医嘱内容：<input type="text" class="input_b" id="advice_title" onkeydown="search_keydown(event)">
+    </span>
+    <span class="marginb">
+      <button id="search_advice_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;<button id="clear_advice_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
   </div>
 
     <div class="jqgride_div">

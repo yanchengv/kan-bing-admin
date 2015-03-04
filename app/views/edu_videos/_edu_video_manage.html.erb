@@ -3,14 +3,23 @@
   </div>
 </div>
 <div style="width: 100%">
-    <div style="margin-bottom: 15px;" class="yahei">
-      视频类型：<select id="video_search_id" style="width: 139px;" onchange="search_videos()">
+    <div style="" class="yahei">
+      <span class="marginb">
+      视频类型：
+      <select id="video_search_id" class="select_w" onchange="search_videos()">
       <option value="0">---全部---</option>
       <% @video_types.each do |type|%>
           <option value="<%= type.id%>"><%= type.type_name %></option>
       <% end %>
-    </select>&nbsp;&nbsp;视频名称：<input type="text" id="search_video_name" onkeydown="search_keydown(event)">&nbsp;&nbsp;<button id="search_video_btn">搜索</button>&nbsp;
-      <button id="clear_type_btn">清空</button>
+      </select>
+      </span>
+      <span class="marginb">
+        视频名称：<input type="text" id="search_video_name" onkeydown="search_keydown(event)" class="input_b">
+      </span>
+      <span class="marginb">
+        &nbsp;&nbsp;<button id="search_video_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;
+      <button id="clear_type_btn" class="btn btn-default btn-sm">清空</button>
+      </span>
     </div>
     <% link_to '上传视频', '/edu_videos/new_video'%>
     <table id="edu_video_list"></table>
