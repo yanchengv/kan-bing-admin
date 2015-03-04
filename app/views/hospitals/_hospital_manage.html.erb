@@ -249,10 +249,18 @@
                 del:<%= @opr_flag %>,deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
-                closeAfterEdit: true
+                closeAfterEdit: true,
+                width: 500,
+                height: 700,
+                top: ($(window).height() - 700) / 2,
+                left: ($(window).width() - 500) / 2
             },//edit
             {
-                closeAfterAdd: true
+                closeAfterAdd: true,
+                width: 500,
+                height: 700,
+                top: ($(window).height() - 700) / 2,
+                left: ($(window).width() - 500) / 2
             }//add
     );
     //科室管理
@@ -312,10 +320,18 @@
                 deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
-                closeAfterEdit: true
+                closeAfterEdit: true,
+                width: 500,
+                height: 390,
+                top: ($(window).height() - 390) / 2,
+                left: ($(window).width() - 500) / 2
             },//edit
             {
                 closeAfterAdd: true,
+                width: 500,
+                height: 390,
+                top: ($(window).height() - 390) / 2,
+                left: ($(window).width() - 500) / 2,
                 beforeShowForm: function () {
                     var id = jQuery("#hospital_list").jqGrid('getGridParam', 'selrow');
                     if(!id){
