@@ -85,16 +85,21 @@ class Admin2sController < ApplicationController
   # POST /admins.json
   def create
     if params[:admin_type] == '机构管理员'
-      ins_hos_id = pk_id_rules
-      if !params[:hos_id].nil? && params[:hos_id] != ''
-        ins_hos_id = params[:hos_id]
-      end
-      params[:hospital_id] = ins_hos_id
-      ins_dep_id = params[:hospital_id]
-      # if !params[:dep_id].nil? && params[:dep_id] != ''
-      #   ins_dep_id = params[:dep_id]
+      # ins_hos_id = pk_id_rules
+      # if !params[:hos_id].nil? && params[:hos_id] != ''
+      #   ins_hos_id = params[:hos_id]
       # end
-      params[:department_id] = ins_dep_id
+      # params[:hospital_id] = ins_hos_id
+      # ins_dep_id = params[:hospital_id]
+      # # if !params[:dep_id].nil? && params[:dep_id] != ''
+      # #   ins_dep_id = params[:dep_id]
+      # # end
+      # params[:department_id] = ins_dep_id
+      @organization = Organization.where(id:params[:organization_id]).first
+      if !@organization.nil?
+        params[:hospital_id] = @organization.hospital_id
+        params[:department_id] = @organization.department_id
+      end
     end
 
     @admin = Admin2.new(admin_params)
@@ -240,7 +245,7 @@ class Admin2sController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def admin_params
-      params.permit(:id, :name, :email, :photo,:password,:hospital_id,:department_id,:admin_type, :mobile_phone, :password_digest, :remember_token, :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :confirmation_token, :confirmed_at, :confirmation_sent_at, :unconfirmed_email, :failed_attempts, :unlock_token, :locked_at, :introduction)
+      params.permit(:id, :name, :email, :photo,:password,:organization_id,:hospital_id,:department_id,:admin_type, :mobile_phone, :password_digest, :remember_token, :reset_password_token, :reset_password_sent_at, :remember_created_at, :sign_in_count, :current_sign_in_at, :last_sign_in_at, :current_sign_in_ip, :last_sign_in_ip, :confirmation_token, :confirmed_at, :confirmation_sent_at, :unconfirmed_email, :failed_attempts, :unlock_token, :locked_at, :introduction)
       # params.require(:home_menu).permit(:id,:name,:parent_id,:hospital_id,:department_id,:content,:show_in_menu,:link_url,:skip_to_first_child,:show_in_header,:show_in_footer,:depth)
 
     end

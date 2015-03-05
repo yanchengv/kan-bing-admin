@@ -10,6 +10,7 @@ class Admin2 < ActiveRecord::Base
   has_many :role2s, :through => :admin2s_role2s, :source  => :role2
   belongs_to :department
   belongs_to :hospital
+  belongs_to :organization
 
   def t_menus     #管理员所拥有的菜单
     menus=[]

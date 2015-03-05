@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :organizations
+
   get 'home_menu/create'
   resources :role2_menus do
     collection do
@@ -366,6 +368,7 @@ Rails.application.routes.draw do
       get 'check_phone', to:'doctors#check_phone'
       get 'check_email', to:'doctors#check_email'
       get 'check_credential_type_number', to:'doctors#check_credential_type_number'
+      get 'get_organizations', to:'doctors#get_organizations'
       get 'get_hospitals', to:'doctors#get_hospitals'
       get 'get_departments', to:'doctors#get_departments'
       get 'get_doctor_to_page', to: 'doctors#get_doctor_to_page'
