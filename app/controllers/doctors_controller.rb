@@ -331,6 +331,11 @@ class DoctorsController < ApplicationController
     @sear_doc = Doctor.select("id").where(sql).first
     if @sear_doc.nil? && !params[:doctor][:name].nil? && params[:doctor][:name] != ''
       @doctor = Doctor.new(doctor_params)
+      if current_user
+        if current_user.admin_type == '机构管理员'
+          @doctor.organization_id = current_user.organization_id
+        end
+      end
       if @doctor.save
         render json:{success:'true',data:@doctor}
       else
@@ -369,6 +374,11 @@ class DoctorsController < ApplicationController
     end
     @sear_doc = Doctor.select("id").where(sql).first
     if (@sear_doc.nil? || @sear_doc.id.to_i  == @doctor.id.to_i) && !params[:doctor][:name].nil? && params[:doctor][:name] != ''
+      if current_user
+        if current_user.admin_type == '机构管理员'
+          @doctor.organization_id = current_user.organization_id
+        end
+      end
       if @doctor.update(doctor_params)
         if !@doctor.province2.nil?
           @doctor.update_attributes(province_name: @doctor.province2.name)

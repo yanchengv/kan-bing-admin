@@ -221,6 +221,11 @@ class PatientsController < ApplicationController
     @sear_pat = Patient.select("id").where(sql).first
     if @sear_pat.nil? && !params[:patient][:name].nil? && params[:patient][:name] != ''
       @patient = Patient.new(patient_params)
+      if current_user
+        if current_user.admin_type == '机构管理员'
+          @patient.organization_id = current_user.organization_id
+        end
+      end
       # render json:{success:true,data:@patient}
       if @patient.save
         render json: {success:true,data:@patient}
@@ -256,6 +261,11 @@ class PatientsController < ApplicationController
     end
     @sear_pat = Patient.select("id").where(sql).first
     if (@sear_pat.nil? || @sear_pat.id.to_i == @patient.id.to_i) && !params[:patient][:name].nil? && params[:patient][:name] != ''
+      if current_user
+        if current_user.admin_type == '机构管理员'
+          @patient.organization_id = current_user.organization_id
+        end
+      end
       if @patient.update(patient_params)
         render json:{success:true}
       else
