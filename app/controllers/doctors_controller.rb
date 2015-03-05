@@ -65,28 +65,34 @@ class DoctorsController < ApplicationController
           page = params[:page]
           @doctors_all = nil
           sql = "true"
-          if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
-            @hos = Hospital.where(id:hos_id).first
-            @dep = Department.where(id:dep_id).first
-            if !@hos.nil?
-              hos_name = @hos.name
+          if current_user
+            if current_user.admin_type == '机构管理员'
+              sql << " and organization_id = #{current_user.organization_id}"
             else
-              hos_name = '不存在'
+              if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
+                @hos = Hospital.where(id: hos_id).first
+                @dep = Department.where(id: dep_id).first
+                if !@hos.nil?
+                  hos_name = @hos.name
+                else
+                  hos_name = '不存在'
+                end
+                if !@dep.nil?
+                  dep_name = @dep.name
+                else
+                  dep_name = '不存在'
+                end
+                sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{hos_name}%') and (department_id=#{dep_id} or department_name like '%#{dep_name}%')"
+              elsif !hos_id.nil? && hos_id != ''
+                @hos = Hospital.where(id: hos_id).first
+                if !@hos.nil?
+                  hos_name = @hos.name
+                else
+                  hos_name = '不存在'
+                end
+                sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{hos_name}%')"
+              end
             end
-            if !@dep.nil?
-              dep_name = @dep.name
-            else
-              dep_name = '不存在'
-            end
-            sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{hos_name}%') and (department_id=#{dep_id} or department_name like '%#{dep_name}%')"
-          elsif !hos_id.nil? && hos_id != ''
-            @hos = Hospital.where(id:hos_id).first
-            if !@hos.nil?
-              hos_name = @hos.name
-            else
-              hos_name = '不存在'
-            end
-            sql << " and (hospital_id = #{hos_id} or hospital_name like '%#{hos_name}%')"
           end
           if !pro_id.nil? && pro_id != '' && !city_id.nil? && city_id != ''
             @pro = Province.find(pro_id)
@@ -142,11 +148,6 @@ class DoctorsController < ApplicationController
           end
           if page.to_i>@total.to_i
             page = 1
-          end
-          if current_user
-            if current_user.admin_type == '机构管理员'
-              sql << " and organization_id = #{current_user.organization_id}"
-            end
           end
           @doctors = Doctor.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
           # if !@doctors.empty?

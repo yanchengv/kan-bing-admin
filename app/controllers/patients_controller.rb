@@ -37,10 +37,16 @@ class PatientsController < ApplicationController
     page = params[:page]
     @patients_all = nil
     sql = 'true'
-    if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
-      sql << " and hospital_id = #{hos_id} and department_id=#{dep_id}"
-    elsif !hos_id.nil? && hos_id != ''
-      sql << " and hospital_id = #{hos_id}"
+    if current_user
+      if current_user.admin_type == '机构管理员'
+        sql << " and organization_id = #{current_user.organization_id}"
+      else
+        if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
+          sql << " and hospital_id = #{hos_id} and department_id=#{dep_id}"
+        elsif !hos_id.nil? && hos_id != ''
+          sql << " and hospital_id = #{hos_id}"
+        end
+      end
     end
     field = params[:searchField]
     p params[:searchOper]
@@ -92,11 +98,6 @@ class PatientsController < ApplicationController
     end
     if page.to_i>@total.to_i
       page = 1
-    end
-    if current_user
-      if current_user.admin_type == '机构管理员'
-        sql << " and organization_id = #{current_user.organization_id}"
-      end
     end
     @patients = Patient.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
       @rows=[]
