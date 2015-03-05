@@ -93,6 +93,11 @@ class PatientsController < ApplicationController
     if page.to_i>@total.to_i
       page = 1
     end
+    if current_user
+      if current_user.admin_type == '机构管理员'
+        sql << " and organization_id = #{current_user.organization_id}"
+      end
+    end
     @patients = Patient.where(sql).order("#{params[:sidx]} #{params[:sord]}").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
       @rows=[]
       @rows=@patients.as_json(:include => [{:hospital => {:only => [:id,:name]}},{:department => {:only => [:id,:name]}},{:doctor => {:only => [:id, :name, :doctor_type]}}])
