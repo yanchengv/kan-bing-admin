@@ -129,6 +129,13 @@ Rails.application.routes.draw do
       post 'batch_delete', to: 'apk_versions#batch_delete'
     end
   end
+  resources :organizations do
+    collection do
+      get 'index_show', to: 'organizations#show_index'
+      post 'oper_action', to: 'organizations#oper_action'
+      post 'batch_delete', to: 'organizations#batch_delete'
+    end
+  end
   resources :advice_types do
     collection do
       get 'index_show', to: 'advice_types#show_index'
