@@ -37,7 +37,7 @@
             url: '/admin2s/test_index',
             datatype: "json",
             mtype: 'GET',
-            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号','管理员类型','医院','科室','机构ID','说明'],
+            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号','管理员类型','医院','科室','机构','说明'],
             colModel: [
                 { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden:true},
                 { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name},editoptions:{style: "width:150px"}},
@@ -109,23 +109,23 @@
                         value: ":----请选择----"
                     }
                 },
-                { name: 'hos_id', index: 'hospital_id', width: 40, align: "left", hidden:true,editable: true,edittype:"select", editrules: {edithidden:true},
+                { name: 'organization_id', index: 'organization_id', width: 40, align: "left", hidden:true,editable: true,edittype:"select", editrules: {edithidden:true},
                     editoptions:{dataEvents: [
                     { type: 'change', fn: function(e) {} }
 
                     ],
                 dataInit: function (element) {
                     $(element).select2();
-                    $(element).val()
+//                    $(element).val()
                 },
                 style: "width:158px",
                 value: function () {
                     var positions;
                     $.ajax({
-                        url: "/admin2s/get_ins_hos",
+                        url: "/doctors/get_organizations",
                         async: false,
                         success: function (data) {
-                            positions = data.admins;
+                            positions = data.organizations;
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
                             alert(textStatus);
@@ -292,12 +292,12 @@
             dep.val('')
             dep.attr('disabled','disabled')
             hos.removeAttr('disabled')
-            $('select#hos_id').attr('disabled','disabled')
+            $('select#organization_id').attr('disabled','disabled')
         }
         if (obj.value=='科室管理员'){
             hos.removeAttr('disabled')
             dep.removeAttr('disabled')
-            $('select#hos_id').attr('disabled','disabled')
+            $('select#organization_id').attr('disabled','disabled')
         }
         if (obj.value=='网站管理员'){
             $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
@@ -306,7 +306,7 @@
             hos.val('')
             hos.attr('disabled','disabled')
             dep.attr('disabled','disabled')
-            $('select#hos_id').attr('disabled','disabled')
+            $('select#organization_id').attr('disabled','disabled')
         }
         if (obj.value=='机构管理员'){
             $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
@@ -315,7 +315,7 @@
             hos.val('')
             hos.attr('disabled','disabled')
             dep.attr('disabled','disabled')
-            $('select#hos_id').removeAttr('disabled')
+            $('select#organization_id').removeAttr('disabled')
         }
     }
 
@@ -339,7 +339,7 @@
                         if (obj.val()=='科室管理员'){
                             hos.removeAttr('disabled')
                             dep.removeAttr('disabled')
-                            $('select#hos_id').attr('disabled','disabled')
+                            $('select#organization_id').attr('disabled','disabled')
                             if(data['success']){
                                 $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html(data['data']['department_name'])
                             }
@@ -347,7 +347,7 @@
                         if (obj.val()=='网站管理员'){
                             hos.attr('disabled','disabled')
                             dep.attr('disabled','disabled')
-                            $('select#hos_id').attr('disabled','disabled')
+                            $('select#organization_id').attr('disabled','disabled')
                             $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
                             $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
                             dep.val('')
@@ -362,7 +362,7 @@
                                 $('select#hos_id').val(data['data']['hospital_id'])
                                 $('#s2id_hos_id').children('.select2-choice').children('.select2-chosen').html(data['data']['hospital_id'])
                             }
-                            $('select#hos_id').removeAttr('disabled')
+                            $('select#organization_id').removeAttr('disabled')
                             $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
                             $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
                             dep.val('')

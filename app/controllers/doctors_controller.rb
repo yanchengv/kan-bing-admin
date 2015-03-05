@@ -660,6 +660,15 @@ class DoctorsController < ApplicationController
     end
   end
 
+  def get_organizations
+    orgs = {}
+    @organizations = Organization.all
+    @organizations.each do |org|
+      orgs[org.id] = org.name
+    end
+    render :json => {:organizations => orgs.as_json}
+  end
+
   def get_hospitals
     docs = {}
     # docs[0] = '----请选择----'
