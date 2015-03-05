@@ -1,4 +1,4 @@
-<select id="doctor_dep_id" name="department_id" onchange="doc_search_dep()" >
+<select id="doctor_dep_id" name="department_id" onchange="doc_search_dep()" style="width:95% !important">
   <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '医院管理员' %>
     <option value="all">全部</option>
   <% else %>
