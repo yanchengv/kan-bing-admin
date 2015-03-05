@@ -12,13 +12,13 @@
         url: '/organizations/index_show',
         datatype: "json",
         mtype: 'GET',
-        colNames: [ 'ID', '名称', '描述', '联系方式', '地址'],
+        colNames: [ 'ID', '名称', '联系方式', '地址', '描述'],
         colModel: [
             { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
             { name: 'name', index: 'name', align: "center", editable: true},
-            { name: 'description', index: 'description', align: "center", editable: true},
             { name: 'phone', index: 'phone', align: "center", editable: true},
-            { name: 'address', index: 'address', align: "center", editable: true}
+            { name: 'address', index: 'address', align: "center", editable: true},
+            { name: 'description', index: 'description', align: "center", editable: true, editrules: {edithidden: true}, edittype: 'textarea', editoptions: {rows: 5, style: "width:300px"}}
         ],
         rownumbers: true,
         page:1,
