@@ -6,7 +6,8 @@
 </style>
 <hr>
 <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员' %>
-    省：<select id="doctor2_pro_id" name="doctor2_pro_id" style="width: 120px;">
+    <span class="marginb">
+    省：<select id="doctor2_pro_id" name="doctor2_pro_id" class="select_w">
   <option value="">---请选择---</option>
   <% if !@provinces.nil? && !@provinces.empty? %>
       <% @provinces.each do |pro| %>
@@ -14,6 +15,8 @@
       <% end %>
   <% end %>
 </select>
+    </span>
+    <span class="marginb">
     市：
     <span id="search_city2_id"><select id="doctor2_city_id" name="doctor[city_id]" style="width: 120px;">
       <option value="all">---请选择---</option>
@@ -22,7 +25,10 @@
              <!-- <option id='serch_city2_<%#= city.id %>' value="<%#= city.id %>"><%#= city.name %></option>-->
           <%# end %>
       <%# end %>
-    </select></span>
+    </select>
+    </span>
+    </span>
+    <span class="marginb">
     医院：
     <span id="search_hos2_id"><select id="doctor2_hos_id" name="doctor2_hos_id" style="width: 120px;">
       <option value="">---请选择---</option>
@@ -31,7 +37,10 @@
               <!--<option id='serch_hos2_<%#= hos.id %>' value="<%#= hos.id %>"><%#= hos.name %></option>-->
           <%# end %>
       <%# end %>
-    </select></span>
+    </select>
+    </span>
+    </span>
+    <span class="marginb">
     科室：
     <span id="search_dep2_id"><select id="doctor2_dep" name="doctor[department_id]" style="width: 120px;">
       <option value="all">---请选择---</option>
@@ -40,13 +49,17 @@
               <!--<option id='serch_dep2_<%#= dep.id %>' value="<%#= dep.id %>"><%#= dep.name %></option>-->
           <%# end %>
       <%# end %>
-    </select></span>
-    姓名：<input type="text" id="search_doctor2_name" style="width: 120px;" onkeydown="search_keydown2(event)">
-    <button id="search_doc2_btn">搜索</button>
+    </select>
+    </span>
+    </span>
+    姓名：<input type="text" id="search_doctor2_name" class="input_b" onkeydown="search_keydown2(event)">
+    <span class="marginb">
+    <button id="search_doc2_btn" class="btn btn-success btn-sm">搜索</button>
     &nbsp;
-    <button id="clear_doc2_btn">清空</button>
+    <button id="clear_doc2_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
 <% end %>
-<br><br>
+
 <table id="doctor2_list"></table>
 <div id="page_doctor2"></div>
 <script>

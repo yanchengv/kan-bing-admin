@@ -295,7 +295,7 @@
 .select_w{
     width:156px;
 }
-#rightContent .input_b{
+#rightContent .input_b,.input_b{
     border:1px solid #aaa !important;
     border-radius:4px !important;
     height:26px;

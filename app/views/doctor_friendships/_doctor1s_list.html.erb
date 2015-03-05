@@ -7,48 +7,59 @@
 <div style="width: 100%">
   <div>
     <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员' %>
-        省：<select id="doctor1_pro_id" name="doctor1_pro_id" style="width: 120px;">
-    <option value="">---请选择---</option>
-    <% if !@provinces.nil? && !@provinces.empty? %>
-        <% @provinces.each do |pro| %>
-            <option id='serch_pro1_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
-        <% end %>
-    <% end %>
-  </select>
+        <span class="marginb">
+        省：<select id="doctor1_pro_id" name="doctor1_pro_id" class="select_w">
+            <option value="">---请选择---</option>
+            <% if !@provinces.nil? && !@provinces.empty? %>
+                <% @provinces.each do |pro| %>
+                    <option id='serch_pro1_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
+                <% end %>
+            <% end %>
+           </select>
+        </span>
+        <span class="marginb">
         市：
-    <span id="search_city1_id"><select id="doctor1_city_id" name="doctor[city_id]" style="width: 120px;">
-      <option value="all">---请选择---</option>
-      <%# if !@cities.nil? && !@cities.empty? %>
-          <%# @cities.each do |city| %>
-             <!-- <option id='serch_city1_<%#= city.id %>' value="<%#= city.id %>"><%#= city.name %></option>-->
+        <span id="search_city1_id"><select id="doctor1_city_id" name="doctor[city_id]" style="width: 120px;">
+          <option value="all">---请选择---</option>
+          <%# if !@cities.nil? && !@cities.empty? %>
+              <%# @cities.each do |city| %>
+                 <!-- <option id='serch_city1_<%#= city.id %>' value="<%#= city.id %>"><%#= city.name %></option>-->
+              <%# end %>
           <%# end %>
-      <%# end %>
-    </select></span>
+        </select></span>
+        </span>
+        <span class="marginb">
         医院：
-    <span id="search_hos1_id"><select id="doctor1_hos_id" name="doctor1_hos_id" style="width: 120px;">
-      <option value="">---请选择---</option>
-      <%# if !@hospitals.nil? && !@hospitals.empty? %>
-          <%# @hospitals.each do |hos| %>
-             <!-- <option id='serch_hos1_<%#= hos.id %>' value="<%#= hos.id %>"><%#= hos.name %></option>-->
+        <span id="search_hos1_id"><select id="doctor1_hos_id" name="doctor1_hos_id" style="width: 120px;">
+          <option value="">---请选择---</option>
+          <%# if !@hospitals.nil? && !@hospitals.empty? %>
+              <%# @hospitals.each do |hos| %>
+                 <!-- <option id='serch_hos1_<%#= hos.id %>' value="<%#= hos.id %>"><%#= hos.name %></option>-->
+              <%# end %>
           <%# end %>
-      <%# end %>
-    </select></span>
+        </select></span>
+        </span>
+        <span class="marginb">
         科室：
-    <span id="search_dep1_id"><select id="doctor1_dep" name="doctor[department_id]" style="width: 120px;">
-      <option value="all">---请选择---</option>
-      <%# if !@departments.nil? && !@departments.empty? %>
-          <%# @departments.each do |dep| %>
-             <!-- <option id='serch_dep1_<%#= dep.id %>' value="<%#= dep.id %>"><%#= dep.name %></option>-->
+        <span id="search_dep1_id"><select id="doctor1_dep" name="doctor[department_id]" style="width: 120px;">
+          <option value="all">---请选择---</option>
+          <%# if !@departments.nil? && !@departments.empty? %>
+              <%# @departments.each do |dep| %>
+                 <!-- <option id='serch_dep1_<%#= dep.id %>' value="<%#= dep.id %>"><%#= dep.name %></option>-->
+              <%# end %>
           <%# end %>
-      <%# end %>
-    </select></span>
-        姓名：<input type="text" id="search_doctor1_name" style="width: 120px;" onkeydown="search_keydown1(event)">
-        <button id="search_doc1_btn">搜索</button>
+        </select></span>
+          </span>
+        <span class="marginb">
+        姓名：<input type="text" id="search_doctor1_name" class="input_b" onkeydown="search_keydown1(event)">
+        </span>
+        <span class="marginb">
+        <button id="search_doc1_btn" class="btn btn-success btn-sm">搜索</button>
         &nbsp;
-        <button id="clear_doc1_btn">清空</button>
+        <button id="clear_doc1_btn" class="btn btn-default btn-sm">清空</button>
+        </span>
     <% end %>
-    <br>
-    <br>
+
     <table id="doctor1s_list"></table>
     <div id="page_doctor1s"></div>
     <br>
