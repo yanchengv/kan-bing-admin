@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :organizations
 
   get 'home_menu/create'
   resources :role2_menus do
