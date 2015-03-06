@@ -5,44 +5,66 @@
     }
 </style>
 <div style="width: 100%">
-  <div style="">
+  <div style="margin-top:15px">
     <% if current_user.admin_type == '网站管理员' || current_user.admin_type == '机构管理员'%>
-    省：<select id="doctor_pro_id" name="doctor_pro_id" style="width: 150px;" onchange="doc_search_pro()">
-    <option value="">全部</option>
-    <% if !@provinces.nil? && !@provinces.empty? %>
-        <% @provinces.each do |pro| %>
-            <option id='serch_pro_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
+    <span class="marginb">
+    省：
+      <select id="doctor_pro_id" name="doctor_pro_id" class="select_w" onchange="doc_search_pro()">
+        <option value="">全部</option>
+        <% if !@provinces.nil? && !@provinces.empty? %>
+            <% @provinces.each do |pro| %>
+                <option id='serch_pro_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
+            <% end %>
         <% end %>
-    <% end %>
-  </select>
-    市：<span id="search_city_id"><select id="doctor_city_id" name="doctor[city_id]" style="width: 150px;" onchange="doc_search_city()">
-    <option value="all">全部</option>
-    <% if !@cities.nil? && !@cities.empty? %>
-        <% @cities.each do |city| %>
-            <option id='serch_city_<%= city.id %>' value="<%= city.id %>"><%= city.name %></option>
+      </select>
+    </span>
+    <span class="marginb">
+    市：
+      <span id="search_city_id">
+        <select id="doctor_city_id" name="doctor[city_id]" class="select_w" onchange="doc_search_city()">
+        <option value="all">全部</option>
+        <% if !@cities.nil? && !@cities.empty? %>
+            <% @cities.each do |city| %>
+                <option id='serch_city_<%= city.id %>' value="<%= city.id %>"><%= city.name %></option>
+            <% end %>
         <% end %>
-    <% end %>
-  </select></span>
-    医院：<span id="search_hos_id"><select id="doctor_hos_id" name="doctor_hos_id" style="width: 150px;" onchange="doc_search_hos()">
-    <option value="">全部</option>
-    <% if !@hospitals.nil? && !@hospitals.empty? %>
-        <% @hospitals.each do |hos| %>
-            <option id='serch_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+        </select>
+       </span>
+    </span>
+    <span class="marginb">
+    医院：
+      <span id="search_hos_id">
+      <select id="doctor_hos_id" name="doctor_hos_id" class="select_w" onchange="doc_search_hos()">
+        <option value="">全部</option>
+        <% if !@hospitals.nil? && !@hospitals.empty? %>
+            <% @hospitals.each do |hos| %>
+                <option id='serch_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+            <% end %>
         <% end %>
-    <% end %>
-  </select></span><br>
-    科室：<span id="search_dep_id"><select id="doctor_dep" name="doctor[department_id]" style="width: 150px;" onchange="doc_search_dep()">
-    <option value="all">全部</option>
-    <% if !@departments.nil? && !@departments.empty? %>
-        <% @departments.each do |dep| %>
-            <option id='serch_dep_<%= dep.id %>' value="<%= dep.id %>"><%= dep.name %></option>
-        <% end %>
-    <% end %>
-    </select></span>
-    姓名：<input type="text" id="search_name">
-    <button id="search_doc_btn">搜索</button>
+      </select>
+      </span>
+    </span>
+    <span class="marginb">
+    科室：
+      <span id="search_dep_id">
+        <select id="doctor_dep" name="doctor[department_id]" class="select_w" onchange="doc_search_dep()">
+            <option value="all">全部</option>
+            <% if !@departments.nil? && !@departments.empty? %>
+                <% @departments.each do |dep| %>
+                    <option id='serch_dep_<%= dep.id %>' value="<%= dep.id %>"><%= dep.name %></option>
+                <% end %>
+            <% end %>
+        </select>
+      </span>
+    </span>
+    <span class="marginb">
+    姓名：<input type="text" id="search_name" class="input_b">
+    </span>
+    <span class="marginb">
+    <button id="search_doc_btn" class="btn btn-success btn-sm">搜索</button>
     &nbsp;
-    <button id="clear_doc_btn">清空</button>
+    <button id="clear_doc_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
         <% end %>
     <table id="doc_list"></table>
     <div id="page_doc"></div>
@@ -93,7 +115,7 @@
         multiselect: true,
         rowNum: 10,
         altclass: 'altRowsColour',
-        width: '770',
+        width: 770,
         height: 'auto',
         caption: "医生"
     });
