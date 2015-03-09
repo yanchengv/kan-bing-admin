@@ -1,20 +1,20 @@
 
 <% if signed_in? %>
     <%= stylesheet_link_tag 'menus/left_menu'%>
-    <script type="text/javascript">
-        var zNodes=<%=raw @left_menus.to_json %>
+    <!--<script type="text/javascript">-->
+        var zNodes=<%#=raw @left_menus.to_json %>
 
- //        初始化富文本
-     KindEditor.ready(function(K) {
-
-     });
-    </script>
+// //        初始化富文本
+//     KindEditor.ready(function(K) {
+//
+//     });
+    <!--</script>-->
     <%#= javascript_include_tag 'menus/left_menu'%>
     <!--左侧二级菜单-->
     <div class="page-with-sidebar">
       <div class="sidebar-wrapper">
         <ul class="project-navigation nav nav-sidebar" id="accordion">
-          <% if !@left_menus.empty? %>
+          <% if !@left_menus.nil? && !@left_menus.empty? %>
               <% @left_menus.each do |menu| %>
                   <li id="menu_<%= menu.id %>">
                     <a class="shortcuts-project" href="javascript:leftMeunsOnClick('<%= menu.uri %>','menu_<%= menu.id %>')" title="<%= menu.name %>">
