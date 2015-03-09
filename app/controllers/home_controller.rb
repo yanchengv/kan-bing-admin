@@ -11,12 +11,18 @@ class HomeController < ApplicationController
         if (params[:pId].nil? || params[:pId] == '') && !@first_menus.empty?
           params[:pId] = @first_menus.first.id
         end
+        if @first_menus.empty?
+          params[:pId] = 0
+        end
         @left_menus = Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,menus.icon from menus where menus.hos_admin_show=true and parent_id=#{params[:pId]}")
         # @left_menus=[{name: "医生管理", uri: "/doctors"},{name: "患者管理", uri: "/patients"},{name: "用户管理", uri: "/users"},{name: "管理员管理", uri: "/admin2s"},{name: "医院管理", uri: "/hospitals"},{name: "教育视频管理", uri: "/edu_videos"},{name:"留言管理",uri:"/consult_accuses"},{name:"首页管理",uri:"",children:[{name:"首界面管理",uri:"/page_blocks/page_blocks_setting"},{name:"首界面区块管理",uri:"/page_blocks"},{name:"域名管理",uri:"/domain/show"}]}]
       elsif current_user.admin_type == '科室管理员'
         @first_menus=Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,menus.icon from menus where menus.dep_admin_show=true and parent_id is null")
         if (params[:pId].nil? || params[:pId] == '') && !@first_menus.empty?
           params[:pId] = @first_menus.first.id
+        end
+        if @first_menus.empty?
+          params[:pId] = 0
         end
         @left_menus = Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,menus.icon from menus where menus.dep_admin_show=true and parent_id=#{params[:pId]}")
         # @left_menus=[{name: "医生管理", uri: "/doctors"},{name: "患者管理", uri: "/patients"},{name: "用户管理", uri: "/users"},{name: "教育视频管理", uri: "/edu_videos"},{name:"留言管理",uri:"/consult_accuses"},{name:"首页管理",uri:"",children:[{name:"首界面管理",uri:"/page_blocks/page_blocks_setting"},{name:"首界面区块管理",uri:"/page_blocks"},{name:"域名管理",uri:"/domain/show"}]}]
@@ -25,11 +31,17 @@ class HomeController < ApplicationController
         if (params[:pId].nil? || params[:pId] == '') && !@first_menus.empty?
           params[:pId] = @first_menus.first.id
         end
+        if @first_menus.empty?
+          params[:pId] = 0
+        end
         @left_menus = Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,menus.icon from menus where menus.ins_admin_show=true and menus.parent_id=#{params[:pId]}")
       else
         @first_menus=Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,menus.icon from role2s r, role2_menus rm, admin2s_role2s ar, menus where rm.role2_id=ar.role2_id and rm.menu_id=menus.id and ar.admin2_id=#{admin_id} and menus.parent_id is null GROUP BY menus.id;")
         if (params[:pId].nil? || params[:pId] == '') && !@first_menus.empty?
           params[:pId] = @first_menus.first.id
+        end
+        if @first_menus.empty?
+          params[:pId] = 0
         end
         @left_menus = Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,menus.icon from role2s r, role2_menus rm, admin2s_role2s ar, menus where rm.role2_id=ar.role2_id and rm.menu_id=menus.id and ar.admin2_id=#{admin_id} and menus.parent_id=#{params[:pId]} GROUP BY menus.id;")
         # @first_menus=Menu.new.left_menu admin_id
