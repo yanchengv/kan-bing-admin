@@ -114,12 +114,14 @@
                     },
                     style: "width:166px",
                     value: function () {
-                        var positions;
+                        var positions = {};
+                        var object1 = {0:'---请选择---'};
                         $.ajax({
                             url: "/hospitals/get_provinces",
                             async: false,
                             success: function (data) {
-                                positions = data.provinces;
+                                positions = $.extend(positions, object1, data.provinces);
+                               // console.log(positions)
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) {
                                 alert(textStatus);
@@ -154,13 +156,14 @@
                     },
                     style: "width:166px",
                     value: function () {
-                        var positions;
+                        var positions = {};
+                        var object1 = {0: '---请选择---'};
                         $.ajax({
                             url: "/hospitals/get_cities",
                             //       data:{province_id: },
                             async: false,
                             success: function (data) {
-                                positions = data.cities;
+                                positions = $.extend(positions, object1, data.cities);
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) {
                                 alert(textStatus);
@@ -176,12 +179,13 @@
                 editoptions: {
                     style: "width:166px",
                     value: function () {
-                        var positions;
+                        var positions = {};
+                        var object1 = {0: '---请选择---'};
                         $.ajax({
                             url: "/hospitals/get_ranks",
                             async: false,
                             success: function (data) {
-                                positions = data.ranks;
+                                positions = $.extend(positions, object1, data.ranks);
                             },
                             error: function (XMLHttpRequest, textStatus, errorThrown) {
                                 alert(textStatus);
@@ -227,6 +231,14 @@
             grid.setColProp("hospital_id", { editoptions: { defaultValue: id} });
             var name = $('#hospital_list').jqGrid('getRowData', rowid).name
             grid.setColProp("hospital_name", { editoptions: { defaultValue: name} });
+        },
+        gridComplete: function () {
+            var id = jQuery("#hospital_list").jqGrid('getGridParam', 'selrow');
+            if (id) {
+                jQuery('#department_list').jqGrid('setGridParam', {url: "/departments/index_show?hospital_id=" + id}).trigger('reloadGrid');
+            } else {
+                jQuery('#department_list').jqGrid('setGridParam', {url: "/departments/index_show"}).trigger('reloadGrid');
+            }
         },
         prmNames: {
             page: "page", // 表示请求页码的参数名称
@@ -279,7 +291,7 @@
             { name: 'short_name', index: 'short_name', align: "center", editable: true,editoptions:{style: "width:156px"}},
             { name: 'phone_number', index: 'phone_number', align: "center", editable: true, editrules: {custom: true, required: false, custom_func: check_phone},editoptions:{style: "width:156px"}},
             { name: 'hospital_id', index: 'hospital_id', align: "center", editable: true, hidden: true, editrules: {custom: true, custom_func: check_hos, require:true},editoptions:{style: "width:156px"}},
-            { name: 'hospital_name', index: 'hospital_name', align: "center", editable: true, hidden: true, jsonmap: 'hospital.name', editrules: {edithidden: true}, editoptions: { readonly: 'readonly'},editoptions:{style: "width:156px"}},
+            { name: 'hospital_name', index: 'hospital_name', align: "center", editable: true, hidden: true, jsonmap: 'hospital.name', editrules: {edithidden: true}, editoptions: { readonly: 'readonly', style: "width:156px"}},
 //            { name: 'department_type', index: 'department_type', align: "center", editable: true, edittype: 'select', editoptions: {value: {0:'门诊部', 1: '住院部', 2: '急诊部', 3: '药房', 4: '化验室'}, style: "width:166px"} },
             { name: 'state', index: 'state', align: "center", editable: true, hidden:true },
             //  { name: 'sort', index: 'sort', align: "center", editable: true},
@@ -320,10 +332,10 @@
         caption: "科室管理"
     });
     jQuery("#department_list").jqGrid('navGrid', '#page_dept', {
-                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                cloneToTop: true, add:false, edit:false,
                 deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
-                refreshtext: "更新", refreshtitle: "更新"},
-            {
+                refreshtext: "更新", refreshtitle: "更新"}
+          /*  {
                 closeAfterEdit: true,
                 width: 500,
                 height: 390,
@@ -338,18 +350,50 @@
                 left: ($(window).width() - 500) / 2,
                 beforeShowForm: function () {
                     var id = jQuery("#hospital_list").jqGrid('getGridParam', 'selrow');
+                    alert("id =  " + id);
                     if(!id){
+                        $("#department_list").editGridRow("new", {hidden: true});
                         alert('请先选择医院！');
                     }
                 }
-            }//add
-    );
+            }//add*/
+    ).navButtonAdd('#page_dept', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
+                editDepartment()
+            }, position: "first"})
+            .navButtonAdd('#page_dept', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                addDepartment()
+            }, position: "first"});
     //验证医院是否为空
     function check_hos() {
         if (arguments[0].length == 0) {
             return [false, "您没有选择医院！"];
         } else {
             return [true, ""];
+        }
+    }
+    function addDepartment(){
+        var id = jQuery("#hospital_list").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择医院！');
+        }else{
+            jQuery("#department_list").jqGrid('editGridRow', 'new', {  closeAfterAdd: true,
+                width: 500,
+                height: 390,
+                top: ($(window).height() - 390) / 2,
+                left: ($(window).width() - 500) / 2});
+        }
+
+    }
+    function editDepartment(){
+        var id = jQuery("#department_list").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择！');
+        } else {
+            jQuery("#department_list").jqGrid('editGridRow', id, { closeAfterEdit: true,
+                width: 500,
+                height: 390,
+                top: ($(window).height() - 390) / 2,
+                left: ($(window).width() - 500) / 2});
         }
     }
     //搜索医院
