@@ -44,9 +44,9 @@
             jQuery("#dictionary_list").jqGrid('setGridParam', {url: "/dictionaries/index_show?dictionary_type_id=" + rowid }).trigger("reloadGrid");
             var id = jQuery("#dictionary_type_list").jqGrid('getGridParam', 'selrow');
             var grid = $("#dictionary_list");
-            grid.setColProp("dictionary_type_id", { editoptions: { defaultValue: id} });
+            grid.setColProp("dictionary_type_id", { editoptions: { defaultValue: id, readonly: 'readonly'} });
             var name = $('#dictionary_type_list').jqGrid('getRowData', rowid).name
-            grid.setColProp("dictionary_type_name", { editoptions: { defaultValue: name} });
+            grid.setColProp("dictionary_type_name", { editoptions: { defaultValue: name, readonly: 'readonly'} });
         },
         prmNames: {
             page: "page", // 表示请求页码的参数名称
@@ -66,7 +66,15 @@
         altclass: 'altRowsColour',
         width: '500',
         height: 'auto',
-        caption: "字典类型管理"
+        caption: "字典类型管理",
+        gridComplete: function () {
+            var id = jQuery("#dictionary_type_list").jqGrid('getGridParam', 'selrow');
+            if (id) {
+                jQuery('#dictionary_list').jqGrid('setGridParam', {url: "/dictionaries/index_show?dictionary_type_id=" + id}).trigger('reloadGrid');
+            } else {
+                jQuery('#dictionary_list').jqGrid('setGridParam', {url: "/dictionaries/index_show"}).trigger('reloadGrid');
+            }
+        }
     });
     jQuery("#dictionary_type_list").jqGrid('navGrid', '#page_type', {
                 cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
@@ -128,9 +136,9 @@
         caption: "字典管理"
     });
     jQuery("#dictionary_list").jqGrid('navGrid', '#page_dictionary', {
-                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                cloneToTop: true, add:false, edit:false,
                 deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
-                refreshtext: "更新", refreshtitle: "更新"},
+                refreshtext: "更新", refreshtitle: "更新"}/*,
             {
                 closeAfterEdit: true
             },//edit
@@ -142,8 +150,30 @@
                         alert('请先选择类型！');
                     }
                 }
-            }//add
-    );
+            }//add*/
+    ).navButtonAdd('#page_dictionary', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
+                editDictionary()
+            }, position: "first"})
+            .navButtonAdd('#page_dictionary', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                adDdictionary()
+            }, position: "first"});
+    function adDdictionary() {
+        var id = jQuery("#dictionary_type_list").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择字典类型！');
+        } else {
+            jQuery("#dictionary_list").jqGrid('editGridRow', 'new', {  closeAfterAdd: true});
+        }
+
+    }
+    function editDictionary() {
+        var id = jQuery("#dictionary_list").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择记录！');
+        } else {
+            jQuery("#dictionary_list").jqGrid('editGridRow', id, { closeAfterEdit: true});
+        }
+    }
     //验证类型是否为空
     function check_type() {
         if (arguments[0].length == 0) {
