@@ -613,6 +613,7 @@
                     url:'/patients/check_phone?patient_id='+row_id,
                     data:{phone:phone},
                     success:function(data){
+                        console.log(data['success'])
                         if(data['success']) {
                             phone_flag=true;
                             $('#patient_mobile_phone').removeClass('error_remind')
@@ -749,10 +750,10 @@
         }else{
             two_blank = true
         }
-        if(credential_type_number_flag!=true||name_flag!=true||email_flag==false||phone_flag==false||credential_type_number_flag==false){
-            alert("表单填写有误，不能提交表单！");
-        }else{
+        if(credential_type_number_flag && name_flag&&email_flag && phone_flag){
             create_or_update()
+        }else{
+            alert("表单填写有误，不能提交表单！");
         }
     }
 
