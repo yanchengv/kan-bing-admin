@@ -15,11 +15,23 @@
 <!--<h1>Listing doctors</h1>-->
 <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
       <%# if current_user.admin_type == '科室管理员'%>
-      <div style="margin-bottom: 15px;" id="search_f_doc" class="yahei">
-        姓名：<input type="text" id="search_oth_name"> &nbsp;&nbsp;证件号码：<input type="text" id="search_oth_number" >
-        &nbsp;&nbsp;邮箱：<input type="text" id="search_oth_email"> &nbsp;&nbsp;手机号：<input type="text" id="search_oth_tel">
-        <button id="search_btn2" onclick="search_by2()">本医院/科室搜索</button>&nbsp;
-        <button id="search_hos_btn2" onclick="search_hos_by2()" >全库搜索</button>&nbsp;<button id="clear_btn2" >清空</button>
+      <div  id="search_f_doc" class="yahei">
+        <span class="marginb">
+        姓名：<input type="text" id="search_oth_name" class="input_b">
+        </span>
+        <span class="marginb">
+        证件号码：<input type="text" id="search_oth_number" class="input_b">
+        </span>
+        <span class="marginb">
+        邮箱：<input type="text" id="search_oth_email" class="input_b">
+        </span>
+        <span class="marginb">手机号：<input type="text" id="search_oth_tel" class="input_b">
+        </span>
+        <span class="marginb">
+        <button id="search_btn2" onclick="search_by2()" class="btn btn-success btn-sm">本医院/科室搜索</button>&nbsp;
+        <button id="search_hos_btn2" onclick="search_hos_by2()" class="btn btn-success btn-sm">全库搜索</button>&nbsp;
+          <button id="clear_btn2" class="btn btn-default btn-sm">清空</button>
+        </span>
       </div>
       <script>
           function search_hos_by2(){
@@ -950,6 +962,10 @@
     function msg_check(str) {
         jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?str=" + str}).trigger("reloadGrid")
     }
+    //向弹出框关闭按钮添加一个图标
+$(function(){
+    $(".ui-dialog-titlebar .ui-dialog-titlebar-close").html("<span class='glyphicon glyphicon-remove'></span>");
+})
 </script>
 
 <div id="doc_create_or_edit_form2"></div>

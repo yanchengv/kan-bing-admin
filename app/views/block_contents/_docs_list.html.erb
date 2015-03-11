@@ -66,8 +66,10 @@
     <button id="clear_doc_btn" class="btn btn-default btn-sm">清空</button>
     </span>
         <% end %>
+
     <table id="doc_list"></table>
     <div id="page_doc"></div>
+
   </div>
 </div>
 
@@ -78,12 +80,12 @@
         mtype: 'GET',
         colNames: [ 'ID', '姓名', '省', '市','医院', '科室'],
         colModel: [
-            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true, width: 120},
-            { name: 'name', index: 'name', align: "center", width: 120},
-            {name: 'province_name', index: 'province_name', editable: true, search: false, width: 120 },
-            {name: 'city_name', index: 'city_name',editable: true, search: false, width: 120},
-            {name: 'hospital_name', index: 'hospital_name', editable: true, search: false, width: 120 },
-            {name: 'department_name', index: 'department_name', editable: true, search: false, width: 120 }
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true,width:25},
+            { name: 'name', index: 'name', align: "center",width:130},
+            {name: 'province_name', index: 'province_name', editable: true, search: false,width:130},
+            {name: 'city_name', index: 'city_name',editable: true, search: false,width:130},
+            {name: 'hospital_name', index: 'hospital_name', editable: true, search: false,width:160},
+            {name: 'department_name', index: 'department_name', editable: true, search: false,width:160 }
         ],
         rownumbers: true,
         page:1,
@@ -115,7 +117,7 @@
         multiselect: true,
         rowNum: 10,
         altclass: 'altRowsColour',
-        width: 770,
+        width: 760,
         height: 'auto',
         caption: "医生"
     });

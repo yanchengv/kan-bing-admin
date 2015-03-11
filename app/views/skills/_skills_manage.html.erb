@@ -4,8 +4,13 @@
   </div>
 </div>
 <div style="width: 100%">
-  <div style="margin-left: 20px;margin-right: 20px;">
-    <div style="margin-bottom: 10px;">技术名称：<input type="text" id="skill_search" onkeydown="search_keydown(event)" >&nbsp;&nbsp;<button id="search_skill_btn">搜索</button>&nbsp;<button id="clear_skill_btn" >清空</button>
+  <div class="yahei">
+    <div class="marginb">
+      技术名称：<input type="text" id="skill_search" onkeydown="search_keydown(event)" class="input_b">
+    </div>
+    <div class="marginb">
+      <button id="search_skill_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;<button id="clear_skill_btn" class="btn btn-default btn-sm">清空</button>
+      </div>
     </div>
     <table id="skill_list"></table>
     <div id="page_skill"></div>
@@ -308,4 +313,8 @@
           alert('请选择查询项!');
       }
   }
+    //向弹出框关闭按钮添加一个图标
+    $(function(){
+        $(".ui-dialog-titlebar .ui-dialog-titlebar-close").html("<span class='glyphicon glyphicon-remove'></span>");
+    })
 </script>
