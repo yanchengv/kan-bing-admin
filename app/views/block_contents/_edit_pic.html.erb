@@ -144,11 +144,11 @@
             $("#content_url").val("")
             $("#content_url").attr("placeholder", "这里输入图片链接地址")
 //            $("#content_url").val("这里输入图片链接地址")
-            document.getElementById("textareaContent").style.display = "none"
-            document.getElementById("contentUrl").style.display = ""
+            document.getElementById("textareaContent").style.display = "none";
+            document.getElementById("contentUrl").style.display = "block";
         } else {
-            document.getElementById("contentUrl").style.display = "none"
-            document.getElementById("textareaContent").style.display = ""
+            document.getElementById("contentUrl").style.display = "none";
+            document.getElementById("textareaContent").style.display = "block";
             <%#= Settings.block_content%>
             $("#content_url").val("<%= Settings.block_content%>")
 

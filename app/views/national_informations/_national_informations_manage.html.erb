@@ -120,16 +120,38 @@
             height: 'auto',
             caption: "民族管理"
         }).navGrid('#national_pager', {
-                    cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
-                    deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
+                    cloneToTop: true, add: false, edit:false,
+                    deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"}/*,
                 {
                     closeAfterEdit: true
                 },//edit
                 {
                     closeAfterAdd: true
-                }//add
-        )
+                }//add*/
+        ).navButtonAdd('#national_pager', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
+                    editNational()
+                }, position: "first"})
+                .navButtonAdd('#national_pager', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                    addNational()
+                }, position: "first"})
     });
+    function addNational() {
+        var id = jQuery("#country_list").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择国家！');
+        } else {
+            jQuery("#national_list").jqGrid('editGridRow', 'new', {  closeAfterAdd: true});
+        }
+
+    }
+    function editNational() {
+        var id = jQuery("#national_list").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择！');
+        } else {
+            jQuery("#national_list").jqGrid('editGridRow', id, { closeAfterEdit: true});
+        }
+    }
 //    //搜索
 //    $('#search_btn').click(function () {
 //        var name = $('#search_name').val();

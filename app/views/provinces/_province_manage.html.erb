@@ -128,6 +128,14 @@
                 var grid = jQuery("#list_city");
                 grid.jqGrid('setGridParam',{url:"/cities/test_index?province_id="+ id}).trigger('reloadGrid');
                 grid.setColProp("province_id", { editoptions: { defaultValue: id, readonly: 'readonly'} });
+            },
+            gridComplete: function () {
+                var id = jQuery("#list_province").jqGrid('getGridParam', 'selrow');
+                if (id) {
+                    jQuery('#list_city').jqGrid('setGridParam', {url: "/cities/test_index?province_id=" + id}).trigger('reloadGrid');
+                } else {
+                    jQuery('#list_city').jqGrid('setGridParam', {url: "/cities/test_index"}).trigger('reloadGrid');
+                }
             }
         }).navGrid('#page_province', {
                     cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
@@ -245,17 +253,47 @@
                 var grid = jQuery("#list_county");
                 grid.jqGrid('setGridParam',{url:"/counties/test_index?city_id="+id}).trigger('reloadGrid');
                 grid.setColProp("city_id", { editoptions: { defaultValue: id, readonly: 'readonly'} });
+            },
+            gridComplete: function () {
+                var id = jQuery("#list_city").jqGrid('getGridParam', 'selrow');
+                if (id) {
+                    jQuery('#list_county').jqGrid('setGridParam', {url: "/counties/test_index?city_id=" + id}).trigger('reloadGrid');
+                } else {
+                    jQuery('#list_county').jqGrid('setGridParam', {url: "/counties/test_index"}).trigger('reloadGrid');
+                }
             }
         }).navGrid('#page_city', {
-                    cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
+                    cloneToTop: true,add: false,edit: false,
                     deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
-                    refreshtext: "更新", refreshtitle: "更新"},
-                {
+                    refreshtext: "更新", refreshtitle: "更新"} /* ,
+              {
                     closeAfterEdit:true
                 },{
                     closeAfterAdd:true
-                })
+                }*/).navButtonAdd('#page_city', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
+            editCity()
+        }, position: "first"})
+                .navButtonAdd('#page_city', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                    addCity()
+                }, position: "first"})
     });
+    function addCity() {
+        var id = jQuery("#list_province").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择省份！');
+        } else {
+            jQuery("#list_city").jqGrid('editGridRow', 'new', {  closeAfterAdd: true});
+        }
+
+    }
+    function editCity() {
+        var id = jQuery("#list_city").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择！');
+        } else {
+            jQuery("#list_city").jqGrid('editGridRow', id, { closeAfterEdit: true});
+        }
+    }
 </script>
 <script>
     $(document).ready(function () {
@@ -300,15 +338,37 @@
             altclass: 'altRowsColour',
             caption: "县管理"
         }).navGrid('#page_county', {
-                    cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
+                    cloneToTop: true,add: false,edit: false,
                     deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
-                    refreshtext: "更新", refreshtitle: "更新"},
-                {
+                    refreshtext: "更新", refreshtitle: "更新"} /* ,
+              {
                     closeAfterEdit:true
                 },{
                     closeAfterAdd:true
-                })
+                }*/).navButtonAdd('#page_county', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
+            editCounty()
+        }, position: "first"})
+                .navButtonAdd('#page_county', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                    addCounty()
+                }, position: "first"})
     });
+    function addCounty() {
+        var id = jQuery("#list_city").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择市！');
+        } else {
+            jQuery("#list_county").jqGrid('editGridRow', 'new', {  closeAfterAdd: true});
+        }
+
+    }
+    function editCounty() {
+        var id = jQuery("#list_county").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择！');
+        } else {
+            jQuery("#list_county").jqGrid('editGridRow', id, { closeAfterEdit: true});
+        }
+    }
         $(function(){
             click_btn('all')
         })
