@@ -880,6 +880,10 @@
         $("#patient_department_id").select2();
         $('#searchString').attr('disabled','disabled')
     })
+    //向弹出框关闭按钮添加一个图标
+    $(function(){
+        $(".ui-dialog-titlebar .ui-dialog-titlebar-close").html("<span class='glyphicon glyphicon-remove'></span>");
+    })
 </script>
 <div class="modal fade" id="create_or_edit_form2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 

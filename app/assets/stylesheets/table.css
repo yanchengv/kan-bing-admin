@@ -300,3 +300,7 @@
     border-radius:4px !important;
     height:26px;
 }
+.ui-dialog .ui-dialog-titlebar-close{
+    background:transparent;
+    border-width:0px;
+}

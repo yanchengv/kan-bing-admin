@@ -5,7 +5,7 @@
 //添加域名彈出框
 $("#domain_consoleDlg").dialog({    //初始化对话框
     autoOpen: false,
-    modal: false,    // 设置对话框为模态（modal）对话框
+    modal: true,    // 设置对话框为模态（modal）对话框
     resizable: true,
     width: 250,
     position: {
@@ -31,7 +31,7 @@ $("#domain_consoleDlg").dialog({    //初始化对话框
 //修改域名彈出框
 $("#domain_update_consoleDlg").dialog({    //初始化对话框
     autoOpen: false,
-    modal: false,    // 设置对话框为模态（modal）对话框
+    modal: true,    // 设置对话框为模态（modal）对话框
     resizable: true,
     width: 250,
     position: {
@@ -106,7 +106,7 @@ function updateDomain(){
 //添加logo彈出框
 $("#logo_consoleDlg").dialog({    //初始化对话框
     autoOpen: false,
-    modal: false,    // 设置对话框为模态（modal）对话框
+    modal: true,    // 设置对话框为模态（modal）对话框
     resizable: true,
     width: 400,
     position: {
@@ -133,7 +133,7 @@ $("#logo_consoleDlg").dialog({    //初始化对话框
 //添加页脚彈出框
 $("#footer_consoleDlg").dialog({    //初始化对话框
     autoOpen: false,
-    modal: false,    // 设置对话框为模态（modal）对话框
+    modal: true,    // 设置对话框为模态（modal）对话框
     resizable: true,
     width: 400,
     position: {
@@ -299,7 +299,10 @@ jQuery("#list_domain").jqGrid({
 
     }, position: "last"})
 
-
+//向弹出框关闭按钮添加一个图标
+$(function(){
+    $(".ui-dialog-titlebar .ui-dialog-titlebar-close").html("<span class='glyphicon glyphicon-remove'></span>");
+})
 
 
 

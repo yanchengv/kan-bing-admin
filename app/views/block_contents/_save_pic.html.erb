@@ -19,7 +19,7 @@
     <input type="file" name="image" id='fileupload_img' style='visibility:hidden;'>
     <input type=" text" name="image_url"  id='image_path' style='visibility:hidden;' >
     <input type="hidden" id='block_id' name="block_id" value="<%= @page_block.id %>">
-    <table class="EditTable" style="margin-top: -80px;">
+    <table class="EditTable" style="margin-top: -80px;width:100%;">
       <% if @page_block.block_type == 'hospital_environment' || @page_block.block_type == 'pic_text1'%>
           <tr class="FormData">
             <td class="CaptionTD">图片标题:</td>
@@ -40,7 +40,7 @@
           </tr>
       <% end %>
       <tr class="FormData">
-        <td class="CaptionTD">上传图片:</td>
+        <td class="CaptionTD" style="width:120px">上传图片:</td>
         <td class="DataTD">
           <label id="image_path2"></label><input id="fakebtn1_img" style="display:inline" type="button" value="选择图片文件"/>
          </td>
