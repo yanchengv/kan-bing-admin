@@ -82,7 +82,7 @@
         caption: "<%= @page_block.name%>管理"
     });
     jQuery("#anlizongshu_content_list").jqGrid('navGrid', '#page_anlizongshu', {
-                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                cloneToTop: true, add:false, edit: false,
                 deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
@@ -95,9 +95,9 @@
                     save_content_model2(pageBlockId);
                 }
             }
-    ).navButtonAdd('#page_anlizongshu', { title: '修改', caption: '修改', onClickButton: function () {
+    ).navButtonAdd('#page_anlizongshu', { title: '修改', caption: '修改', buttonicon: "ui-icon-pencil", onClickButton: function () {
                 alzs_edit();
-            }, position: "first"}).navButtonAdd('#page_anlizongshu', { title: '添加', caption: '添加', onClickButton: function () {
+            }, position: "first"}).navButtonAdd('#page_anlizongshu', { title: '添加', caption: '添加', buttonicon: "ui-icon-plus", onClickButton: function () {
                 alzs_new();
             }, position: "first"});
 
