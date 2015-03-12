@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150226022140) do
+ActiveRecord::Schema.define(version: 20150305023017) do
 
   create_table "admin2_menus", force: true do |t|
     t.integer  "admin2_id"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20150226022140) do
     t.string   "admin_type"
     t.string   "email"
     t.string   "introduction"
+    t.integer  "organization_id",        limit: 8
   end
 
   add_index "admin2s", ["confirmation_token"], name: "index_admin2s_on_confirmation_token", unique: true, using: :btree
@@ -609,6 +610,7 @@ ActiveRecord::Schema.define(version: 20150226022140) do
     t.integer  "sort"
     t.boolean  "indexpage"
     t.string   "doctor_type"
+    t.integer  "organization_id",        limit: 8
   end
 
   add_index "doctors", ["credential_type_number"], name: "index_doctors_on_credential_type_number", using: :btree
@@ -1038,7 +1040,7 @@ ActiveRecord::Schema.define(version: 20150226022140) do
   end
 
   create_table "inspection_ultrasounds", force: true do |t|
-    t.integer  "patient_id",       limit: 8
+    t.integer  "patient_id",            limit: 8
     t.string   "parent_type"
     t.string   "child_type"
     t.string   "thumbnail"
@@ -1047,14 +1049,60 @@ ActiveRecord::Schema.define(version: 20150226022140) do
     t.string   "hospital"
     t.string   "department"
     t.date     "checked_at"
-    t.integer  "upload_user_id",   limit: 8
+    t.integer  "upload_user_id",        limit: 8
     t.string   "upload_user_name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "image_list"
     t.text     "video_list"
     t.text     "study_body"
+    t.string   "patient_name"
+    t.string   "patient_code"
+    t.string   "patient_ids"
+    t.string   "apply_department_id"
+    t.string   "apply_department_name"
+    t.string   "apply_doctor_id"
+    t.string   "apply_doctor_name"
+    t.string   "consulting_room_name"
+    t.string   "consulting_room_id"
+    t.string   "apply_source"
+    t.string   "us_order_id"
+    t.string   "bed_no"
+    t.string   "examined_part_name"
+    t.string   "examined_item_name"
+    t.string   "charge_type"
+    t.float    "charge",                limit: 24
+    t.string   "examine_doctor_id"
+    t.string   "examine_doctor_name"
+    t.string   "examine_doctor_code"
+    t.string   "qc_doctor_id"
+    t.string   "qc_doctor_name"
+    t.boolean  "is_emergency"
+    t.string   "modality_device_id"
+    t.text     "initial_diagnosis"
+    t.string   "qc_status"
+    t.datetime "check_start_time"
+    t.datetime "check_end_time"
+    t.integer  "print_count"
+    t.string   "technician_id"
+    t.string   "technician_name"
+    t.string   "inputer_id"
+    t.string   "inputer_name"
+    t.text     "report_image_list"
+    t.text     "us_finding"
+    t.text     "us_diagnose"
+    t.text     "statics"
+    t.boolean  "station_fee"
+    t.boolean  "report_print_fee"
+    t.boolean  "item_fee"
+    t.boolean  "desc_fee"
   end
+
+  add_index "inspection_ultrasounds", ["apply_department_id"], name: "index_inspection_ultrasounds_on_apply_department_id", using: :btree
+  add_index "inspection_ultrasounds", ["apply_doctor_id"], name: "index_inspection_ultrasounds_on_apply_doctor_id", using: :btree
+  add_index "inspection_ultrasounds", ["examine_doctor_id"], name: "index_inspection_ultrasounds_on_examine_doctor_id", using: :btree
+  add_index "inspection_ultrasounds", ["patient_id"], name: "index_inspection_ultrasounds_on_patient_id", using: :btree
+  add_index "inspection_ultrasounds", ["qc_doctor_id"], name: "index_inspection_ultrasounds_on_qc_doctor_id", using: :btree
 
   create_table "item_users", force: true do |t|
     t.integer  "user_id",    limit: 8
@@ -1521,6 +1569,18 @@ ActiveRecord::Schema.define(version: 20150226022140) do
     t.datetime "updated_at"
   end
 
+  create_table "organizations", force: true do |t|
+    t.string   "name",                    null: false
+    t.string   "spell_code"
+    t.string   "address"
+    t.string   "phone"
+    t.string   "description"
+    t.integer  "hospital_id",   limit: 8
+    t.integer  "department_id", limit: 8
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "pacs_data_sync_queues", force: true do |t|
     t.integer  "task_id"
     t.integer  "super_task_id"
@@ -1611,6 +1671,7 @@ ActiveRecord::Schema.define(version: 20150226022140) do
     t.integer  "city_id"
     t.integer  "hospital_id",            limit: 8
     t.integer  "department_id",          limit: 8
+    t.integer  "organization_id",        limit: 8
   end
 
   add_index "patients", ["wechat"], name: "index_patients_on_wechat", using: :btree
