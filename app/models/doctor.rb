@@ -65,7 +65,7 @@ class Doctor < ActiveRecord::Base
                                 :department_id => self.department_id, :address => self.address, :nationality => self.nationality, :citizenship => self.citizenship, :photo => self.photo,
                                 :marriage => self.marriage, :mobile_phone => self.mobile_phone,:home_phone => self.home_phone, :home_address => self.home_address, :contact => self.contact,
                                 :contact_phone => self.contact_phone,:home_postcode => self.home_postcode, :email => self.email, :introduction => self.introduction, :verify_code => self.verify_code,
-                                :is_checked => self.is_checked, :is_activated => self.is_activated, :is_public => self.is_public, :spell_code => self.spell_code, :province => self.province_name)
+                                :is_checked => self.is_checked, :is_activated => self.is_activated, :is_public => self.is_public, :spell_code => self.spell_code, :province => self.province_name, :organization_id => self.organization_id)
       if @patient.save
         @doctor = Doctor.where(:id => self.id).first
         @doctor.update_attributes(:patient_id => @patient.id)

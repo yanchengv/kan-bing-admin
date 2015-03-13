@@ -796,6 +796,6 @@ class DoctorsController < ApplicationController
                                      :photo, :marriage, :mobile_phone, :home_phone, :home_address, :contact, :contact_phone,
                                      :home_postcode, :email, :introduction, :professional_title, :position, :hire_date,
                                      :certificate_number, :expertise, :degree, :graduated_from, :graduated_at, :research_paper,
-                                     :wechat, :rewards, :is_checked, :is_activated, :verify_code,:is_public, :patient_id,:doctor_type )
+                                     :wechat, :rewards, :is_checked, :is_activated, :verify_code,:is_public, :patient_id,:doctor_type, :organization_id )
     end
 end
