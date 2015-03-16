@@ -107,6 +107,7 @@ class Role2MenusController < ApplicationController
   end
 
   def menus_to_roles
+    all_menus
     role2 = Role2.new
     @all_menus = role2.root_tree(Menu.all)
     @total_menus = {name:'菜单列表',children:@all_menus,open:true}
@@ -121,7 +122,7 @@ class Role2MenusController < ApplicationController
       @all_roles.push(@role)
     end
     @all_roles = {name:'角色列表',children:@all_roles,open:true}
-    render partial: 'role2_menus/menus_to_roles'
+    render template:  'role2_menus/menus_to_roles'
   end
 
   private

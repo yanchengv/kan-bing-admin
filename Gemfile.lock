@@ -43,6 +43,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    aes (0.5.0)
     aliyun-oss-ex (0.7.0.1402831795)
       builder
       mime-types
@@ -173,6 +174,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aes (~> 0.5.0)
   aliyun-oss-ex (~> 0.7.0.1402831795)
   bcrypt (~> 3.1.7)
   bootstrap-sass (= 3.0.2)

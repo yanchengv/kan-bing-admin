@@ -1,0 +1,169 @@
+
+  <div class="jqgride_div">
+        <table id="country_list"></table>
+        <div id="country_pager"></div>
+  </div>
+
+
+  <div class="jqgride_div">
+    <table id="national_list"></table>
+    <div id="national_pager"></div>
+  </div>
+
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        jQuery("#country_list").jqGrid({
+            url: '/national_informations/index_show?str=country',
+            datatype: "json",
+            mtype: 'GET',
+            colNames: ['ID', '名称'],
+            colModel: [
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden:true},
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true}
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc",
+            autowidth: true,
+            rownumbers: true,
+            page: 1,
+            jsonReader: {
+                root: "national_informations",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page", // 表示请求页码的参数名称
+                rows: "rows", // 表示请求行数的参数名称
+                id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+             //   npage: null,
+                totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+                addoper: "add", // 当在add模式中提交数据时，操作的名称
+                deloper: "del", // 当在delete模式中提交数据时，操作的名称
+                subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+            },
+            editurl:'/national_informations/oper_action',
+            closeAfterAdd:true,
+            pager: jQuery('#country_pager'),
+          //  multiselect: true,
+            rowNum: 20,
+            altclass: 'altRowsColour',
+            width: '500',
+            height: 'auto',
+            caption: "国家管理",
+            onSelectRow: function (rowid) {
+                jQuery("#national_list").jqGrid('setGridParam', {url: "/national_informations/index_show?str=national&parent_id=" + rowid }).trigger("reloadGrid");
+                var grid = $("#national_list");
+                grid.setColProp("parent_id", { editoptions: { defaultValue: rowid} });
+            }
+        }).navGrid('#country_pager', {
+            cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
+                    deltext:"删除",deltitle:"删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"},
+                {
+                    closeAfterEdit: true
+                },//edit
+                {
+                    closeAfterAdd:true
+                }//add
+                 )
+    });
+    $(document).ready(function () {
+        jQuery("#national_list").jqGrid({
+            url: '/national_informations/index_show?str=national',
+            datatype: "json",
+            mtype: 'GET',
+            colNames: ['ID', '名称', '父节点'],
+            colModel: [
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden:true},
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true},
+                { name: 'parent_id', index: 'parent_id', width: 100, align: "center", editable: true}
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc",
+            autowidth: true,
+            rownumbers: true,
+            page: 1,
+            jsonReader: {
+                root: "national_informations",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page", // 表示请求页码的参数名称
+                rows: "rows", // 表示请求行数的参数名称
+                id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                //   npage: null,
+                totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+                addoper: "add", // 当在add模式中提交数据时，操作的名称
+                deloper: "del", // 当在delete模式中提交数据时，操作的名称
+                subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+            },
+            editurl: '/national_informations/oper_action',
+            closeAfterAdd: true,
+            pager: jQuery('#national_pager'),
+            //  multiselect: true,
+            rowNum: 20,
+            altclass: 'altRowsColour',
+            width: '500',
+            height: 'auto',
+            caption: "民族管理"
+        }).navGrid('#national_pager', {
+                    cloneToTop: true, add: false, edit:false,
+                    deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false, refreshtext: "刷新", refreshtitle: "刷新"}/*,
+                {
+                    closeAfterEdit: true
+                },//edit
+                {
+                    closeAfterAdd: true
+                }//add*/
+        ).navButtonAdd('#national_pager', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
+                    editNational()
+                }, position: "first"})
+                .navButtonAdd('#national_pager', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                    addNational()
+                }, position: "first"})
+    });
+    function addNational() {
+        var id = jQuery("#country_list").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择国家！');
+        } else {
+            jQuery("#national_list").jqGrid('editGridRow', 'new', {  closeAfterAdd: true});
+        }
+
+    }
+    function editNational() {
+        var id = jQuery("#national_list").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择！');
+        } else {
+            jQuery("#national_list").jqGrid('editGridRow', id, { closeAfterEdit: true});
+        }
+    }
+//    //搜索
+//    $('#search_btn').click(function () {
+//        var name = $('#search_name').val();
+//        var email = $('#search_email').val();
+//        var tel = $('#search_tel').val();
+//        jQuery("#country_list").jqGrid('setGridParam', {url: "national_informations/test_index?name=" + name + "&email=" + email + "&mobile_phone=" + tel}).trigger("reloadGrid")
+//    });
+//    //清空搜索条件
+//    $('#clear_btn').click(function () {
+//        $('#search_name').val('');
+//        $('#search_email').val('');
+//        $('#search_tel').val('');
+//    });
+
+</script>

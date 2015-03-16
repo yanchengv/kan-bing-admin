@@ -1,0 +1,402 @@
+  <div style="" class="yahei">
+    <span class="marginb">
+    管理员类型：
+    <select id="admin_type" onchange="search_type()" style="width:130px;">
+      <option value="">----全部----</option>
+      <% if current_user.admin_type == '医院管理员' %>
+          <option value="hos_admin">医院管理员</option>
+          <option value="dep_admin">科室管理员</option>
+      <% else %>
+          <option value="web_admin">网站管理员</option>
+          <option value="dep_admin">科室管理员</option>
+          <option value="hos_admin">医院管理员</option>
+          <option value="ins_admin">机构管理员</option>
+      <% end %>
+    </select>
+    </span>
+    <span class="marginb">
+    姓名：<input type="text" id="search_name" onkeydown="search_keydown(event)" class="input_b">
+    </span>
+    <span class="marginb">
+    邮箱：<input type="text" id="search_email" class="input_b">
+    </span>
+    <span class="marginb">
+    电话：<input type="text" id="search_tel" class="input_b">
+    </span>
+    <span class="marginb">
+    <button id="search_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;<button id="clear_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
+  </div>
+  <div class="jqgride_div">
+  <table id="list"></table>
+  <div id="pager"></div>
+  </div>
+<script type="text/javascript">
+//    $(document).ready(function () {
+        jQuery("#list").jqGrid({
+            url: '/admin2s/test_index',
+            datatype: "json",
+            mtype: 'GET',
+            colNames: ['ID', '姓名', '密码', '确认密码', '邮箱', '手机号','管理员类型','医院','科室','机构','说明'],
+            colModel: [
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden:true},
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true, editrules: {custom: true, required: true , custom_func: check_name},editoptions:{style: "width:150px"}},
+                { name: 'password', index: 'password', width: 100, align: "center", editable: true,
+                    edittype: "password", hidden:true, editrules:{edithidden:true} ,editoptions:{style: "width:150px"}},
+                { name: 'password_confirmation', index: 'password_confirmation', width: 100, align: "center",
+                    editable: true, edittype: "password", hidden: true, editrules: {edithidden: true, custom: true, custom_func: check_pwd2} ,editoptions:{style: "width:150px"}},
+                { name: 'email', index: 'email', width: 150, align: "center", editable: true, editrules: {custom: true, custom_func: check_email, required: false},editoptions:{style: "width:150px"} },
+                { name: 'mobile_phone', index: 'mobile_phone', width: 120, align: "center", search: false, editable: true, editrules: {custom: true, required: false, custom_func: check_phone},editoptions:{style: "width:150px"}},
+                { name: 'admin_type', index: 'admin_type', width: 100, align: "center",editable: true,edittype:"select",
+                    editoptions: {dataEvents: [
+                        { type: 'change', fn: function (e) {
+                            select_type(this);
+                        } }
+
+                    ],
+                        dataInit: function (element) {
+                            $(element).select2();
+                            init_select($(element))
+                        },
+                        style: "width:158px",
+
+                        value: function () {
+                            var positions;
+                            $.ajax({
+                                url: "/admin2s/get_admin_type",
+                                async: false,
+                                success: function (data) {
+                                    positions = data.admin_type;
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                    alert(textStatus);
+                                }
+                            });
+                            return positions;
+                        }
+//                                "科室管理员:科室管理员;医院管理员:医院管理员;网站管理员:网站管理员"
+                    }},
+                { name: 'hospital_id', index: 'hospital_id', width: 100, align: "center", hidden:true,editable: true,edittype:"select", editrules: {edithidden:true},
+                    editoptions:{dataEvents: [
+                        { type: 'change', fn: function(e) {search(this); } }
+
+                    ],
+                        dataInit: function (element) {
+                            $(element).select2();
+                            change_department($(element).val())
+                        },
+                        style: "width:158px",
+                        value: function () {
+                            var positions;
+                            $.ajax({
+                                url: "/doctors/get_hospitals",
+                                async: false,
+                                success: function (data) {
+                                    positions = data.hospitals;
+                                },
+                                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                    alert(textStatus);
+                                }
+                            });
+                            return positions;
+                        }}},
+                { name: 'department_id', index: 'department_id', width: 150, align: "center", hidden: true, search: false, editable: true,edittype:"select", editrules: {edithidden: true},
+                    editoptions: {
+                        dataInit: function (element) {
+                            $(element).select2();
+                        },
+                        style: "width:158px",
+                        value: ":----请选择----"
+                    }
+                },
+                { name: 'organization_id', index: 'organization_id', width: 40, align: "left", hidden:true,editable: true,edittype:"select", editrules: {edithidden:true},
+                    editoptions:{dataEvents: [
+                    { type: 'change', fn: function(e) {} }
+
+                    ],
+                dataInit: function (element) {
+                    $(element).select2();
+//                    $(element).val()
+                },
+                style: "width:158px",
+                value: function () {
+                    var positions;
+                    $.ajax({
+                        url: "/doctors/get_organizations",
+                        async: false,
+                        success: function (data) {
+                            positions = data.organizations;
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert(textStatus);
+                        }
+                    });
+                    return positions;
+                }}
+                },
+                { name: 'introduction', index: 'introduction', width: 180, align: "left",editable:true, edittype: 'textarea', editoptions: {rows: 3, style: "width:260px"}}
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            sortorder: "desc",
+            autowidth: true,
+            rownumbers: true,
+            page:1,
+            jsonReader: {
+                root: "admin2s",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page", // 表示请求页码的参数名称
+                rows: "rows", // 表示请求行数的参数名称
+                id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                //   npage: null,
+                totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+                editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+                addoper: "add", // 当在add模式中提交数据时，操作的名称
+                deloper: "del", // 当在delete模式中提交数据时，操作的名称
+                subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+            },
+            editurl:'/admin2s/oper_action',
+            closeAfterAdd:true,
+            pager: jQuery('#pager'),
+            //  multiselect: true,
+            rowNum: 20,
+            altclass: 'altRowsColour',
+            width: '500',
+            height: 'auto',
+            caption: "管理员管理"
+        }).navGrid('#pager', {
+                    cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
+                    deltext:"删除",deltitle:"删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                    refreshtext: "刷新", refreshtitle: "刷新"},
+                {
+                    closeAfterEdit: true
+                },//edit
+                {
+                    closeAfterAdd:true
+                }//add
+        )
+                .navButtonAdd('#pager', {position: 'last', title: '授权', caption: '授权', onClickButton: admin_privilege})
+//    });
+    //搜索
+    function search_condiction(){
+        var name = $('#search_name').val();
+        var email = $('#search_email').val();
+        var tel = $('#search_tel').val();
+        jQuery("#list").jqGrid('setGridParam', {url: "/admin2s/test_index?name=" + name + "&email=" + email + "&mobile_phone=" + tel + "&admin_type=" + $('#admin_type').val()}).trigger("reloadGrid")
+    }
+    $('#search_btn').click(function () {
+        search_condiction();
+    });
+    //清空搜索条件
+    $('#clear_btn').click(function () {
+        $('#search_name').val('');
+        $('#search_email').val('');
+        $('#search_tel').val('');
+    });
+
+    //按管理员类型筛选
+    function search_type(){
+        jQuery("#list").jqGrid('setGridParam', {url: "/admin2s/test_index?admin_type=" + $('#admin_type').val() }).trigger("reloadGrid")
+        $('#search_name').val('')
+        $('#search_email').val('')
+        $('#search_tel').val('');
+    }
+    //验证手机号
+    function check_phone(){
+        console.log(arguments);
+        var reg = /^0?(13[0-9]|15[012356789]|18[0-9]|14[57])[0-9]{8}$/;
+        if (arguments[0] != '' && !reg.test(arguments[0])) {
+            return [false, "手机号格式不正确！"];
+        } else {
+            return [true, ""];
+        }
+    }
+    //验证email
+    function check_email() {
+        var email = arguments[0];
+        console.log(arguments);
+        var reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+        if (email != '' && !reg.test(email)) {
+            return [false, "请输入有效的邮箱格式！"];
+        } else {
+//            var obj = $.ajax({
+//                url: 'admin2s/get_by_email',
+//                type: 'get',
+//                data: {email: email },
+//                success: function (data) {
+//
+//                }
+//            });
+            return [true, ""];
+        }
+    }
+    //验证姓名
+    function check_name() {
+//        console.log(arguments);
+        var reg = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/;
+        if (!reg.test(arguments[0])) {
+            return [false, "只能为汉字、字母、数字、下划线,下划线不能作为开头和结尾！"];
+        } else {
+            return [true, ""];
+        }
+    }
+    function check_pwd2(){
+        var password = document.FormPost.password
+        if (arguments[0] != password.value) {
+            return [false,"两次密码不一致!"]
+        } else {
+            return [true,""]
+        }
+    }
+    //授权
+    function admin_privilege(){
+        <% if current_user %>
+        var id = jQuery("#list").jqGrid('getGridParam', 'selrow');   //选中行的id
+        var rowDatas = $("#list").jqGrid('getRowData', id);
+        if (id == null){
+            alert('请选择授权人！')
+        }else{
+            if (rowDatas["admin_type"]=='网站管理员') {
+//            window.location.href = 'menus/show?id=' + id
+                $.ajax({
+                    url:'/role2s/role2_show?id=' + id,
+                    type:'get',
+                    beforeSend:function(response){
+                        $("#rightContent").html('<div style="text-align:center;width:100px;height:100px;border:1px solid #dcdcdc;position:absolute;left:50%;margin-top:150px;background:#d9edf0;line-height:100px;font-weight:bold;">loading...</div>')
+                    },
+                    success:function (response,data){
+                        $('#rightContent').html(response)
+                    },
+                    error:function(response){
+                        $('#rightContent').html('response')
+                    }
+                })
+            }else{
+                alert('只有网站管理员可以执行此操作!')
+            }
+        }
+        <%end%>
+    }
+
+    function select_type(obj){
+        var hos = $("select#hospital_id")
+        var dep = $("select#department_id")
+        if (obj.value=='医院管理员'){
+//            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+            dep.val('')
+            dep.attr('disabled','disabled')
+            hos.removeAttr('disabled')
+            $('select#organization_id').attr('disabled','disabled')
+        }
+        if (obj.value=='科室管理员'){
+            hos.removeAttr('disabled')
+            dep.removeAttr('disabled')
+            $('select#organization_id').attr('disabled','disabled')
+        }
+        if (obj.value=='网站管理员'){
+            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+            $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+            dep.val('')
+            hos.val('')
+            hos.attr('disabled','disabled')
+            dep.attr('disabled','disabled')
+            $('select#organization_id').attr('disabled','disabled')
+        }
+        if (obj.value=='机构管理员'){
+            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+            $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+            dep.val('')
+            hos.val('')
+            hos.attr('disabled','disabled')
+            dep.attr('disabled','disabled')
+            $('select#organization_id').removeAttr('disabled')
+        }
+    }
+
+    function init_select(obj){
+        var row_id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+        $.ajax({
+                    type: "get",
+                    url: '/admin2s/get_admin2?admin_id=' + row_id,
+                    data: 'text',
+                    success: function (data) {
+                        var obj = $('select#admin_type')
+                        var hos = $("select#hospital_id")
+                        var dep = $("select#department_id")
+                        if (obj.val()=='医院管理员'){
+                            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+                            dep.val('')
+                            dep.attr('disabled','disabled')
+                            $('select#hos_id').attr('disabled','disabled')
+                            hos.removeAttr('disabled')
+                        }
+                        if (obj.val()=='科室管理员'){
+                            hos.removeAttr('disabled')
+                            dep.removeAttr('disabled')
+                            $('select#organization_id').attr('disabled','disabled')
+                            if(data['success']){
+                                $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html(data['data']['department_name'])
+                            }
+                        }
+                        if (obj.val()=='网站管理员'){
+                            hos.attr('disabled','disabled')
+                            dep.attr('disabled','disabled')
+                            $('select#organization_id').attr('disabled','disabled')
+                            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+                            $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+                            dep.val('')
+                            hos.val('')
+
+                        }
+                        if (obj.val()=='机构管理员'){
+                            hos.attr('disabled','disabled')
+                            dep.attr('disabled','disabled')
+                            $('#tr_hos_id').show()
+                            if (data['success']) {
+                                $('select#hos_id').val(data['data']['hospital_id'])
+                                $('#s2id_hos_id').children('.select2-choice').children('.select2-chosen').html(data['data']['hospital_id'])
+                            }
+                            $('select#organization_id').removeAttr('disabled')
+                            $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+                            $('#s2id_hospital_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+                            dep.val('')
+                            hos.val('')
+
+                        }
+                    }
+                }
+        );
+
+    }
+
+function search(obj) {
+    $('#s2id_department_id').children('.select2-choice').children('.select2-chosen').html('----请选择----')
+    change_department(obj.value) ;
+}
+function change_department(hos_id){
+    var row_id = jQuery("#list").jqGrid('getGridParam', 'selrow');
+    $.ajax({
+                type: "get",
+                url: '/doctors/get_departments?hospital_id=' + hos_id+'&admin_id='+row_id,
+                data: 'text',
+                success: function (data) {
+                    var classify3 = $("select#department_id");
+                    classify3.html(data);
+                }
+            }
+    );
+}
+$(function(){
+    $('#admin_type').select2()
+})
+function search_keydown(event){
+    if (event.keyCode == 13)
+        search_condiction();
+}
+</script>

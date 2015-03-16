@@ -18,9 +18,21 @@
 </head>
 <body>
 <%= render partial: 'layouts/header'%>
-<%= render partial: 'menus/left_menu'%>
-<div style="margin-top: 50px;">
-<%= yield %>
+<div class="page-with-sidebar">
+  <div class="sidebar-wrapper">
+    <%= render partial: 'menus/left_menu'%>
+  </div>
+<!--<div style="margin-top: 50px; margin-left:100px">-->
+  <div class="content-wrapper">
+    <div class="container-fluid" id="rightContent" style="margin-top: 70px;">
+      <!--<div class="row">-->
+        <!--<div style="text-align:center">-->
+          <%= yield %>
+          <%#=image_tag "http://mimas-img.oss-cn-beijing.aliyuncs.com/huanying.jpg",:class=> "huanying_img"%>
+        <!--</div>-->
+      <!--</div>-->
+    </div>
+  </div>
 </div>
 
 </body>

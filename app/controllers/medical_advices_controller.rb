@@ -5,8 +5,9 @@ class MedicalAdvicesController < ApplicationController
   # GET /medical_advices
   # GET /medical_advices.json
   def index
+    all_menus
     @advice_types = AdviceType.all
-    render :partial => 'medical_advices/medical_advices_manage'
+    render :template => 'medical_advices/medical_advices_manage'
   end
 
   def show_index

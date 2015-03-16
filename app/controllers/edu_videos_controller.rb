@@ -12,9 +12,10 @@ class EduVideosController < ApplicationController
   # GET /edu_videos
   # GET /edu_videos.json
   def index
+    all_menus
     @video_types = VideoType.all
 
-    render partial: 'edu_videos/edu_video_manage'
+    render template: 'edu_videos/edu_video_manage'
   end
 
   def show_index

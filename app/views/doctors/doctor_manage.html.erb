@@ -1,0 +1,971 @@
+#encoding:utf-8
+<style>
+    .select2-container{
+        width:200px;
+
+    }
+</style>
+<div id="consoleDlg">
+  <div id="doc_create_or_edit_form">
+  </div>
+</div>
+<div id="warn"></div>
+<div id="warn2"></div>
+<div id="warn3"></div>
+<!--<h1>Listing doctors</h1>-->
+<% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+      <%# if current_user.admin_type == '科室管理员'%>
+      <div  id="search_f_doc" class="yahei">
+        <span class="marginb">
+        姓名：<input type="text" id="search_oth_name" class="input_b">
+        </span>
+        <span class="marginb">
+        证件号码：<input type="text" id="search_oth_number" class="input_b">
+        </span>
+        <span class="marginb">
+        邮箱：<input type="text" id="search_oth_email" class="input_b">
+        </span>
+        <span class="marginb">手机号：<input type="text" id="search_oth_tel" class="input_b">
+        </span>
+        <span class="marginb">
+        <button id="search_btn2" onclick="search_by2()" class="btn btn-success btn-sm">本医院/科室搜索</button>&nbsp;
+        <button id="search_hos_btn2" onclick="search_hos_by2()" class="btn btn-success btn-sm">全库搜索</button>&nbsp;
+          <button id="clear_btn2" class="btn btn-default btn-sm">清空</button>
+        </span>
+      </div>
+      <script>
+          function search_hos_by2(){
+              var dep_flag = $("input[type=radio]:checked").val()
+              var name = $('#search_oth_name').val();
+              var email = $('#search_oth_email').val();
+              var tel = $('#search_oth_tel').val();
+              var number = $('#search_oth_number').val();
+              var url= "/doctors/show_oth_doc?name=" + name + "&email=" + email + "&mobile_phone=" + tel+ "&credential_type_number=" + number
+             url = encodeURI(url)  //处理 ｕｒｌ中文问题
+             jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+//             $('#add_list12').css('display','none')
+             $('#edit_list12').css('display','none')
+             $('#view_list12').css('display','none')
+             $('#del_list12').css('display','none')
+             $('#refresh_list12').css('display','none')
+             $('#sendPhoneDoctor').css('display','none')
+             $('#sendEmailDoctor').css('display','none')
+             $("#list12").navButtonAdd('#pager12', {position: 'last', title: '添加为本医院/本科室医生', caption: '添加为本医院/本科室医生',id:'matchDoctor', onClickButton: matchDoctor});
+          }
+          function search_by2() {
+              var dep_flag = $("input[type=radio]:checked").val()
+              var name = $('#search_oth_name').val();
+              var email = $('#search_oth_email').val();
+              var tel = $('#search_oth_tel').val();
+              var number = $('#search_oth_number').val();
+//              var url= "/doctors/show_oth_doc?name=" + name + "&email=" + email + "&mobile_phone=" + tel+ "&credential_type_number=" + number
+//              if (dep_flag=='the') {
+                var  url= "/doctors/show_index?name=" + name + "&email=" + email + "&mobile_phone=" + tel+ "&credential_type_number=" + number
+//              }
+              url = encodeURI(url)  //处理 ｕｒｌ中文问题
+              jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+              $('#add_list12').show()
+              $('#edit_list12').show()
+              $('#view_list12').show()
+              $('#del_list12').show()
+              $('#refresh_list12').show()
+              $('#sendPhoneDoctor').show()
+              $('#sendEmailDoctor').show()
+              $('#matchDoctor').remove()
+          };
+          $('#clear_btn2').click(function () {
+              $('#search_oth_name').val('');
+              $('#search_oth_email').val('');
+              $('#search_oth_tel').val('');
+              $('#search_oth_number').val('');
+          });
+      </script>
+    <%# end %>
+<% else %>
+<div id="search_div" style="" class="yahei">
+  <span class="marginb">
+  省：
+  <select  id="doctor_pro_id" class="select_w" name="doctor_pro_id" onchange="doc_search_pro()" >
+  <option value="">全部</option>
+      <% if !@provinces.nil? && !@provinces.empty? %>
+          <% @provinces.each do |pro| %>
+              <option id='serch_pro_<%= pro.id %>' value="<%= pro.id %>"><%= pro.name %></option>
+          <% end %>
+      <% end %>
+  </select>
+  </span>
+  <span class="marginb">
+  市：
+    <span id="search_city_id">
+      <select id="doctor_city_id" name="doctor[city_id]" onchange="doc_search_city()" >
+          <option value="all">全部</option>
+          <% if !@cities.nil? && !@cities.empty? %>
+              <% @cities.each do |city| %>
+                  <option id='serch_city_<%= city.id %>' value="<%= city.id %>"><%= city.name %></option>
+              <% end %>
+          <% end %>
+      </select>
+    </span>
+  </span>
+  <span class="marginb">
+  医院：
+    <span id="search_hos_id">
+      <select  id="doctor_hos_id" name="doctor_hos_id" onchange="doc_search_hos()" >
+          <option value="">全部</option>
+          <% if !@hospitals.nil? && !@hospitals.empty? %>
+              <% @hospitals.each do |hos| %>
+                  <option id='serch_hos_<%= hos.id %>' value="<%= hos.id %>"><%= hos.name %></option>
+              <% end %>
+          <% end %>
+      </select>
+    </span>
+  </span>
+  <span class="marginb">
+  科室：
+    <span id="search_dep_id">
+      <select id="doctor_dep" name="doctor[department_id]" onchange="doc_search_dep()" >
+        <option value="all">全部</option>
+          <% if !@departments.nil? && !@departments.empty? %>
+              <% @departments.each do |dep| %>
+                  <option id='serch_dep_<%= dep.id %>' value="<%= dep.id %>"><%= dep.name %></option>
+              <% end %>
+          <% end %>
+      </select>
+    </span>
+  </span>
+  <span class="marginb">
+  是否激活：
+    <select id="is_activated" onchange="search_activated()">
+      <option value="">全部</option>
+      <option value="1">已经激活</option>
+      <option value="0">未激活</option>
+    </select>
+  </span>
+<!--</select></span>-->
+  <!--是否激活为公网用户:<select id="is_public" onchange="search_public()">-->
+  <!--<option value="">全部</option>-->
+  <!--<option value="1">公网用户</option>-->
+  <!--<option value="0">非公网用户</option>-->
+<!--</select>-->
+
+  <!--<input id='doctor_pro_name' type="hidden"/><input id='doctor_city_name' type="hidden"/><input id='doctor_hos_name' type="hidden"/><input id='doctor_dep_name' type="hidden"/>-->
+  <div style="" class="yahei">
+    <span class="marginb">
+        姓名：<input type="text" class="input_b" id="search_name" onkeydown="entersearch1(event)">
+    </span>
+    <span class="marginb">
+        证件号码：<input type="text" class="input_b" id="search_number" onkeydown="entersearch1(event)">
+    </span>
+    <span class="marginb">
+        邮箱：<input type="text" class="input_b" id="search_email" onkeydown="entersearch1(event)">
+    </span>患者列表
+    <span class="marginb">
+        手机号：<input type="text" class="input_b" id="search_tel" onkeydown="entersearch1(event)">
+    </span>
+    <span class="marginb">
+    <button id="search_btn" class="btn btn-success btn-sm" onclick="search_by()" >搜索</button>&nbsp;
+    <button id="clear_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
+    <span class="marginb">
+    <button id="hospital_search" class="btn btn-default btn-sm" onclick="msg_check('hospital')">医院有问题</button>
+    &nbsp;
+    <button id="department_search" class="btn btn-default btn-sm" onclick="msg_check('department')">科室有问题</button>
+    </span>
+    <%#= form_for '', url: {controller: 'doctors', action: 'show_index'}, method: 'get',:html => {:multipart => true} do |f| %>
+      <!--<div style="margin-left: 0px;padding: 0px;" >-->
+        <!--<%#= f.label :搜索条件 %>:
+        <!--<select name="searchField" id="searchField" style="width:140px;margin-left: 2px;height: 30px;" onchange="change_state(this.value)">-->
+          <!--<option value="">请选择搜索条件</option>-->
+          <!--<option value="name">按姓名</option>-->
+          <!--<option value="spell_code">按简拼</option>-->
+          <!--<option value="credential_type_number">按证件号码</option>-->
+          <!--<option value="mobile_phone">按手机号</option>-->
+          <!--<option value="email">按邮箱</option>-->
+        <!--</select>-->
+        <!--<%#= f.label :值%>:
+        <!--<%#= f.text_field :name,id:'searchString',name:'searchString', placeholder: '回车搜索', style:"width:180px;height: 26px;" ,onkeydown:"entersearch1(event)"%>-->
+      <!--</div>-->
+    <%# end %>
+  </div>
+  <script>
+      function search_by() {
+          var name = $('#search_name').val();
+          var email = $('#search_email').val();
+          var tel = $('#search_tel').val();
+          var number = $('#search_number').val();
+          var url= "/doctors/show_index?name=" + name + "&email=" + email + "&mobile_phone=" + tel+ "&credential_type_number=" + number + '&hos_id=' + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val() + '&pro_id=' + $('#doctor_pro_id').val() + '&city_id=' + $('#doctor_city_id').val()
+          url = encodeURI(url)  //处理 ｕｒｌ中文问题
+          jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+      };
+      //清空搜索条件
+      $('#clear_btn').click(function () {
+          $('#search_name').val('');
+          $('#search_email').val('');
+          $('#search_tel').val('');
+          $('#search_number').val('');
+      });
+      function change_state(value){
+          $('#searchString').val('')
+          var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()
+          jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+          if (value == '') {
+              $('#searchString').attr('disabled','disabled')
+          } else {
+              $('#searchString').removeAttr('disabled')
+          }
+      }
+      function entersearch1(event){
+          if (event.keyCode == 13)
+              search_by();
+      }
+  </script>
+</div>
+<% end %>
+<div class="jqgride_div">
+<table id="list12"></table>
+<div id="pager12"></div>
+</div>
+<script>
+    var lastSel;
+    var row_id;
+    var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
+    jQuery("#list12").jqGrid({
+        url: "/doctors/show_index",
+        datatype: "json",
+        height: "auto",
+        colNames:['ID','','姓名首字母简拼','姓名', '证件类型','证件号码', '性别','出生日期','出生地','婚姻状况','省','省编号','市','市编号','医院','医院编号','科室','科室编号','国籍','民族','手机号','邮箱','职称','职位','学习经历','专业特长','科研论文','荣誉奖励','毕业学校','毕业时间','执业经历'],
+        colModel:[
+//            {name:'act',index:'act', width:75,sortable:false},
+            {name:'id',index:'id', width:120, sorttype:"int", hidden:true,search:false, align:'center' },
+            {name:'photo',index:'photo',width:20,
+                formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                    var value = colpos.photo;
+                    if (value==null || value=='') {
+                        return "<img src=\'/default.png\' style=\'width:16px;height:23px\'>";
+                    }else {
+                        return "<img src=\'<%= Settings.aliyunOSS.photo_url %>"+value+"\' style=\'width:16px;height:23px\'>";
+                    }
+                }, align: 'center'
+            },
+            {name:'spell_code',index:'spell_code', width:120, search:true , hidden:true,searchoptions: {searchhidden:true, sopt: ['in']}, align: 'center'},
+            {name:'name',index:'name', width:55, editable: true ,searchoptions: { sopt: ['in']}, align: 'center'},
+            {name:'credential_type',index:'credential_type', width:80, editable: true ,edittype:"select",editoptions:{value:"身份证:身份证;其他:其他"},search:false, hidden: true, editrules: {edithidden: true}, align: 'center'  },
+            {name:'credential_type_number',index:'credential_type_number', width:150, editable: true ,searchoptions: { sopt: ['in']}, align: 'center'},
+            {name:'gender',index:'gender', width:30, editable: true ,search:false, align: 'center' },
+            {name:'birthday',index:'birthday', width:90, editable: true ,search:false, align: 'center' },
+            {name:'birthplace',index:'birthplace', width:100, editable: true ,search:false,hidden:true, align: 'center'},
+            {name:'marriage',index:'marriage', width:80,search:false ,hidden:true,editrules:{edithidden:true}, align: 'center'},
+            {name:'province_name',index:'province_name', width:80,  editable: true,search:false, align: 'center'  },
+            {name:'province_id',index:'province_id', width:80,  editable: true,search:false, hidden: true, editrules: {edithidden: true}, align: 'center'  },
+            {name:'city_name',index:'city_name', width:100,  editable: true ,search:false, align: 'center' },
+            {name:'city_id',index:'city_id', width:100,  editable: true ,search:false, hidden: true, editrules: {edithidden: true}, align: 'center' },
+            {name:'hospital_name',index:'hospital_name', width:150, editable: true,search:false, align: 'center'  },
+            {name:'hospital_id',index:'hospital_id', width:100, editable: true,search:false, hidden: true, editrules: {edithidden: true}, align: 'center'  },
+            {name:'department_name',index:'department_name', width:150, editable: true,search:false, align: 'center'  },
+            {name:'department_id',index:'department_id', width:100, editable: true,search:false, hidden: true, editrules: {edithidden: true}, align: 'center' },
+            {name:'citizenship',index:'citizenship', width:50,search:false ,hidden:true, align: 'center'},
+            {name:'nationality',index:'nationality', width:50,search:false  ,hidden:true, align: 'center'},
+            {name:'mobile_phone',index:'mobile_phone', width:100, align:"center", editable: true,searchoptions: { sopt: ['in']}},
+            {name:'email',index:'email', width:130, align:"center", editable: true ,searchoptions: { sopt: ['in']}},
+            {name:'professional_title',index:'professional_title', width:80,align:"center",editable: true,search:false},
+            {name:'position',index:'position', width:80,search:false ,hidden:true,editrules:{edithidden:true}, align: 'center'},
+            {name:'degree',index:'degree', width:80,search:false,editrules:{edithidden:true}, hidden: true, align: 'center'},
+            {name:'expertise',index:'expertise', width:80,search:false,editrules:{edithidden:true}, hidden: true, align: 'center' },
+            {name:'research_paper',index:'research_paper',width:80,search:false ,editrules:{edithidden:true}, hidden: true, align: 'center'},
+            {name:'rewards',index:'rewards',search:false ,width:80,editrules:{edithidden:true}, hidden: true, align: 'center'},
+            {name:'graduated_from',index:'graduated_from', width:80,search:false ,hidden:true,editrules:{edithidden:true}, align: 'center'},
+            {name:'graduated_at',index:'graduated_at', width:80,search:false ,hidden:true,editrules:{edithidden:true}, align: 'center'},
+            {name:'introduction',index:'introduction',width:80,esarch:false, hidden: true, editrules: {edithidden: true}, align: 'center' }
+//          ,
+//            {name:'is_public',index:'is_public', width:80,search:false,viewable:false,
+//                formatter: function (rowId, cellval, colpos, rwdat, _act) {
+//                    var value = colpos.is_public;
+//                    if (value == 1) {
+//                        return "<button style=\"background-color: lawngreen;text-align: center;width:100%\">是</button>";
+//                    } else {
+//                        return "<button style=\"background-color: #ddd;text-align: center;width:100%\">否</button>";
+//                    }
+//                }
+//            }
+//            {name:'introduction',index:'introduction', width:260, sortable:false}
+        ],
+        pager: jQuery('#pager12'),
+        sortname: 'id',
+        sortable: true,
+        sortorder: 'asc',
+//        loadurl:"disable",
+//        treeGrid:true,
+        ExpandColumn: "menu",
+        autowidth: true,
+        rowNum: 20,
+        rowList:[10,20,30,40,50,100],
+        altRows: true,
+        ignoreCase: true,
+        jsonReader: {
+            root: "doctors",
+            repeatitems: false
+        },
+        onSelectRow: function(id){
+            selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
+        },
+//        ondblClickRow: function(id){
+//           $('#view_list12').click()
+//        },
+
+        viewrecords: true,
+        editurl:'/doctors/',
+        multiselect: true,
+        caption: "医生列表"
+    });
+    $("#consoleDlg").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        height:800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "创建": addContact,
+            "保存": updateContact,
+            "删除": deleteContact,
+            <%# if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+            "确定": forDoctor,
+            <%# end %>
+            "取消": cancelContact
+        }
+    });
+    $("#warn").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        height:800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "查看该医生": search_doc_by_number,
+            "修改证件号": function() {$("#warn").dialog("close")}
+    }
+    });
+    $("#warn2").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        height:800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "查看该医生": search_doc_by_tel,
+            "修改手机号": function() {$("#warn2").dialog("close")}
+        }
+    });
+    $("#warn3").dialog({
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        height:800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "查看该医生": search_doc_by_email,
+            "修改邮箱号": function() {$("#warn3").dialog("close")}
+        }
+    });
+    function search_doc_by_number(){
+        $('#search_oth_name').val('');
+        $('#search_oth_email').val('');
+        $('#search_oth_tel').val('');
+        $('#search_oth_number').val('');
+        $('#search_oth_number').val($('#doctor_credential_type_number').val());
+        search_hos_by2()
+        $("#warn").dialog("close")
+        $("#consoleDlg").dialog("close")
+        $("#warn").dialog("close")
+    }
+    function search_doc_by_tel() {
+        $('#search_oth_name').val('');
+        $('#search_oth_email').val('');
+        $('#search_oth_tel').val('');
+        $('#search_oth_number').val('');
+        $('#search_oth_tel').val($('#doctor_mobile_phone').val());
+        search_hos_by2()
+        $("#warn2").dialog("close")
+        $("#consoleDlg").dialog("close")
+    }
+    function search_doc_by_email() {
+        $('#search_oth_name').val('');
+        $('#search_oth_email').val('');
+        $('#search_oth_tel').val('');
+        $('#search_oth_number').val('');
+        $('#search_oth_email').val($('#doctor_email').val());
+        search_hos_by2()
+        $("#warn3").dialog("close")
+        $("#consoleDlg").dialog("close")
+    }
+
+    var selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
+    //    自定义按钮
+    $("#list12").jqGrid("navGrid", "#pager12", {
+        addtext: '添加',
+        addfunc : openDialog4Adding,  // (1) 点击添加按钮，则调用openDialog4Adding方法
+        edittext: '编辑',
+        editfunc : openDialog4Updating, // (2) 点击编辑按钮，则调用openDialog4Updating方法
+        view: true,
+        viewtext: '查看',
+        deltext:    '删除',
+        delfunc : openDialog4Deleting,  // (3) 点击删除按钮，则调用openDialog4Deleting方法
+        search:false,
+        refreshtext:"刷新",
+        refreshstate:'current',
+        alerttext : "请选择记录!"
+    },{},{},{},{},{width:800});
+//    自定义按钮
+//    $("#list12").jqGrid('navGrid','#pager12',{edit:false,add:false,del:false,search:false,searchtext:"查找",refreshtext:"刷新"});
+//    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '添加', caption: '添加',id:'addDoctor', onClickButton: addDoctor});
+//    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '删除', caption: '删除',id:'deleteDoctor', onClickButton: deleteDoctor});
+//    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '修改', caption: '修改',id:'updateDoctor', onClickButton: updateDoctor});
+    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '邮箱激活', caption: '邮箱激活',id:'sendEmailDoctor', onClickButton: sendEmailDoctor});
+    $("#list12").navButtonAdd('#pager12', {position: 'last', title: '手机激活', caption: '手机激活',id:'sendPhoneDoctor', onClickButton: sendPhoneDoctor});
+
+    function matchDoctor() {
+        selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
+        if (selectedIds.length>0) {
+            $.ajax({
+                type:'get',
+                url:'/doctors/matchDoctor',
+                success:function(data){
+                    $('#doc_create_or_edit_form').html(data)
+                    var consoleDlg = $("#consoleDlg");
+                    var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+                    dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                    dialogButtonPanel.find("button:contains('确定')").show();
+                    consoleDlg.dialog("option", "height", "300");
+                    consoleDlg.dialog("option", "width", "540");
+                    consoleDlg.dialog("option", "title", "分配医院和科室").dialog("open");
+                }
+            })
+        }
+        else {
+            alert('请至少选择一条记录!')
+        }
+    }
+
+    function forDoctor() {
+        selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
+        $.ajax({
+            type: 'get',
+            url: '/doctors/forDoctors?doc_ids=' + selectedIds + '&hos_id=' +$('#doctor_hospital_id').val() + '&dep_id=' + $('#doctor_department_id').val(),
+            success: function (data) {
+                window.parent.$("#consoleDlg").dialog("close");
+                $('#refresh_list12').click()
+            }
+        })
+    }
+
+    function openDialog4Adding() {
+        selectedIds  = null
+        $.ajax({
+            type:'get',
+            url:'/doctors/new',
+            success:function(data){
+                $('#doc_create_or_edit_form').html(data)
+                var consoleDlg = $("#consoleDlg");
+                var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+//        consoleDlg.find("input").removeAttr("disabled").val("");
+                dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                dialogButtonPanel.find("button:contains('创建')").show();
+                consoleDlg.dialog("option", "height", "800");
+                consoleDlg.dialog("option", "width", "540");
+                consoleDlg.dialog("option", "title", "创建").dialog("open");
+            }
+        })
+
+    };
+    function openDialog4Updating(rowid) {
+        selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
+        if (selectedIds.length==1){
+            $.ajax({
+                type: 'get',
+                url: '/doctors/' + selectedIds + '/edit',
+                success: function (data) {
+                    $('#doc_create_or_edit_form').html(data)
+                    var consoleDlg = $("#consoleDlg");
+                    var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+//        consoleDlg.find("input").removeAttr("disabled");
+                    dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                    dialogButtonPanel.find("button:contains('保存')").show();
+                    consoleDlg.dialog("option", "height", "800");
+                    consoleDlg.dialog("option", "width", "540");
+                    consoleDlg.dialog("option", "title", "修改").dialog("open");
+                }
+            })
+        }else{
+            alert('必须且只能选择一条记录!')
+//            var consoleDlg = $("#consoleDlg");
+//            $('#doc_create_or_edit_form').html('必须且只能选择一条记录!')
+//            var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+//            dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+//            consoleDlg.dialog("option", "title", "警告").dialog("open");
+        }
+    }
+
+    function openDialog4Deleting(rowid) {
+        var consoleDlg = $("#consoleDlg");
+        $('#doc_create_or_edit_form').html('删除所选记录?')
+        var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+//        consoleDlg.find("input").removeAttr("disabled").val("");
+        dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+        dialogButtonPanel.find("button:contains('删除')").show();
+        consoleDlg.dialog("option", "height", "180");
+        consoleDlg.dialog("option", "width", "260");
+        consoleDlg.dialog("option", "title", "删除").dialog("open");
+    }
+
+    var row_id = jQuery("#list12").jqGrid('getGridParam', 'selrow');
+    var credential_type_number_flag=true
+    var phone_flag=true
+    var name_flag=false
+    var email_flag=true
+    var birthday_flag=false
+    var two_blank=true
+    function check_credential_type_number(value,a){
+        row_id = selectedIds//jQuery("#list12").jqGrid('getGridParam', 'selrow');
+        if ($('#doctor_credential_type').val()=='居民身份证') {
+            var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+            if (reg.test(value) === false) {
+                if (a=='true') {
+                    alert('身份证号格式错误!')
+                }
+                credential_type_number_flag = false
+                $('#doctor_credential_type_number').addClass('error_remind')
+            } else {
+                $.ajax({
+                    type:'get',
+                    async:false,
+                    url:'/doctors/check_credential_type_number?doctor_id='+row_id,
+                    data:{credential_type_number:value},
+                    success:function(data){
+                        var is_use;
+                        is_use= data['success'];
+                        if(is_use==true) {
+                            credential_type_number_flag=true;
+                            showBirthday(value)
+                            $('#doctor_credential_type_number').removeClass('error_remind')
+                        }else{
+                            credential_type_number_flag=false;
+                            $('#doctor_credential_type_number').addClass('error_remind')
+                            if (a=='true') {
+                            <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+                                var consoleDlg = $("#warn");
+                                $('#warn').html('该身份证医生已存在!')
+                                var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+                                dialogButtonPanel.find("button:not(:contains('证件号'))").hide();
+                                dialogButtonPanel.find("button:contains('查看该医生')").show();
+                                dialogButtonPanel.find("button:contains('修改证件号')").show();
+                                consoleDlg.dialog("option", "height", "240");
+                                consoleDlg.dialog("option", "width", "460");
+                                consoleDlg.dialog("option", "title", "提示").dialog("open");
+                            <% else %>
+                                alert('身份证号码重复!')
+                            <% end %>
+                            }
+                        }
+                    }
+                })
+            }
+        }
+        else {
+            credential_type_number_flag=true;
+            $('#doctor_credential_type_number').removeClass('error_remind')
+        }
+    }
+    function check_phone(phone,a){
+        row_id = selectedIds//jQuery("#list12").jqGrid('getGridParam', 'selrow');
+        var c_phone=/1[3|5|7|8|][0-9]{9}/;
+        var re_phone= new RegExp(c_phone);
+        if (phone!=''){
+            if (re_phone.test(phone) && phone.length==11){
+                $.ajax({
+                    type:'get',
+                    async:false,
+                    url:'/doctors/check_phone?doctor_id='+row_id,
+                    data:{phone:phone},
+                    success:function(data){
+                        if(data['success']) {
+                            phone_flag=true;
+                            $('#doctor_mobile_phone').removeClass('error_remind')
+                        }else{
+                            phone_flag=false;
+                            $('#doctor_mobile_phone').addClass('error_remind')
+                            if (a=='true') {
+                            <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+                            var consoleDlg = $("#warn2");
+                            $('#warn2').html('该手机号医生已存在!')
+                            var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+//                            dialogButtonPanel.find("button").hide();
+                            dialogButtonPanel.find("button:contains('查看该医生')").show();
+                            dialogButtonPanel.find("button:contains('修改手机号')").show();
+                            consoleDlg.dialog("option", "height", "240");
+                            consoleDlg.dialog("option", "width", "460");
+                            consoleDlg.dialog("option", "title", "提示").dialog("open");
+                            <% else %>
+                                alert('手机号重复!')
+                            <% end %>
+                            }
+                        }
+                    }
+                })
+            }else{
+                phone_flag=false;
+                $('#doctor_mobile_phone').addClass('error_remind')
+                if (a=='true') {
+                    alert('手机号格式不正确!')
+                }
+            };
+        }else{
+            phone_flag=true;
+            $('#doctor_mobile_phone').removeClass('error_remind')
+        }
+    }
+    function check_name(name,a){
+        var c_name=/^\s*$/g;
+        var re_name=new RegExp(/^\s*$/g)
+        if (re_name.test(name)){
+            name_flag=false;
+            $('#doctor_name').addClass('error_remind')
+            if (a=='true'){
+                alert('姓名不能为空!')
+            }
+        }else{
+            name_flag=true;
+            $('#doctor_name').removeClass('error_remind')
+
+        };
+    };
+    function check_email(email,a) {
+        row_id = selectedIds//jQuery("#list12").jqGrid('getGridParam', 'selrow');
+        var c_email=/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+        var re_email = new RegExp(c_email);
+        if (email!=''){
+            if(re_email.test(email)){
+                $.ajax({
+                    type:'get',
+                    async:false,
+                    url:'/doctors/check_email?doctor_id='+row_id,
+                    data:{email:email},
+                    success:function(data){
+                        var is_use;
+                        is_use= data['success'];
+                        if(is_use==true) {
+                            email_flag=true;
+                            $('#doctor_email').removeClass('error_remind')
+                        }else{
+                            email_flag=false;
+                            $('#doctor_email').addClass('error_remind')
+                            if (a=='true') {
+                            <% if current_user.admin_type == '医院管理员' || current_user.admin_type == '科室管理员'%>
+                            var consoleDlg = $("#warn3");
+                            $('#warn3').html('该邮箱号医生已存在!')
+                            var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+//                            dialogButtonPanel.find("button").hide();
+                            dialogButtonPanel.find("button:contains('查看该医生')").show();
+                            dialogButtonPanel.find("button:contains('修改邮箱号')").show();
+                            consoleDlg.dialog("option", "height", "240");
+                            consoleDlg.dialog("option", "width", "460");
+                            consoleDlg.dialog("option", "title", "提示").dialog("open");
+                            <% else %>
+                                alert('邮箱已注册!')
+                            <% end %>
+                            }
+                        }
+
+                    }
+                })
+
+            }
+            else  {
+                email_flag=false;
+                $('#doctor_email').addClass('error_remind')
+                if (a=='true') {
+                    alert('邮箱格式不正确')
+                }
+
+            } ;
+        }else{
+            email_flag=true;
+            $('#doctor_email').removeClass('error_remind')
+        }
+
+    };
+
+    function check_birthday(birthday,a){
+        if($.trim(birthday)==''){
+            $('#doc_birthday').addClass('error_remind')
+            if (a=='true'){
+                alert('生日不可为空!')
+            }
+        }else{
+            birthday_flag=true
+            $('#doc_birthday').removeClass('error_remind')
+        }
+    }
+    function change_type(){
+        $('#doctor_credential_type_number').focus();
+        $('#doctor_credential_type_number').removeClass('error_remind');
+        credential_type_number_flag = true
+    }
+
+    function addContact(){ //    添加医生
+        var birthday = $('#doc_birthday').val()
+        var phone = $('#doctor_mobile_phone').val()
+        var email = $('#doctor_email').val()
+        var name = $('#doctor_name').val()
+        var credential_type_number = $('#doctor_credential_type_number').val()
+        check_credential_type_number(credential_type_number)
+        check_phone(phone)
+        check_name(name)
+        check_email(email)
+//        check_birthday(birthday)
+        if (phone=='' && email==''){
+            two_blank = false
+        }else{
+            two_blank = true
+        }
+        if(credential_type_number_flag && name_flag&&email_flag && phone_flag){
+            create_or_update()
+        }else{
+            alert("表单填写有误，不能提交表单！");
+        }
+    }
+    function updateContact(){ // 修改医生
+        addContact()
+    }
+    function deleteContact(){       //删除医生
+        selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
+        $.ajax({
+            type: 'delete',
+            url: '/doctors/' + selectedIds,
+            success: function (data) {
+                if (data['success']) {
+                    window.parent.$("#consoleDlg").dialog("close");
+                    $('#refresh_list12').click()
+//                    alert('删除成功!')
+                } else {
+                    alert('删除失败!')
+                }
+            }
+        })
+//        var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
+//        jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+    }
+
+    function cancelContact() {
+        selectedIds  = jQuery("#list12").jqGrid("getGridParam","selarrrow");
+        var image = $('#user_photo_image').val()
+        if ($.trim(image)==''){
+            window.parent.$("#consoleDlg").dialog("close");
+        } else {
+            $.ajax({
+                type: 'post',
+                url: '/doctors/delete_image',
+                data:{doc_id:selectedIds,image:image},
+                success: function (data) {
+                    if (data['success']) {
+                        window.parent.$("#consoleDlg").dialog("close");
+                    } else {
+                        alert('删除失败!')
+                    }
+                }
+            })
+        }
+    }
+
+// 发送邮箱验证码
+    function sendEmailDoctor(){
+        if (selectedIds.length>0){
+            $.ajax({
+                type:'get',
+                url:'/doctors/send_email?doc_ids='+selectedIds+'',
+                success:function(data){
+                    if (data['success']){
+                        alert('发送成功!')
+                    }else {
+                        alert('发送失败!如果是多个,可能部分发送成功!')
+                    }
+                    $('#refresh_list12').click()
+//                    var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
+//                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+                }
+            })
+        }else{
+            alert('请至少选择一条记录!')
+        }
+    };
+//    发送手机验证码
+    function sendPhoneDoctor(){
+        if (selectedIds.length>0){
+            $.ajax({
+                type:'get',
+                url:'/doctors/send_phone?doc_ids='+selectedIds,
+                success:function(data){
+                    if (data['success']){
+                        alert('发送成功!')
+                    }else {
+                        alert('发送失败!如果是多个,可能部分发送成功!')
+                    }
+                    $('#refresh_list12').click()
+//                    var url= "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + '&dep_id=' + $('#doctor_dep').val()
+//                    jQuery("#list12").jqGrid('setGridParam',{url:url}).trigger("reloadGrid");
+                }
+            })
+        }else{
+            alert('请至少选择一条记录!')
+        }
+    };
+
+    function doc_search_pro() {
+        var pro_id = $('#doctor_pro_id').val()
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_city?pro_id=' + pro_id,
+            success: function (data) {
+                $('#search_city_id').html(data)
+            }
+        })
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_hospital?pro_id=' + pro_id,
+            success: function (data) {
+                $('#search_hos_id').html(data)
+            }
+        })
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_department?pro_id=' + pro_id,
+            success: function (data) {
+                $('#search_dep_id').html(data)
+            }
+        })
+//        var pro_name = $('#s2id_doctor_pro_id').children('.select2-choice').children('.select2-chosen').html()
+//        if (pro_name.indexOf('请选择')>0){
+//            $('#doctor_pro_name').val(pro_name)
+//        }
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?pro_id=" + pro_id  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val() }).trigger("reloadGrid")
+    }
+    function doc_search_city() {
+        var pro_id = $('#doctor_pro_id').val()
+        var city_id = $('#doctor_city_id').val()
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_hospital?pro_id='+pro_id+'&city_id='+city_id,
+            success: function (data) {
+                $('#search_hos_id').html(data)
+            }
+        })
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?pro_id=" + pro_id + "&city_id=" + city_id  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val() }).trigger("reloadGrid")
+    }
+
+    function doc_search_hos(){
+        $('#searchString').val('')
+        var pro_id = $('#doctor_pro_id').val()
+        var city_id = $('#doctor_city_id').val()
+        var hos_id = $('#doctor_hos_id').val()
+        $.ajax({
+            type: 'get',
+            url: '/doctors/search_department?hos_id='+hos_id,
+            success: function (data) {
+                $('#search_dep_id').html(data)
+            }
+        })
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val()  + "&pro_id=" + pro_id + "&city_id=" + city_id + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val() }).trigger("reloadGrid")
+    }
+    function doc_search_dep(){
+        var pro_id = $('#doctor_pro_id').val()
+        var city_id = $('#doctor_city_id').val()
+        $('#searchString').val('')
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&pro_id=" + pro_id + "&city_id=" + city_id + "&is_activated=" + $('#is_activated').val()   + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
+    }
+    function search_activated(){
+        var pro_id = $('#doctor_pro_id').val()
+        var city_id = $('#doctor_city_id').val()
+        $('#searchString').val('')
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()  + "&pro_id=" + pro_id + "&city_id=" + city_id + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
+    }
+    function search_public() {
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?hos_id=" + $('#doctor_hos_id').val() + "&dep_id=" + $('#doctor_dep').val()  + "&is_activated=" + $('#is_activated').val()  + "&is_public=" + $('#is_public').val()}).trigger("reloadGrid")
+    }
+    $(function() {
+        $("#doctor_hos_id").select2();
+        $("#doctor_dep").select2();
+        $('#doctor_pro_id').select2();
+        $('#doctor_city_id').select2();
+        $("#is_activated").select2();
+        $("#is_public").select2();
+        $("#searchField").select2();
+        $('#searchString').attr('disabled','disabled')
+    })
+    function msg_check(str) {
+        jQuery("#list12").jqGrid('setGridParam', {url: "/doctors/show_index?str=" + str}).trigger("reloadGrid")
+    }
+    //向弹出框关闭按钮添加一个图标
+$(function(){
+    $(".ui-dialog-titlebar .ui-dialog-titlebar-close").html("<span class='glyphicon glyphicon-remove'></span>");
+})
+</script>
+
+<div id="doc_create_or_edit_form2"></div>

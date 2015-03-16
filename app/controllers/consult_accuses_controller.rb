@@ -5,7 +5,8 @@ class ConsultAccusesController < ApplicationController
   # GET /consult_accuses
   # GET /consult_accuses.json
   def index
-    render :partial => 'consult_accuses/consult_accuess_manage'
+    all_menus
+    render :template => 'consult_accuses/consult_accuess_manage'
   end
 #被举报的咨询
   def index_accuses

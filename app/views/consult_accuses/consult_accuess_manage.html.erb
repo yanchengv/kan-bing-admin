@@ -1,0 +1,219 @@
+<div style="width: 100%">
+
+  <div style="" class="yahei">
+    <span class="marginb">
+    咨询内容：
+    <input type="text" id="question_content" class="input_b" onkeydown="search_keydown(event, 'question')">
+    </span>
+    <span class="marginb">
+    <button id="search_question_btn" class="btn btn-success btn-sm">搜索</button>
+    &nbsp;<button id="clear_question_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
+  </div>
+  <div class="jqgride_div">
+  <table id="list_ques"></table>
+  <div id="page_ques"></div>
+  </div>
+
+  <div style="margin-top: 40px;" class="yahei">
+    <span class="marginb">
+    回复内容：<input type="text" class="input_b" id="result_content" onkeydown="search_keydown(event,'result')">
+    </span>
+    <span class="marginb">
+      <button id="search_result_btn" class="btn btn-success btn-sm">搜索</button>
+      &nbsp;<button id="clear_result_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
+  </div>
+  <div class="jqgride_div">
+  <table id="list_result"></table>
+  <div id="page_result"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function search_keydown(event, str){
+      if (event.keyCode == 13){
+          if (str == 'question'){
+              search_question();
+          }
+          if (str == 'result') {
+              search_result();
+          }
+      }
+  }
+    jQuery("#list_ques").jqGrid({
+        url: '/consult_accuses/index_accuses',
+        datatype: "json",
+        autowidth:true,
+        height: 'auto',
+        colNames: ['咨询ID', '咨询内容', '创建时间'],
+        colModel: [
+            {name: 'id', index: 'id', width: 100, align: "center", hidden:true},
+            {name: 'consult_content', index: 'consult_content', width: 100, align: "center"},
+            {name: 'created_at', index: 'created_at', formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, width: 100, align: "center"}
+        ],
+        rownumbers: true,
+        page: 1,
+        rowNum: 8,
+        rowList: [8, 10, 20, 30],
+        pager: '#page_ques',
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        multiselect: false,
+        subGrid: true,
+        caption: "咨询举报管理",
+        prmNames: {
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            deloper: "del_que", // 当在delete模式中提交数据时，操作的名称
+            subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+        },
+        editurl: '/consult_accuses/cusult_oper_action',
+        jsonReader: {
+            root: "consult_questions",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        gridComplete: function(){
+            jQuery("#list_result").jqGrid('setGridParam', {url: "/consult_accuses/index_results"}).trigger("reloadGrid");
+        },
+        subGridRowExpanded: function (subgrid_id, row_id) {
+            var subgrid_table_id, pager_id;
+            subgrid_table_id = subgrid_id + "_t";
+            pager_id = "p_" + subgrid_table_id;
+            $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table><div id='" + pager_id + "' class='scroll'></div>");
+            jQuery("#" + subgrid_table_id).jqGrid({
+                url: "consult_accuses/get_accuses?question_id=" + row_id,
+                datatype: "json",
+                colNames: ['举报ID', '举报原因', '创建时间'],
+                colModel: [
+                    {name: "id", index: "id", key: true},
+                    {name: "reason", index: "reason"},
+                    {name: "created_at", index: "created_at", formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, align: "center"}
+                ],
+                rowNum: 20,
+                pager: pager_id,
+                sortname: 'num',
+                sortorder: "asc",
+                autowidth:true,
+                height: 'auto',
+                prmNames: {
+                    id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                    deloper: "del", // 当在delete模式中提交数据时，操作的名称
+                    subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+                },
+                editurl: '/consult_accuses/cusult_oper_action',
+                jsonReader: {
+                    root: "consult_accuses",
+                    repeatitems: false
+                }
+            });
+            jQuery("#" + subgrid_table_id).jqGrid('navGrid', "#" + pager_id, {edit: false, add: false, deltext: "删除", deltitle: "删除"})
+        },
+        subGridRowColapsed: function (subgrid_id, row_id) {
+        }
+    });
+    jQuery("#list_ques").jqGrid('navGrid', '#page_ques', {add: false, edit: false, deltext: "删除", deltitle: "删除"});
+//回复举报
+    jQuery("#list_result").jqGrid({
+        url: '/consult_accuses/index_results',
+        datatype: "json",
+        autowidth: true,
+        height: 'auto',
+        colNames: ['回复ID', '回复内容', '创建时间'],
+        colModel: [
+            {name: 'id', index: 'id', width: 100, align: "center", hidden:true},
+            {name: 'respond_content', index: 'respond_content', width: 100, align: "center"},
+            {name: 'created_at', index: 'created_at', formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, width: 100, align: "center"}
+        ],
+        rownumbers: true,
+        page: 1,
+        rowNum: 8,
+        rowList: [8, 10, 20, 30],
+        pager: '#page_result',
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        multiselect: false,
+        subGrid: true,
+        caption: "回复举报管理",
+        prmNames: {
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            deloper: "del_res", // 当在delete模式中提交数据时，操作的名称
+            subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+        },
+        editurl: '/consult_accuses/cusult_oper_action',
+        jsonReader: {
+            root: "consult_results",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        subGridRowExpanded: function (subgrid_id_r, row_id_r) {
+            var subgrid_table_id_r, pager_id_r;
+            subgrid_table_id_r = subgrid_id_r + "_t";
+            pager_id_r = "p_" + subgrid_table_id_r;
+            $("#" + subgrid_id_r).html("<table id='" + subgrid_table_id_r + "' class='scroll'></table><div id='" + pager_id_r + "' class='scroll'></div>");
+            jQuery("#" + subgrid_table_id_r).jqGrid({
+                url: "/consult_accuses/get_accuses?result_id=" + row_id_r,
+                datatype: "json",
+                colNames: ['举报ID', '举报原因', '创建时间'],
+                colModel: [
+                    {name: "id", index: "id", key: true},
+                    {name: "reason", index: "reason"},
+                    {name: "created_at", index: "created_at", formatter: 'date', formatoptions: {newformat: 'Y-m-d'}, align: "center"}
+                ],
+                autowidth: true,
+                height: 'auto',
+                rowNum: 20,
+                pager: pager_id_r,
+                sortname: 'num',
+                sortorder: "asc",
+                prmNames: {
+                    id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+                    deloper: "del", // 当在delete模式中提交数据时，操作的名称
+                    subgridid: "id" // 当点击以载入数据到子表时，传递的数据名称
+                },
+                editurl: '/consult_accuses/cusult_oper_action',
+                jsonReader: {
+                    root: "consult_accuses",
+                    total: "totalpages",
+                    page: "currpage",
+                    records: "totalrecords",
+                    repeatitems: false
+                }
+            });
+            jQuery("#" + subgrid_table_id_r).jqGrid('navGrid', "#" + pager_id_r, {edit: false, add: false, deltext: "删除", deltitle: "删除"})
+        },
+        subGridRowColapsed: function (subgrid_id_r, row_id_r) {
+        }
+    });
+    jQuery("#list_result").jqGrid('navGrid', '#page_result', {add: false, edit: false, deltext: "删除", deltitle: "删除"});
+    //搜索咨询
+    function search_question(){
+        var text = $('#question_content').val();
+        jQuery("#list_ques").jqGrid('setGridParam', {url: "/consult_accuses/index_accuses?content=" + text }).trigger("reloadGrid");
+    }
+    $('#search_question_btn').click(function () {
+        search_question();
+    });
+    //清空搜索咨询条件
+    $('#clear_question_btn').click(function () {
+        $('#question_content').val('');
+    });
+    //搜索回复
+    function search_result(){
+        var text = $('#result_content').val();
+        jQuery("#list_result").jqGrid('setGridParam', {url: "/consult_accuses/index_results?content=" + text }).trigger("reloadGrid");
+    }
+    $('#search_result_btn').click(function () {
+        search_result();
+    });
+    //清空搜索回复条件
+    $('#clear_result_btn').click(function () {
+        $('#result_content').val('');
+    });
+</script>

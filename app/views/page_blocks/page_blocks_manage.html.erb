@@ -1,0 +1,157 @@
+<div style="width: 100%">
+  <div class="jqgride_div">
+    <table id="list_page_block"></table>
+    <div id="page_block"></div>
+  </div>
+
+  <!--<input type="button" value="保存" id="block_tem">-->
+</div>
+
+<script type="text/javascript">
+    function myelem(value, options) {
+        var el = document.createElement("input");
+        el.type = "text";
+        el.value = value;
+        return el;
+    }
+
+    function myvalue(elem, operation, value) {
+        if (operation === 'get') {
+            return $(elem).val();
+        } else if (operation === 'set') {
+            $('input', elem).val(value);
+        }
+    }
+    function changeIsShow(id, bl) {
+        $.ajax({
+                    type: "post",
+                    url: '/page_blocks/change_is_show?id=' + id + '&is_show=' + bl,
+                    data: 'text',
+                    success: function (data) {
+                        if (data.success == true) {
+                            jQuery("#list_page_block").jqGrid('setGridParam', {url: "/page_blocks/index_show"}).trigger("reloadGrid");
+                        } else {
+                            alert('操作失败！');
+                        }
+                    }
+                }
+        );
+    }
+    jQuery("#list_page_block").jqGrid({
+        url: '/page_blocks/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: ['ID', '标题', '排版顺序', '状态', '是否显示'],
+        colModel: [
+            {name: 'id', index: 'id', align: "center", hidden: true},
+            {name: 'name', index: 'name', align: "center"},
+            {name: 'position', index: 'position', align: "center"},
+            { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                var value = colpos.is_show;
+                if (value == true) {
+                    return '<div style=\"background-color: lawngreen;text-align: center;\">显示</div>';
+                } else {
+                    return '<div style=\"background-color: dimgray;text-align: center;\">禁用</div>';
+                }
+            }
+            },
+            { align: "center", edittype: 'custom', editoptions: {custom_element: myelem, custom_value: myvalue}, formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                var value = colpos.is_show;
+                if (value == true) {
+                    return "<button value=\"禁用\" onclick=\"changeIsShow(" + colpos.id + ", 'false')\">禁用</button>";
+                } else {
+                    return "<button value=\"显示\" onclick=\"changeIsShow(" + colpos.id + ", 'true')\">显示</button>";
+                }
+            }
+            }
+        ],
+        rowList: [10, 20, 30],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        rownumbers: true,
+        page: 1,
+        jsonReader: {
+            root: "page_blocks",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: '/page_blocks/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_block'),
+        multiselect: false,
+        rowNum: 20,
+        altclass: 'altRowsColour',
+        height: 'auto',
+        caption: "界面区块管理"
+    }).navGrid('#page_block', {
+                cloneToTop: true, add: false, edit: false,
+                deltext: "删除", deltitle: "删除", view: false, search: false, refreshtext: "刷新", refreshtitle: "刷新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//a
+    ).navButtonAdd('#page_block', { title: '查看', buttonicon: "ui-icon ui-icon-document", caption: '查看', onClickButton: function () {
+                view_page_block()
+            }, position: "first"}).navButtonAdd('#page_block', { title: '编辑', buttonicon: "ui-icon-pencil", caption: '编辑', onClickButton: function () {
+                edit_page_block()
+            }, position: "first"}).navButtonAdd('#page_block', { title: '添加', caption: '添加', buttonicon: "ui-icon-plus", onClickButton: function () {
+                new_page_block()
+            }, position: "first"});
+    function new_page_block() {
+        $.ajax({
+            url: "/page_blocks/new",
+            type: 'get',
+            success: function (data) {
+                $('#rightContent').html(data)
+            }
+        })
+//        var href = "/page_blocks/new"
+//        window.location.replace(href);
+    }
+    function edit_page_block() {
+        var id = jQuery("#list_page_block").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请选择编辑项！');
+        }else{
+            $.ajax({
+                url: '/page_blocks/' + id + '/edit',
+                type: 'get',
+                success: function (data) {
+                    $('#rightContent').html(data)
+                }
+            })
+           /* var href = '/page_blocks/' + id + '/edit';
+            window.location.replace(href);*/
+        }
+    }
+        function view_page_block(){
+            var id = jQuery("#list_page_block").jqGrid('getGridParam', 'selrow');
+            if (!id) {
+                alert('请选择查看项！');
+            }else{
+                $.ajax({
+                    type: 'get',
+                    url: "/page_blocks/" + id,
+                    success: function (data) {
+                         $("#rightContent").html(data);
+                    }
+                });
+            }
+        }
+</script>

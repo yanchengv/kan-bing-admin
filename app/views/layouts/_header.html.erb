@@ -1,5 +1,6 @@
 
 <%= stylesheet_link_tag 'menus/header'%>
+<% key = '290c3c5d812a4ba7ce33adf09598a462'%>
 <!--header-->
 <nav id="nav" class="navbar navbar-default navbar-inverse navbar-fixed-top navbar-gitlab" role="navigation" style="border-radius: 0px">
   <div class="container-fluid">
@@ -34,7 +35,7 @@
         <% if !@first_menus.empty?%>
             <% @first_menus.each do |menu| %>
                 <li>
-                  <a href="?pId=<%= menu.id %>" data-toggle="tooltip" data-placement="bottom" title="<%= menu.name %>">
+                  <a href="/?pId=<%=  AES.encrypt(menu.id.to_s,key) %>" data-toggle="tooltip" data-placement="bottom" title="<%= menu.name %>">
                     <% if menu.icon %>
                         <%= raw menu.icon %>
                     <% else %>
@@ -85,7 +86,7 @@
           <!--</a>-->
         <!--</li>-->
         <li>
-          <a href="JAVASCRIPT:update_password()" data-toggle="tooltip" data-placement="bottom" title="设置">
+          <a href="/admin2s/setting" data-toggle="tooltip" data-placement="bottom" title="设置">
             <i class="icon-cogs"></i>
           </a>
         </li>

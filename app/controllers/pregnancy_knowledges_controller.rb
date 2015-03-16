@@ -5,7 +5,8 @@ class PregnancyKnowledgesController < ApplicationController
   # GET /pregnancy_knowledges
   # GET /pregnancy_knowledges.json
   def index
-    render :partial => 'pregnancy_knowledges/pregnancy_knowledges_manage'
+    all_menus
+    render :template => 'pregnancy_knowledges/pregnancy_knowledges_manage'
   end
 
   def show_index

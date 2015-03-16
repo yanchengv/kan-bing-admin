@@ -1,0 +1,322 @@
+<div id="skill_console">
+  <div id="skill_div">
+
+  </div>
+</div>
+<div style="width: 100%">
+  <div class="yahei">
+    <span class="marginb">
+      技术名称：<input type="text" id="skill_search" onkeydown="search_keydown(event)" class="input_b">
+    </span>
+    <span class="marginb">
+      <button id="search_skill_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;<button id="clear_skill_btn" class="btn btn-default btn-sm">清空</button>
+      </span>
+    </div>
+   <div class="jqgride_div">
+    <table id="skill_list"></table>
+    <div id="page_skill"></div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    function search_keydown(event) {
+        if (event.keyCode == 13)
+            search_skills();
+    }
+    jQuery("#skill_list").jqGrid({
+        url: '/skills/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '新技术标题', '图片', '图片路径', '描述', '详细内容', '有效期', '起始日期', '创建人', '关键字', '排序', '是否首页显示'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'name', index: 'name', align: "center", editable: true},
+            {name: 'photo_img', index: 'photo_img', align: "center",
+                formatter: function (rowId, cellval, colpos, rwdat, _act) {
+                    var value = colpos.photo;
+                    if (value == null || value == '') {
+                        return "<label>无图片</label>";
+                    } else {
+                        return "<img src=\'" + value + "\' style=\'width:80px;height:100px\'>";
+                    }
+                }
+            },
+            { name: 'photo', index: 'photo', align: "center", editable: true, hidden: true},
+            { name: 'desc', index: 'desc', align: "center", editable: true, hidden: true, editrules: {edithidden: true}},
+            { name: 'detail', index: 'detail', align: "center", editable: true},
+            { name: 'period', index: 'period', align: "center", editable: true},
+            { name: 'from', index: 'from', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
+                $(element).datetimepicker({
+                    lang: 'ch',
+                    timepicker: false,
+                    format: 'Y-m-d'
+                })
+            } }},
+            { name: 'create_by_user', index: 'create_by_user', align: "center", editable: true},
+            { name: 'keywords', index: 'keywords', align: "center", editable: true},
+            { name: 'sort', index: 'sort', align: "center", editable: true},
+            { name: 'index_page_show', index: 'index_page_show', align: "center", editable: true}
+        ],
+        rownumbers: true,
+        page:1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "skills",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: '/skills/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_skill'),
+     //   multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "治疗技术管理"
+    });
+    jQuery("#skill_list").jqGrid('navGrid', '#page_skill', {
+                cloneToTop: true, add:false, edit:false,
+                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+             ).navButtonAdd('#page_skill', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
+                skill_edit();
+            }, position: "first"}).navButtonAdd('#page_skill', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                skill_new();
+            }, position: "first"}).navButtonAdd('#page_skill', { title: '相关机构', caption: '相关机构', onClickButton: function () {
+                get_groups();
+            }, position: "last"}).navButtonAdd('#page_skill', { title: '相关医生', caption: '相关医生', onClickButton: function () {
+                doctor_list();
+            }, position: "last"});
+   
+    //搜索skill
+    function search_skills(){
+        var skill = $('#skill_search').val();
+        jQuery("#skill_list").jqGrid('setGridParam', {url: "/skills/index_show?name=" + skill}).trigger("reloadGrid");
+    }
+    $('#search_skill_btn').click(function () {
+        search_skills();
+    });
+    //清空k
+    $('#clear_skill_btn').click(function () {
+        $('#skill_search').val('');
+    });
+    $("#skill_console").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 800,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function (pos) {
+                var topOffset = $(this).css(pos).offset().top;
+                if (topOffset < 0) {
+                    $(this).css("top", pos.top - topOffset);
+                } else {
+                    $(this).css("top", 100);
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "保存": save_skill,
+            "修改": update_skill,
+            "取消": function () {
+                $("#skill_console").dialog("close")
+            }
+        }
+    });
+    function skill_edit() {
+        var id = jQuery("#skill_list").jqGrid('getGridParam', 'selrow');
+        if (id) {
+            $.ajax({
+                url: '/skills/' + id + '/edit',
+                type: 'get',
+                data: {id: id},
+                success: function (data) {
+                    $("#skill_div").html(data);
+                    var video_consoleDlg = $("#skill_console");
+                    var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                    dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                    dialogButtonPanel.find("button:contains('修改')").show();
+                    video_consoleDlg.dialog("option", "width", "800");
+                    video_consoleDlg.dialog("option", "title", "编辑").dialog("open");
+                }
+            })
+        } else {
+            alert('请选择需要进行修改的图片!');
+        }
+    }
+    function skill_new() {
+        $.ajax({
+            url: "/skills/new",
+            type: 'get',
+            success: function (data) {
+                $("#skill_div").html(data);
+                var video_consoleDlg = $("#skill_console");
+                var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                dialogButtonPanel.find("button:contains('保存')").show();
+                video_consoleDlg.dialog("option", "width", "800");
+                video_consoleDlg.dialog("option", "title", "添加").dialog("open");
+            }
+        });
+    }
+    function save_skill(){
+        var name = $('#name').val();
+        var photo = $('#image_path').val();
+        var desc = $('#content').val();
+        if (name && name != '' && photo && photo != '' && desc && desc != ''){
+            $.ajax({
+                url: "/skills",
+                type: 'post',
+                data: { name: name,
+                    detail: $('#detail').val(),
+                    desc: desc,
+                    photo: photo,
+                    period: $('#period').val(),
+                    from: $('#from_time').val(),
+                    keywords: $('#keywords').val(),
+                    sort: $('#sort').val(),
+                    index_page_show: $('#index_page_show').val()
+                },
+                async: false,
+                success: function (data) {
+                    $("#skill_console").dialog("close");
+                    jQuery("#skill_list").jqGrid('setGridParam', {url: "/skills/index_show"}).trigger("reloadGrid")
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('保存失败!');
+                }
+            });
+        }else{
+            if(!name || name == ''){
+                $("#name_label").html('必填项不能为空!');
+            }
+            if (!desc || desc == '') {
+                $("#desc_label").html('必填项不能为空!');
+            }
+            if (!photo || photo == '') {
+                $("#photo_label").html('必填项不能为空!');
+            }
+        }
+
+    }
+    function update_skill() {
+        var id = $('#skill_id').val();
+        if (id) {
+            var name = $('#name').val();
+            var photo = $('#image_path').val();
+            var desc = $('#content').val();
+            if (name && name != '' && photo && photo != '' && desc && desc != '') {
+                $.ajax({
+                    url: "/skills/" + id,
+                    type: 'put',
+                    data: { name: name,
+                        detail: $('#detail').val(),
+                        desc: desc,
+                        photo: photo,
+                        period: $('#period').val(),
+                        from: $('#from_time').val(),
+                        keywords: $('#keywords').val(),
+                        sort: $('#sort').val(),
+                        index_page_show: $('#index_page_show').val()
+                    },
+                    async: false,
+                    success: function (data) {
+                        $("#skill_console").dialog("close");
+                        jQuery("#skill_list").jqGrid('setGridParam', {url: "/skills/index_show"}).trigger("reloadGrid")
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert('修改失败!');
+                    }
+                });
+            } else {
+                if (!name || name == '') {
+                    $("#name_label").html('必填项不能为空!');
+                }
+                if (!desc || desc == '') {
+                    $("#desc_label").html('必填项不能为空!');
+                }
+                if (!photo || photo == '') {
+                    $("#photo_label").html('必填项不能为空!');
+                }
+            }
+        } else {
+            alert('请选择需要进行修改的项!');
+        }
+
+    }
+    function get_groups(){
+        var id = jQuery("#skill_list").jqGrid('getGridParam', 'selrow');
+        if (id) {
+            $.ajax({
+                url: '/skills/group_list',
+                type: 'get',
+                data: {skill_id: id},
+                success: function (data) {
+                    $("#skill_div").html(data);
+                    var video_consoleDlg = $("#skill_console");
+                    var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                    dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                    dialogButtonPanel.find("button:contains('保存')").hide();
+                    video_consoleDlg.dialog("option", "width", "800");
+                    video_consoleDlg.dialog("option", "title", "相关机构").dialog("open");
+                }
+            })
+        }else{
+            alert('请选择查询项!');
+        }
+    }
+  function doctor_list(){
+      var id = jQuery("#skill_list").jqGrid('getGridParam', 'selrow');
+      if (id) {
+          $.ajax({
+              url: '/skills/doctor_list',
+              type: 'get',
+              data: {skill_id: id},
+              success: function (data) {
+                  $("#skill_div").html(data);
+                  var video_consoleDlg = $("#skill_console");
+                  var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                  dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                  dialogButtonPanel.find("button:contains('保存')").hide();
+                  video_consoleDlg.dialog("option", "width", "800");
+                  video_consoleDlg.dialog("option", "title", "相关医生").dialog("open");
+              }
+          })
+      } else {
+          alert('请选择查询项!');
+      }
+  }
+    //向弹出框关闭按钮添加一个图标
+    $(function(){
+        $(".ui-dialog-titlebar .ui-dialog-titlebar-close").html("<span class='glyphicon glyphicon-remove'></span>");
+    })
+</script>

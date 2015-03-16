@@ -1,0 +1,338 @@
+<div id="video_consoleDlg">
+  <div id="upload_video_form">
+  </div>
+</div>
+<div style="width: 100%">
+    <div style="" class="yahei">
+      <span class="marginb">
+      视频类型：
+      <select id="video_search_id" class="select_w" onchange="search_videos()">
+      <option value="0">---全部---</option>
+      <% @video_types.each do |type|%>
+          <option value="<%= type.id%>"><%= type.type_name %></option>
+      <% end %>
+      </select>
+      </span>
+      <span class="marginb">
+        视频名称：<input type="text" id="search_video_name" onkeydown="search_keydown(event)" class="input_b">
+      </span>
+      <span class="marginb">
+        &nbsp;&nbsp;<button id="search_video_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;
+      <button id="clear_type_btn" class="btn btn-default btn-sm">清空</button>
+      </span>
+    </div>
+    <% link_to '上传视频', '/edu_videos/new_video'%>
+  <div class="jqgride_div">
+    <table id="edu_video_list"></table>
+    <div id="page_video"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    function search_keydown(event) {
+        if (event.keyCode == 13)
+            search_videos();
+    }
+    function search_videos(){
+        var video_search_id = $('#video_search_id').val();
+        var video_name = $('#search_video_name').val();
+        jQuery("#edu_video_list").jqGrid('setGridParam', {url: "/edu_videos/index_show?type=" + video_search_id + '&name=' + video_name }).trigger("reloadGrid");
+    }
+    $(function () {
+        $("#video_search_id").select2();
+    });
+    jQuery("#edu_video_list").jqGrid({
+        url: '/edu_videos/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '视频名称', '概要', '缩略图地址',  '视频地址', '医生ID', '医生', '时间', '类型ID', '视频类型','查看范围'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'name', index: 'name', align: "center", editable: true},
+            { name: 'content', index: 'content', align: "center", editable: true},
+            { name: 'image_url', index: 'image_url', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
+            { name: 'video_url', index: 'video_url', align: "center", editable: true, editoptions: { readonly: 'readonly'}},
+            { name: 'doctor_id', index: 'doctor_id', align: "center", editable: true, jsonmap: 'doctor.id', hidden: true, editrules: {edithidden: true}, edittype: 'select',
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).select2();
+                    },
+                    style: "width:166px",
+                    value: function () {
+                        var positions;
+                        $.ajax({
+                            url: "/edu_videos/get_doctors",
+                            async: false,
+                            success: function (data) {
+                                positions = data.doctors;
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert(textStatus);
+                            }
+                        });
+                        return positions;
+                    }
+                }},
+            { name: 'doctor_name', index: 'doctor_name', align: "center", editable: false, jsonmap: 'doctor.name'},
+            { name: 'video_time', index: 'video_time', align: "center", editable: true, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }, editoptions: { dataInit: function (element) {
+                $(element).datetimepicker({
+                    lang: 'ch',
+                    timepicker: false,
+                    format: 'Y-m-d'
+                })
+            } }},
+            { name: 'video_type_id', index: 'video_type_id', align: "center", editable: true, jsonmap: 'city.id', hidden: true, editrules: {edithidden: true}, edittype: 'select',
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).select2();
+                    },
+                    style: "width:166px",
+                    value: function () {
+                        var positions;
+                        $.ajax({
+                            url: "/edu_videos/get_video_types",
+                            async: false,
+                            success: function (data) {
+                                positions = data.video_types;
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert(textStatus);
+                            }
+                        });
+                        return positions;
+                    }
+                }},
+            { name: 'video_type', index: 'video_type', align: "center", editable: false, jsonmap: 'video_type.type_name'} ,
+            { name: 'view_permission', index: 'view_permission', align: "center", editable: false},
+
+        ],
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        rownumbers: true,
+        page:1,
+        jsonReader: {
+            root: "edu_videos",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: '/edu_videos/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_video'),
+       // multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "教育视频管理"
+    });
+    $("#video_consoleDlg").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                console.log(pos.top)
+                var topOffset = $( this ).css( pos ).offset().top;
+                console.log(topOffset)
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "保存": addContact,
+            "修改": updateContact,
+            "取消": cancelContact
+        }
+    });
+    jQuery("#edu_video_list").jqGrid('navGrid', '#page_video', {
+                cloneToTop: true, add:false, edit: false,
+                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+             ).navButtonAdd('#page_video', { title: '上传视频', caption: '上传视频', onClickButton: function () {
+                upload_video();
+            }, position: "first"})
+            .navButtonAdd('#page_video', { title: '修改视频', caption: '修改视频', onClickButton: function () {
+                update_video();
+            }, position: "last"});
+    //搜索视频
+    $('#search_video_btn').click(function () {
+       search_videos();
+    });
+    //清空搜索医院的查询条件
+    $('#clear_type_btn').click(function () {
+        $("#province_search_id").select2("val", "0");
+        $('#search_video_name').val('');
+    });
+    function upload_video(){  //弹出上传视频对话框
+//        window.location.href='edu_videos/new_video';
+        $.ajax({
+            url:'/edu_videos/new_video',
+            type:'get',
+            success:function(data){
+                $("#upload_video_form").html(data);
+                var video_consoleDlg = $("#video_consoleDlg");
+                var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                dialogButtonPanel.find("button:contains('保存')").show();
+                video_consoleDlg.dialog("option", "width", "540");
+                video_consoleDlg.dialog("option", "title", "上传视频").dialog("open");
+            }
+        })
+    }
+    function update_video(){   //弹出修改视频信息对话框
+        var id = jQuery("#edu_video_list").jqGrid('getGridParam', 'selrow');
+        if (id){
+            $.ajax({
+                url: '/edu_videos/edit_video',
+                type: 'post',
+                data: {id: id},
+                success: function (data) {
+                    $("#upload_video_form").html(data);
+                    var video_consoleDlg = $("#video_consoleDlg");
+                    var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                    dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                    dialogButtonPanel.find("button:contains('修改')").show();
+                    video_consoleDlg.dialog("option", "width", "540");
+                    video_consoleDlg.dialog("option", "title", "修改视频").dialog("open");
+                }
+            })
+        }else{
+            alert('请选择需要进行修改的视频!');
+        }
+
+    }
+    function addContact(){   //保存视频信息
+        var New=document.getElementsByName("view_permission");
+        var strNew;
+        for(var i=0;i<New.length;i++)
+        {
+            if(New.item(i).checked){
+                strNew=New.item(i).getAttribute("value");
+                break;
+            }else{
+                continue;
+            }
+        }
+        console.log(strNew)
+        $.ajax({
+            url: "/edu_videos/upload",
+            type: 'post',
+            data: {
+                name: $('#video_name').val(),
+                content: $('#video_content').val(),
+                video_time: $('#video_time').val(),
+                image_url: $('#image_path').val(),
+                video_url: $('#video_url').val(),
+                hospital_id:$('#doctor_hos_id').val(),
+                department_id:$('#doctor_dep_id').val(),
+                doctor_id: $('#video_doctor_id').val(),
+                video_type_id: $('#video_type_id').val(),
+                view_permission:strNew
+            },
+            async: false,
+            success: function (data) {
+                window.parent.$("#video_consoleDlg").dialog("close");
+                $('#refresh_edu_video_list').click()   //保存成功后关闭对话框
+//                $("#rightContent").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('视频上传失败!');
+            }
+        });
+    }
+    function updateContact(){   //修改视频信息
+        var New=document.getElementsByName("view_permission");
+        var strNew;
+        for(var i=0;i<New.length;i++)
+        {
+            if(New.item(i).checked){
+                strNew=New.item(i).getAttribute("value");
+                break;
+            }else{
+                continue;
+            }
+        }
+        $.ajax({
+            url: "/edu_videos/video_edit",
+            type: 'post',
+            data: { id: $('#video_id').val(),
+                name: $('#video_name').val(),
+                content:$('#video_content').val(),
+                video_time:$('#video_time').val(),
+                image_url:$('#image_path').val(),
+                video_url:$('#video_url').val(),
+                hospital_id:$('#doctor_hos_id').val(),
+                department_id:$('#doctor_dep_id').val(),
+                doctor_id:$('#video_doctor_id').val(),
+                video_type_id:$('#video_type_id').val(),
+                view_permission:strNew
+            },
+            async: false,
+            success: function (data) {
+                window.parent.$("#video_consoleDlg").dialog("close");  //修改成功后关闭对话框
+                $('#refresh_edu_video_list').click()
+//                $("#rightContent").html(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert('视频修改失败!');
+            }
+        });
+    }
+    function cancelContact() {
+        if ($.trim($('#image_path').val())=='' && $.trim($('#video_url').val())=='') {
+            window.parent.$("#video_consoleDlg").dialog("close");
+        } else{
+            $.ajax({
+                url: "/edu_videos/video_delete",
+                type: 'post',
+                data: { video_id: $('#video_id').val(),
+                    image_url:$('#image_path').val(),
+                    video_url:$('#video_url').val()
+                },
+                async: false,
+                success: function (data) {
+                    window.parent.$("#video_consoleDlg").dialog("close");  //关闭对话框
+    //                $('#refresh_edu_video_list').click()
+    //                $("#rightContent").html(data);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('视频修改失败!');
+                }
+            });
+        }
+    }
+    //向弹出框关闭按钮添加一个图标
+    $(function(){
+        $(".ui-dialog-titlebar .ui-dialog-titlebar-close").html("<span class='glyphicon glyphicon-remove'></span>");
+    })
+</script>

@@ -8,7 +8,8 @@ class MenusController < ApplicationController
 
 
   def index
-    render partial: 'menus/menu_manage'
+    all_menus
+    render template:  'menus/menu_manage'
   end
 
   def show_index

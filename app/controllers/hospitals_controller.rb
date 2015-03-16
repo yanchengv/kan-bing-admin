@@ -5,6 +5,7 @@ class HospitalsController < ApplicationController
   # GET /hospitals
   # GET /hospitals.json
   def index
+    all_menus
     @opr_flag=true
     if current_user.admin_type == '医院管理员'
       @opr_flag=false
@@ -12,7 +13,7 @@ class HospitalsController < ApplicationController
     @provinces = Province.all
     @cities = City.all
 
-    render partial: 'hospitals/hospital_manage'
+    render template:  'hospitals/hospital_manage'
   end
 
   def show_index

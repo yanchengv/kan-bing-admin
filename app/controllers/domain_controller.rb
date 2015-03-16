@@ -1,7 +1,8 @@
 class DomainController < ApplicationController
    # after_filter :get_template,only: :create
   def show
-    render partial: 'page_blocks/domain_manage'
+    all_menus
+    render template:  'page_blocks/domain_manage'
   end
   def domain_list
     @domains = Domain.where(hospital_id:current_user.hospital_id, department_id:current_user.department_id).order('created_at desc')

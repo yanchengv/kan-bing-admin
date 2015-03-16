@@ -8,6 +8,7 @@ class DoctorsController < ApplicationController
   # GET /doctors
   # GET /doctors.json
   def index
+    all_menus
     @hospitals = nil
     @departments = nil
     if !current_user.hospital_id.nil? && current_user.hospital_id != ''
@@ -22,7 +23,7 @@ class DoctorsController < ApplicationController
     end
     @provinces = Province.select("id","name").all
     @cities = City.select("id","name").all
-    render partial: 'doctors/doctor_manage'
+    render template:  'doctors/doctor_manage'
   end
 
   def show_index

@@ -1,0 +1,215 @@
+
+    <div class="jqgride_div">
+        <table id="diagnose_type_list"></table>
+        <div id="page_diagnose_type"></div>
+    </div>
+
+
+  <div style="margin-top: 40px;" class="yahei">
+    <span class="marginb">
+        诊断类型：<select id="diagnose_type"  class="select_w">
+        <option value="">---请选择---</option>
+        <% @diagnose_types.each do |type| %>
+        <option value="<%= type.id %>"><%= type.type_name %></option>
+        <% end %>
+        </select>
+    </span>
+    <span class="marginb">
+      &nbsp;&nbsp;诊断内容：<input type="text" class="input_b" id="diagnose_search" onkeydown="search_keydown(event)">
+    </span>
+    <span class="marginb">
+      &nbsp;&nbsp;<button id="search_diagnose_btn" class="btn btn-success btn-sm">搜索</button>
+      &nbsp;<button id="clear_diagnose_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
+  </div>
+
+
+
+    <div class="jqgride_div">
+    <table id="diagnose_list"></table>
+    <div id="page_diagnose"></div>
+    </div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#diagnose_type").select2();
+    })
+    jQuery("#diagnose_type_list").jqGrid({
+        url: '/diagnose_types/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '诊断类型'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'type_name', index: 'type_name', align: "center", editable: true}
+        ],
+        rownumbers: true,
+      //  hiddengrid: true,
+        page: 1,
+        rowList: [5, 10, 15],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        width:"100%",
+        autowidth: true,
+        jsonReader: {
+            root: "diagnose_types",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        onSelectRow: function (rowid) {
+            jQuery("#diagnose_list").jqGrid('setGridParam', {url: "/medical_diagnoses/index_show?diagnose_type_id=" + rowid }).trigger("reloadGrid");
+        },
+        editurl: '/diagnose_types/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_diagnose_type'),
+        rowNum: 10,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "诊断类型管理"
+    });
+    jQuery("#diagnose_type_list").jqGrid('navGrid', '#page_diagnose_type', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除", view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+    );
+    jQuery("#diagnose_list").jqGrid({
+        url: '/medical_diagnoses/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '诊断类型', '诊断内容', '创建人', '创建时间', '所属类型'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'diagnose_type_id', index: 'diagnose_type_id', align: "center", editable: true, hidden: true, editrules: {edithidden: true}, edittype: "select", editoptions: {
+                dataInit: function (element) {
+                    $(element).select2();
+                },
+                style: "width:158px",
+
+                value: function () {
+                    var positions;
+                    $.ajax({
+                        url: "/medical_diagnoses/get_diagnose_types",
+                        async: false,
+                        success: function (data) {
+                            positions = data.diagnose_types;
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert(textStatus);
+                        }
+                    });
+                    return positions;
+                }
+            }},
+            { name: 'title', index: 'title', align: "center", editable: true},
+            { name: 'created_by_name', index: 'created_by_name', align: "center", editable: false },
+            { name: 'created_at', index: 'created_at', align: "center", editable: false, formatter: 'date', formatoptions: { newformat: 'Y-m-d' }},
+            { name: 'type_name', index: 'type_name', align: "center", editable: false, jsonmap: 'diagnose_type.type_name' }
+        ],
+        rownumbers: true,
+        page:1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "medical_diagnoses",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: '/medical_diagnoses/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_diagnose'),
+        multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "诊断管理"
+    });
+    jQuery("#diagnose_list").jqGrid('navGrid', '#page_diagnose', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+             ).navButtonAdd('#page_diagnose', { title: '批量删除', caption: '批量删除', onClickButton: function () {
+                batch_delete()
+            }, position: "last"});
+    //批量删除
+    function batch_delete() {
+        var ids = $('#diagnose_list').jqGrid('getGridParam', 'selarrrow');
+        if (ids.length == 0) {
+            alert('请选择删除项！');
+        } else {
+            $.ajax({
+                        type: 'post',
+                        url: '/medical_diagnoses/batch_delete',
+                        data: {ids: ids},
+                        success: function (data) {
+                            if (data.success == true) {
+                                jQuery("#diagnose_list").jqGrid('setGridParam', {url: "/medical_diagnoses/index_show"}).trigger("reloadGrid");
+                            } else {
+                                alert('操作失败！');
+                            }
+                        }
+                    }
+            );
+        }
+    }
+    function search_diagnose(){
+        var title = $('#diagnose_search').val();
+        var type = $('#diagnose_type').val();
+        jQuery("#diagnose_list").jqGrid('setGridParam', {url: "/medical_diagnoses/index_show?title=" + title + '&diagnose_type_id=' + type }).trigger("reloadGrid");
+    }
+    //搜索diagnose
+    $('#search_diagnose_btn').click(function () {
+        search_diagnose();
+    });
+    function search_keydown(event) {
+        if (event.keyCode == 13)
+            search_diagnose();
+    }
+    //清空k
+    $('#clear_diagnose_btn').click(function () {
+        $('#diagnose_search').val('');
+        $('#diagnose_type').select2("val", "");
+    });
+</script>

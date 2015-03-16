@@ -1,0 +1,93 @@
+<div style="width: 100%">
+    <div style="" class="yahei">
+      <span class="marginb">
+        视频类型名称：<input type="text" id="video_type_name" onkeydown="search_keydown(event)" class="input_b">
+      </span>
+      <span class="marginb">
+        <button id="search_type_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;<button id="clear_type_btn" class="btn btn-default btn-sm">清空</button>
+      </span>
+    </div>
+    <div class="jqgride_div">
+        <table id="video_type_list"></table>
+        <div id="page_type"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function search_keydown(event) {
+        if (event.keyCode == 13)
+            search_video_type();
+    }
+    jQuery("#video_type_list").jqGrid({
+        url: '/video_types/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '视频类型名称'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden:true},
+            { name: 'type_name', index: 'type_name', align: "center", editable: true}
+        ],
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        rownumbers: true,
+        page:1,
+        jsonReader: {
+            root: "video_types",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: '/video_types/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_type'),
+       // multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "视频类型管理"
+    });
+    jQuery("#video_type_list").jqGrid('navGrid', '#page_type', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+             );
+  
+    //搜索视频类型
+    function search_video_type(){
+        var type_name = $('#video_type_name').val();
+        jQuery("#video_type_list").jqGrid('setGridParam', {url: "/video_types/index_show?name=" + type_name }).trigger("reloadGrid");
+    }
+    $('#search_type_btn').click(function () {
+        search_video_type();
+    });
+    //清空搜索医院的查询条件
+    $('#clear_type_btn').click(function () {
+        $('#video_type_name').val('');
+    });
+    $('#video_type_name').keydown(function(e){
+    if (e.keyCode == 13) {
+        search_video_type();
+    }
+    });
+</script>

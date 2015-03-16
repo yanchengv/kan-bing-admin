@@ -6,7 +6,8 @@ class Admin2sController < ApplicationController
   # GET /admins.json
   def index
 
-    render partial: 'admin2s/admin_manage'
+    all_menus
+    render template:  'admin2s/admin_manage'
   end
 
   def test_index
@@ -158,8 +159,9 @@ class Admin2sController < ApplicationController
   end
 
   def setting
+    all_menus
     # render template: 'admin2s/setting'
-    render partial: 'admin2s/setting_form'
+    render template:  'admin2s/setting_form'
   end
 
   def password_update

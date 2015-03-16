@@ -6,7 +6,8 @@ class DoctorFriendshipsController < ApplicationController
     # GET /doctor_friendships
     # GET /doctor_friendships.json
     def index
-      render partial: 'doctor_friendships/doctor_friendship'
+      all_menus
+      render template:  'doctor_friendships/doctor_friendship'
     end
 
     def show_index

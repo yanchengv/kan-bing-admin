@@ -1,0 +1,40 @@
+<%= javascript_include_tag 'domain_manage'%>
+<!--域名管理-->
+<div style="width: 100%">
+  <div class="jqgride_div">
+    <table id="list_domain"></table>
+    <div id="domain_block"></div>
+  </div>
+</div>
+
+<!--添加域名彈出框-->
+<div id="domain_consoleDlg">
+  <div id="domain_form" >
+      <input type="text" name="name" id="domainName" style="width:100%;">
+    <div id="domain_blank"></div>
+  </div>
+</div>
+
+<!--修改域名彈出框-->
+<div id="domain_update_consoleDlg">
+  <div id="domain_upldate_form" >
+    <input type="text" name="name" id="domainUpdateName" style="width:100%;">
+    <div id="domain_update_blank"></div>
+  </div>
+</div>
+
+<!--添加logo彈出框-->
+<div id="logo_consoleDlg">
+  <div id="logo_form" >
+    <input id="logo_img2" style="display:inline" type="button" value="选择图片"/>
+    <div id="uploadLogoStaus"></div>
+    <input type="file" name="logoUpload" name="files[]" id="logoUpload" style='visibility:hidden;'>
+    <div id="logo_blank">如果已存在，则会替换原有图片</div>
+  </div>
+</div>
+
+
+<!--修改页脚-->
+<div id="footer_consoleDlg">
+    <input id="footer" type="text" name="footer" style="width:100%;"/>
+</div>

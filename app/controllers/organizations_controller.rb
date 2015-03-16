@@ -5,7 +5,8 @@ class OrganizationsController < ApplicationController
   # GET /organizations
   # GET /organizations.json
   def index
-    render :partial => 'organizations/organizations_manage'
+    all_menus
+    render :template => 'organizations/organizations_manage'
   end
 
   def show_index

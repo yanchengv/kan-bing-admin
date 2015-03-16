@@ -1,0 +1,379 @@
+<div id="btn" style="margin-bottom:15px;">
+
+    <ul  class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+        <a href="#"  role="tab" data-toggle="tab" aria-expanded="true" onclick="click_btn('province')" style="font-size:16px;">
+          <b>省管理</b>
+        </a>
+      </li>
+      <li role="presentation">
+        <a href="#" role="tab"  data-toggle="tab" onclick="click_btn('city')" style="font-size:16px;">
+          <b>市管理</b>
+        </a>
+      </li>
+      <li role="presentation" class="dropdown">
+        <a href="#" role="tab"  data-toggle="tab" onclick="click_btn('county')" style="font-size:16px;">
+          <b>县管理</b>
+        </a>
+      </li>
+      <li role="presentation" class="dropdown">
+        <a href="#" role="tab"  data-toggle="tab" onclick="click_btn('all')" style="font-size:16px;">
+          <b>全部</b>
+        </a>
+      </li>
+    </ul>
+
+    <!--<button title="province" onclick="click_btn('province')">省管理</button>-->
+    <!--<button title="city" onclick="click_btn('city')">市管理</button>-->
+    <!--<button title="county" onclick="click_btn('county')">县管理</button>-->
+    <!--<button title="all" onclick="click_btn('all')">全部</button>-->
+</div>
+
+<div id="search_div" style="" class="yahei">
+    <span class="marginb">
+        省：<input type="text" class="input_b" id="province_name" onkeydown="search_keydown(event)">
+    </span>
+    <span class="marginb">
+        市：<input type="text" class="input_b" id="city_name" onkeydown="search_keydown(event)">
+    </span>
+    <span class="marginb">
+        县：<input type="text" class="input_b" id="county_name" onkeydown="search_keydown(event)">
+    </span>
+    <span class="marginb">
+        <button id="search_btn" class="btn btn-success btn-sm">搜索</button>
+    </span>
+</div>
+  <div id="province_city_county">
+
+      <div id="province" class="jqgride_div" style="margin-bottom:15px;">
+        <table id="list_province"></table>
+        <div id="page_province"></div>
+      </div>
+
+      <div id="city" class="jqgride_div" style="margin-bottom:15px;">
+        <table id="list_city"></table>
+        <div id="page_city"></div>
+      </div>
+
+      <div id="county" class="jqgride_div" style="margin-bottom:15px;">
+        <table id="list_county"></table>
+        <div id="page_county"></div>
+      </div>
+
+  </div>
+<script>
+    function search_keydown(event) {
+        if (event.keyCode == 13) {
+            search_provinces();
+        }
+    }
+        jQuery("#list_province").jqGrid({
+            url: '/provinces/test_index',
+            datatype: "json",
+            mtype: 'GET',
+            colNames:['ID','省','简称', '英文拼写'],
+            colModel: [
+                { name: 'id', index: 'id', width: 40, align: "left", key: 'id', hidden: true},
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true},
+                { name: 'short_name', index: 'short_name', width: 100, align: "center", editable: true},
+                { name: 'spell_name', index: 'spell_name', width: 100, align: "center", editable: true}
+            ],
+            rowList: [10, 20, 30],
+            rownumbers: true,
+            page: 1,
+            sortname: 'id',
+            viewrecords: true,
+            autowidth: true,
+            sortorder: "desc",
+            jsonReader: {
+                root: "provinces",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page",
+                rows: "rows",
+                id: "id",
+                totalrows: "totalrows",
+                editoper: "edit",
+                addoper: "add",
+                deloper: "del",
+                subgridid: "id"
+            },
+            editurl:'/provinces/oper_action',
+            pager: jQuery('#page_province'),
+            //    multiselect: true,
+            multiboxonly:true,
+            rowNum: 10,
+            altclass: 'altRowsColour',
+            width: '500',
+            caption: "省管理",
+            beforeSelectRow: function(rowid, e)
+            {
+                jQuery("#list_province").jqGrid('resetSelection');
+                return(true);
+            },
+            onCellSelect: function (id, status) {
+                var name = "jqg_grid-table_" + id;
+                $.each($("input[CHECKED='checked']"), function () {
+                    if (name != $(this).attr("name")) {
+                        $(this).attr("CHECKED", false);
+                        $(this).parent().parent().removeClass("ui-state-highlight");
+                    }
+                });
+            },
+            onSelectRow: function(id){
+                var grid = jQuery("#list_city");
+                grid.jqGrid('setGridParam',{url:"/cities/test_index?province_id="+ id}).trigger('reloadGrid');
+                grid.setColProp("province_id", { editoptions: { defaultValue: id, readonly: 'readonly'} });
+            },
+            gridComplete: function () {
+                var id = jQuery("#list_province").jqGrid('getGridParam', 'selrow');
+                if (id) {
+                    jQuery('#list_city').jqGrid('setGridParam', {url: "/cities/test_index?province_id=" + id}).trigger('reloadGrid');
+                } else {
+                    jQuery('#list_city').jqGrid('setGridParam', {url: "/cities/test_index"}).trigger('reloadGrid');
+                }
+            }
+        }).navGrid('#page_province', {
+                    cloneToTop: true,addtext: "新增", addtitle: "新增",edittext:"编辑",edittitle:"编辑",
+                    deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
+                    refreshtext: "更新", refreshtitle: "更新"},
+                {
+                    closeAfterEdit:true
+                },{
+                    closeAfterAdd:true
+                })
+        function search_provinces(){
+            var province_name = $('#province_name').val();
+            var city_name = $('#city_name').val();
+            var county_name = $('#county_name').val();
+            if ($('#search_div input').attr('disabled') != 'disabled') {
+                jQuery("#list_province").jqGrid('setGridParam', {url: "/provinces/test_index?province_name=" + province_name}).trigger("reloadGrid")
+                jQuery("#list_city").jqGrid('setGridParam', {url: "/cities/test_index?city_name=" + city_name}).trigger("reloadGrid")
+                jQuery("#list_county").jqGrid('setGridParam', {url: "/counties/test_index?county_name=" + county_name}).trigger("reloadGrid")
+            }
+            if ($('#province_name').attr('disabled') != 'disabled') {
+                jQuery("#list_province").jqGrid('setGridParam', {url: "/provinces/test_index?province_name=" + province_name}).trigger("reloadGrid")
+            } else if ($('#city_name').attr('disabled') != 'disabled') {
+                jQuery("#list_city").jqGrid('setGridParam', {url: "/cities/test_index?city_name=" + city_name}).trigger("reloadGrid")
+            } else {
+                jQuery("#list_county").jqGrid('setGridParam', {url: "/counties/test_index?county_name=" + county_name}).trigger("reloadGrid")
+            }
+        }
+        $("#search_btn" ).click(function () {
+            search_provinces();
+        });
+
+    function click_btn(value){
+        $('#btn button[title='+value+']').addClass("blue_btn");
+        $('#btn button[title!='+value+']').removeClass("blue_btn");
+        if(value=='province'){
+            $('#'+value+'').css('display','block');
+            $('#city').css('display','none');
+            $('#county').css('display','none');
+            $('#province_name').removeAttr('disabled');
+            $('#city_name').attr('disabled','disabled');
+            $('#county_name').attr('disabled','disabled');
+        }else if(value=='city'){
+            $('#'+value+'').css('display','block');
+            $('#province').css('display','none');
+            $('#county').css('display','none');
+            $('#province_name').attr('disabled','disabled');
+            $('#city_name').removeAttr('disabled');
+            $('#county_name').attr('disabled','disabled');
+        }else if(value=='county'){
+            $('#'+value+'').css('display','block');
+            $('#city').css('display','none');
+            $('#province').css('display','none');
+            $('#province_name').attr('disabled','disabled');
+            $('#city_name').attr('disabled','disabled');
+            $('#county_name').removeAttr('disabled');
+        }else{
+            $('#province').css('display','block');
+            $('#city').css('display','block');
+            $('#county').css('display','block');
+            $('#province_name').removeAttr('disabled');
+            $('#city_name').removeAttr('disabled');
+            $('#county_name').removeAttr('disabled');
+        }
+    };
+</script>
+<script>
+    $(document).ready(function () {
+        jQuery("#list_city").jqGrid({
+            url: '/cities/test_index',
+            datatype: "json",
+            mtype: 'GET',
+            colNames:['ID','市名称','省ID'],
+            colModel: [
+                { name: 'id', index: 'id',width: 40, align: "left", key: 'id', hidden: true},
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true},
+                { name: 'province_id', index: 'province_id', width: 100, align: "center",editable: true}
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            autowidth: true,
+            sortorder: "desc",
+            rownumbers: true,
+            page: 1,
+            jsonReader: {
+                root: "cities",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page",
+                rows: "rows",
+                id: "id",
+                totalrows: "totalrows",
+                editoper: "edit",
+                addoper: "add",
+                deloper: "del",
+                subgridid: "id"
+            },
+            editurl:'/cities/oper_action',
+            pager: jQuery('#page_city'),
+            // multiselect: true,
+            rowNum: 10,
+            altclass: 'altRowsColour',
+            width: '500',
+            caption: "市管理",
+            beforeSelectRow: function(rowid, e)
+            {
+                jQuery("#list_city").jqGrid('resetSelection');
+                return(true);
+            },
+            onSelectRow: function(id){
+                var grid = jQuery("#list_county");
+                grid.jqGrid('setGridParam',{url:"/counties/test_index?city_id="+id}).trigger('reloadGrid');
+                grid.setColProp("city_id", { editoptions: { defaultValue: id, readonly: 'readonly'} });
+            },
+            gridComplete: function () {
+                var id = jQuery("#list_city").jqGrid('getGridParam', 'selrow');
+                if (id) {
+                    jQuery('#list_county').jqGrid('setGridParam', {url: "/counties/test_index?city_id=" + id}).trigger('reloadGrid');
+                } else {
+                    jQuery('#list_county').jqGrid('setGridParam', {url: "/counties/test_index"}).trigger('reloadGrid');
+                }
+            }
+        }).navGrid('#page_city', {
+                    cloneToTop: true,add: false,edit: false,
+                    deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
+                    refreshtext: "更新", refreshtitle: "更新"} /* ,
+              {
+                    closeAfterEdit:true
+                },{
+                    closeAfterAdd:true
+                }*/).navButtonAdd('#page_city', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
+            editCity()
+        }, position: "first"})
+                .navButtonAdd('#page_city', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                    addCity()
+                }, position: "first"})
+    });
+    function addCity() {
+        var id = jQuery("#list_province").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择省份！');
+        } else {
+            jQuery("#list_city").jqGrid('editGridRow', 'new', {  closeAfterAdd: true});
+        }
+
+    }
+    function editCity() {
+        var id = jQuery("#list_city").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择！');
+        } else {
+            jQuery("#list_city").jqGrid('editGridRow', id, { closeAfterEdit: true});
+        }
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        jQuery("#list_county").jqGrid({
+            url: '/counties/test_index',
+            datatype: "json",
+            mtype: 'GET',
+            colNames:['ID','县名称','市ID','省ID'],
+            colModel: [
+                { name: 'id', index: 'id', width: 40, align: "left", hidden: true},
+                { name: 'name', index: 'name', width: 100, align: "center", editable: true},
+                { name: 'city_id', index: 'city_id', width: 100, align: "center", editable: true, editrules:{required: true}},
+                { name: 'province_id', index: 'province_id', width: 100, align: "center"}
+            ],
+            rowList: [10, 20, 30],
+            sortname: 'id',
+            viewrecords: true,
+            autowidth: true,
+            sortorder: "desc",
+            rownumbers: true,
+            jsonReader: {
+                root: "counties",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            prmNames: {
+                page: "page",
+                rows: "rows",
+                id: "id",
+                totalrows: "totalrows",
+                editoper: "edit",
+                addoper: "add",
+                deloper: "del"
+            },
+            editurl:'/counties/oper_action',
+            pager: jQuery('#page_county'),
+            //  multiselect: true,
+            rowNum: 10,
+            page: 1,
+            altclass: 'altRowsColour',
+            caption: "县管理"
+        }).navGrid('#page_county', {
+                    cloneToTop: true,add: false,edit: false,
+                    deltext:"删除",deltitle:"删除", viewtext: "查看", viewtitle: "查看",search: false,
+                    refreshtext: "更新", refreshtitle: "更新"} /* ,
+              {
+                    closeAfterEdit:true
+                },{
+                    closeAfterAdd:true
+                }*/).navButtonAdd('#page_county', { title: '编辑', caption: '编辑', buttonicon: "ui-icon-pencil", onClickButton: function () {
+            editCounty()
+        }, position: "first"})
+                .navButtonAdd('#page_county', { title: '新增', caption: '新增', buttonicon: "ui-icon-plus", onClickButton: function () {
+                    addCounty()
+                }, position: "first"})
+    });
+    function addCounty() {
+        var id = jQuery("#list_city").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择市！');
+        } else {
+            jQuery("#list_county").jqGrid('editGridRow', 'new', {  closeAfterAdd: true});
+        }
+
+    }
+    function editCounty() {
+        var id = jQuery("#list_county").jqGrid('getGridParam', 'selrow');
+        if (!id) {
+            alert('请先选择！');
+        } else {
+            jQuery("#list_county").jqGrid('editGridRow', id, { closeAfterEdit: true});
+        }
+    }
+        $(function(){
+            click_btn('all')
+        })
+</script>
+
+<div class="modal fade" id="create_or_edit_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+</div>

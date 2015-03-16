@@ -5,7 +5,8 @@ class VideoTypesController < ApplicationController
   # GET /video_types
   # GET /video_types.json
   def index
-    render partial: 'video_types/video_type_manage'
+    all_menus
+    render template:  'video_types/video_type_manage'
   end
 
   def show_index

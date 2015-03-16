@@ -5,7 +5,8 @@ class NationalInformationsController < ApplicationController
   # GET /national_informations
   # GET /national_informations.json
   def index
-    render :partial => 'national_informations/national_informations_manage'
+    all_menus
+    render :template => 'national_informations/national_informations_manage'
   end
 
   def show_index

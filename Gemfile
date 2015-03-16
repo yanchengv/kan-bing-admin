@@ -65,3 +65,5 @@ gem 'jsdicom', git: 'git@fitark.org:saturn/jsdicom-rails4.1.x.git'
 
 gem 'bootstrap-sass', '3.0.2'
 
+gem 'aes', '~> 0.5.0' #加密
+

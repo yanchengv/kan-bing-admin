@@ -1,8 +1,7 @@
-
 <% if signed_in? %>
     <%= stylesheet_link_tag 'menus/left_menu'%>
     <!--<script type="text/javascript">-->
-        var zNodes=<%#=raw @left_menus.to_json %>
+    //    var zNodes=<%#=raw @left_menus.to_json %>
 
 // //        初始化富文本
 //     KindEditor.ready(function(K) {
@@ -11,13 +10,15 @@
     <!--</script>-->
     <%#= javascript_include_tag 'menus/left_menu'%>
     <!--左侧二级菜单-->
-    <div class="page-with-sidebar">
-      <div class="sidebar-wrapper">
+    <!--<div class="page-with-sidebar">-->
+      <!--<div class="sidebar-wrapper">-->
         <ul class="project-navigation nav nav-sidebar" id="accordion">
           <% if !@left_menus.nil? && !@left_menus.empty? %>
               <% @left_menus.each do |menu| %>
                   <li id="menu_<%= menu.id %>">
-                    <a class="shortcuts-project" href="javascript:leftMeunsOnClick('<%= menu.uri %>','menu_<%= menu.id %>')" title="<%= menu.name %>">
+
+                    <a class="shortcuts-project" href="<%= menu.uri %>?pId=<%=  AES.encrypt(params[:pId], '290c3c5d812a4ba7ce33adf09598a462')  %>&menu_id=<%=  AES.encrypt(menu.id.to_s, '290c3c5d812a4ba7ce33adf09598a462') %>" title="<%= menu.name %>">
+                    <!--<a class="shortcuts-project" href="javascript:leftMeunsOnClick('<%= menu.uri %>','menu_<%= menu.id %>')" title="<%= menu.name %>">-->
                       <% if menu.icon %>
                         <%= raw menu.icon %>
                       <% else %>
@@ -47,26 +48,18 @@
             <!--</a>-->
           <!--</li>-->
         </ul>
-        <!--<div class="zleftMenusBackground left" style="height:100%;float:left;width:15% !important;margin-top:0px !important;overflow:hidden;" id="homeLeftMenus">-->
-          <!--<ul id="leftMenus" class="ztree" style="width:100%;height:100%;margin-top:0px !important;"></ul>-->
-        <!--</div>-->
-      </div>
+      <!--</div>-->
       <!--右侧内容-->
-      <div class="content-wrapper">
-        <div class="container-fluid" id="rightContent">
-          <div class="row">
-            <div style="text-align:center">
-              <%=image_tag "http://mimas-img.oss-cn-beijing.aliyuncs.com/huanying.jpg",:class=> "huanying_img"%>
-            </div>
-          </div>
-        </div>
-        <!--<div id="rightContent" style="float:right;width:82% !important;padding:10px;position:relative;">-->
-          <!--<div style="text-align:center">-->
-          <!--<%#=image_tag "http://mimas-img.oss-cn-beijing.aliyuncs.com/huanying.jpg",:class=> "huanying_img"%>-->
+      <!--<div class="content-wrapper">-->
+        <!--<div class="container-fluid" id="rightContent">-->
+          <!--<div class="row">-->
+            <!--<div style="text-align:center">-->
+              <!--<%#=image_tag "http://mimas-img.oss-cn-beijing.aliyuncs.com/huanying.jpg",:class=> "huanying_img"%>-->
+            <!--</div>-->
           <!--</div>-->
         <!--</div>-->
-      </div>
-    </div>
+      <!--</div>-->
+    <!--</div>-->
 <%end%>
 <script>
     function leftMeunsOnClick(URL,menu_id) {
@@ -86,4 +79,13 @@
                 }
             })
     };
+    $(document).ready(function () {
+        $('#accordion li').removeClass("active");
+        <% if !params[:menu_id].nil?%>
+        $('#menu_<%= AES.decrypt(params[:menu_id].gsub(/[ ]/, '+'),'290c3c5d812a4ba7ce33adf09598a462') %>').addClass('active')
+//        if ($('#accordion li')[0] != undefined){
+//            $('#accordion li')[0].children[0].click()
+//        }
+        <% end %>
+    })
 </script>

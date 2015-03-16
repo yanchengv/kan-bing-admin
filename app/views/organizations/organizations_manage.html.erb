@@ -1,0 +1,112 @@
+<div style="width: 100%" class="yahei">
+    <span class="marginb">
+      机构名称：<input type="text" id="name_search" onkeydown="search_keydown(event)" class="input_b">
+    </span>
+    <span class="marginb">
+    <button id="search_name_btn" class="btn btn-success btn-sm">搜索</button>&nbsp;<button id="clear_name_btn" class="btn btn-default btn-sm">清空</button>
+    </span>
+    </div>
+    <div class="jqgride_div">
+    <table id="organization_list"></table>
+    <div id="page_organization"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery("#organization_list").jqGrid({
+        url: '/organizations/index_show',
+        datatype: "json",
+        mtype: 'GET',
+        colNames: [ 'ID', '名称', '联系方式', '地址', '描述'],
+        colModel: [
+            { name: 'id', index: 'id', align: "left", key: 'id', hidden: true},
+            { name: 'name', index: 'name', align: "center", editable: true},
+            { name: 'phone', index: 'phone', align: "center", editable: true},
+            { name: 'address', index: 'address', align: "center", editable: true},
+            { name: 'description', index: 'description', align: "center", editable: true, editrules: {edithidden: true}, edittype: 'textarea', editoptions: {rows: 5, style: "width:300px"}}
+        ],
+        rownumbers: true,
+        page:1,
+        rowList: [10, 15, 20],
+        sortname: 'id',
+        viewrecords: true,
+        sortorder: "desc",
+        autowidth: true,
+        jsonReader: {
+            root: "organizations",
+            total: "totalpages",
+            page: "currpage",
+            records: "totalrecords",
+            repeatitems: false
+        },
+        prmNames: {
+            page: "page", // 表示请求页码的参数名称
+            rows: "rows", // 表示请求行数的参数名称
+            id: "id", // 表示当在编辑数据模块中发送数据时，使用的id的名称
+            //   npage: null,
+            totalrows: "totalrows", // 表示需从Server得到总共多少行数据的参数名称，参见jqGrid选项中的rowTotal
+            editoper: "edit", // 当在edit模式中提交数据时，操作的名称
+            addoper: "add", // 当在add模式中提交数据时，操作的名称
+            deloper: "del" // 当在delete模式中提交数据时，操作的名称
+        },
+        editurl: '/organizations/oper_action',
+        closeAfterAdd: true,
+        pager: jQuery('#page_organization'),
+        multiselect: true,
+        rowNum: 15,
+        altclass: 'altRowsColour',
+        width: '500',
+        height: 'auto',
+        caption: "机构管理"
+    });
+    jQuery("#organization_list").jqGrid('navGrid', '#page_organization', {
+                cloneToTop: true, addtext: "新增", addtitle: "新增", edittext: "编辑", edittitle: "编辑",
+                deltext: "删除", deltitle: "删除",view: true, viewtext: "查看", viewtitle: "查看", search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+                closeAfterEdit: true
+            },//edit
+            {
+                closeAfterAdd: true
+            }//add
+             ).navButtonAdd('#page_organization', { title: '批量删除', caption: '批量删除', onClickButton: function () {
+                batch_delete()
+            }, position: "last"});
+    //批量删除
+    function batch_delete() {
+        var ids = $('#organization_list').jqGrid('getGridParam', 'selarrrow');
+        if (ids.length == 0) {
+            alert('请选择删除项！');
+        } else {
+            $.ajax({
+                        type: 'post',
+                        url: '/organizations/batch_delete',
+                        data: {ids: ids},
+                        success: function (data) {
+                            if (data.success == true) {
+                                jQuery("#organization_list").jqGrid('setGridParam', {url: "/organizations/index_show"}).trigger("reloadGrid");
+                            } else {
+                                alert('操作失败！');
+                            }
+                        }
+                    }
+            );
+        }
+    }
+    function search_organization(){
+        var name = $('#name_search').val();
+        jQuery("#organization_list").jqGrid('setGridParam', {url: "/organizations/index_show?name=" + name }).trigger("reloadGrid");
+    }
+    //搜索apk
+    $('#search_name_btn').click(function () {
+        search_organization();
+    });
+    function search_keydown(event) {
+        if (event.keyCode == 13)
+            search_organization();
+    }
+    //清空k
+    $('#clear_name_btn').click(function () {
+        $('#name_search').val('');
+    });
+</script>

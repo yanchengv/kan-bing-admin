@@ -4,7 +4,8 @@ class ProvincesController < ApplicationController
   respond_to :js
 
   def index
-    render partial: 'provinces/province_manage'
+    all_menus
+    render template: 'provinces/province_manage'
   end
   def test_index
     sql = 'true'

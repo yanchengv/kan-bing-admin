@@ -5,7 +5,8 @@ class SkillsController < ApplicationController
   # GET /skills
   # GET /skills.json
   def index
-    render :partial => 'skills/skills_manage'
+    all_menus
+    render :template => 'skills/skills_manage'
   end
 
   def show_index

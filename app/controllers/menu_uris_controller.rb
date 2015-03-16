@@ -6,7 +6,8 @@ class MenuUrisController < ApplicationController
   # GET /menu_uris.json
   def index
     # @menu_uris = MenuUri.all
-    render partial: 'menu_uris/menu_uri_manage'
+    all_menus
+    render template:  'menu_uris/menu_uri_manage'
   end
 
   def show_index
