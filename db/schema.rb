@@ -88,16 +88,6 @@ ActiveRecord::Schema.define(version: 20150305023017) do
 
   add_index "admins_roles", ["admin_id", "role_id"], name: "index_admins_roles_on_admin_id_and_role_id", using: :btree
 
-  create_table "adresults", force: true do |t|
-    t.integer  "doctor_id",     limit: 8
-    t.string   "hosp_name"
-    t.string   "province_name"
-    t.string   "city_name"
-    t.string   "result"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "advice_types", force: true do |t|
     t.string   "type_name"
     t.datetime "created_at"
@@ -537,14 +527,14 @@ ActiveRecord::Schema.define(version: 20150305023017) do
   create_table "doctor_orders", force: true do |t|
     t.datetime "create_time"
     t.datetime "start_time"
-    t.datetime "valid_time"
+    t.string   "valid_time"
     t.integer  "doctor_id",         limit: 8
     t.integer  "patient_id",        limit: 8
     t.integer  "diagnose_treat_id"
     t.string   "executor"
     t.text     "content"
     t.string   "order_type"
-    t.string   "according"
+    t.text     "according"
     t.string   "doctor_name"
     t.datetime "created_at"
     t.datetime "updated_at"

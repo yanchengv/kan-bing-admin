@@ -1,13 +1,13 @@
+
 <% if signed_in? %>
     <%= stylesheet_link_tag 'menus/left_menu'%>
-    <!--<script type="text/javascript">-->
-    //    var zNodes=<%#=raw @left_menus.to_json %>
+    <script type="text/javascript">
+        var zNodes=<%=raw @left_menus.to_json %>
+//        初始化富文本
+     KindEditor.ready(function(K) {
 
-// //        初始化富文本
-//     KindEditor.ready(function(K) {
-//
-//     });
-    <!--</script>-->
+     });
+    </script>
     <%#= javascript_include_tag 'menus/left_menu'%>
     <!--左侧二级菜单-->
     <!--<div class="page-with-sidebar">-->

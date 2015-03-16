@@ -30,28 +30,31 @@
           <input type="radio" name="radio_url" class="radio_url" onchange="showContent(this.value)" value="2" style="margin-left: 30px;"/>文本
         </td>
       </tr>
-
-      <tr class="FormData" id="textareaContent" style="display:none      "  >
-        <td class="CaptionTD">文本内容:</td>
-        <td class="DataTD">
-          <textarea name='content' rows="5" id="content" style="width: 300px; " class='FormElement ui-widget-content ui-corner-all'></textarea>
+      <table id="textareaContent" style="display:none"  >
+      <tr class="FormData" >
+        <td class="CaptionTD" style="width:100px;">文本内容:</td>
+        <td class="DataTD" style="width:480px;">
+          <textarea name='content' rows="5" id="content"  class='FormElement ui-widget-content ui-corner-all'></textarea>
         </td>
       </tr>
-
-      <tr class="FormData" id="contentUrl" >
-        <td class="CaptionTD">链接路径:</td>
-        <td class="DataTD"  >
+      </table>
+      <table  id="contentUrl">
+      <tr class="FormData">
+        <td class="CaptionTD" style="width:100px;">链接路径:</td>
+        <td class="DataTD"  style="width:480px;">
           <input  type="text" size="60" name="contentUrl" class='FormElement ui-widget-content ui-corner-all' id="content_url"  placeholder="这里输入图片链接地址,格式如:http://www.kanbing365.com"/>
         </td>
       </tr>
+      </table>
+      <table>
       <tr class="FormData">
-        <td class="CaptionTD">时间:</td>
+        <td class="CaptionTD" style="width:100px;">时间:</td>
         <td class="DataTD">
           <input id='create_date' value="<%= Time.new.strftime('%Y-%m-%d') %>" class='FormElement ui-widget-content ui-corner-all' data-format="yyyy-MM-dd" name='create_date' type="text" style='width:209px;height:26px;'/>
           <!--<input type="date" name='video_time' id='video_time'  style='width:172px;height:22px;'>-->
         </td>
       </tr>
-
+      </table>
     </table>
 <script>
     $(function () {
@@ -63,7 +66,8 @@
             });
             window.editor = K.create('#content', {
                 resizeType:0,
-                width: 600,
+                width:450,
+                minWidth: 450,
                 height: 400,
                 allowFileManager: false,
                 window_onload: true,
