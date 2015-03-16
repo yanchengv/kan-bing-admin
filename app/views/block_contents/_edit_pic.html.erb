@@ -60,20 +60,22 @@
           <input type="radio" name="radio_url" class="radio_url" onchange="showContent(this.value)" value="2" style="margin-left: 30px;"/>文本
         </td>
       </tr>
-
-      <tr class="FormData" id="textareaContent" style="display:none;">
-        <td class="CaptionTD">文本内容:</td>
-        <td class="DataTD">
-          <textarea name='content' rows="5" id="content" style="width: 300px; " class='FormElement ui-widget-content ui-corner-all'><%= @block_content.content %></textarea>
+      <table id="textareaContent" style="display:none;">
+      <tr class="FormData" >
+        <td style="width:120px;">文本内容:</td>
+        <td >
+          <textarea name='content' rows="5" id="content" class='FormElement ui-widget-content ui-corner-all'><%= @block_content.content %></textarea>
         </td>
       </tr>
-
-      <tr class="FormData" id="contentUrl">
-        <td class="CaptionTD">链接路径:</td>
-        <td class="DataTD">
+      </table>
+      <table  id="contentUrl">
+      <tr class="FormData">
+        <td style="width:120px;">链接路径:</td>
+        <td style="width:654px">
           <input type="text" size="60" class='FormElement ui-widget-content ui-corner-all' name="contentUrl" id="content_url" placeholder="这里输入图片链接地址,格式如:http://www.kanbing365.com" value="<%= @block_content.content_url %>" />
         </td>
       </tr>
+      </table>
     <!--  <tr class="FormData">
         <td colspan="2">
           <div id="progress2">
@@ -87,7 +89,8 @@
         KindEditor.ready(function (K) {
             window.editor = K.create('#content', {
                 resizeType: 0,
-                width: 600,
+                minWidth:625,
+                width: 625,
                 height: 400,
                 allowFileManager: false,
                 window_onload: true,
