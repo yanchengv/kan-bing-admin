@@ -2,6 +2,7 @@ include SessionsHelper
 class Patient < ActiveRecord::Base
   before_create :set_pk_code,:pinyin,:set_default_value, :auto_assign_doctor
   before_update :update_default_value ,:after_update_user
+  after_update :update_doc2user
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city
   belongs_to :doctor
@@ -72,6 +73,23 @@ class Patient < ActiveRecord::Base
     @user = self.user
     if !@user.nil?
       @user.update_attributes(real_name:self.name,email:self.email,mobile_phone:self.mobile_phone,credential_type_number:self.credential_type_number)
+    end
+  end
+  #患者信息更新时对应的医生和用户信息也应更改.
+  def update_doc2user
+    @doctor = Doctor.where(:patient_id => self.id).first
+    if @doctor
+      @doctor.update_attributes(:name => self.name, :credential_type => self.credential_type, :credential_type_number => self.credential_type_number, :gender => self.gender,
+                                :birthday => self.birthday, :birthplace => self.birthplace, :province_id => self.province_id, :city_id => self.city_id, :hospital_id => self.hospital_id,
+                                :department_id => self.department_id, :address => self.address, :nationality => self.nationality, :citizenship => self.citizenship, :photo => self.photo,
+                                :marriage => self.marriage, :mobile_phone => self.mobile_phone, :home_phone => self.home_phone, :home_address => self.home_address, :contact => self.contact,
+                                :contact_phone => self.contact_phone, :home_postcode => self.home_postcode, :email => self.email, :introduction => self.introduction, :verify_code => self.verify_code,
+                                :is_checked => self.is_checked, :is_activated => self.is_activated, :is_public => self.is_public, :spell_code => self.spell_code, :province_name => self.province, :organization_id => self.organization_id)
+
+    end
+    @user = User.where(:patient_id => self.id).first
+    if @user
+      @user.update_attributes(:real_name => self.name, :mobile_phone => self.mobile_phone, :email => self.email, :credential_type_number => self.credential_type_number)
     end
   end
 
