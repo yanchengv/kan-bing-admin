@@ -286,6 +286,24 @@ class PatientsController < ApplicationController
     # end
   end
 
+  #患者信息更新时对应的医生和用户信息也应更改.
+  def update_doc2user(patient)
+    @doctor = Doctor.where(:patient_id => patient.id).first
+    if @doctor
+      @doctor.update_attributes(:name => patient.name, :credential_type => patient.credential_type, :credential_type_number => patient.credential_type_number, :gender => patient.gender,
+                                :birthday => patient.birthday, :birthplace => patient.birthplace, :province_id => patient.province_id, :city_id => patient.city_id, :hospital_id => patient.hospital_id,
+                                :department_id => patient.department_id, :address => patient.address, :nationality => patient.nationality, :citizenship => patient.citizenship, :photo => patient.photo,
+                                :marriage => patient.marriage, :mobile_phone => patient.mobile_phone, :home_phone => patient.home_phone, :home_address => patient.home_address, :contact => patient.contact,
+                                :contact_phone => patient.contact_phone, :home_postcode => patient.home_postcode, :email => patient.email, :introduction => patient.introduction, :verify_code => patient.verify_code,
+                                :is_checked => patient.is_checked, :is_activated => patient.is_activated, :is_public => patient.is_public, :spell_code => patient.spell_code, :province_name => patient.province, :organization_id => patient.organization_id)
+
+    end
+    @user = User.where(:patient_id => patient.id).first
+    if @user
+      @user.update_attributes(:real_name => patient.name, :mobile_phone => patient.mobile_phone, :email => patient.email, :credential_type_number => patient.credential_type_number)
+    end
+  end
+
   # DELETE /patients/1
   # DELETE /patients/1.json
   def destroy

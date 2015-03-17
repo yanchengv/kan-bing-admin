@@ -393,6 +393,7 @@ class DoctorsController < ApplicationController
         if !@doctor.department.nil?
           @doctor.update_attributes(department_name: @doctor.department.name)
         end
+        update_pat2user(@doctor)
         render json:{success:true}
       else
         render json:{success:false}
@@ -410,6 +411,24 @@ class DoctorsController < ApplicationController
     #     format.json { render json: @doctor.errors, status: :unprocessable_entity }
     #   end
     # end
+  end
+
+  #更改医生时,要更改其对应的患者及用户信息(前提示是其有患者和用户身份)
+  def update_pat2user(doctor)
+    @patient = Patient.where(:id => doctor.patient_id).first
+    if @patient
+      @patient.update_attributes(:name => doctor.name, :credential_type => doctor.credential_type, :credential_type_number => doctor.credential_type_number, :gender => doctor.gender,
+                                 :birthday => doctor.birthday, :birthplace => doctor.birthplace, :province_id => doctor.province_id, :city_id => doctor.city_id, :hospital_id => doctor.hospital_id,
+                                 :department_id => doctor.department_id, :address => doctor.address, :nationality => doctor.nationality, :citizenship => doctor.citizenship, :photo => doctor.photo,
+                                 :marriage => doctor.marriage, :mobile_phone => doctor.mobile_phone, :home_phone => doctor.home_phone, :home_address => doctor.home_address, :contact => doctor.contact,
+                                 :contact_phone => doctor.contact_phone, :home_postcode => doctor.home_postcode, :email => doctor.email, :introduction => doctor.introduction, :verify_code => doctor.verify_code,
+                                 :is_checked => doctor.is_checked, :is_activated => doctor.is_activated, :is_public => doctor.is_public, :spell_code => doctor.spell_code, :organization_id => doctor.organization_id)
+
+    end
+    @user = User.where(:patient_id => doctor.id).first
+    if @user
+      @user.update_attributes(:real_name => doctor.name, :mobile_phone => doctor.mobile_phone, :email => doctor.email, :credential_type_number => doctor.credential_type_number)
+    end
   end
 
   # DELETE /doctors/1
