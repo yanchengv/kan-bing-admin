@@ -269,6 +269,7 @@ class PatientsController < ApplicationController
         end
       end
       if @patient.update(patient_params)
+        update_doc2user(@patient)
         render json:{success:true}
       else
         render json:{success:false}
