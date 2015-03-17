@@ -6,7 +6,6 @@ class Doctor < ActiveRecord::Base
   before_update :update_default_value,:after_update_do,:after_update_user
   before_destroy :destroy_patient
   after_create :save_patient
-  after_update :update_pat2user
   has_one :user, :dependent => :destroy
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city
@@ -71,23 +70,6 @@ class Doctor < ActiveRecord::Base
         @doctor = Doctor.where(:id => self.id).first
         @doctor.update_attributes(:patient_id => @patient.id)
       end
-    end
-  end
-#更改医生时,要更改其对应的患者及用户信息(前提示是其有患者和用户身份)
-  def update_pat2user
-    @patient = Patient.where(:id => self.patient_id).first
-    if @patient
-      @patient.update_attributes(:name => self.name, :credential_type => self.credential_type, :credential_type_number => self.credential_type_number, :gender => self.gender,
-                                :birthday => self.birthday, :birthplace => self.birthplace, :province_id => self.province_id, :city_id => self.city_id, :hospital_id => self.hospital_id,
-                                :department_id => self.department_id, :address => self.address, :nationality => self.nationality, :citizenship => self.citizenship, :photo => self.photo,
-                                :marriage => self.marriage, :mobile_phone => self.mobile_phone, :home_phone => self.home_phone, :home_address => self.home_address, :contact => self.contact,
-                                :contact_phone => self.contact_phone, :home_postcode => self.home_postcode, :email => self.email, :introduction => self.introduction, :verify_code => self.verify_code,
-                                :is_checked => self.is_checked, :is_activated => self.is_activated, :is_public => self.is_public, :spell_code => self.spell_code, :organization_id => self.organization_id)
-
-    end
-    @user = User.where(:patient_id => self.id).first
-    if @user
-      @user.update_attributes(:real_name => self.name, :mobile_phone => self.mobile_phone, :email => self.email, :credential_type_number => self.credential_type_number)
     end
   end
   def manage_doctors  (menu_name,admin_id)
