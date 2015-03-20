@@ -2,60 +2,7 @@
  * Created by git on 14-12-16.
  */
 
-//添加域名彈出框
-$("#domain_consoleDlg").dialog({    //初始化对话框
-    autoOpen: false,
-    modal: true,    // 设置对话框为模态（modal）对话框
-    resizable: true,
-    width: 250,
-    position: {
-        my: "center",
-        at: "center",
-        of: window,
-        collision: "fit",
-        // Ensure the titlebar is always visible
-        using: function( pos ) {
-            var topOffset = $( this ).css( pos ).offset().top;
-            if ( topOffset < 0 ) {
-                $( this ).css( "top", pos.top - topOffset );
-            }else {
-                $( this ).css( "top", 100 );
-            }
-        }
-    },
-    buttons: {  // 为对话框添加按钮
-        "确定": create,
-        "取消": function() {$("#domain_consoleDlg").dialog("close")}
-    }
-});
-//修改域名彈出框
-$("#domain_update_consoleDlg").dialog({    //初始化对话框
-    autoOpen: false,
-    modal: true,    // 设置对话框为模态（modal）对话框
-    resizable: true,
-    width: 250,
-    position: {
-        my: "center",
-        at: "center",
-        of: window,
-        collision: "fit",
-        // Ensure the titlebar is always visible
-        using: function( pos ) {
-            console.log(pos.top)
-            var topOffset = $( this ).css( pos ).offset().top;
-            console.log(topOffset)
-            if ( topOffset < 0 ) {
-                $( this ).css( "top", pos.top - topOffset );
-            }else {
-                $( this ).css( "top", 100 );
-            }
-        }
-    },
-    buttons: {  // 为对话框添加按钮
-        "确定": updateDomain,
-        "取消": function() {$("#domain_update_consoleDlg").dialog("close")}
-    }
-});
+
 
 function create(){
     var domainName= $("#domainName").val();
@@ -63,7 +10,7 @@ function create(){
         alert("请输入正确的域名")
     }else{
         $.ajax({
-            url:'domain/create',
+            url:'/domain/create',
             data:{name:domainName},
             type:'post',
             success:function(data){
@@ -87,7 +34,7 @@ function updateDomain(){
         alert("不能为空")
     }else{
         $.ajax({
-            url:'domain/update',
+            url:'/domain/update',
             data:{name:domainName,id:id},
             type:'post',
             success:function(data){
@@ -103,63 +50,6 @@ function updateDomain(){
 }
 
 
-//添加logo彈出框
-$("#logo_consoleDlg").dialog({    //初始化对话框
-    autoOpen: false,
-    modal: true,    // 设置对话框为模态（modal）对话框
-    resizable: true,
-    width: 400,
-    position: {
-        my: "center",
-        at: "center",
-        of: window,
-        collision: "fit",
-        // Ensure the titlebar is always visible
-        using: function( pos ) {
-            var topOffset = $( this ).css( pos ).offset().top;
-            if ( topOffset < 0 ) {
-                $( this ).css( "top", pos.top - topOffset );
-            }else {
-                $( this ).css( "top", 100 );
-            }
-        }
-    },
-    buttons: {  // 为对话框添加按钮
-        "确定": uploadLogo,
-        "取消": cancleLogo
-    }
-});
-
-//添加页脚彈出框
-$("#footer_consoleDlg").dialog({    //初始化对话框
-    autoOpen: false,
-    modal: true,    // 设置对话框为模态（modal）对话框
-    resizable: true,
-    width: 400,
-    position: {
-        my: "center",
-        at: "center",
-        of: window,
-        collision: "fit",
-        // Ensure the titlebar is always visible
-        using: function( pos ) {
-            var topOffset = $( this ).css( pos ).offset().top;
-            if ( topOffset < 0 ) {
-                $( this ).css( "top", pos.top - topOffset );
-            }else {
-                $( this ).css( "top", 100 );
-            }
-        }
-    },
-    buttons: {  // 为对话框添加按钮
-        "确定": updateFooter,
-        "取消": function() {$("#footer_consoleDlg").dialog("close")}
-    }
-});
-
-$("#logo_img2").click(function () {
-    $("#logoUpload").click();
-});
 //logo取消上传
 function cancleLogo(){
     $("#logo_consoleDlg").dialog("close")
@@ -169,7 +59,7 @@ function cancleLogo(){
 var  logoUrl='';
 $(function () {
     $('#logoUpload').fileupload({
-        url:'domain/upload_logo',
+        url:'/domain/upload_logo',
         dataType: 'json',
         success: function (response, textStatus, jqXHR) {
             var flag=response['flag']
@@ -188,7 +78,7 @@ $(function () {
 function uploadLogo(){
     $.ajax({
         type:'post',
-        url:'domain/save_logo',
+        url:'/domain/save_logo',
         data:{logoUrl:logoUrl},
         success:function(data){
             logoUrl=''
@@ -206,7 +96,7 @@ function uploadLogo(){
 function updateFooter(){
     var footer=$("#footer").val();
     $.ajax({
-        url:'domain/update_footer',
+        url:'/domain/update_footer',
         data:{footer:footer},
         type:'post',
         success:function(data){
@@ -220,6 +110,120 @@ function updateFooter(){
 }
 
 
+
+$(function(){
+//添加域名彈出框
+    $("#domain_consoleDlg").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 250,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "确定": create,
+            "取消": function() {$("#domain_consoleDlg").dialog("close")}
+        }
+    });
+//修改域名彈出框
+    $("#domain_update_consoleDlg").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 250,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                console.log(pos.top)
+                var topOffset = $( this ).css( pos ).offset().top;
+                console.log(topOffset)
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "确定": updateDomain,
+            "取消": function() {$("#domain_update_consoleDlg").dialog("close")}
+        }
+    });
+
+//添加logo彈出框
+    $("#logo_consoleDlg").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 400,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "确定": uploadLogo,
+            "取消": cancleLogo
+        }
+    });
+
+//添加页脚彈出框
+    $("#footer_consoleDlg").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 400,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function( pos ) {
+                var topOffset = $( this ).css( pos ).offset().top;
+                if ( topOffset < 0 ) {
+                    $( this ).css( "top", pos.top - topOffset );
+                }else {
+                    $( this ).css( "top", 100 );
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "确定": updateFooter,
+            "取消": function() {$("#footer_consoleDlg").dialog("close")}
+        }
+    });
+
+    $("#logo_img2").click(function () {
+        $("#logoUpload").click();
+    });
 
 //  donmain table list
 jQuery("#list_domain").jqGrid({
@@ -300,7 +304,6 @@ jQuery("#list_domain").jqGrid({
     }, position: "last"})
 
 //向弹出框关闭按钮添加一个图标
-$(function(){
     $(".ui-dialog-titlebar .ui-dialog-titlebar-close").html("<span class='glyphicon glyphicon-remove'></span>");
 })
 
