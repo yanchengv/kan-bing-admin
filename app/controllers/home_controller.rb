@@ -19,10 +19,8 @@ class HomeController < ApplicationController
           @left_menus = nil
         else
           params[:pId] = params[:pId].gsub(/[ ]/, '+')
-          p params[:pId]
           # params[:pId] = Base64.decode64 params[:pId].to_s
           params[:pId] = AES.decrypt(params[:pId].to_s,key)
-          p params[:pId]
           @left_menus = Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,menus.icon from menus where menus.hos_admin_show=true and parent_id=#{params[:pId]}")
           if @left_menus.empty?
             @left_menus = Menu.where(id:params[:pId])
@@ -39,10 +37,8 @@ class HomeController < ApplicationController
           @left_menus = nil
         else
           params[:pId] = params[:pId].gsub(/[ ]/, '+')
-          p params[:pId]
           # params[:pId] = Base64.decode64 params[:pId].to_s
           params[:pId] = AES.decrypt(params[:pId].to_s,key)
-          p params[:pId]
           @left_menus = Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,menus.icon from menus where menus.dep_admin_show=true and parent_id=#{params[:pId]}")
           if @left_menus.empty?
             @left_menus = Menu.where(id:params[:pId])
@@ -59,10 +55,8 @@ class HomeController < ApplicationController
           @left_menus = nil
         else
           params[:pId] = params[:pId].gsub(/[ ]/, '+')
-          p params[:pId]
           # params[:pId] = Base64.decode64 params[:pId].to_s
           params[:pId] = AES.decrypt(params[:pId].to_s,key)
-          p params[:pId]
           @left_menus = Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,menus.icon from menus where menus.ins_admin_show=true and menus.parent_id=#{params[:pId]}")
           if @left_menus.empty?
             @left_menus = Menu.where(id:params[:pId])
@@ -77,10 +71,8 @@ class HomeController < ApplicationController
           @left_menus = nil
         else
           params[:pId] = params[:pId].gsub(/[ ]/, '+')
-          p params[:pId]
           # params[:pId] = Base64.decode64 params[:pId].to_s
           params[:pId] = AES.decrypt(params[:pId].to_s,key)
-          p params[:pId]
           @left_menus = Menu.find_by_sql("select menus.id,menus.parent_id as pId,menus.name,menus.uri,menus.icon from role2s r, role2_menus rm, admin2s_role2s ar, menus where rm.role2_id=ar.role2_id and rm.menu_id=menus.id and ar.admin2_id=#{admin_id} and menus.parent_id=#{params[:pId]} GROUP BY menus.id;")
           if @left_menus.empty?
             @left_menus = Menu.where(id:params[:pId])

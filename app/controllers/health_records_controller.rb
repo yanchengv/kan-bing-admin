@@ -8,7 +8,9 @@ class HealthRecordsController < ApplicationController
   #before_filter :user_health_record_power, only: [:ct,:ultrasound,:inspection_report]
 
   def index
-    session["patient_id"]=params[:id]
+    require "base64"
+    session["patient_id"] = Base64.decode64 params[:id]
+    # session["patient_id"]=params[:id]
     # render partial: 'health_records/records_manage'
   end
 
@@ -25,6 +27,9 @@ class HealthRecordsController < ApplicationController
   end
 
   def go_where
+    # require "aes"
+    # key = '290c3c5d812a4ba7ce33adf09598a462'
+    # params[:child_id] = AES.encrypt(params[:child_id].to_s,key)
     if  !params[:uuid].nil? && !params[:child_type].nil?
       case params[:child_type]
         when 'CT'
@@ -44,6 +49,12 @@ class HealthRecordsController < ApplicationController
   end
 
   def ct
+    require "base64"
+    params[:child_id] = Base64.decode64 params[:child_id]
+    # require "aes"
+    # key = '290c3c5d812a4ba7ce33adf09598a462'
+    # params[:child_id] = params[:child_id].gsub(/[ ]/, '+')
+    # params[:child_id] = AES.decrypt(params[:child_id].to_s,key)
     @obj ||= params[:child_id]
     @inspection_type = params[:inspection_type]
     render :template => 'health_records/ct', layout: "application3"
@@ -51,6 +62,12 @@ class HealthRecordsController < ApplicationController
 
   # 核磁
   def mri
+    require "base64"
+    params[:child_id] = Base64.decode64 params[:child_id]
+    # require "aes"
+    # key = '290c3c5d812a4ba7ce33adf09598a462'
+    # params[:child_id] = params[:child_id].gsub(/[ ]/, '+')
+    # params[:child_id] = AES.decrypt(params[:child_id].to_s,key)
     @obj ||= params[:child_id]
     @inspection_type = params[:inspection_type]
     render "health_records/mri", layout: "application3"
@@ -58,6 +75,13 @@ class HealthRecordsController < ApplicationController
 
 
   def ultrasound
+    require "base64"
+    params[:child_id] = Base64.decode64 params[:child_id]
+    params[:uuid] = Base64.decode64 params[:uuid]
+    # require "aes"
+    # key = '290c3c5d812a4ba7ce33adf09598a462'
+    # params[:child_id] = params[:child_id].gsub(/[ ]/, '+')
+    # params[:child_id] = AES.decrypt(params[:child_id].to_s,key)
     @uuid = params[:uuid]
     @iu = InspectionUltrasound.find(params[:child_id])
     @pics = @iu.image_list.split(',')
@@ -84,6 +108,14 @@ class HealthRecordsController < ApplicationController
   end
 
   def inspection_report
+    require "base64"
+    params[:uuid] = Base64.decode64 params[:uuid]
+    p params[:uuid]
+    # params[:child_id] = Base64.decode64 params[:child_id]
+    # require "aes"
+    # key = '290c3c5d812a4ba7ce33adf09598a462'
+    # params[:child_id] = params[:child_id].gsub(/[ ]/, '+')
+    # params[:child_id] = AES.decrypt(params[:child_id].to_s,key)
     @uuid = params[:uuid]
     @uuid = @uuid.split('.')[0]+'.png'
     render "health_records/inspection_report", layout: "application3"
