@@ -12,26 +12,27 @@ class DoctorFriendshipsController < ApplicationController
 
     def show_index
       sql1 = 'true'
-      if current_user.admin_type == '医院管理员'
-        if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
-          sql1 << " and hospital_id = #{current_user.hospital_id}"
-        else
-          sql1 << " and hospital_id = 0"
-        end
-      elsif current_user.admin_type == '科室管理员'
-        if !current_user.department_id.nil? && !current_user.department_id != ''
-          sql1 << " and department_id = #{current_user.department_id}"
-        else
-          sql1 << " and department_id = 0"
-        end
-      elsif current_user.admin_type == '机构管理员'
-        if !current_user.organization_id.nil? && !current_user.organization_id != ''
-          sql1 << " and organization_id = #{current_user.organization_id}"
-        else
-          sql1 << " and organization_id = 0"
-        end
-      else
-      end
+      #查看关系是查看所有网站的用户关系
+      #if current_user.admin_type == '医院管理员'
+      #  if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+      #    sql1 << " and hospital_id = #{current_user.hospital_id}"
+      #  else
+      #    sql1 << " and hospital_id = 0"
+      #  end
+      #elsif current_user.admin_type == '科室管理员'
+      #  if !current_user.department_id.nil? && !current_user.department_id != ''
+      #    sql1 << " and department_id = #{current_user.department_id}"
+      #  else
+      #    sql1 << " and department_id = 0"
+      #  end
+      #elsif current_user.admin_type == '机构管理员'
+      #  if !current_user.organization_id.nil? && !current_user.organization_id != ''
+      #    sql1 << " and organization_id = #{current_user.organization_id}"
+      #  else
+      #    sql1 << " and organization_id = 0"
+      #  end
+      #else
+      #end
 
       #hos_id = current_user.hospital_id
       #dep_id = current_user.department_id
