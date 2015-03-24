@@ -11,6 +11,7 @@ class EcgController < ApplicationController
 
   # 数据生成心电图
   def show
+    params[:ecg_id] = Base64.decode64 params[:ecg_id]
     ecg_id= params[:ecg_id]
     @ecg=Ecg.where(id:ecg_id).first
     ecg_img=@ecg.ecg_img

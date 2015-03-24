@@ -1,4 +1,5 @@
 <!--<h1>Listing patients</h1>-->
+<%= javascript_include_tag 'aes.js' %>
 <style>
     .select2-container{
         width:200px;
@@ -117,7 +118,7 @@
   <option value="1">已经激活</option>
   <option value="0">未激活</option>
   </select>
-</span>
+</span>  <br/>
 <span class="marginb">
   姓名：<input type="text" id="search_name" onkeydown="entersearch1(event)" class="input_b">
 </span>
@@ -846,7 +847,11 @@
 
     function showHealthRecords() {
         if (selectedIds.length>0) {
-            window.open('/health_records/index?id='+selectedIds)
+            var str = CryptoJS.enc.Utf8.parse(selectedIds[0]);
+            var base64 = CryptoJS.enc.Base64.stringify(str);
+//            var encrypted = CryptoJS.AES.encrypt(selectedIds[0], "290c3c5d812a4ba7ce33adf09598a462");
+            window.open('/health_records/index?id=' + base64)
+//            window.open('/health_records/index?id='+selectedIds)
         }else{
             alert('请至少选择一条记录!')
         }
