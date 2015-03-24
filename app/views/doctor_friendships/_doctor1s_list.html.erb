@@ -73,7 +73,8 @@
             search_doc1s();
     }
     jQuery("#doctor1s_list").jqGrid({
-        url: '/doctor_friendships/get_doctors?str=default',
+       // url: '/doctor_friendships/get_doctors?str=default',
+        url: '/doctor_friendships/get_doctors',
         datatype: "json",
         mtype: 'GET',
         colNames: [ 'ID', '姓名', '省', '市', '医院', '科室'],

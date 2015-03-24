@@ -68,7 +68,11 @@ class DoctorsController < ApplicationController
           sql = "true"
           if current_user
             if current_user.admin_type == '机构管理员'
-              sql << " and organization_id = #{current_user.organization_id}"
+              if !current_user.organization_id.nil? && !current_user.organization_id != ''
+                sql << " and organization_id = #{current_user.organization_id}"
+              else
+                sql << " and organization_id = 0"
+              end
             else
               if !hos_id.nil? && hos_id != '' && !dep_id.nil? && dep_id != ''
                 @hos = Hospital.where(id: hos_id).first

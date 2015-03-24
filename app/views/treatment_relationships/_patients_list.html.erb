@@ -43,7 +43,8 @@
             search_patients();
     }
     jQuery("#patients_list").jqGrid({
-        url: '/treatment_relationships/get_patients?str=default',
+//        url: '/treatment_relationships/get_patients?str=default',
+        url: '/treatment_relationships/get_patients',
         datatype: "json",
         mtype: 'GET',
         colNames: [ 'ID', '姓名', '省', '市', '医院', '科室'],

@@ -11,18 +11,42 @@ class DoctorFriendshipsController < ApplicationController
     end
 
     def show_index
-      sql = 'true'
-      hos_id = current_user.hospital_id
-      dep_id = current_user.department_id
-      if !hos_id.nil? && hos_id != ''
-        if !dep_id.nil? && dep_id != ''
-          sql << " and hospital1_id=#{hos_id} and department1_id=#{dep_id}"
+      sql1 = 'true'
+      if current_user.admin_type == '医院管理员'
+        if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
+          sql1 << " and hospital_id = #{current_user.hospital_id}"
         else
-          sql << " and hospital1_id=#{hos_id}"
+          sql1 << " and hospital_id = 0"
         end
+      elsif current_user.admin_type == '科室管理员'
+        if !current_user.department_id.nil? && !current_user.department_id != ''
+          sql1 << " and department_id = #{current_user.department_id}"
+        else
+          sql1 << " and department_id = 0"
+        end
+      elsif current_user.admin_type == '机构管理员'
+        if !current_user.organization_id.nil? && !current_user.organization_id != ''
+          sql1 << " and organization_id = #{current_user.organization_id}"
+        else
+          sql1 << " and organization_id = 0"
+        end
+      else
       end
+
+      #hos_id = current_user.hospital_id
+      #dep_id = current_user.department_id
+      #if !hos_id.nil? && hos_id != ''
+      #  if !dep_id.nil? && dep_id != ''
+      #    sql << " and hospital1_id=#{hos_id} and department1_id=#{dep_id}"
+      #  else
+      #    sql << " and hospital1_id=#{hos_id}"
+      #  end
+      #end
+      sql = "true"
       if !params[:name].nil? && params[:name] != '' && params[:name] != 'null'
-        sql << " and doctor1_id in (select id from doctors where name = '#{params[:name]}') or doctor2_id in (select id from doctors where name = '#{params[:name]}')"
+        sql << " and ( doctor1_id in (select id from doctors where name = '#{params[:name]}' and #{sql1}) or doctor2_id in (select id from doctors where name = '#{params[:name]}' and #{sql1}) )"
+      else
+        sql << " and ( doctor1_id in (select id from doctors where #{sql1}) or doctor2_id in (select id from doctors where #{sql1}) )"
       end
       count = DoctorFriendship.where(sql).count
       totalpages = count % params[:rows].to_i == 0 ? count / params[:rows].to_i : count / params[:rows].to_i + 1
@@ -46,10 +70,20 @@ class DoctorFriendshipsController < ApplicationController
           if current_user.admin_type == '医院管理员'
             if !current_user.hospital_id.nil? && !current_user.hospital_id != ''
               sql << " and hospital_id = #{current_user.hospital_id}"
+            else
+              sql << " and hospital_id = 0"
             end
           elsif current_user.admin_type == '科室管理员'
             if !current_user.department_id.nil? && !current_user.department_id != ''
               sql << " and department_id = #{current_user.department_id}"
+            else
+              sql << " and department_id = 0"
+            end
+          elsif current_user.admin_type == '机构管理员'
+            if !current_user.organization_id.nil? && !current_user.organization_id != ''
+              sql << " and organization_id = #{current_user.organization_id}"
+            else
+              sql << " and organization_id = 0"
             end
           else
             if params[:hospital_id] && params[:hospital_id] != '' && params[:hospital_id] != 'all' && params[:hospital_id] != 'null' && params[:hospital_id] != 'undefined'
