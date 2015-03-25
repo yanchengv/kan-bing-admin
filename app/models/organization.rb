@@ -1,5 +1,7 @@
 include SessionsHelper
 class Organization < ActiveRecord::Base
+  has_many :doctors
+  has_many :patients
   before_create :set_pk_code
 
   def set_pk_code

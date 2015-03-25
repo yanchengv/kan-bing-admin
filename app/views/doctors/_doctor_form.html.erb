@@ -167,11 +167,15 @@
       </div>
     </div>
     <div>
-      <div class="">
+      <div style="display:inline-block;width:49%">
         <%= f.label :医生类型 %>
         <br>
         <%= f.radio_button :doctor_type, 'real_doctor', :checked => true %> 真实医生
         <%= f.radio_button :doctor_type, 'aide_doctor' %> 助手医生
+      </div>
+      <div style="display:inline-block;width:49%">
+        <%= f.label :选择机构 %>
+        <div id="doc_organization"><%= render partial: 'doctors/organization_partial' %></div>
       </div>
     </div>
     <!--<div>-->

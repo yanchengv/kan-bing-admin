@@ -159,6 +159,12 @@
         </select>
         <%#= f.text_field :education,class:"form-control" %>
       </div>
+      <div>
+        <div style="display:inline-block;width:49%">
+          <%= f.label :选择机构 %>
+          <div id="pat_organization"><%= render partial: 'patients/organization_partial' %></div>
+        </div>
+      </div>
     </div>
     <!--<div>-->
       <!--<div style="display:inline-block;width:49%">-->

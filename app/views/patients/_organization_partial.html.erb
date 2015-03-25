@@ -1,0 +1,30 @@
+<select id="patient_organization_id" name="patient[organization_id]" >
+  <% if current_user.admin_type != '机构管理员' %>
+      <option value="">---请选择---</option>
+  <% end %>
+      <% @organizations = Organization.all %>
+      <% if !@organizations.nil? && !@organizations.empty? %>
+      <% @organizations.each do |org| %>
+          <option id="org_<%= org.id %>" value="<%= org.id %>"><%= org.name %></option>
+      <% end %>
+      <% end %>
+
+</select>
+<script>
+    $(function() {
+       $("#patient_organization_id").select2();
+        <% if current_user.admin_type != '机构管理员' %>
+        $("#patient_organization_id").attr("disabled", "disabled");
+        <% end %>
+        <% if !params[:id].nil? && params[:id] != '' %>
+        <% org_id = Patient.find_by(id:params[:id]).organization_id%>
+        <% organization = Patient.find_by(id:params[:id]).organization %>
+        <% if !org_id.nil? && org_id != '' && !organization.nil?%>
+        $('#s2id_patient_organization_id').children('.select2-choice').children('.select2-chosen').html('<%=organization.name%>')
+        if (document.getElementById('org_<%= org_id %>') != null) {
+            document.getElementById('org_<%= org_id %>').setAttribute('selected', 'selected')
+        }
+        <% end %>
+        <% end %>
+    })
+</script>

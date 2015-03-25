@@ -11,6 +11,7 @@ class Doctor < ActiveRecord::Base
   belongs_to :city
   belongs_to :hospital
   belongs_to :department
+  belongs_to :organization
   has_many :doctor_friendships, foreign_key: :doctor1_id,:dependent => :destroy
   has_and_belongs_to_many :groups
   has_and_belongs_to_many :skills

@@ -7,6 +7,7 @@ class Patient < ActiveRecord::Base
   belongs_to :doctor
   belongs_to :hospital
   belongs_to :department
+  belongs_to :organization
   # has_one :doctor_info, :class_name => 'Doctor', :dependent => :destroy
   has_one :user, :dependent => :destroy
   has_many :treatment_relationships, :dependent => :destroy
