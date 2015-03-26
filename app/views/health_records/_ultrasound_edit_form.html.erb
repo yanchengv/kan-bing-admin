@@ -1,0 +1,114 @@
+<style>
+    input,select{
+        /*display: block;*/
+        /*margin-top: 1em;*/
+    }
+    .bar {
+        height: 18px;
+        background: green;
+    }
+
+    #progress1,#progress2 {
+        width: 490px;
+        background: #f5f5f5;
+        /*box-sizing: border-box;*/
+    }
+</style>
+<br>
+<br>
+    <% @patient = Patient.where("id = ?", session["patient_id"]).first%>
+<input type="hidden" id="patient_id" value="<%= @patient.nil? ? '' : @patient.id %>">
+<input type="hidden" id="child_type" value="<%= @ultrasound.child_type %>">
+<input type="hidden" id="id" value="<%= @ultrasound.id %>">
+    <table class="EditTable" style="margin-top: -80px;width:100%;">
+          <tr class="FormData">
+            <td class="CaptionTD">超声号:</td>
+            <td class="DataTD" colspan="3">
+              <input type="text" id="ultrasound_num" class='FormElement ui-widget-content ui-corner-all'></td>
+          </tr>
+          <tr class="FormData">
+            <td class="CaptionTD">姓名:</td>
+            <td class="DataTD">
+              <input type="text" id="patient_name" class='FormElement ui-widget-content ui-corner-all' value="<%= @patient.nil? ? '' : @patient.name %>" readonly="readonly"></td>
+            <td class="CaptionTD">性别:</td>
+            <td class="DataTD">
+              <input type="text" id="patient_gender"  class='FormElement ui-widget-content ui-corner-all' value="<%= @patient.nil? ? '' : @patient.gender %>" readonly="readonly">
+            </td>
+          </tr>
+          <!--<tr class="FormData">-->
+           <!---->
+          <!--</tr>-->
+      <tr class="FormData">
+        <td class="CaptionTD">年龄:</td>
+        <td class="DataTD">
+          <input type="text" id='patient_age' class='FormElement ui-widget-content ui-corner-all' value="<%= (Time.now.year - @patient.birthday.year) unless @patient.nil? || @patient.birthday.nil? %>" readonly="readonly"></td>
+         </td>
+        <td class="CaptionTD">科别:</td>
+        <td class="DataTD">
+          <input type="text" id='apply_department_name' value="<%= @ultrasound.apply_department_name %>" class='FormElement ui-widget-content ui-corner-all'></td>
+        </td>
+      </tr>
+      <tr>
+        <td class="CaptionTD">门诊号:</td>
+        <td class="DataTD">
+          <input type="text" id='clinic_no' class='FormElement ui-widget-content ui-corner-all'></td>
+        </td>
+        <td class="CaptionTD">住院号:</td>
+        <td class="DataTD">
+          <input type="text" id="hospitalized_no" class='FormElement ui-widget-content ui-corner-all'/>
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">床位:</td>
+        <td class="DataTD">
+          <input type="text" id='bed_no' value="<%= @ultrasound.bed_no %>" class='FormElement ui-widget-content ui-corner-all'></td>
+        <td class="CaptionTD">申请医生:</td>
+        <td class="DataTD">
+          <input type="text" id='apply_doctor_name' value="<%= @ultrasound.apply_doctor_name %>" class='FormElement ui-widget-content ui-corner-all'></td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">检查项目:</td>
+        <td class="DataTD">
+          <input type="text"  id='examined_item_name' value="<%= @ultrasound.examined_item_name %>" class='FormElement ui-widget-content ui-corner-all'></td>
+        <td class="CaptionTD">检查医生:</td>
+        <td class="DataTD">
+          <input type="text" id='examine_doctor_name' value="<%= @ultrasound.examine_doctor_name %>" class='FormElement ui-widget-content ui-corner-all'></td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">超声所见:</td>
+        <td class="DataTD" colspan="3">
+          <textarea id='us_finding' rows="5" class='FormElement ui-widget-content ui-corner-all'><%= @ultrasound.us_finding %></textarea>
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">超声所得:</td>
+        <td class="DataTD" colspan="3">
+          <textarea rows="5" id="us_diagnose" class='FormElement ui-widget-content ui-corner-all'><%= @ultrasound.us_diagnose %></textarea>
+        <!-- 内容概要输入请保持在85字之内-->
+        <!--<textarea name='content_summary' rows="5" id="content_summary" style="width: 600px; "  class='FormElement ui-widget-content ui-corner-all'></textarea>-->
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">备注:</td>
+        <td class="DataTD" colspan="3">
+          <textarea id='note' rows="5" id="content" style="width: 300px; " class='FormElement ui-widget-content ui-corner-all'></textarea>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">录入员:</td>
+        <td class="DataTD">
+          <input type="text" id='inputer_name' value="<%= @ultrasound.inputer_name %>" class='FormElement ui-widget-content ui-corner-all'></td>
+        <td class="CaptionTD">时间:</td>
+        <td class="DataTD">
+          <input id='create_date' value="<%= Time.new.strftime('%Y-%m-%d') %>" class='FormElement ui-widget-content ui-corner-all' data-format="yyyy-MM-dd" name='create_date' type="text"/>
+        </td>
+      </tr>
+    </table>
+<script>
+    $(function () {
+            $('#create_date').datetimepicker({
+                lang: 'ch',
+                timepicker: false,
+                format: 'Y-m-d'
+            });
+    })
+</script>

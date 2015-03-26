@@ -1,12 +1,15 @@
 <%= javascript_include_tag 'aes.js' %>
 <table id="health_records_list"></table>
 <div id="page_health_records"></div>
+<div id="health_record_console">
+  <div id="health_record_div" style="margin-top: 40px;"></div>
+</div>
 <script>
     jQuery("#health_records_list").jqGrid({
         url: '<%= @url_path %>',
         datatype: "json",
         mtype: 'post',
-        colNames: [ '医院', '科室','医生',  '类别', '日期', '查看'],
+        colNames: [ '医院', '科室','医生', '类别', '日期', '查看'],
         colModel: [
             { name: 'hospital', index: 'hospital', align: "center"},
             { name: 'department', index: 'department', align: "center", editable: true},
@@ -68,4 +71,150 @@
         height: 'auto',
         caption: "健康档案管理"
     });
+    jQuery("#health_records_list").jqGrid('navGrid', '#page_health_records', {
+                cloneToTop: true, add: false, edit: false,
+                deltext: "删除", deltitle: "删除", view: false, search: false,
+                refreshtext: "更新", refreshtitle: "更新"},
+            {
+            },//edit
+            {
+            },//add
+            {
+               
+            }
+    ).navButtonAdd('#page_health_records', { title: '修改', caption: '修改', buttonicon: "ui-icon-pencil", onClickButton: function () {
+                health_edit();
+            }, position: "first"}).navButtonAdd('#page_health_records', { title: '添加超声', caption: '添加超声', buttonicon: "ui-icon-plus", onClickButton: function () {
+                health_new('超声');
+            }, position: "first"});
+    $("#health_record_console").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 570,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function (pos) {
+                var topOffset = $(this).css(pos).offset().top;
+                if (topOffset < 0) {
+                    $(this).css("top", pos.top - topOffset);
+                } else {
+                    $(this).css("top", 100);
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "保存": health_save,
+            "修改": health_update,
+            "取消": function () {
+                $("#health_record_console").dialog("close")
+            }
+        }
+    });
+    function health_edit() {
+        var id = jQuery("#health_records_list").jqGrid('getGridParam', 'selrow');
+        var rowData = $('#health_records_list').jqGrid('getRowData',id);
+        if (id) {
+            if(rowData.child_type == '超声'){
+                $.ajax({
+                    url: '/health_records/health_record_edit',
+                    type: 'get',
+                    data: {id: id, type: rowData.child_type},
+                    success: function (data) {
+                        $("#health_record_div").html(data);
+                        var video_consoleDlg = $("#health_record_console");
+                        var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                        dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                        dialogButtonPanel.find("button:contains('修改')").show();
+                        video_consoleDlg.dialog("option", "width", "800");
+                        video_consoleDlg.dialog("option", "title", "编辑记录").dialog("open");
+                    }
+                })
+            }else{
+                alert('除了超声信息其它的暂时无法进行修改!');
+            }
+        } else {
+            alert('请选择修改项!');
+        }
+    }
+    function health_new(str) {
+        $.ajax({
+            url: "/health_records/health_record_new",
+            type: 'post',
+            data: {
+                type: str
+            },
+            success: function (data) {
+                $("#health_record_div").html(data);
+                var video_consoleDlg = $("#health_record_console");
+                var dialogButtonPanel = video_consoleDlg.siblings(".ui-dialog-buttonpane");
+                dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+                dialogButtonPanel.find("button:contains('保存')").show();
+                video_consoleDlg.dialog("option", "width", "600");
+                video_consoleDlg.dialog("option", "title", "添加记录").dialog("open");
+            }
+        });
+    }
+        function health_save(){
+            $.ajax({
+                url: "/health_records/ultrasound_save",
+                type: 'post',
+                data: { patient_id: $('#patient_id').val(),
+                    patient_name: $('#patient_name').val(),
+                    apply_department_name: $('#apply_department_name').val(),
+                    bed_no: $('#bed_no').val(),
+                    apply_doctor_name: $('#apply_doctor_name').val(),
+                    examined_item_name: $('#examined_item_name').val(),
+                    examine_doctor_name: $('#examine_doctor_name').val(),
+                    us_finding: $('#us_finding').val(),
+                    us_diagnose: $('#us_diagnose').val(),
+                    inputer_name: $('#inputer_name').val()
+                },
+                async: false,
+                success: function (data) {
+                    if(data['success']){
+                        alert('保存成功');
+                    }else{
+                        alert('保存失败!');
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('保存失败!');
+                }
+            });
+        }
+        function health_update(){
+            $.ajax({
+                url: "/health_records/ultrasound_update",
+                type: 'post',
+                data: { id: $('#id').val(),
+                    patient_id: $('#patient_id').val(),
+                    patient_name: $('#patient_name').val(),
+                    apply_department_name: $('#apply_department_name').val(),
+                    bed_no: $('#bed_no').val(),
+                    apply_doctor_name: $('#apply_doctor_name').val(),
+                    examined_item_name: $('#examined_item_name').val(),
+                    examine_doctor_name: $('#examine_doctor_name').val(),
+                    us_finding: $('#us_finding').val(),
+                    us_diagnose: $('#us_diagnose').val(),
+                    inputer_name: $('#inputer_name').val(),
+                    child_type: $('#child_type').val()
+                },
+                async: false,
+                success: function (data) {
+                    if (data['success']) {
+                        alert('保存成功');
+                    } else {
+                        alert('保存失败!');
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert('保存失败!');
+                }
+            });
+        }
 </script>

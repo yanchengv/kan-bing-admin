@@ -375,6 +375,104 @@ class HealthRecordsController < ApplicationController
 
   end
 
+  #添加健康档案界面
+  def health_record_new
+    if  !params[:type].nil? && !params[:type].nil?
+      case params[:type]
+        #when 'CT'
+        #  render :partial => ''
+        when '超声'
+          render :partial => 'health_records/ultrasound_new_form'
+        #when '检验报告'
+        #  render :partial => ''
+        #when '核磁', 'MR'
+        #  render :partial => ''
+        #when 'MR'
+        #  render :partial => ''
+        #when '心电图'
+        #  render :partial => ''
+      end
+    else
+      redirect_to root_path :notice => "请求出现异常"
+    end
+  end
+
+  def health_record_edit
+    if  !params[:type].nil? && !params[:type].nil?
+      case params[:type]
+        #when 'CT'
+        #  render :partial => ''
+        when '超声'
+          @ultrasound = InspectionUltrasound.find(params[:id])
+          render :partial => 'health_records/ultrasound_edit_form'
+        #when '检验报告'
+        #  render :partial => ''
+        #when '核磁', 'MR'
+        #  render :partial => ''
+        #when 'MR'
+        #  render :partial => ''
+        #when '心电图'
+        #  render :partial => ''
+      end
+    else
+      redirect_to root_path :notice => "请求出现异常"
+    end
+  end
+
+  def ultrasound_save
+    @ultrasound = InspectionUltrasound.new(patient_id: params['patient_id'],
+        patient_name: params['patient_name'],
+        apply_department_name: params['apply_department_name'],
+        bed_no: params['bed_no'],
+        apply_doctor_name: params['apply_doctor_name'],
+        examined_item_name: params['examined_item_name'],
+        examine_doctor_name: params['examine_doctor_name'],
+        us_finding: params['us_finding'],
+        us_diagnose: params['us_diagnose'],
+        inputer_name: params['inputer_name'],
+        parent_type: '影像数据',
+        child_type: '超声')
+    if @ultrasound.save
+      render :json => {:success => true}
+    else
+      render :json => {:success => false}
+    end
+  end
+
+  def ultrasound_update
+    if !params[:child_type].nil? && !params[:child_type].nil?
+      case params[:child_type]
+        #when 'CT'
+        #  render :partial => ''
+        when '超声'
+          @ultrasound = InspectionUltrasound.find(params[:id])
+          if @ultrasound.update_attributes(apply_department_name: params['apply_department_name'],
+                                        bed_no: params['bed_no'],
+                                        apply_doctor_name: params['apply_doctor_name'],
+                                        examined_item_name: params['examined_item_name'],
+                                        examine_doctor_name: params['examine_doctor_name'],
+                                        us_finding: params['us_finding'],
+                                        us_diagnose: params['us_diagnose'],
+                                        inputer_name: params['inputer_name'])
+            render :json => {:success => true}
+          else
+            render :json => {:success => false}
+          end
+
+        #when '检验报告'
+
+        #when '核磁', 'MR'
+
+        #when 'MR'
+
+        #when '心电图'
+
+      end
+    else
+      redirect_to root_path :notice => "请求出现异常"
+    end
+  end
+
   private
   #判断有无权限读取某一患者的超声报告
   def user_health_record_power

@@ -451,6 +451,11 @@ Rails.application.routes.draw do
       get '/inspection_report', to: 'health_records#inspection_report'
       get 'mri',to:'health_records#mri'
       get '/ultrasound', to: 'health_records#ultrasound'
+
+      post '/health_record_new', to: 'health_records#health_record_new'
+      post '/ultrasound_save', to: 'health_records#ultrasound_save'
+      get 'health_record_edit', to: 'health_records#health_record_edit'
+      post '/ultrasound_update', to: 'health_records#ultrasound_update'
     end
   end
 
