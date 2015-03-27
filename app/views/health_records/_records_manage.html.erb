@@ -21,7 +21,7 @@
                     var value = colpos.thumbnail;
                     var str_value = CryptoJS.enc.Utf8.parse(value);
                     var base64_value = CryptoJS.enc.Base64.stringify(str_value);
-                    if (value!=null) {
+//                    if (value!=null) {
                         if(colpos.child_id){
                             var str = CryptoJS.enc.Utf8.parse(colpos.child_id);
                             var base64 = CryptoJS.enc.Base64.stringify(str);
@@ -33,9 +33,9 @@
                         }
 
 //                        return '<%#= link_to("查看", {controller: "health_records", action: "go_where", child_type: r.child_type, uuid: r.thumbnail, child_id: r.child_id}, :target => "_blank") %>'
-                    }else {
-                        return '无法查看'
-                    }
+//                    }else {
+//                        return '无法查看'
+//                    }
 //                    return "<a style=\"color:blue;text-align: center;width:100%\" href=\"/health_records/inspection_report?uuid="+value+"\"　target=\"_Blank\">查看</a>";
                 }
             }
@@ -71,6 +71,7 @@
         height: 'auto',
         caption: "健康档案管理"
     });
+    <% if @flag != 'all' && @flag != ''  %>
     jQuery("#health_records_list").jqGrid('navGrid', '#page_health_records', {
                 cloneToTop: true, add: false, edit: false,
                 deltext: "删除", deltitle: "删除", view: false, search: false,
@@ -87,6 +88,7 @@
             }, position: "first"}).navButtonAdd('#page_health_records', { title: '添加超声', caption: '添加超声', buttonicon: "ui-icon-plus", onClickButton: function () {
                 health_new('超声');
             }, position: "first"});
+    <% end %>
     $("#health_record_console").dialog({    //初始化对话框
         autoOpen: false,
         modal: true,    // 设置对话框为模态（modal）对话框
@@ -111,7 +113,7 @@
             "保存": health_save,
             "修改": health_update,
             "取消": function () {
-                $("#health_record_console").dialog("close")
+                $("#health_record_console").dialog("close");
             }
         }
     });
@@ -165,6 +167,7 @@
                 type: 'post',
                 data: { patient_id: $('#patient_id').val(),
                     patient_name: $('#patient_name').val(),
+                    us_order_id: $('#us_order_id').val(),
                     apply_department_name: $('#apply_department_name').val(),
                     bed_no: $('#bed_no').val(),
                     apply_doctor_name: $('#apply_doctor_name').val(),
@@ -172,12 +175,17 @@
                     examine_doctor_name: $('#examine_doctor_name').val(),
                     us_finding: $('#us_finding').val(),
                     us_diagnose: $('#us_diagnose').val(),
-                    inputer_name: $('#inputer_name').val()
+                    inputer_name: $('#inputer_name').val(),
+                    image_list: $('#image_path2').val(),
+                    video_list: $('#video_path').val(),
+                    clinic_no: $('#clinic_no').val(),
+                    hospitalized_no: $('#hospitalized_no').val()
                 },
                 async: false,
                 success: function (data) {
                     if(data['success']){
                         alert('保存成功');
+                        $("#health_record_console").dialog("close");
                     }else{
                         alert('保存失败!');
                     }
@@ -194,6 +202,7 @@
                 data: { id: $('#id').val(),
                     patient_id: $('#patient_id').val(),
                     patient_name: $('#patient_name').val(),
+                    us_order_id: $('#us_order_id').val(),
                     apply_department_name: $('#apply_department_name').val(),
                     bed_no: $('#bed_no').val(),
                     apply_doctor_name: $('#apply_doctor_name').val(),
@@ -202,12 +211,17 @@
                     us_finding: $('#us_finding').val(),
                     us_diagnose: $('#us_diagnose').val(),
                     inputer_name: $('#inputer_name').val(),
-                    child_type: $('#child_type').val()
+                    child_type: $('#child_type').val(),
+                    image_list: $('#image_path2').val(),
+                    video_list: $('#video_path').val(),
+                    clinic_no: $('#clinic_no').val(),
+                    hospitalized_no: $('#hospitalized_no').val()
                 },
                 async: false,
                 success: function (data) {
                     if (data['success']) {
                         alert('保存成功');
+                        $("#health_record_console").dialog("close");
                     } else {
                         alert('保存失败!');
                     }

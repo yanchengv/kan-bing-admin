@@ -16,6 +16,7 @@ class HealthRecordsController < ApplicationController
 
   def show_index
     type = params[:type]
+    @flag = params[:flag]
     @url_path = '/health_records/'+type+"?flag=#{params[:flag]}"
     render partial: 'health_records/records_manage'
   end
@@ -84,8 +85,8 @@ class HealthRecordsController < ApplicationController
     # params[:child_id] = AES.decrypt(params[:child_id].to_s,key)
     @uuid = params[:uuid]
     @iu = InspectionUltrasound.find(params[:child_id])
-    @pics = @iu.image_list.split(',')
-    @videos = @iu.video_list.split(',')
+    @pics = @iu.image_list.nil? ? nil : @iu.image_list.split(',')
+    @videos = @iu.video_list.nil? ? nil : @iu.video_list.split(',')
     @flag=aliyun_file_exit(@uuid,'mimas-img')
     render "health_records/ultrasound", layout: "application3"
 
@@ -423,6 +424,7 @@ class HealthRecordsController < ApplicationController
     @ultrasound = InspectionUltrasound.new(patient_id: params['patient_id'],
         patient_name: params['patient_name'],
         apply_department_name: params['apply_department_name'],
+        us_order_id: params['us_order_id'],
         bed_no: params['bed_no'],
         apply_doctor_name: params['apply_doctor_name'],
         examined_item_name: params['examined_item_name'],
@@ -430,6 +432,8 @@ class HealthRecordsController < ApplicationController
         us_finding: params['us_finding'],
         us_diagnose: params['us_diagnose'],
         inputer_name: params['inputer_name'],
+        image_list: params['image_list'],
+        video_list: params['video_list'],
         parent_type: '影像数据',
         child_type: '超声')
     if @ultrasound.save
@@ -446,11 +450,23 @@ class HealthRecordsController < ApplicationController
         #  render :partial => ''
         when '超声'
           @ultrasound = InspectionUltrasound.find(params[:id])
+          if @ultrasound.image_list.include?(',')
+            image_list = @ultrasound.image_list + ",#{params['image_list']}"
+          else
+            image_list = @ultrasound.image_list
+          end
+          if @ultrasound.video_list.include?(',')
+            video_list = @ultrasound.video_list + ",#{params['video_list']}"
+          else
+            video_list = @ultrasound.video_list
+          end
           if @ultrasound.update_attributes(apply_department_name: params['apply_department_name'],
                                         bed_no: params['bed_no'],
                                         apply_doctor_name: params['apply_doctor_name'],
                                         examined_item_name: params['examined_item_name'],
                                         examine_doctor_name: params['examine_doctor_name'],
+                                        image_list: image_list,
+                                        video_list: video_list,
                                         us_finding: params['us_finding'],
                                         us_diagnose: params['us_diagnose'],
                                         inputer_name: params['inputer_name'])

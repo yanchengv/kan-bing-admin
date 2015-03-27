@@ -1,0 +1,86 @@
+<style>
+  .yahei{
+      font-family:'Microsoft YaHei';
+  }
+  table{text-align:left;margin:0 auto;width:90%;}
+  table tr td{
+      font-family:'Microsoft YaHei';
+  }
+  .line{width:90%;margin:10px auto;border-bottom:1px solid #666;}
+</style>
+<h2 class="yahei">清华大学玉泉医院</h2>
+<!--标题-->
+<table class="yahei">
+  <tr>
+    <td width="40%">超声号 <%= @iu.us_order_id %></td>
+    <td> 超声检查报告单</td>
+  </tr>
+</table>
+<div class="line"></div>
+
+<table class="yehei">
+  <tr>
+    <td>姓名：<%= @iu.patient_name %> </td>
+    <td>性别：<%= @iu.patient.gender %></td>
+    <td>年龄：<%= (Time.now.year - @iu.patient.birthday.year) unless @iu.patient.birthday.nil? %>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>科别：<%= @iu.apply_department_name %></td></tr>
+  <tr>
+    <td>门诊号:&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>住院号:&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>床位：<%= @iu.bed_no %>&nbsp;&nbsp;</td>
+    <td>申请医生：<%= @iu.apply_doctor_name %></td></tr>
+  <tr>
+    <td colspan="4" class="float-left">检查项目：<%= @iu.examined_item_name %></td></tr>
+</table>
+<div class="line"></div>
+<div id="pictures1" class="video_lists">
+  <table>
+       <!--<tr>-->
+         <!--<td><img src="" style="width:95%;height:250px;"/></td>-->
+         <!--<td><img src="" style="width:95%;height:250px;"/></td>-->
+       <!--</tr>-->
+  </table>
+</div>
+<div class="line"></div>
+<table>
+  <tr>
+    <td width="15%">超声所见：</td>
+    <td></td>
+  </tr>
+  <tr>
+    <!--<td width="15%"></td>-->
+    <td colspan="2"><%= raw @iu.us_finding %></td>
+  </tr>
+  <tr style="height: 30px;"><td></td></tr>
+</table>
+<table>
+  <tr>
+    <td width="15%">超声所得：</td>
+    <td></td>
+  </tr>
+  <tr>
+    <!--<td width="15%"></td>-->
+    <td colspan="2"><%= raw @iu.us_diagnose %></td>
+  </tr>
+  <tr style="height: 30px;"><td></td></tr>
+</table>
+<table class="yahei">
+  <tr>
+    <td width="40%">备注</td>
+    <td style="text-align: right">超声影像医学工作站</td>
+  </tr>
+</table>
+<div class="line"></div>
+<table >
+  <tr>
+    <td>录入员：<%= @iu.inputer_name %> </td>
+    <td>检查医生：<%= @iu.examine_doctor_name %></td>
+    <td>签名：</td>
+    <td>时间：</td>
+  </tr>
+</table>
+<table class="yahei" style="margin-bottom:50px;">
+  <tr>
+    <td style="color:#666;">*此报告仅供临床参考</td>
+  </tr>
+</table>

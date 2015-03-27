@@ -17,6 +17,10 @@
 <br>
 <br>
     <% @patient = Patient.where("id = ?", session["patient_id"]).first%>
+<input type="file" name="image" id='fileupload' style='visibility:hidden;display:none;'>
+<input type="file" name="video" id='video_upload' style='visibility:hidden;display:none;'>
+<input type="text" name="video_url" id='video_url' style='visibility:hidden;display:none;'>
+<input type="text" name="image_url" id='image_path' style='visibility:hidden;display:none;'>
 <input type="hidden" id="patient_id" value="<%= @patient.nil? ? '' : @patient.id %>">
 <input type="hidden" id="child_type" value="<%= @ultrasound.child_type %>">
 <input type="hidden" id="id" value="<%= @ultrasound.id %>">
@@ -24,7 +28,7 @@
           <tr class="FormData">
             <td class="CaptionTD">超声号:</td>
             <td class="DataTD" colspan="3">
-              <input type="text" id="ultrasound_num" class='FormElement ui-widget-content ui-corner-all'></td>
+              <input type="text" id="us_order_id" value="<%= @ultrasound.us_order_id %>" class='FormElement ui-widget-content ui-corner-all'></td>
           </tr>
           <tr class="FormData">
             <td class="CaptionTD">姓名:</td>
@@ -43,7 +47,7 @@
         <td class="DataTD">
           <input type="text" id='patient_age' class='FormElement ui-widget-content ui-corner-all' value="<%= (Time.now.year - @patient.birthday.year) unless @patient.nil? || @patient.birthday.nil? %>" readonly="readonly"></td>
          </td>
-        <td class="CaptionTD">科别:</td>
+        <td class="CaptionTD">申请科室:</td>
         <td class="DataTD">
           <input type="text" id='apply_department_name' value="<%= @ultrasound.apply_department_name %>" class='FormElement ui-widget-content ui-corner-all'></td>
         </td>
@@ -51,11 +55,11 @@
       <tr>
         <td class="CaptionTD">门诊号:</td>
         <td class="DataTD">
-          <input type="text" id='clinic_no' class='FormElement ui-widget-content ui-corner-all'></td>
+          <input type="text" id='clinic_no' value="<%= @ultrasound.clinic_no %>" class='FormElement ui-widget-content ui-corner-all'></td>
         </td>
         <td class="CaptionTD">住院号:</td>
         <td class="DataTD">
-          <input type="text" id="hospitalized_no" class='FormElement ui-widget-content ui-corner-all'/>
+          <input type="text" id="hospitalized_no" value="<%= @ultrasound.hospitalized_no %>" class='FormElement ui-widget-content ui-corner-all'/>
         </td>
       </tr>
       <tr class="FormData">
@@ -75,6 +79,35 @@
           <input type="text" id='examine_doctor_name' value="<%= @ultrasound.examine_doctor_name %>" class='FormElement ui-widget-content ui-corner-all'></td>
       </tr>
       <tr class="FormData">
+        <td class="CaptionTD">图片:</td>
+        <td class="DataTD" colspan="3">
+          <input id="image_path2" type="text" disabled="disabled" width="200" class='FormElement ui-widget-content ui-corner-all' style="display:inline;"/><input id="fakebtn1" style="display:inline" type="button" value="选择图片文件"/>
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">视频:</td>
+        <td class="DataTD" colspan="3">
+          <input id="video_path" type="text" disabled="disabled" class='FormElement ui-widget-content ui-corner-all' style="display:inline;width:200px;"/><input id="fakebtn2" type="button" value="选择视频文件" style="display:inline"/>
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">&nbsp;</td>
+        <td colspan="3" class="files">
+          <div id="progress2">
+            <div class="bar" style="width: 0%;margin-top:10px;"></div>
+          </div>
+          <span class="fileupload-buttonbar" style="float:right;display: none" id="pausebtn"><button type="reset" class="cancel">取消</button></span>
+        </td>
+      </tr>
+      <tr class="FormData">
+        <td class="CaptionTD">&nbsp;</td>
+        <td colspan="3">
+          <div id="upload_div" style="display:inline;margin-left: 10px;float:right">
+            <div id="uploadinfo"></div>
+          </div>
+        </td>
+      </tr>
+      <tr class="FormData">
         <td class="CaptionTD">超声所见:</td>
         <td class="DataTD" colspan="3">
           <textarea id='us_finding' rows="5" class='FormElement ui-widget-content ui-corner-all'><%= @ultrasound.us_finding %></textarea>
@@ -87,11 +120,6 @@
         <!-- 内容概要输入请保持在85字之内-->
         <!--<textarea name='content_summary' rows="5" id="content_summary" style="width: 600px; "  class='FormElement ui-widget-content ui-corner-all'></textarea>-->
         </td>
-      </tr>
-      <tr class="FormData">
-        <td class="CaptionTD">备注:</td>
-        <td class="DataTD" colspan="3">
-          <textarea id='note' rows="5" id="content" style="width: 300px; " class='FormElement ui-widget-content ui-corner-all'></textarea>
       </tr>
       <tr class="FormData">
         <td class="CaptionTD">录入员:</td>
@@ -111,4 +139,68 @@
                 format: 'Y-m-d'
             });
     })
+    function getFileName(obj) {
+        var pos = obj.value.lastIndexOf("/") * 1;
+        var filepath = obj.value.substring(pos + 1);
+        var pos2 = filepath.lastIndexOf("\\") * 1;
+        var filename = filepath.substring(pos2 + 1);
+        $('#video_path').val(filename)
+        $('#progress2 .bar').css(
+                'width',
+                '0%'
+        );
+    }
+    $("#fakebtn1").click(function () {
+        $("#fileupload").click();
+    });
+    $("#fakebtn2").click(function () {
+        $("#video_upload").click();
+    });
+    var ChunkCount = 0;
+    var stime;
+    var url1 = "/edu_videos/upload_image";
+    var url2 = "/edu_videos/upload_video"
+    $('#fileupload').fileupload({
+        autoUpload: true,
+        url: url1,
+        dataType: 'json',
+        //forceIframeTransport: true,
+        maxChunkSize: 0, //100Mb
+        fail: function (e, data) {
+            alert('上传失败！')
+        },
+
+        done: function (e, data) {
+            if (data.result.flag) {
+                $('#image_path').val(data.result.url);
+                $('#image_path2').val(data.result.url);
+            }
+        }
+    });
+    var jqXHR = $('#video_upload').fileupload({
+        url: url2,
+        dataType: 'json',
+        //forceIframeTransport: true,
+//        maxChunkSize: 100000000000, //100Gb
+        maxFileSize: 100000000000,//100Gb
+        fail: function (e, data) {
+            alert('上传失败！');
+            data.context = $("#uploadinfo").text('视频上传失败！');
+        },
+        done: function (e, data) {
+            if (data.result.flag) {
+                $('#video_url').val(data.result.url);
+                $('#video_path').val(data.result.url);
+            }
+            data.context = $("#uploadinfo").text('视频上传成功!');
+        },
+        progress: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress2 .bar').css(
+                    'width',
+                    progress + '%'
+            );
+            data.context = $("#uploadinfo").text('视频正在上传...');
+        }
+    });
 </script>
