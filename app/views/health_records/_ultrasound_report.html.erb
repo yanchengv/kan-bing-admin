@@ -25,8 +25,8 @@
     <td>年龄：<%= (Time.now.year - @iu.patient.birthday.year) unless @iu.patient.birthday.nil? %>&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>科别：<%= @iu.apply_department_name %></td></tr>
   <tr>
-    <td>门诊号:&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td>住院号:&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>门诊号: <%= @iu.clinic_no %></td>
+    <td>住院号: <%= @iu.hospitalized_no %></td>
     <td>床位：<%= @iu.bed_no %>&nbsp;&nbsp;</td>
     <td>申请医生：<%= @iu.apply_doctor_name %></td></tr>
   <tr>

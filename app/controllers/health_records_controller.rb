@@ -434,6 +434,8 @@ class HealthRecordsController < ApplicationController
         inputer_name: params['inputer_name'],
         image_list: params['image_list'],
         video_list: params['video_list'],
+        clinic_no: params['clinic_no'],
+        hospitalized_no: params['hospitalized_no'],
         parent_type: '影像数据',
         child_type: '超声')
     if @ultrasound.save
@@ -475,6 +477,8 @@ class HealthRecordsController < ApplicationController
                                         examine_doctor_name: params['examine_doctor_name'],
                                         image_list: image_list,
                                         video_list: video_list,
+                                        clinic_no: params['clinic_no'],
+                                        hospitalized_no: params['hospitalized_no'],
                                         us_finding: params['us_finding'],
                                         us_diagnose: params['us_diagnose'],
                                         inputer_name: params['inputer_name'])
