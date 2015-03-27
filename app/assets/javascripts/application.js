@@ -26,3 +26,5 @@
 //= require jquery.form.min
 //= require jquery.Jcrop
 //= require bootstrap
+//= require swfobject
+//= require ParsedQueryString

@@ -32,7 +32,7 @@
     <div class="collapse navbar-collapse pull-right" id="bs-example-navbar-collapse-1">
       <% if signed_in? %>
       <ul class="nav navbar-nav">
-        <% if !@first_menus.empty?%>
+        <% if !@first_menus.nil? && !@first_menus.empty? %>
             <% @first_menus.each do |menu| %>
                 <li>
                   <a href="/?pId=<%=  AES.encrypt(menu.id.to_s,key) %>" data-toggle="tooltip" data-placement="bottom" title="<%= menu.name %>">
