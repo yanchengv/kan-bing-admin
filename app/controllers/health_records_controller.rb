@@ -450,13 +450,21 @@ class HealthRecordsController < ApplicationController
         #  render :partial => ''
         when '超声'
           @ultrasound = InspectionUltrasound.find(params[:id])
-          if @ultrasound.image_list.include?(',')
-            image_list = @ultrasound.image_list + ",#{params['image_list']}"
+          if !@ultrasound.image_list.nil? && !@ultrasound.image_list.blank?
+            if !params['image_list'].nil? && !params['image_list'].blank?
+              image_list = @ultrasound.image_list + ",#{params['image_list']}"
+            else
+              image_list = @ultrasound.image_list
+            end
           else
             image_list = @ultrasound.image_list
           end
-          if @ultrasound.video_list.include?(',')
-            video_list = @ultrasound.video_list + ",#{params['video_list']}"
+          if !@ultrasound.video_list.nil? && !@ultrasound.video_list.blank?
+            if !params['video_list'].nil? && !params['video_list'].blank?
+              video_list = @ultrasound.video_list + ",#{params['video_list']}"
+            else
+              video_list = @ultrasound.video_list
+            end
           else
             video_list = @ultrasound.video_list
           end
