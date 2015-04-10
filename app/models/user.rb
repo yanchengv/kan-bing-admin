@@ -2,6 +2,7 @@
 include SessionsHelper
 class User < ActiveRecord::Base
    before_create :set_pk_code
+   after_update :delete_weixin
   belongs_to :doctor, :foreign_key => :doctor_id
   belongs_to :patient, :foreign_key => :patient_id
   # validates :name, presence: true, uniqueness: {case_sensitive: true, message: "该用户名已被使用！"}
@@ -93,6 +94,24 @@ class User < ActiveRecord::Base
       return 'ok'
     else
       return str[0, str.length-1] + '不能重复!'
+    end
+  end
+
+  #当用户为注销状态时,删除对应的微信账号
+  def delete_weixin
+    if self.is_enabled == false
+      if !self.patient_id.nil? && self.patient_id != ''
+        @weixin_users = WeixinUser.where(:patient_id => self.id)
+        if !@weixin_users.empty?
+          @weixin_users.delete_all
+        end
+      end
+      if !self.doctor_id.nil? && self.doctor_id != ''
+        @weixin_users = WeixinUser.where(:doctor_id => self.id)
+        if !@weixin_users.empty?
+          @weixin_users.delete_all
+        end
+      end
     end
   end
 end
