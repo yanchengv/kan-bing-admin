@@ -2,6 +2,7 @@ include SessionsHelper
 class Patient < ActiveRecord::Base
   before_create :set_pk_code,:pinyin,:set_default_value, :auto_assign_doctor
   before_update :update_default_value ,:after_update_user
+  after_destroy :delete_weixin2user
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city
   belongs_to :doctor
@@ -73,6 +74,20 @@ class Patient < ActiveRecord::Base
     @user = self.user
     if !@user.nil?
       @user.update_attributes(real_name:self.name,email:self.email,mobile_phone:self.mobile_phone,credential_type_number:self.credential_type_number)
+    end
+  end
+
+  #当删除患者时,要同时删除对应的user 和 weixin用户
+  def delete_weixin2user
+    if self.id
+      @users = User.where(:patient_id => self.id)
+      if !@users.empty?
+        @users.delete_all
+      end
+      @weixin_users = WeixinUser.where(:patient_id => self.id)
+      if !@weixin_users.empty?
+        @weixin_users.delete_all
+      end
     end
   end
 

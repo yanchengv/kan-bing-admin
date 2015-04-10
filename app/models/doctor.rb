@@ -6,6 +6,7 @@ class Doctor < ActiveRecord::Base
   before_update :update_default_value,:after_update_do,:after_update_user
   before_destroy :destroy_patient
   after_create :save_patient
+  after_destroy :delete_weixin2user
   has_one :user, :dependent => :destroy
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city
@@ -99,6 +100,19 @@ class Doctor < ActiveRecord::Base
     if !@patient.empty?
       @patient.each do |pat|
         pat.destroy
+      end
+    end
+  end
+  #当删除医生时,要同时删除对应的user 和 weixin用户
+  def delete_weixin2user
+    if self.id
+      @users = User.where(:doctor_id => self.id)
+      if !@users.empty?
+        @users.delete_all
+      end
+      @weixin_users = WeixinUser.where(:doctor_id => self.id)
+      if !@weixin_users.empty?
+        @weixin_users.delete_all
       end
     end
   end
