@@ -54,6 +54,25 @@ class Admin2 < ActiveRecord::Base
     return {add_flag:add_flag,delete_flag:delete_flag,update_flag:update_flag,show_flag:show_flag}
   end
 
+  def delete_domain admin
+    #是否有对应的域名
+    @domains = Domain.where(:hospital_id => admin.hospital_id, :department_id => admin.department_id)
+    if !@domains.empty? && !@domains.nil?
+      @domains.each do |domain|
+        #如果域名没有对应的其它管理员,则删除域名及其对应的模块信息,如果有则不对应的域名信息
+        @admins = Admin2.where("hospital_id = ? and department_id = ? and id != ?", domain.hospital_id, domain.department_id, admin.id)
+        if @admins.empty? || @admins.nil?
+          @page_blocks = PageBlock.where(:hospital_id => domain.hospital_id, :department_id => domain.department_id)
+          @page_blocks.each do |pb|
+            @block_contents = BlockContent.where(:block_id => pb.id)
+            @block_contents.delete_all
+          end
+          @page_blocks.delete_all
+          domain.destroy
+        end
+      end
+    end
+  end
   def Admin2.encrypt(token)
     Digest::SHA1.hexdigest(token.to_s)
   end
