@@ -3,6 +3,7 @@
 <div class="col-md-12" >
   <!--用来存放文件信息-->
   <div  class="uploader-list">
+    <font color="red">仅支持dicom文件类型</font>
       <div id="ul_notice"><span class="glyphicon glyphicon-hand-up"></span><div id="clickMeToUpload">点我上传文件</div></div>
       <div id="thelist">
       </div>
@@ -30,11 +31,11 @@
 
             // 不压缩image
             resize: false,
+            //指定接受哪些类型的文件
             accept:{
-//                title: 'Images',
-//                title:'Public',
-//                extensions: 'dcm',
-//                mimeTypes: 'public/*'
+                title : 'dicom文件', // {String} 文字描述
+                extensions : 'dcm' // {String}// 允许的文件后缀，不带点，多个用逗号分割。
+//                mimeTypes : 'image/*' // {String} 多个用逗号分割。
             },
 
             // swf文件路径
@@ -45,6 +46,7 @@
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
             pick: '#picker'
+
         });
 
         //添加文件选择按钮，一个按钮不够,額外添加
