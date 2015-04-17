@@ -72,6 +72,10 @@ GEM
     erubis (2.7.0)
     execjs (2.3.0)
     hike (1.2.3)
+    httmultiparty (0.3.16)
+      httparty (>= 0.7.3)
+      mimemagic
+      multipart-post
     httparty (0.12.0)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
@@ -90,6 +94,7 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     mime-types (2.4.3)
+    mimemagic (0.3.0)
     mina (0.3.1)
       open4 (~> 1.3.4)
       rake
@@ -98,6 +103,7 @@ GEM
     minitest (5.4.3)
     multi_json (1.10.1)
     multi_xml (0.5.5)
+    multipart-post (2.0.0)
     mysql2 (0.3.17)
     netrc (0.9.0)
     open4 (1.3.4)
@@ -182,6 +188,7 @@ DEPENDENCIES
   carrierwave-aliyun
   coffee-rails (~> 4.0.0)
   curb
+  httmultiparty
   httparty (~> 0.12.0)
   jbuilder (~> 2.0)
   jcrop-rails-v2 (~> 0.9.12.3)

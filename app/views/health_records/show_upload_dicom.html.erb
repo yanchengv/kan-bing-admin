@@ -1,0 +1,120 @@
+<div class="container">
+<div id="uploader" class="index_box">
+<div class="col-md-12" >
+  <!--用来存放文件信息-->
+  <div  class="uploader-list">
+      <div id="ul_notice"><span class="glyphicon glyphicon-hand-up"></span><div id="clickMeToUpload">点我上传文件</div></div>
+      <div id="thelist">
+      </div>
+      <div style="clear:both"></div>
+  </div>
+  <div style="clear:both"></div>
+  <div class="space2">
+      <button id="ctlBtn" class="btn btn-default pull-right space7">开始上传</button>
+      <div id="picker" class="pull-right">选择文件</div>
+  </div>
+
+</div>
+</div>
+</div>
+<script>
+    // 文件上传
+    jQuery(function() {
+        var $ = jQuery,
+                $list = $('#thelist'),
+                $btn = $('#ctlBtn'),
+                state = 'pending',
+                uploader;
+
+        uploader = WebUploader.create({
+
+            // 不压缩image
+            resize: false,
+            accept:{
+//                title: 'Images',
+//                title:'Public',
+//                extensions: 'dcm',
+//                mimeTypes: 'public/*'
+            },
+
+            // swf文件路径
+            swf: '/Uploader.swf',
+            // 文件接收服务端。
+            server: '<%=Settings.mimas+'/health_records/upload_dicom'%>',
+            formData: {guid:"<%=SecureRandom.uuid%>",patient_id:"<%=@patient_id%>"},
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '#picker'
+        });
+
+        //添加文件选择按钮，一个按钮不够,額外添加
+        uploader.addButton({
+            id: '#clickMeToUpload'
+//            innerHTML: '选择文件2'
+        });
+        // 当有文件添加进来的时候
+        uploader.on( 'fileQueued', function( file ) {
+            $("#ul_notice").hide();
+            $list.append( '<div id="' + file.id + '" class="ul_item">' +
+                    '<h4 class="ul_info">' + file.name + '</h4>' +
+                    '<p class="state"><span class="ul_bg1">等待上传...</span></p>' +
+                    '</div>' );
+        });
+
+        // 文件上传过程中创建进度条实时显示。
+        uploader.on( 'uploadProgress', function( file, percentage ) {
+            var $li = $( '#'+file.id ),
+                    $percent = $li.find('.progress .progress-bar');
+
+            // 避免重复创建
+            if ( !$percent.length ) {
+                $percent = $(' <div class="progress" style="height:10px;">' +
+                        '<div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" style="width: 0%">' +
+                        '</div>' +
+                        '</div>').appendTo( $li ).find('.progress-bar');
+            }
+
+            $li.find('p.state').text('上传中');
+
+            $percent.css( 'width', percentage * 100 + '%' );
+        });
+
+        uploader.on( 'uploadSuccess', function( file ) {
+            $( '#'+file.id ).find('p.state').html('<span class="ul_bg1">上传成功</span>');
+        });
+
+        uploader.on( 'uploadError', function( file ) {
+            $( '#'+file.id ).find('p.state').html('<span class="ul_bg2">上传出错</span>');
+        });
+
+        uploader.on( 'uploadComplete', function( file ) {
+            $( '#'+file.id ).find('.progress').fadeOut();
+        });
+
+        uploader.on( 'all', function( type ) {
+            if ( type === 'startUpload' ) {
+                state = 'uploading';
+            } else if ( type === 'stopUpload' ) {
+                state = 'paused';
+            } else if ( type === 'uploadFinished' ) {
+                state = 'done';
+            }
+
+            if ( state === 'uploading' ) {
+                $btn.text('暂停上传');
+            } else {
+                $btn.text('开始上传');
+            }
+        });
+
+        $btn.on( 'click', function() {
+            if ( state === 'uploading' ) {
+                uploader.stop();
+            } else {
+                uploader.upload();
+            }
+        });
+    });
+
+
+</script>

@@ -28,3 +28,4 @@
 //= require bootstrap
 //= require swfobject
 //= require ParsedQueryString
+//= require webuploader/webuploader.min

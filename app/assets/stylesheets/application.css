@@ -29,6 +29,8 @@
  *= require themes/defalut
  *= require  bootstrap
  *= require  table
+ *= require webuploader/webuploader
+ *= require webuploader/show_upload_dicom.css
  */
 .ui-jqdialog-content .DataTD {
     padding: 2px;

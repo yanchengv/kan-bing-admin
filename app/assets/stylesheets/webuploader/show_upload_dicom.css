@@ -1,0 +1,65 @@
+.ul_item{
+    font-family:"Microsoft YaHei",Arial;
+    width:115px;
+    height:115px;
+    margin:7px 0 0 7px;
+    border:1px solid #dcdcdc;
+    background:#fff;
+    float:left;
+    position:relative;
+
+}
+.ul_info{
+    width: 95px;
+    margin: 10px auto;
+    word-break: break-all;
+    font-size: 14px;
+}
+.uploader-list{
+    background:#F0F0F0;
+    margin-top:20px;
+    padding-bottom:10px;
+    min-height:230px;
+    margin-left: 200px;
+}
+.state{
+    width:100%;
+    margin: 10px auto;
+    color: #fff;
+    position:absolute;
+    bottom:-10px;
+}
+.state span{
+    width:100%;
+    display:inline-block;
+    padding:0 5px;
+}
+.ul_bg1{
+    background:#55B400;
+
+
+}
+.ul_bg2{
+    background:#777777;
+}
+#ul_notice .webuploader-pick{
+    font-family: "Microsoft YaHei",Arial;
+    font-size: 30px;
+    color: #aaa;
+    width: 210px;
+    background:transparent;
+}
+#ul_notice span{
+    font-size: 30px;
+    color: #aaa;
+    line-height:56px;
+    float:left;
+}
+#ul_notice{
+    width:240px;
+    position:absolute;
+    top:50%;
+    margin-top:-50px;
+    left:50%;
+    margin-left:-115px;
+}

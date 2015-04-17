@@ -5,7 +5,13 @@ defaults: &defaults
   block_content_list: '/block_content/list'
   hospital_code:
     yuquan: '00001'
-
+  #  mimas: 'http://www.kanbing365.com'
+  #  mimas: 'http://kanbing365.gre-medical.org'
+  mimas: 'http://192.168.1.62:3000'
+  #dicom: 'http://www.kanbing365.com:8080/' #dicom 上传/查询--公網
+   #aliyunPacs: 'http://dev-pacs.oss-cn-beijing.aliyuncs.com/' #dicom影像数据存放阿里云路径--公網
+  dicom: 'http://dev.viicare.com:8090/' #樓下測試地址--測試用的
+  aliyunPacs: 'http://test-pacs.oss-cn-beijing.aliyuncs.com/' #dicom影像数据存放阿里云路径--測試用的
   aliyunOSS:
       server: 'oss.aliyuncs.com'
       beijing_service: 'oss-cn-beijing.aliyuncs.com'
@@ -31,7 +37,13 @@ production:
   mimas: 'http://www.kanbing365.com'
   hospital_code:
     yuquan: '00001'
-
+  mimas: 'http://www.kanbing365.com'
+  #  mimas: 'http://kanbing365.gre-medical.org'
+  #mimas: 'http://192.168.1.62:3000'
+  dicom: 'http://www.kanbing365.com:8080/' #dicom 上传/查询--公網
+  aliyunPacs: 'http://dev-pacs.oss-cn-beijing.aliyuncs.com/' #dicom影像数据存放阿里云路径--公網
+  #dicom: 'http://dev.viicare.com:8090/' #樓下測試地址--測試用的
+  #aliyunPacs: 'http://test-pacs.oss-cn-beijing.aliyuncs.com/' #dicom影像数据存放阿里云路径--測試用的
   aliyunOSS:
       server: 'oss.aliyuncs.com'
       beijing_service: 'oss-cn-beijing.aliyuncs.com'

@@ -3,8 +3,8 @@ class HealthRecordsController < ApplicationController
   require 'open-uri'
   delegate "default_access_url_prefix_with", :to => "ActionController::Base.helpers"
   before_filter :signed_in_user
-  skip_before_filter :verify_authenticity_token ,only:[:upload]
-  layout "application2",only:[:index,:show_index,:dicom,:ct2,:mri2,:ultrasound2,:inspection_report2]
+  skip_before_filter :verify_authenticity_token ,only:[:upload,:show_upload_dicom,:upload_dicom]
+  layout "application2",only:[:index,:show_index,:dicom,:ct2,:mri2,:ultrasound2,:inspection_report2,:show_upload_dicom,:upload_dicom]
   #before_filter :user_health_record_power, only: [:ct,:ultrasound,:inspection_report]
 
   def index
@@ -19,6 +19,46 @@ class HealthRecordsController < ApplicationController
     @flag = params[:flag]
     @url_path = '/health_records/'+type+"?flag=#{params[:flag]}"
     render partial: 'health_records/records_manage'
+  end
+
+
+
+  def show_upload_dicom
+    @patient_id=session["patient_id"]
+  end
+
+  #dicom上传
+  def upload_dicom
+    guid=params[:guid]
+    patient_id=params[:patient_id]
+    # patient_id=patient_id.gsub(" ","+")
+    # patient_id=AES.decrypt(patient_id.to_s,Settings.key)  #aes解密
+    guid2=SecureRandom.uuid
+    upload_path = "uploads/dicom/"
+    file_dir = Rails.root.join('public', upload_path)
+    FileUtils.mkdir_p(file_dir)
+    uploaded_io=params[:file]
+    filename=params[:name]<<guid2
+    File.open(Rails.root.join('public', upload_path,filename), 'wb') do |file|
+      file.write (uploaded_io.read)
+    end
+    # 文件的本地路徑
+    file_url="#{Rails.root}/public/uploads/dicom/#{filename}"
+
+    @flag=InspectionCt.new.upload_to patient_id,file_url,nil
+    if @flag==true
+      # 上傳成功後刪除本地文件
+      if File.exists?("#{Rails.root}/public/uploads/dicom/#{filename}")
+        File.delete("#{Rails.root}/public/uploads/dicom/#{filename}")
+      end
+    else
+      if File.exists?("#{Rails.root}/public/uploads/dicom/#{filename}")
+        File.delete("#{Rails.root}/public/uploads/dicom/#{filename}")
+      end
+      @flag=false
+    end
+
+    render json:@flag
   end
 
   def play_video

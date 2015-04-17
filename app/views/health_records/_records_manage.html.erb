@@ -87,7 +87,9 @@
                 health_edit();
             }, position: "first"}).navButtonAdd('#page_health_records', { title: '添加超声', caption: '添加超声', buttonicon: "ui-icon-plus", onClickButton: function () {
                 health_new('超声');
-            }, position: "first"});
+            }, position: "first"}).navButtonAdd('#page_health_records', { title: 'dicom影像数据上传', caption: 'dicom影像数据上传', buttonicon: "ui-icon-plus", onClickButton: function () {
+                addDicomRecords();
+            }, position: "first"});;
     <% end %>
     $("#health_record_console").dialog({    //初始化对话框
         autoOpen: false,
@@ -117,6 +119,13 @@
             }
         }
     });
+
+    //DICOM
+    function addDicomRecords(id) {
+
+        window.open('/health_records/show_upload_dicom')
+
+    }
     function health_edit() {
         var id = jQuery("#health_records_list").jqGrid('getGridParam', 'selrow');
         var rowData = $('#health_records_list').jqGrid('getRowData',id);
