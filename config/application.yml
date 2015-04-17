@@ -1,11 +1,10 @@
 defaults: &defaults
 
-  mimas: 'http://fitark.org'
   block_content: '/block_content/show'
   block_content_list: '/block_content/list'
   hospital_code:
     yuquan: '00001'
-  #  mimas: 'http://www.kanbing365.com'
+  #  mimas: 'http://admin.kanbing365.com'
   #  mimas: 'http://kanbing365.gre-medical.org'
   mimas: 'http://192.168.1.62:3000'
   #dicom: 'http://www.kanbing365.com:8080/' #dicom 上传/查询--公網
@@ -34,10 +33,9 @@ production:
   block_content: '/block_content/show'
   block_content_list: '/block_content/list'
   files_mount: '/dfs/'
-  mimas: 'http://www.kanbing365.com'
+  mimas: 'http://admin.kanbing365.com'
   hospital_code:
     yuquan: '00001'
-  mimas: 'http://www.kanbing365.com'
   #  mimas: 'http://kanbing365.gre-medical.org'
   #mimas: 'http://192.168.1.62:3000'
   dicom: 'http://www.kanbing365.com:8080/' #dicom 上传/查询--公網
