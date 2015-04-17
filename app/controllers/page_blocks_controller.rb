@@ -120,8 +120,9 @@ class PageBlocksController < ApplicationController
 
   # GET /page_blocks/new
   def new
+    all_menus
     @page_block = PageBlock.new
-    render :partial => 'page_blocks/new'
+    render 'page_blocks/new'
   end
 
   # GET /page_blocks/1/edit

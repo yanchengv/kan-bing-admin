@@ -8,7 +8,7 @@ function check_link_url(value) {
     if (value != '') {
         $.ajax({
             type: 'get',
-            url: 'home_menu/check_url?link_url='+value+'&home_menu_id=<%= @home_menu.id%>',
+            url: '/home_menu/check_url?link_url='+value+'&home_menu_id=<%= @home_menu.id%>',
             success: function (data) {
                 if (data['success']) {
                     $("#link_url_error").html('')
@@ -48,7 +48,7 @@ if (link_url_flag&&redirect_url_flag) {
         var valuesToSubmit=$(this).serialize();
         $.ajax({
             type:'post',
-            url:'home_menu/save',
+            url:'/home_menu/save',
             data:valuesToSubmit,
             success:function(data){
                 $("#rightContent").html(data);

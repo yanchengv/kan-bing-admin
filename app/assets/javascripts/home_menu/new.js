@@ -4,7 +4,7 @@ function check_link_url(value) {
     if (value != '') {
         $.ajax({
             type: 'get',
-            url: 'home_menu/check_url?link_url='+value,
+            url: '/home_menu/check_url?link_url='+value,
             success: function (data) {
                 if (data['success']) {
                     $("#link_url_error").html('')
@@ -44,7 +44,7 @@ $('#home_menu_form').submit(function(){
         var valuesToSubmit=$(this).serialize();
         $.ajax({
             type:'post',
-            url:'home_menu/create',
+            url:'/home_menu/create',
             data:valuesToSubmit,
             success:function(data){
                 $("#rightContent").html(data);

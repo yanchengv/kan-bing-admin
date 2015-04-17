@@ -1,0 +1,87 @@
+<%#= javascript_include_tag 'page_blocks/new'%>
+<%= stylesheet_link_tag 'page_blocks/new'%>
+<div id="block_console">
+  <div id="create_video_div">
+    <input type="hidden" name="model_name" id="model_name">
+    <label>区块名称</label><input type="text" name="block_name" id="block_name">
+  </div>
+</div>
+<div class="panel panel-info">
+  <div class="panel-heading yahei" style="font-size:16px;"><b>添加模块</b></div>
+  <div class="panel-body">
+    <ul class="m_box">
+      <li><a href="#" onclick="check_model('login')"><%=image_tag "m1.jpg" %></a><br />登陆模块-1（1:3,低）</li>
+      <li><a href="#" onclick="check_model('login2')"><%=image_tag "m1.jpg" %></a><br />登陆模块-2（1:3,高）</li>
+      <li><a href="#" onclick="check_model('slides')"><%=image_tag "m2.jpg" %></a><br />图片轮播（1:1）</li>
+      <li><a href="#" onclick="check_model('anlizongshu')"><%=image_tag "m3.jpg" %></a><br />列表模版（1:3）</li>
+      <li><a href="#" onclick="check_model('doctor_list')"><%=image_tag "m4.jpg" %></a><br />医生列表（2:3）</li>
+      <li><a href="#" onclick="check_model('hospital_environment')"><%=image_tag "m7.jpg" %></a><br />图文列表（1:1）</li>
+      <li><a href="#" onclick="check_model('jianjie')"><%=image_tag "m6.jpg" %></a><br />文本模版（1:3）</li>
+      <li><a href="#" onclick="check_model('pic_text1')"><%=image_tag "m5.jpg" %></a><br />图文模版-1（1:3）</li>
+      <li><a href="#" onclick="check_model('pic_text2')"><%=image_tag "pic_text2.jpg" %></a><br />图文模版-2（1:3）</li>
+      <div style="clear:both;"></div>
+    </ul>
+  </div>
+  <div style="clear:both;"></div>
+</div>
+<script>
+    $("#block_console").dialog({    //初始化对话框
+        autoOpen: false,
+        modal: true,    // 设置对话框为模态（modal）对话框
+        resizable: true,
+        width: 540,
+        position: {
+            my: "center",
+            at: "center",
+            of: window,
+            collision: "fit",
+            // Ensure the titlebar is always visible
+            using: function (pos) {
+                var topOffset = $(this).css(pos).offset().top;
+                if (topOffset < 0) {
+                    $(this).css("top", pos.top - topOffset);
+                } else {
+                    $(this).css("top", 100);
+                }
+            }
+        },
+        buttons: {  // 为对话框添加按钮
+            "保存": save_block,
+            "取消": function () {
+                $("#block_console").dialog("close")
+            }
+        }
+    });
+    function check_model(str) {
+        var block_console = $("#block_console");
+        var dialogButtonPanel = block_console.siblings(".ui-dialog-buttonpane");
+        dialogButtonPanel.find("button:contains('保存')").show();
+        block_console.dialog("option", "width", "540");
+        block_console.dialog("option", "title", "新建区块").dialog("open");
+        $('#block_name').val('');
+        $('#model_name').val(str);
+    }
+    function save_block() {   //保存视频信息
+        var type = $('#model_name').val();
+        var name = $('#block_name').val();
+        $.ajax({
+            type: 'get',
+            url: 'page_blocks/get_template',
+            data: {type: type, name: name},
+            success: function (data, response) {
+                window.parent.$("#block_console").dialog("close");
+                $("#rightContent").html(data);
+            }
+        })
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
