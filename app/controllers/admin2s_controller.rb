@@ -149,8 +149,8 @@ class Admin2sController < ApplicationController
   # DELETE /admins/1
   # DELETE /admins/1.json
   def destroy
-    @admin.delete_domain @admin
    if @admin.destroy
+     @admin.delete_domain
      render :json => {:success => true}
    end
     #respond_to do |format|
