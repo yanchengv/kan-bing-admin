@@ -449,7 +449,9 @@ class DoctorsController < ApplicationController
             if !doc.photo.nil? && doc.photo !='' && aliyun_file_exit('avatar/'+doc.photo,Settings.aliyunOSS.image_bucket)
               deleteFromAliyun('avatar/'+doc.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
             end
-            doc.destroy
+            if doc.destroy
+              doc.delete_weixin2user
+            end
           elsif current_user.admin_type == '医院管理员'
             doc.update_attributes(hospital_id:nil,hospital_name:nil,department_id:nil,department_name:nil)
           elsif current_user.admin_type == '科室管理员'

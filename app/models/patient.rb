@@ -2,7 +2,6 @@ include SessionsHelper
 class Patient < ActiveRecord::Base
   before_create :set_pk_code,:pinyin,:set_default_value, :auto_assign_doctor
   before_update :update_default_value ,:after_update_user
-  after_destroy :delete_weixin2user
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city
   belongs_to :doctor

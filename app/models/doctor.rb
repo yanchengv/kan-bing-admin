@@ -6,7 +6,6 @@ class Doctor < ActiveRecord::Base
   before_update :update_default_value,:after_update_do,:after_update_user
   before_destroy :destroy_patient
   after_create :save_patient
-  after_destroy :delete_weixin2user
   has_one :user, :dependent => :destroy
   belongs_to :province2, class_name: "Province", :foreign_key => :province_id
   belongs_to :city

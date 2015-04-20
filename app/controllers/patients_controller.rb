@@ -323,7 +323,9 @@ class PatientsController < ApplicationController
             if !pat.photo.nil? && pat.photo != '' && aliyun_file_exit('avatar/'+pat.photo,Settings.aliyunOSS.image_bucket)
               deleteFromAliyun('avatar/'+pat.photo,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
             end
-            pat.destroy
+            if pat.destroy
+              pat.delete_weixin2user
+            end
           elsif current_user.admin_type == '医院管理员'
             pat.update_attributes(hospital_id:nil,department_id:nil)
           elsif current_user.admin_type == '科室管理员'

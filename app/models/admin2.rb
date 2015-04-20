@@ -54,13 +54,13 @@ class Admin2 < ActiveRecord::Base
     return {add_flag:add_flag,delete_flag:delete_flag,update_flag:update_flag,show_flag:show_flag}
   end
 
-  def delete_domain admin
+  def delete_domain
     #是否有对应的域名
-    @domains = Domain.where(:hospital_id => admin.hospital_id, :department_id => admin.department_id)
+    @domains = Domain.where(:hospital_id => self.hospital_id, :department_id => self.department_id)
     if !@domains.empty? && !@domains.nil?
       @domains.each do |domain|
         #如果域名没有对应的其它管理员,则删除域名及其对应的模块信息,如果有则不对应的域名信息
-        @admins = Admin2.where("hospital_id = ? and department_id = ? and id != ?", domain.hospital_id, domain.department_id, admin.id)
+        @admins = Admin2.where("hospital_id = ? and department_id = ? and id != ?", domain.hospital_id, domain.department_id, self.id)
         if @admins.empty? || @admins.nil?
           @page_blocks = PageBlock.where(:hospital_id => domain.hospital_id, :department_id => domain.department_id)
           @page_blocks.each do |pb|
