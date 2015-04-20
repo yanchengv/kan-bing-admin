@@ -71,18 +71,21 @@ module HealthRecordsHelper
 
   def update_inspection_report
     @inspection_report=InspectionReport.where(parent_type: self.parent_type, child_type: self.child_type, child_id: self.id).first
-    @inspection_report.update(patient_id: self.patient_id, parent_type: self.parent_type, child_type: self.child_type,
-                              thumbnail: self.thumbnail, identifier: self.identifier, doctor: self.doctor,
-                              hospital: self.hospital, department: self.department, upload_user_id: self.upload_user_id,
-                              upload_user_name: self.upload_user_name, checked_at: self.checked_at, child_id: self.id,
-                              image_list: self.image_list, video_list: self.video_list, study_body: self.study_body
-    )
+    if !@inspection_report.nil?
+      @inspection_report.update(patient_id: self.patient_id, parent_type: self.parent_type, child_type: self.child_type,
+                                thumbnail: self.thumbnail, identifier: self.identifier, doctor: self.doctor,
+                                hospital: self.hospital, department: self.department, upload_user_id: self.upload_user_id,
+                                upload_user_name: self.upload_user_name, checked_at: self.checked_at, child_id: self.id,
+                                image_list: self.image_list, video_list: self.video_list, study_body: self.study_body
+      )
+    end
   end
 
   def delete_inspection_report
     @inspection_report=InspectionReport.where(patient_id:self.patient_id,parent_type:self.parent_type,child_type: self.child_type,child_id:self.id).first
-    @inspection_report.destroy
-
+    if !@inspection_report.nil?
+      @inspection_report.destroy
+    end
     # TODO释放云端对应的资源
 
   end

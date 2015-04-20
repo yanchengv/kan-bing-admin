@@ -187,9 +187,7 @@ class ApplicationController < ActionController::Base
       )
   # mimas_open_bucket = Bucket.find(BUCKET) #查找Bucket
     begin
-      p file
       OSSObject.delete(file, bucket) #删除文件
-      p 'success'
     rescue
       puts 'delete  error'
     end

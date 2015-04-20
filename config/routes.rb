@@ -458,6 +458,8 @@ Rails.application.routes.draw do
       post '/ultrasound_update', to: 'health_records#ultrasound_update'
       post 'upload_dicom',to:'health_records#upload_dicom'
       get 'show_upload_dicom',to:'health_records#show_upload_dicom'
+
+      delete 'ultrasound_delete', to:'health_records#ultrasound_delete'
     end
   end
 

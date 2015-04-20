@@ -4,7 +4,7 @@ class HealthRecordsController < ApplicationController
   delegate "default_access_url_prefix_with", :to => "ActionController::Base.helpers"
   before_filter :signed_in_user
   skip_before_filter :verify_authenticity_token ,only:[:upload,:show_upload_dicom,:upload_dicom]
-  layout "application2",only:[:index,:show_index,:dicom,:ct2,:mri2,:ultrasound2,:inspection_report2,:show_upload_dicom,:upload_dicom]
+  layout "application2",only:[:index,:show_index,:dicom,:ct2,:mri2,:ultrasound2,:inspection_report2,:upload_dicom]
   #before_filter :user_health_record_power, only: [:ct,:ultrasound,:inspection_report]
 
   def index
@@ -15,9 +15,9 @@ class HealthRecordsController < ApplicationController
   end
 
   def show_index
-    type = params[:type]
+    @type = params[:type]
     @flag = params[:flag]
-    @url_path = '/health_records/'+type+"?flag=#{params[:flag]}"
+    @url_path = '/health_records/'+@type+"?flag=#{params[:flag]}"
     render partial: 'health_records/records_manage'
   end
 
@@ -25,6 +25,7 @@ class HealthRecordsController < ApplicationController
 
   def show_upload_dicom
     @patient_id=session["patient_id"]
+    render template: 'health_records/show_upload_dicom',layout:'application3'
   end
 
   #dicom上传
@@ -71,7 +72,8 @@ class HealthRecordsController < ApplicationController
     # require "aes"
     # key = '290c3c5d812a4ba7ce33adf09598a462'
     # params[:child_id] = AES.encrypt(params[:child_id].to_s,key)
-    if  !params[:uuid].nil? && !params[:child_type].nil?
+    # if  !params[:uuid].nil? && !params[:child_type].nil?
+    if !params[:child_type].nil?
       case params[:child_type]
         when 'CT'
           redirect_to :action => :ct, :child_id => params[:child_id],  :inspection_type => 'CT'
@@ -228,7 +230,7 @@ class HealthRecordsController < ApplicationController
     @total=0
     noOfRows = params[:rows]
     page = params[:page]
-    records = InspectionCt.select("count(id) as rows_count").where("patient_id = ?", session["patient_id"])
+    records = InspectionCt.select("count(id) as rows_count").where("patient_id = ? and child_type='CT'", session["patient_id"])
     records = records[0].rows_count
     if !noOfRows.nil?
       if records%noOfRows.to_i == 0
@@ -240,7 +242,7 @@ class HealthRecordsController < ApplicationController
     if page.to_i>@total.to_i
       page = 1
     end
-    @irs = InspectionCt.where("patient_id = ?",session["patient_id"]).order("checked_at DESC").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
+    @irs = InspectionCt.where("patient_id = ? and child_type='CT'",session["patient_id"]).order("checked_at DESC").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
     @objJSON = {total:@total,health_records:@irs,page:page,records:records}
     render :json => @objJSON.as_json
   end
@@ -248,7 +250,7 @@ class HealthRecordsController < ApplicationController
      @total=0
      noOfRows = params[:rows]
      page = params[:page]
-     records = InspectionNuclearMagnetic.select("count(id) as rows_count").where("patient_id = ?", session["patient_id"])
+     records = InspectionCt.select("count(id) as rows_count").where("patient_id = ? and child_type='MR'", session["patient_id"])
      records = records[0].rows_count
      if !noOfRows.nil?
        if records%noOfRows.to_i == 0
@@ -260,7 +262,7 @@ class HealthRecordsController < ApplicationController
      if page.to_i>@total.to_i
        page = 1
      end
-     @irs = InspectionNuclearMagnetic.where("patient_id = ?",session["patient_id"]).order("checked_at DESC").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
+     @irs = InspectionCt.where("patient_id = ? and child_type='MR'",session["patient_id"]).order("checked_at DESC").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
      @objJSON = {total:@total,health_records:@irs,page:page,records:records}
      render :json => @objJSON.as_json
    end
@@ -539,6 +541,96 @@ class HealthRecordsController < ApplicationController
     else
       redirect_to root_path :notice => "请求出现异常"
     end
+  end
+
+  # 删除健康档案信息
+  def ultrasound_delete
+    if params[:child_type]=='DICOM'
+      @inspection_report = InspectionReport.where(id:params[:child_id]).first
+      if !@inspection_report.nil?
+        child_id = @inspection_report.child_id
+        child_type = @inspection_report.child_type
+      end
+    else
+      child_id = params[:child_id]
+      child_type = params[:child_type]
+    end
+    flag = false
+    if child_type=='CT' || child_type=='MR'
+      @inspection_ct = InspectionCt.where(id:child_id).first
+      if !@inspection_ct.nil?
+        study_body = @inspection_ct.study_body
+        if !study_body.nil?
+          body_arr = study_body.split(";")
+          if !body_arr.empty?
+            body_arr.each do |body|
+              index = body.index(":")
+              serie = body[0..index-1]
+              instances_list = body[index+1..-1]
+              instances_arr = instances_list.split(",")
+              instances_arr.each do |instance|
+                object_name = @inspection_ct.thumbnail+"/"+serie+"/"+instance
+                if aliyun_file_exit(object_name,Settings.aliyunOSS.pacs_bucket)
+                  deleteFromAliyun(object_name,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.pacs_bucket)
+                end
+              end
+            end
+          end
+        end
+        if @inspection_ct.destroy
+          flag = true
+        end
+      end
+    end
+    if child_type=='超声'
+      @ultrasound = InspectionUltrasound.where(id:child_id).first
+      if !@ultrasound.nil?
+        if !@ultrasound.image_list.nil?
+          image_lists = @ultrasound.image_list.split(",")
+          if !image_lists.empty?
+            image_lists.each do |img|
+              if aliyun_file_exit(img,Settings.aliyunOSS.image_bucket)
+                deleteFromAliyun(img,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+              end
+            end
+          end
+        end
+        if !@ultrasound.video_list.nil?
+          video_lists = @ultrasound.video_list.split(",")
+          if !video_lists.empty?
+            video_lists.each do |video|
+              if aliyun_file_exit(video,Settings.aliyunOSS.video_bucket)
+                deleteFromAliyun(video,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.video_bucket)
+              end
+            end
+          end
+        end
+        if @ultrasound.destroy
+          flag = true
+        end
+      end
+    end
+    if child_type=='心电图'
+      @ecg = Ecg.where(id:child_id).first
+      if !@ecg.nil?
+        if @ecg.destroy
+          flag = true
+        end
+      end
+
+    end
+    if child_type=='检查报告'
+      @inspection_data = InspectionData.where(id:child_id).first
+      if !@inspection_data.nil?
+        if !@inspection_data.thumbnail.nil? && aliyun_file_exit(@inspection_data.thumbnail,Settings.aliyunOSS.image_bucket)
+          deleteFromAliyun(@inspection_data.thumbnail,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
+        end
+        if @inspection_data.destroy
+          flag = true
+        end
+      end
+    end
+    render json:{success:flag}
   end
 
   private

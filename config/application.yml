@@ -24,6 +24,7 @@ defaults: &defaults
       kindeditor_bucket: 'dev-mimas'
       kindeditor_service: 'oss-cn-beijing.aliyuncs.com'
       kindeditor_url: 'http://dev-mimas.oss-cn-beijing.aliyuncs.com/'
+      pacs_bucket: 'test-pacs'
   jsdicom: '/dicom/show/'
   aliyunPacs: 'http://dev-pacs.oss-cn-beijing.aliyuncs.com/'
 development:
@@ -55,5 +56,6 @@ production:
       kindeditor_bucket: 'mimas-img'
       kindeditor_service: 'oss-cn-beijing.aliyuncs.com'
       kindeditor_url: 'http://mimas-img.oss-cn-beijing.aliyuncs.com/'
+      pacs_bucket: 'dev-pacs'
   jsdicom: '/dicom/show/'
   aliyunPacs: 'http://dev-pacs.oss-cn-beijing.aliyuncs.com/'

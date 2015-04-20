@@ -9,7 +9,7 @@
         url: '<%= @url_path %>',
         datatype: "json",
         mtype: 'post',
-        colNames: [ '医院', '科室','医生', '类别', '日期', '查看'],
+        colNames: [ '医院', '科室','医生', '类别', '日期', '查看','child_id'],
         colModel: [
             { name: 'hospital', index: 'hospital', align: "center"},
             { name: 'department', index: 'department', align: "center", editable: true},
@@ -38,7 +38,7 @@
 //                    }
 //                    return "<a style=\"color:blue;text-align: center;width:100%\" href=\"/health_records/inspection_report?uuid="+value+"\"　target=\"_Blank\">查看</a>";
                 }
-            }
+            },{ name: 'child_id', index: 'child_id', align: "center", hidden:true}
         ],
         rownumbers: true,
         page:1,
@@ -71,10 +71,12 @@
         height: 'auto',
         caption: "健康档案管理"
     });
-    <% if @flag != 'all' && @flag != ''  %>
+    <%# if @flag != 'all' && @flag != ''  %>
     jQuery("#health_records_list").jqGrid('navGrid', '#page_health_records', {
                 cloneToTop: true, add: false, edit: false,
-                deltext: "删除", deltitle: "删除", view: false, search: false,
+                deltext:    '删除',
+                delfunc : open_delete_dialog,
+                view: false, search: false,
                 refreshtext: "更新", refreshtitle: "更新"},
             {
             },//edit
@@ -90,7 +92,7 @@
             }, position: "first"}).navButtonAdd('#page_health_records', { title: 'dicom影像数据上传', caption: 'dicom影像数据上传', buttonicon: "ui-icon-plus", onClickButton: function () {
                 addDicomRecords();
             }, position: "first"});;
-    <% end %>
+    <%# end %>
     $("#health_record_console").dialog({    //初始化对话框
         autoOpen: false,
         modal: true,    // 设置对话框为模态（modal）对话框
@@ -114,6 +116,7 @@
         buttons: {  // 为对话框添加按钮
             "保存": health_save,
             "修改": health_update,
+            "删除": health_delete,
             "取消": function () {
                 $("#health_record_console").dialog("close");
             }
@@ -127,9 +130,13 @@
 
     }
     function health_edit() {
-        var id = jQuery("#health_records_list").jqGrid('getGridParam', 'selrow');
-        var rowData = $('#health_records_list').jqGrid('getRowData',id);
-        if (id) {
+        var row_id = jQuery("#health_records_list").jqGrid('getGridParam', 'selrow');
+        var rowData = $('#health_records_list').jqGrid('getRowData',row_id);
+        var id = row_id
+        <% if @type!='ultrasound2' %>
+            id = rowData.child_id
+        <% end %>
+        if (row_id) {
             if(rowData.child_type == '超声'){
                 $.ajax({
                     url: '/health_records/health_record_edit',
@@ -169,6 +176,17 @@
                 video_consoleDlg.dialog("option", "title", "添加记录").dialog("open");
             }
         });
+    }
+    function  open_delete_dialog(row_id){
+        var consoleDlg = $("#health_record_console");
+        $('#health_record_div').html("删除所选记录?<input id='del_type' type='hidden' value='<%= @type%>'/><input id='del_flag' type='hidden' value='<%= @flag%>'/>")
+        var dialogButtonPanel = consoleDlg.siblings(".ui-dialog-buttonpane");
+//        consoleDlg.find("input").removeAttr("disabled").val("");
+        dialogButtonPanel.find("button:not(:contains('取消'))").hide();
+        dialogButtonPanel.find("button:contains('删除')").show();
+        consoleDlg.dialog("option", "height", "200");
+        consoleDlg.dialog("option", "width", "290");
+        consoleDlg.dialog("option", "title", "删除").dialog("open");
     }
         function health_save(){
             $.ajax({
@@ -240,4 +258,44 @@
                 }
             });
         }
+        function health_delete(row_id){
+        var row_id = jQuery("#health_records_list").jqGrid('getGridParam', 'selrow');
+//        var rowData = $('#health_records_list').jqGrid('getRowData',row_id);
+        var type = $('#del_type').val()
+//        var flag = $('#del_flag').val()
+        var child_id = row_id
+            var child_type = 'DICOM'
+//            if(flag){
+//                var child_type = 'DICOM'
+//            }else{
+                if(type=='ultrasound2'){
+                    child_type = '超声'
+                }
+                if(type=='ct2'){
+                    child_type='CT'
+                }
+                if(type=='mri2'){
+                    child_type='MR'
+                }
+                if(type=='inspection_report2'){
+                    child_type='检查报告'
+                }
+                if(type=='ecg2'){
+                    child_type='心电图'
+                }
+//            }
+            $.ajax({
+              url:'/health_records/ultrasound_delete?child_id='+child_id+'&child_type='+child_type,
+              type:'delete',
+              success: function (data) {
+                  if (data['success']) {
+                      $("#health_record_console").dialog("close");
+                      $('#refresh_health_records_list').click()
+                  }else{
+                      $("#health_record_console").dialog("close");
+                      alert('删除失败!')
+                  }
+              }
+            })
+    }
 </script>

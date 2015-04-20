@@ -850,7 +850,7 @@
             var str = CryptoJS.enc.Utf8.parse(selectedIds[0]);
             var base64 = CryptoJS.enc.Base64.stringify(str);
 //            var encrypted = CryptoJS.AES.encrypt(selectedIds[0], "290c3c5d812a4ba7ce33adf09598a462");
-            window.open('/health_records/index?id=' + base64)
+            window.open('/health_records/index?id=' + base64+'&flag=all')
 //            window.open('/health_records/index?id='+selectedIds)
         }else{
             alert('请至少选择一条记录!')
