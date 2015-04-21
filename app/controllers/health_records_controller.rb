@@ -78,7 +78,7 @@ class HealthRecordsController < ApplicationController
         when 'CT'
           redirect_to :action => :ct, :child_id => params[:child_id],  :inspection_type => 'CT'
         when '超声'
-            redirect_to :action => :ultrasound, :uuid => params[:uuid], :child_id => params[:child_id]
+          redirect_to :action => :ultrasound, :uuid => params[:uuid], :child_id => params[:child_id]
         when '检验报告'
           redirect_to :action => :inspection_report, :uuid => params[:uuid]
         when '核磁','MR'
@@ -314,6 +314,7 @@ class HealthRecordsController < ApplicationController
     noOfRows = params[:rows]
     page = params[:page]
     sql="patient_id=#{session['patient_id']} and child_type='心电图'"
+    # records = Ecg.select("count(id) as rows_count").where(sql)
     records = InspectionReport.select("count(id) as rows_count").where(sql)
     records = records[0].rows_count
     if !noOfRows.nil?
@@ -326,6 +327,7 @@ class HealthRecordsController < ApplicationController
     if page.to_i>@total.to_i
       page = 1
     end
+    # @irs = Ecg.where(sql).order("measure_time DESC").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
     @irs = InspectionReport.where(sql).order("checked_at DESC").limit(noOfRows.to_i).offset(noOfRows.to_i*(page.to_i-1))
     @objJSON = {total:@total,health_records:@irs,page:page,records:records}
     render :json => @objJSON.as_json
