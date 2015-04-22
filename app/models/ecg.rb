@@ -1,7 +1,7 @@
 class Ecg < ActiveRecord::Base
   belongs_to :patient, :foreign_key => :patient_id
   # attr_accessible  :id,:patient_id,:ecg_img ,:device_type ,:measure_time,:ahdId,:mdevice,:is_true,:int_ecg_img,:bit_ecg_img
-  after_create :inspection_report_ecg
+  after_save :inspection_report_ecg
   after_destroy :delete_inspection_report_ecg
 
   def inspection_report_ecg
@@ -16,8 +16,12 @@ class Ecg < ActiveRecord::Base
     inspection_report[:department]=self.department
     inspection_report[:doctor]=self.doctor
     inspection_report[:checked_at]=self.measure_time
-    @inspection_report=InspectionReport.new(inspection_report)
-    @inspection_report.save
+    @ir = InspectionReport.where(child_id:self.child_id,child_type:self.child_type).first
+    if !@ir.nil?
+      @ir.update(inspection_report)
+    else
+      @inspection_report=InspectionReport.create(inspection_report)
+    end
   end
 
   def  delete_inspection_report_ecg
