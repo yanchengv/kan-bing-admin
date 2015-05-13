@@ -39,7 +39,7 @@ function save_block() {   //保存视频信息
     var name = $('#block_name').val();
     $.ajax({
         type: 'get',
-        url: 'page_blocks/get_template',
+        url: '/page_blocks/get_template',
         data: {type: type,name:name},
         success: function (data, response) {
             window.parent.$("#block_console").dialog("close");

@@ -1,0 +1,91 @@
+<!--绿色医疗的模板 圆形的图文模版-3-->
+
+
+<% if !@block_contents.nil? && !@block_contents.empty? %>
+    <div class="first_c">
+      <div class="title">
+        <a  href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank"><img src=<%= @block_contents.last.url %>></a>
+
+      </div>
+      <h3><%= @block_contents.last.title %></h3>
+      <h4><%= @block_contents.last.subtitle %></h4>
+      <p><a href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">
+        <% @content_summary = @block_contents.last.content_summary.nil? ? '' : @block_contents.last.content_summary.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
+           if @content_summary.length > 85
+             @content_summary = @content_summary[0, 85] << '...'
+           else
+             @content_summary = @content_summary
+           end
+        %>
+        <%= @content_summary %>      </a>
+      </p>
+    </div>
+
+<% else %>
+    <div class="first_c">
+      <div class="title"><a href="#"><img src="1.jpeg" /></a></div>
+      <h3>科学研究</h3>
+      <h4>医疗信息技术实验室</h4>
+      <p><a href="#">医疗信息技术实验室是“玉泉医院肿瘤消融中心”与“信息学院”计算机系在多年合作基础上成立的“实验室”，挂靠在“信息科学与技术国家实验室”之下，是开展绿色医疗信息技术研发的技...</a>
+      </p>
+    </div>
+
+<% end %>
+
+
+<style>
+    /*内容样式*/
+    .first_c{
+        width:33.22%;
+        height:350px;
+        border-right:1px dashed #dcdcdc;
+        border-bottom:1px dashed #dcdcdc;
+        float:left;
+        padding:20px 0px;
+        margin:0 auto;
+    }
+    .first_c p{
+        margin:10px 20px 0 20px;
+    }
+    .first_c p a{
+        color:#555555;
+        line-height:24px;
+        text-decoration:none;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size:13px;
+        word-break:break-all;
+    }
+    .title{
+        text-align:center;
+        height:150px;
+        overflow:hidden;
+        border:1px solid #008c70;
+        border-radius:5px;
+        width:90%;
+        margin:0 auto;
+        position:relative;
+
+    }
+    .title img{
+        width:100%;
+        position:absolute;
+        bottom:-20px;
+        left:0;
+
+    }
+    .first_c h3{
+        font-family:"Microsoft YaHei",Arial;
+        font-size:18px;
+        font-weight:bold;
+        color:#008c70;
+        margin:10px 20px 0 20px;
+    }
+    .first_c h4{
+        background:url(list_style.png) no-repeat -8px center;
+        padding-left:15px;
+        font-size:13px;
+        font-weight:bold;
+        color:#444;
+        margin:10px 20px 0 20px;
+    }
+</style>

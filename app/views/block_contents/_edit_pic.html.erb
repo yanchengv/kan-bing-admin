@@ -28,7 +28,7 @@
               <input type="text" id="title" name='title' value="<%= @block_content.title %>" class='FormElement ui-widget-content ui-corner-all'></td>
           </tr>
           <% end %>
-      <% if @page_block.block_type == 'pic_text2'%>
+      <% if @page_block.block_type == 'pic_text2' ||@page_block.block_type == 'pic_text3'%>
           <tr class="FormData">
             <td class="CaptionTD">图片标题:</td>
             <td class="DataTD">
