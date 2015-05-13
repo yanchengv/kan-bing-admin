@@ -58,7 +58,7 @@
     function save_content_model2(pageBlockId){
         $.ajax({
             type: 'get',
-            url: 'page_blocks/add_content2',
+            url: '/page_blocks/add_content2',
             data: {page_block_id: pageBlockId},
             success: function (data) {
                 $("#rightContent").html(data);
