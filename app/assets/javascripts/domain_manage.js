@@ -6,12 +6,13 @@
 
 function create(){
     var domainName= $("#domainName").val();
-    if  (!domainName.match(/^([a-z0-9-]{1,}.)?[a-z0-9-]{2,}.([a-z0-9-]{1,}.)?[a-z0-9]{2,}$/i)){
+    var domainStyle = $("#domainStyle").val();
+    if  (!domainName.match(/[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\.?$/i)){
         alert("请输入正确的域名")
     }else{
         $.ajax({
             url:'/domain/create',
-            data:{name:domainName},
+            data:{name:domainName, style: domainStyle},
             type:'post',
             success:function(data){
                 if (data["flag"]=='false'){
@@ -30,12 +31,13 @@ function create(){
 function updateDomain(){
     var id = jQuery("#list_domain").jqGrid('getGridParam', 'selrow');
     var domainName= $("#domainUpdateName").val();
+    var domainUpdateStyle = $("#domainUpdateStyle").val();
     if  (domainName==""){
         alert("不能为空")
     }else{
         $.ajax({
             url:'/domain/update',
-            data:{name:domainName,id:id},
+            data:{name:domainName,id:id,style: domainUpdateStyle},
             type:'post',
             success:function(data){
                 if (data["flag"]=='false'){
@@ -230,14 +232,15 @@ jQuery("#list_domain").jqGrid({
     url: '/domain/domain_list',
     datatype: "json",
     mtype: 'GET',
-    colNames: ['ID', '域名','logo','页脚',  '医院', '科室'],
+    colNames: ['ID', '域名','logo','页脚',  '医院', '科室', '风格'],
     colModel: [
         {name: 'id', index: 'id', align: "center", hidden: true},
         {name: 'name', index: 'name', align: "center"},
         {name: 'logo_url', index: 'logo_url', align: "center"},
         {name: 'footer', index: 'footer', align: "center"},
         {name: 'hospital_id', index: 'hospital_id', align: "center", hidden: true},
-        {name: 'department_id', index: 'department_id', align: "center", hidden: true}
+        {name: 'department_id', index: 'department_id', align: "center", hidden: true},
+        {name: 'style', index: 'style', editable: true, edittype: "select", editoptions: {value: "默认:default;风格1:style1"}, align: "center"}
     ],
     rowList: [10, 20, 30],
     sortname: 'id',
@@ -285,7 +288,9 @@ jQuery("#list_domain").jqGrid({
         domain_update_consoleDlg.dialog("option", "title", "修改域名").dialog("open");
         var id = jQuery("#list_domain").jqGrid('getGridParam', 'selrow');
         var name = $('#list_domain').jqGrid('getRowData', id).name
+        var style = $('#list_domain').jqGrid('getRowData', id).style
         $("#domainUpdateName").val(name);
+        $("#domainUpdateStyle").val(style);
     }, position: "first"}
 ).navButtonAdd('#domain_block', { title: '添加', caption: '添加', buttonicon: "ui-icon-plus", onClickButton: function () {
         var domain_consoleDlg = $("#domain_consoleDlg");

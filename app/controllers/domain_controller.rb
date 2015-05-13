@@ -14,6 +14,7 @@ class DomainController < ApplicationController
   def create
     domain={}
     domain[:name]= params[:name]
+    domain[:style]= params[:style]
     domain[:hospital_id]=current_user.hospital_id
     domain[:department_id]=current_user.department_id
     is_domain=Domain.where(name:domain[:name])
@@ -39,16 +40,17 @@ class DomainController < ApplicationController
   def update
     @domain=Domain.find(params[:id])
     name=params[:name]
-    if name!=@domain.name
-      is_domain=Domain.where(name:name)
+    style=params[:style]
+    if name==@domain.name && style==@domain.style
+      @flag="sucess"
+    else
+      is_domain=Domain.where("name = ? and id != ?", name, params[:id])
       if is_domain.empty?
-        @domain.update_attributes(name:name)
+        @domain.update_attributes(name: name, style: style)
         @flag="sucess"
       else
         @flag="false"
       end
-    else
-      @flag="sucess"
     end
     render json:{flag:@flag}
   end
@@ -172,7 +174,7 @@ class DomainController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def domain_params
-    params.permit(:id,:name,:hospital_id,:department_id,:introduction,:logo_url,:footer)
+    params.permit(:id,:name,:hospital_id,:department_id,:introduction,:logo_url,:footer, :style)
   end
 
 
