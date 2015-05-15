@@ -1,7 +1,8 @@
 <!--列表模版-->
 
  <% if !@block_contents.nil? && !@block_contents.empty?%>
-<div class="index_model_box_3_1">
+<div class="a3">
+  <div class="acon">
   <div class="index_model_title">
     <h3 class="fl"><%= @page_block.name if !@page_block.nil? %></h3>
     <span class="fr index_model_more"><a href=<%=Settings.block_content_list+"/?page_block=#{@page_block.id}"%> target="_blank">more</a></span>
@@ -20,12 +21,13 @@
 
      <%end%>
 
-
   </ul>
+  </div>
 </div>
  <%else%>
     <!--空模版-->
-    <div class="index_model_box_3_1">
+    <div class="a3">
+      <div class="acon">
       <div class="index_model_title">
         <!--<h3 class="fl">区块名称</h3>-->
         <h3 class="fl"><%=@block_name %></h3>
@@ -67,108 +69,90 @@
             <span class="fl index_model_blue_dot">标题五</span>
           </a>
         </li>
+        <li>
+          <a>
+            <span class="fr index_model_date">2014-12-3</span>
+            <span class="fl index_model_blue_dot">标题六</span>
+          </a>
+        </li>
+        <li>
+          <a>
+            <span class="fr index_model_date">2014-12-3</span>
+            <span class="fl index_model_blue_dot">标题七</span>
+          </a>
+        </li>
       </ul>
+      </div>
     </div>
  <%end%>
 
 <style>
 
-    .index_model_box_3_1 {
-        width: 388px;
-        height: 222px;
-        overflow: hidden;
+    .a3 {
+        width:32.33%;
+        height:288px;
+        overflow:hidden;
+        float:left;
+        padding:0.5%;
+
+
+    }
+    .acon{
+        width:100%;
+        height:288px;
+        display:inline-block;
         border: 1px solid #e8e8e8;
-        background: #fff;
-        padding: 15px;
-        margin: 5px;
-        float: left;
+        background:#fff;
+        word-break:break-all;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box; /* Firefox */
+        -webkit-box-sizing:border-box; /* Safari */
+        padding:15px;
     }
 
-    /*屏幕尺寸大于1200px */
-    @media (min-width: 1200px) {
-
-        .index_model_box_3_1 {
-            width: 388px;
-            min-height: 222px;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
-
-    /*屏幕尺寸小于960px*/
-    @media (max-width: 960px) {
-
-        .index_model_box_3_1 {
-            width: 33%;
-            height: 222px;
-            overflow: hidden;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
-
-    /*屏幕尺寸小于480px*/
-    @media (max-width: 683px) {
-        .index_model_box_3_1 {
-            width: 100%;
-            overflow: hidden;
-            height: 222px;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
-    /*文章列表*/
-    .index_model_article a .index_model_blue_dot{
+        /*文章列表*/
+    .a3 .index_model_article a .index_model_blue_dot{
         background: url(<%= asset_path 'dot_blue_light.png'%>) no-repeat left center;
         padding-left: 15px;
-        width: 75%;
+        width: 70%;
         font-size: 13px;
         color: #666;
         font-family: "Microsoft YaHei", Arial;
     }
 
-    .index_model_article a .index_model_blue_dot:hover {
+    .a3 .index_model_article a .index_model_blue_dot:hover {
         background: url(<%= asset_path 'dot_blue.png'%>) no-repeat left center;
         padding-left: 15px;
         font-family: "Microsoft YaHei", Arial;
     }
 
-    .index_model_article {
+    .a3 .index_model_article {
         margin-top: 10px;
     }
 
-    .index_model_article li {
+    .a3 .index_model_article li {
         line-height: 30px;
         font-size: 13px;
     }
 
-    .index_model_article li a {
+    .a3 .index_model_article li a,.a3 .index_model_more a{
         font-size: 13px;
     }
 
-    .index_model_article a .index_model_date {
+    .a3 .index_model_article a .index_model_date {
         color: #999999;
         font-size: 12px;
         font-family: "Microsoft YaHei", Arial;
     }
 
-    /*模块标题*/
-    .index_model_title {
+        /*模块标题*/
+    .a3 .index_model_title {
         height: 30px;
         line-height: 30px;
         border-bottom: 1px dotted #e4e9f0;
     }
 
-    .index_model_title h3 {
+    .a3 .index_model_title h3 {
         height: 30px;
         line-height: 30px;
         font-family: "Microsoft YaHei", Arial;
@@ -181,10 +165,10 @@
         border-bottom: 2px solid #1fa0d8;
     }
 
-    .index_model_more,.index_model_more a {
+    .a3 .index_model_more,.index_model_more a {
         color: #888 !important;
     }
-    .index_model_more a:hover{color:#000 !important;}
+    .a3 .index_model_more a:hover{color:#000 !important;}
     ul li {
         list-style: none;
     }

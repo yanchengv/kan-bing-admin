@@ -1,98 +1,72 @@
 <!--block_text 简介模板-->
 
 <% if !@block_contents.nil? && !@block_contents.empty?  %>
-<div class="index_model_box_3_1">
-  <div class="index_model_title">
-    <h3 class="fl"><%= @page_block.name if !@page_block.nil?  %></h3>
-    <span class="fr index_model_more"><a href=<%=Settings.block_content+"/?content_id=#{@block_contents.last.id}"%> target="_blank">more</a></span>
-  </div>
-  <p class="index_modle_text">
-    <% @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
-       if @content.length > 180
-         @content = @content[0, 180] << '...'
-       else
-         @content = @content
-       end
-    %>
-       <%= @content %>
-  </p>
-</div>
- <%else%>
-    <div class="index_model_box_3_1">
-      <div class="index_model_title">
-        <!--<h3 class="fl">区块名称</h3>-->
-        <h3 class="fl"><%=@block_name %></h3>
-        <span class="fr index_model_more"><a href="" style="color:#666;">more</a></span>
+    <div class="j1">
+      <div class="jcon">
+        <div class="index_model_title">
+          <h3 class="fl"><%= @page_block.name if !@page_block.nil?  %></h3>
+          <span class="fr index_model_more"><a href=<%=Settings.block_content+"/?content_id=#{@block_contents.last.id}"%> target="_blank">more</a></span>
+        </div>
+        <p class="index_modle_text">
+          <% @content = @block_contents.last.content.nil? ? '' : @block_contents.last.content.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
+             if @content.length > 180
+               @content = @content[0, 180] << '...'
+             else
+               @content = @content
+             end
+          %>
+          <%= @content %>
+        </p>
       </div>
-      <p class="index_modle_text">
-        xxxx医院，xxxx年xx月正式开院，是一所向社会开放的综合性医院。医院设有急诊科、神经科、内科、普外科、血液净化中心、骨科、手外科、泌尿外科、以执着的医志、高尚的医德书写了辉煌的历史
-      </p>
+    </div>
+<%else%>
+    <div class="j1">
+      <div class="jcon">
+        <div class="index_model_title">
+          <!--<h3 class="fl">区块名称</h3>-->
+          <h3 class="fl"><%=@block_name %></h3>
+          <span class="fr index_model_more"><a href="" style="color:#666;">more</a></span>
+        </div>
+        <p class="index_modle_text">
+          xxxx医院，xxxx年xx月正式开院，是一所向社会开放的综合性医院。医院设有急诊科、神经科、内科、普外科、血液净化中心、骨科、手外科、泌尿外科、以执着的医志、高尚的医德书写了辉煌的历史
+        </p>
+      </div>
     </div>
 <%end%>
 
 <style>
     /*简介模板*/
-    .index_model_box_3_1 {
-        width: 388px;
-        height: 222px;
-        overflow: hidden;
+    .j1 {
+        width:32.33%;
+        height:288px;
+        overflow:hidden;
+        float:left;
+        padding:0.5%;
+
+    }
+    .jcon{
+        width:100%;
+        height:288px;
+        overflow:hidden;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box; /* Firefox */
+        -webkit-box-sizing:border-box; /* Safari */
+        display:inline-block;
         border: 1px solid #e8e8e8;
-        background: #fff;
-        padding: 15px;
-        margin: 5px;
-        float: left;
+        background:#fff;
+        word-break:break-all;
+        padding:15px;
     }
 
-    /*屏幕尺寸大于1200px */
-    @media (min-width: 1200px) {
 
-        .index_model_box_3_1 {
-            width: 388px;
-            min-height: 222px;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
-
-    /*屏幕尺寸小于960px*/
-    @media (max-width: 960px) {
-
-        .index_model_box_3_1 {
-            width: 33%;
-            height: 222px;
-            overflow: hidden;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
-
-    /*屏幕尺寸小于480px*/
-    @media (max-width: 683px) {
-        .index_model_box_3_1 {
-            width: 100%;
-            overflow: hidden;
-            height: 222px;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
     /*模块标题*/
-    .index_model_title {
+    .j1 .index_model_title {
         height: 30px;
         line-height: 30px;
         border-bottom: 1px dotted #e4e9f0;
     }
 
-    .index_model_title h3 {
+    .j1 .index_model_title h3 {
         height: 30px;
         line-height: 30px;
         font-family: "Microsoft YaHei", Arial;
@@ -104,13 +78,13 @@
         border-bottom: 2px solid #1fa0d8;
     }
 
-    .index_model_more,.index_model_more a ,.index_model_more a:link, .index_model_more a:visited{
+    .j1 .index_model_more,.index_model_more a ,.j1 .index_model_more a:link, .j1 .index_model_more a:visited{
         color: #888 !important;
     }
-    .index_model_more a:hover, .index_model_more a:active{color:#000 !important;}
+    .j1 .index_model_more a:hover,.j1 .index_model_more a:active{color:#000 !important;}
 
     /*文本样式*/
-    .index_modle_text {
+    .j1 .index_modle_text {
         /* text-indent: 2em; */
         line-height: 24px;
         color: #666 !important;
@@ -119,7 +93,9 @@
         font-size: 13px;
         font-family: "Microsoft YaHei", Arial;
     }
-
+    .j1 .index_model_more a{
+        font-size:13px;
+    }
     ul li {
         list-style: none;
     }

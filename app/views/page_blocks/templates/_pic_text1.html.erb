@@ -1,106 +1,74 @@
 <!--图文模版-1-->
 
 <% if !@block_contents.nil? && !@block_contents.empty? %>
-    <div class="index_model_box_3_1">
-      <div class="index_model_title">
-        <!--<h3 class="fl">区块名称</h3>-->
-        <h3 class="fl"><%= @page_block.name if !@page_block.nil? %></h3>
-        <span class="fr index_model_more"><a href="<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %>" target="_blank">more</a></span>
+    <div class="p1">
+      <div class="p1con">
+        <div class="index_model_title">
+          <!--<h3 class="fl">区块名称</h3>-->
+          <h3 class="fl"><%= @page_block.name if !@page_block.nil? %></h3>
+          <span class="fr index_model_more"><a href="<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %>" target="_blank">more</a></span>
+        </div>
+        <div style="clear:both;"></div>
+        <div class="environment_img">
+          <img alt="医院环境" src="<%= @block_contents.last.url %>" title="医院环境" height="100px">
+        </div>
+        <p class="in_index_modle_text">
+          <% @content_summary = @block_contents.last.content_summary.nil? ? '' : @block_contents.last.content_summary.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
+             if @content_summary.length > 85
+               @content_summary = @content_summary[0, 85] << '...'
+             else
+               @content_summary = @content_summary
+             end
+          %>
+          <%= @content_summary %>
+        </p>
       </div>
-      <div style="clear:both;"></div>
-      <div class="environment_img">
-        <img alt="医院环境" src="<%= @block_contents.last.url %>" title="医院环境" height="100px">
-      </div>
-      <p class="in_index_modle_text">
-        <% @content_summary = @block_contents.last.content_summary.nil? ? '' : @block_contents.last.content_summary.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
-           if @content_summary.length > 85
-             @content_summary = @content_summary[0, 85] << '...'
-           else
-             @content_summary = @content_summary
-           end
-        %>
-        <%= @content_summary %>
-      </p>
     </div>
 <% else %>
-    <div class="index_model_box_3_1">
-      <div class="index_model_title">
-        <!--<h3 class="fl">区块名称</h3>-->
-        <h3 class="fl">图文模版</h3>
-        <span class="fr index_model_more"><a href="" style="color:#666;">more</a></span>
+    <div class="p1">
+      <div class="p1con">
+        <div class="index_model_title">
+          <!--<h3 class="fl">区块名称</h3>-->
+          <h3 class="fl">图文模版</h3>
+          <span class="fr index_model_more"><a href="" style="color:#666;">more</a></span>
+        </div>
+        <div style="clear:both;"></div>
+        <div class="environment_img">
+          <a href=""><img alt="医院环境" src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/e_demo1.jpg" title="医院环境" height="100px"></a>
+        </div>
+        <p class="in_index_modle_text">
+          xxxx医院，xxxx年xx月正式开院，是一所向社会开放的综合性医院。医院设有急诊科、神经科、内科、普外科、血液净化中心、骨科、手外科、泌尿外科、以执着的医志、高尚的医德书写了辉煌的历史
+        </p>
       </div>
-      <div style="clear:both;"></div>
-      <div class="environment_img">
-        <a href=""><img alt="医院环境" src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/e_demo1.jpg" title="医院环境" height="100px"></a>
-      </div>
-      <p class="in_index_modle_text">
-        xxxx医院，xxxx年xx月正式开院，是一所向社会开放的综合性医院。医院设有急诊科、神经科、内科、普外科、血液净化中心、骨科、手外科、泌尿外科、以执着的医志、高尚的医德书写了辉煌的历史
-      </p>
     </div>
 <% end %>
 
 
 <style>
     /*图文模版-1*/
-    .index_model_box_3_1 {
-        width: 388px;
-        height: 222px;
+    .p1 {
+        width:32.33%;
+        height:288px;
+        min-width:300px;
+        overflow:hidden;
+        float:left;
+        padding:0.5%;
 
-        overflow: hidden;
+    }
+    .p1con{
+        width:100%;
+        height:288px;
+        overflow:hidden;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box; /* Firefox */
+        -webkit-box-sizing:border-box; /* Safari */
+        display:inline-block;
         border: 1px solid #e8e8e8;
-        background: #fff;
-        padding: 15px;
-        margin: 5px;
-        float: left;
+        background:#fff;
+        word-break:break-all;
+        padding:15px;
     }
-
-    /*屏幕尺寸大于1200px */
-    @media (min-width: 1200px) {
-
-        .index_model_box_3_1 {
-            width: 388px;
-            height: 222px;
-
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
-
-    /*屏幕尺寸小于960px*/
-    @media (max-width: 960px) {
-
-        .index_model_box_3_1 {
-            width: 33%;
-            height: 222px;
-
-            overflow: hidden;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
-
-    /*屏幕尺寸小于480px*/
-    @media (max-width: 683px) {
-        .index_model_box_3_1 {
-            width: 100%;
-            overflow: hidden;
-            min-height: 222px;
-            height: auto;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
-
-    .index_model_title h3 {
+    .p1 .index_model_title h3 {
         height: 30px;
         line-height: 30px;
         font-family: "Microsoft YaHei", Arial;
@@ -112,17 +80,20 @@
         border-bottom: 2px solid #1fa0d8;
     }
 
-    .index_model_title {
+    .p1 .index_model_title {
         height: 30px;
         line-height: 30px;
         border-bottom: 1px dotted #e4e9f0;
     }
 
-    .index_model_more, .index_model_more a {
+    .p1 .index_model_more, .index_model_more a {
         color: #888 !important;
+        font-family: "Microsoft YaHei", Arial;
     }
-
-    .index_model_more a:hover {
+    .p1 .index_model_more a{
+        font-size:13px;
+    }
+    .p1 .index_model_more a:hover {
         color: #000 !important;
     }
 
@@ -146,7 +117,7 @@
     /*overflow: hidden;*/
     /*}*/
 
-    .in_index_modle_text {
+    .p1 .in_index_modle_text {
         line-height: normal;
         color: #666 !important;
         margin-top: 5px;

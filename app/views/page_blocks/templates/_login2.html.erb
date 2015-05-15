@@ -2,13 +2,13 @@
 
 
 
-<div class="stickpagebody_box2">
-  <div class="l_con">
+<div class="l2">
+  <div class="l2con">
     <%=image_tag "http://mimas-img.oss-cn-beijing.aliyuncs.com/lsyl_login.jpg" ,:class=>"login_img"%>
     <!--<p class="g_t">用户登录</p>-->
 
     <form accept-charset="UTF-8" id="sess_form" method="post">
-      <table style="width:70%;margin:12px auto 0 auto">
+      <table style="width:70%;margin:5px auto 0 auto">
         <tr>
           <td>
         <span class="login_username">
@@ -39,98 +39,33 @@
 </div>
 
 <style>
-    /*屏幕尺寸大于1200px */
-    @media (min-width: 1200px) {
+    .l2 {
+        width:32.33%;
+        min-width:300px;
+        height:288px;
+        overflow:hidden;
+        float:left;
+        padding:0.5%;
 
-        .stickpagebody_box2 {
-            width: 388px;
-            float: left;
-            display: inline-block;
-            height: 310px;
-            min-height: 120px;
-            line-height: 16px;
-            overflow: hidden;
-            position: relative;
-            margin: 5px;
-            background: #fff;
-            -webkit-border-radius: 3px;
-            -moz-border-radius: 3px;
-            border-radius: 3px;
-            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            word-break: break-all;
-        }
     }
-
-    /*屏幕尺寸小于960px*/
-    @media (max-width: 960px) {
-
-        .stickpagebody_box2 {
-            width: 33%;
-            float: left;
-            display: inline-block;
-            height: 310px;
-            min-height: 120px;
-            line-height: 16px;
-            overflow: hidden;
-            position: relative;
-            margin: 5px;
-            background: #fff;
-            -webkit-border-radius: 3px;
-            -moz-border-radius: 3px;
-            border-radius: 3px;
-            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            word-break: break-all;
-
-        }
-    }
-
-    /*屏幕尺寸小于480px*/
-    @media (max-width: 683px) {
-        .stickpagebody_box2 {
-            width: 100%;
-            float: left;
-            display: inline-block;
-            height: 310px;
-            min-height: 120px;
-            line-height: 16px;
-            overflow: hidden;
-            position: relative;
-            margin: 5px;
-            background: #fff;
-            -webkit-border-radius: 3px;
-            -moz-border-radius: 3px;
-            border-radius: 3px;
-            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            word-break: break-all;
-
-        }
-    }
-
-    .stickpagebody_box2 {
-        width: 388px;
-        float: left;
-        display: inline-block;
-        height: 310px;
+    .l2con{
+        width:100%;
+        height:288px;
+        overflow:hidden;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box; /* Firefox */
+        -webkit-box-sizing:border-box; /* Safari */
+        display:inline-block;
         min-height: 120px;
         line-height: 16px;
-        overflow: hidden;
-        position: relative;
-        margin: 5px;
+        border:1px solid #e8e8e8;
         background: #fff;
+        position: relative;
         -webkit-border-radius: 3px;
         -moz-border-radius: 3px;
-        border-radius: 3px;
-        -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-        -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-        word-break: break-all;
+        word-break:break-all;
     }
+
 
     ul li {
         list-style: none;
@@ -149,7 +84,7 @@
         float: left;
     }
 
-    .g_t {
+    .l2 .g_t {
         font-size: 18px;
         margin:0 auto;
         font-weight: bold;
@@ -158,14 +93,12 @@
         width:70%;
 
     }
-    .login_img{
+    .l2 .login_img{
         height:120px;
     }
-    .l_con {
-        margin:0;
-    }
 
-    .login_username {
+
+    .l2 .login_username {
         width: 100%;
         border: 1px solid #ccc;
         border-radius: 3px;
@@ -176,7 +109,7 @@
 
     }
 
-    .login_username_input {
+    .l2 .login_username_input {
         width: 98%;
         margin: 0 auto;
         background: url('http://dev-mimas.oss-cn-beijing.aliyuncs.com/2507ac6f-c92f-4bc4-8854-7a07a269a9b0.png') no-repeat left center;
@@ -188,7 +121,7 @@
         font-family: 'Microsoft YaHei', Verdana;
     }
 
-    .login_password_input {
+    .l2 .login_password_input {
         width: 98%;
         margin: 0 auto;
         background: url('http://dev-mimas.oss-cn-beijing.aliyuncs.com/b5afd35c-b951-4d92-ad16-e83d4a9d1994.png') no-repeat left center;
@@ -200,7 +133,7 @@
         font-family: 'Microsoft YaHei', Verdana;
     }
 
-    .login_btn {
+    .l2 .login_btn {
         margin-top: 5px;
         height: 32px;
         width: 100%;

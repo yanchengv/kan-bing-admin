@@ -1,6 +1,7 @@
 
 <% if !@doctors.nil? && !@doctors.empty? %>
-    <div class="index_model_box_2_3">
+    <div class="a2">
+      <div class="a2con">
       <% if !@doctor.nil? %>
       <dl class="doctor_list_box">
         <dt style="width:75px;height:99px">
@@ -68,9 +69,11 @@
 
         <div style="clear:both"></div>
       </ul>
+      </div>
     </div>
     <% else %>
-    <div class="index_model_box_2_3">
+    <div class="a2">
+      <div class="a2con">
       <dl class="doctor_list_box">
         <dt style="width:75px;height:99px">
           <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></dt>
@@ -107,6 +110,7 @@
           <img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/demo_photo.jpg"></li>
         <div style="clear:both"></div>
       </ul>
+      </div>
     </div>
 <%end%>
 
@@ -193,60 +197,28 @@
 
 <style>
 
-    .index_model_box_2_3 {
-        width: 788px;
-        height: 222px;
-        overflow: hidden;
+    .a2 {
+        width:65.66%;
+        min-width:600px;
+        height:288px;
+        overflow:hidden;
+        float:left;
+        padding:0.5%;
+
+
+    }
+    .a2 .a2con{
+        width:100%;
+        display:inline-block;
         border: 1px solid #e8e8e8;
-        background: #fff;
-        padding: 15px;
-        margin: 5px;
-        float: left;
+        background:#fff;
+        word-break:break-all;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box; /* Firefox */
+        -webkit-box-sizing:border-box; /* Safari */
     }
 
-    /*屏幕尺寸大于1200px */
-    @media (min-width: 1200px) {
-
-        .index_model_box_2_3 {
-            width: 788px;
-            min-height: 222px;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
-
-    /*屏幕尺寸小于960px*/
-    @media (max-width: 960px) {
-        .index_model_box_2_3 {
-            width: 64%;
-            height: 222px;
-            overflow: hidden;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-
-    }
-
-    /*屏幕尺寸小于480px*/
-    @media (max-width: 683px) {
-        .index_model_box_2_3 {
-            width: 100%;
-            overflow: hidden;
-            height: 222px;
-            border: 1px solid #e8e8e8;
-            background: #fff;
-            padding: 15px;
-            margin: 5px;
-            float: left;
-        }
-    }
-    .doctor_list_box {
+    .a2 .doctor_list_box {
         width: 98%;
         margin: 0 auto;
         line-height: 30px;
@@ -254,26 +226,26 @@
         -webkit-margin-after: 0em;
     }
 
-    .doctor_list_box dt {
+    .a2 .doctor_list_box dt {
         float: left;
         width: 75px;
         margin-right: 10px;
     }
 
-    .doctor_list_box dd {
+    .a2 .doctor_list_box dd {
         line-height: 24px;
         float: left;
         width: 87%;
         font-family: "Microsoft YaHei", Arial;
         -webkit-margin-start: 0px !important;
     }
-    .doctor_list_box dt img{
+    .a2 .doctor_list_box dt img{
         width:100% !important;
         height:auto;
     }
 
     @media (max-width: 960px) {
-        .doctor_list_box dd {
+        .a2 .doctor_list_box dd {
             line-height: 26px;
             float: left;
             width: 80%;
@@ -282,7 +254,7 @@
         }
     }
 
-    .doctor_list_box dd b {
+    .a2 .doctor_list_box dd b {
         margin-right: 10px;
         font-family: "Microsoft YaHei", Arial;
         font-weight: bold;
@@ -290,12 +262,12 @@
         font-size:13px;
     }
 
-    .doctor_list_box dd span {
+    .a2 .doctor_list_box dd span {
         font-family: "Microsoft YaHei", Arial;
         color: #666;
     }
 
-    .doctor_list_name {
+    .a2 .doctor_list_name {
         font-family: "Microsoft YaHei", Arial;
         font-size: 18px;
         margin-bottom: 10px;
@@ -304,16 +276,16 @@
         font-size:16px !important;
     }
 
-    .doctor_list_lists {
+    .a2 .doctor_list_lists {
         width: 100%;
-        margin-top:10px;
+        margin-top:30px;
     }
 
-    .doctor_list_lists li {
+    .a2 .doctor_list_lists li {
         float: left;
         margin: 10px;
     }
-    .doctor_list_lists li img{
+    .a2 .doctor_list_lists li img{
         width:100% !important;
         height:auto;
     }

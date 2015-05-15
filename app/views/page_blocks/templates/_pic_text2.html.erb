@@ -1,45 +1,49 @@
 <!--绿色医疗的模板 图文模版-2-->
 
 <% if !@block_contents.nil? && !@block_contents.empty? %>
-    <div class="stickpagebody_box">
-      <div class="img_text">
+    <div class="d_box">
+      <div class="dcon">
+        <div class="img_text">
 
-        <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank"><img src=<%= @block_contents.last.url %>></a>
-      </div>
-      <div class="g_content">
-        <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">
-          <p class="g_title"><%= @block_contents.last.title %></p></a>
-        <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">
-          <p class="g_title2"><%= @block_contents.last.subtitle %></p></a>
+          <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank"><img src=<%= @block_contents.last.url %>></a>
+        </div>
+        <div class="g_content">
+          <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">
+            <p class="g_title"><%= @block_contents.last.title %></p></a>
+          <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">
+            <p class="g_title2"><%= @block_contents.last.subtitle %></p></a>
 
-        <p class="g_text">
-          <% @content_summary = @block_contents.last.content_summary.nil? ? '' : @block_contents.last.content_summary.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
-             if @content_summary.length > 85
-               @content_summary = @content_summary[0, 85] << '...'
-             else
-               @content_summary = @content_summary
-             end
-          %>
-          <%= @content_summary %>
+          <p class="g_text">
+            <% @content_summary = @block_contents.last.content_summary.nil? ? '' : @block_contents.last.content_summary.gsub(/<[^>]+>/, '').gsub(/\t|\r|\n|&nbsp;/, '')
+               if @content_summary.length > 85
+                 @content_summary = @content_summary[0, 85] << '...'
+               else
+                 @content_summary = @content_summary
+               end
+            %>
+            <%= @content_summary %>
 
-        </p>
-        <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">|
-          查看更多</a>
+          </p>
+          <a class="g_more" href=<%= @block_contents.last.content_url+"/?content_id=#{@block_contents.last.id}" %> target="_blank">|
+            查看更多</a>
+        </div>
       </div>
     </div>
 <% else %>
-    <div class="stickpagebody_box">
-      <div class="img_text">
-        <img src="1.jpeg"/>
-      </div>
-      <div class="g_content">
-        <p class="g_title">公共关系</p>
+    <div class="d_box">
+      <div class="dcon">
+        <div class="img_text">
+          <img src="1.jpeg"/>
+        </div>
+        <div class="g_content">
+          <p class="g_title">公共关系</p>
 
-        <p class="g_title2">清华大学经管学院中国工商管理案例中心</p>
+          <p class="g_title2">清华大学经管学院中国工商管理案例中心</p>
 
-        <p class="g_text">6月28日清华大学绿色医疗学术交流会斯坦福医学院院长兼首席执行官（CEO）Amir Dan
-          Rubin医院管理讲座,2013年10月12日清华大学绿色医疗院长交流班斯坦福专家与国内院长互动...</p>
-        <a class="g_more" style="color:#41B669">| 查看更多</a>
+          <p class="g_text">6月28日清华大学绿色医疗学术交流会斯坦福医学院院长兼首席执行官（CEO）Amir Dan
+            Rubin医院管理讲座,2013年10月12日清华大学绿色医疗院长交流班斯坦福专家与国内院长互动...</p>
+          <a class="g_more" style="color:#41B669">| 查看更多</a>
+        </div>
       </div>
     </div>
 <% end %>
@@ -49,98 +53,34 @@
 <style>
     /*图文模版-2*/
 
-    /*屏幕尺寸大于1200px */
-    @media (min-width: 1200px) {
+    .d_box {
+        width:32.33%;
+        min-width:300px;
+        height:288px;
+        overflow:hidden;
+        float:left;
+        padding:0.5%;
 
-        .stickpagebody_box {
-            width: 388px;
-            float: left;
-            display: inline-block;
-            height: 310px;
-            min-height: 120px;
-            line-height: 16px;
-            overflow: hidden;
-            position: relative;
-            margin: 5px;
-            background: #fff;
-            -webkit-border-radius: 3px;
-            -moz-border-radius: 3px;
-            border-radius: 3px;
-            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            word-break: break-all;
-        }
     }
-
-    /*屏幕尺寸小于960px*/
-    @media (max-width: 960px) {
-
-        .stickpagebody_box {
-            width: 33%;
-            float: left;
-            display: inline-block;
-            height: 310px;
-            min-height: 120px;
-            line-height: 16px;
-            overflow: hidden;
-            position: relative;
-            margin: 5px;
-            background: #fff;
-            -webkit-border-radius: 3px;
-            -moz-border-radius: 3px;
-            border-radius: 3px;
-            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            word-break: break-all;
-        }
-    }
-
-    /*屏幕尺寸小于480px*/
-    @media (max-width: 683px) {
-        .stickpagebody_box {
-            width: 100%;
-            float: left;
-            display: inline-block;
-            height: 310px;
-            min-height: 120px;
-            line-height: 16px;
-            overflow: hidden;
-            position: relative;
-            margin: 5px;
-            background: #fff;
-            -webkit-border-radius: 3px;
-            -moz-border-radius: 3px;
-            border-radius: 3px;
-            -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-            word-break: break-all;
-        }
-    }
-
-    .stickpagebody_box {
-        width: 388px;
-        float: left;
-        display: inline-block;
-        height: 310px;
+    .dcon{
+        width:100%;
+        height:288px;
+        overflow:hidden;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box; /* Firefox */
+        -webkit-box-sizing:border-box; /* Safari */
+        display:inline-block;
         min-height: 120px;
         line-height: 16px;
-        overflow: hidden;
-        position: relative;
-        margin: 5px;
+        border:1px solid #e8e8e8;
         background: #fff;
+        position: relative;
         -webkit-border-radius: 3px;
         -moz-border-radius: 3px;
-        border-radius: 3px;
-        -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-        -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.17);
-        word-break: break-all;
+        word-break:break-all;
     }
 
-    .img_text img {
+    .d_box .img_text img {
         height: 120px !important;
     }
 
@@ -161,7 +101,7 @@
         float: left;
     }
 
-    .g_title {
+    .d_box .g_title {
         font-size: 18px;
         margin-top: 15px;
         margin-bottom: 15px;
@@ -170,7 +110,7 @@
 
     }
 
-    .g_title2 {
+    .d_box .g_title2 {
         font-weight: bold;
         color: #404040;
         font-size: 14px;
@@ -178,21 +118,21 @@
 
     }
 
-    .g_content p {
+    .d_box .g_content p {
         font-family: "Microsoft YaHei", Arial;
     }
 
-    .g_content {
+    .d_box .g_content {
         padding: 0 15px 15px 15px;
     }
 
-    .g_text {
+    .d_box .g_text {
         font-size: 12px;
         color: #888;
         line-height: 18px;
     }
 
-    .g_more {
+    .d_box .g_more {
         cursor: pointer;
         color: #1c8a42;
         margin-top: 10px;
@@ -200,11 +140,11 @@
         font-family: "Microsoft YaHei", Arial;
     }
 
-    .g_more:hover, .g_more a:hover, .g_more a:active {
+    .d_box .g_more:hover,.d_box .g_more a:hover,.d_box .g_more a:active {
         color: #41B669;
     }
 
-    .stickpagebody_box a:link, .stickpagebody_box a:visited {
+    .d_box .stickpagebody_box a:link,.d_box .stickpagebody_box a:visited {
         color: #41B669 !important;
     }
 

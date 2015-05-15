@@ -1,118 +1,96 @@
 <!--图文列表模板-->
 
 <% if !@block_contents.nil? && !@block_contents.empty? %>
-<div class="index_model_box_1_1">
-  <% @block_contents.limit(3).each do |block_content|%>
-      <dl class="index_img_box">
-        <dt><a href=<%=block_content.content_url.nil? ? '' : block_content.content_url<<"/?content_id=#{block_content.id}"%> target="_blank"><%= image_tag block_content.url%></a></dt>
-        <dd><b><%=block_content.title %></b><br/>
-          <%#=block_content.content_summary.gsub(/<[^>]+>/, '').gsub(/<\/?.*?>/, "")[0,45] %>
-          <%=block_content.content_summary.nil? ? "" :block_content.content_summary[0,45] %> ...
-        </dd>
-      </dl>
-  <%end%>
-</div>
-<%else%>
-    <div class="index_model_box_1_1">
-      <dl class="index_img_box">
-        <dt><a href=""><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/e_demo1.jpg"></a></dt>
-        <dd><b>XXXX医院</b><br/>
-          XXXX医院，是构建在国际最新肿瘤治疗技术平台基础上，以现代信息技术为手段，进行肿瘤国际会诊...
-        </dd>
-      </dl>
-
-      <dl class="index_img_box">
-        <dt><a href=""><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/e_demo2.jpg"></a></dt>
-        <dd><b>XXXX医院</b><br/>
-          XXXX医院，是构建在国际最新肿瘤治疗技术平台基础上，以现代信息技术为手段，进行肿瘤国际会诊...
-        </dd>
-      </dl>
-
-      <dl class="index_img_box">
-        <dt><a href=""><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/e_demo3.jpg"></a></dt>
-        <dd><b>XXXX医院</b><br/>
-          XXXX医院，是构建在国际最新肿瘤治疗技术平台基础上，以现代信息技术为手段，进行肿瘤国际会诊...
-        </dd>
-      </dl>
-
+    <div class="a1">
+      <div class="a1con">
+        <% @block_contents.limit(3).each do |block_content|%>
+            <dl class="index_img_box">
+              <dt><a href=<%=block_content.content_url.nil? ? '' : block_content.content_url<<"/?content_id=#{block_content.id}"%> target="_blank"><%= image_tag block_content.url%></a></dt>
+              <dd><b><%=block_content.title %></b><br/>
+                <%#=block_content.content_summary.gsub(/<[^>]+>/, '').gsub(/<\/?.*?>/, "")[0,45] %>
+                <%=block_content.content_summary.nil? ? "" :block_content.content_summary[0,45] %> ...
+              </dd>
+            </dl>
+        <%end%>
+      </div>
     </div>
-    <%end%>
+<%else%>
+    <div class="a1">
+      <div class="a1con">
+        <dl class="index_img_box">
+          <dt><a href=""><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/e_demo1.jpg"></a></dt>
+          <dd><b>XXXX医院</b><br/>
+            XXXX医院，是构建在国际最新肿瘤治疗技术平台基础上，以现代信息技术为手段，进行肿瘤国际会诊...
+          </dd>
+        </dl>
 
-        <style>
-            /*图文列表模板*/
-            .index_model_box_1_1 {
-                width: 1188px;
-                height: 300px;
-                overflow: hidden;
-                border: 1px solid #e8e8e8;
-                background: #fff;
-                padding: 15px;
-                margin: 5px;
-                float: left;
-            }
+        <dl class="index_img_box">
+          <dt><a href=""><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/e_demo2.jpg"></a></dt>
+          <dd><b>XXXX医院</b><br/>
+            XXXX医院，是构建在国际最新肿瘤治疗技术平台基础上，以现代信息技术为手段，进行肿瘤国际会诊...
+          </dd>
+        </dl>
 
-            @media (min-width: 1200px) {
-                .index_model_box_1_1 {
-                    width: 1188px;
-                    min-height: 300px;
-                    border: 1px solid #e8e8e8;
-                    background: #fff;
-                    padding: 15px;
-                    margin: 5px;
-                    float: left;
-                }
-            }
+        <dl class="index_img_box">
+          <dt><a href=""><img src="http://mimas-open.oss-cn-hangzhou.aliyuncs.com/assets/e_demo3.jpg"></a></dt>
+          <dd><b>XXXX医院</b><br/>
+            XXXX医院，是构建在国际最新肿瘤治疗技术平台基础上，以现代信息技术为手段，进行肿瘤国际会诊...
+          </dd>
+        </dl>
+      </div>
+    </div>
+<%end%>
 
-            @media (max-width: 960px) {
-                .index_model_box_1_1 {
-                    width: 98%;
-                    height: 300px;
-                    overflow: hidden;
-                    border: 1px solid #e8e8e8;
-                    background: #fff;
-                    padding: 15px;
-                    margin: 5px;
-                    float: left;
-                }
-            }
+<style>
+    /*图文列表模板*/
+    .a1 {
+        width:98.99%;
+        height:288px;
+        float:left;
+        padding:0.5%;
+        overflow: hidden;
 
-            @media (max-width: 683px) {
-                .index_model_box_1_1 {
-                    width: 100%;
-                    overflow: hidden;
-                    height: auto;
-                    min-height: 222px;
-                    border: 1px solid #e8e8e8;
-                    background: #fff;
-                    padding: 15px;
-                    margin: 5px;
-                    float: left;
-                }
-            }
-            .index_img_box {
-                width: 33.3%;
-                float: left;
-                padding: 5px;
-                -webkit-margin-before: 0em !important;
-                -webkit-margin-after: 0em !important;
-                box-sizing: border-box;
-            }
 
-            .index_img_box dd {
-                font-family: "Microsoft YaHei", verdana, Arial;
-                color: #666;
-                -webkit-margin-start: 0px !important;
-            }
+    }
+    .a1con{
+        width:100%;
+        height:288px;
+        display:inline-block;
+        border: 1px solid #e8e8e8;
+        background:#fff;
+        word-break:break-all;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box; /* Firefox */
+        -webkit-box-sizing:border-box; /* Safari */
+        padding:15px;
+    }
 
-            .index_img_box dd b {
-                font-family: "Microsoft YaHei", verdana, Arial;
-                font-weight: bold;
-                color: #666;
-            }
+    .a1 .index_img_box {
+        width: 33.3%;
+        float: left;
+        padding: 5px;
+        -webkit-margin-before: 0em !important;
+        -webkit-margin-after: 0em !important;
+        box-sizing: border-box;
+    }
 
-            .index_img_box dt img {
-                width: 100% !important;
-                height: auto;
-            }
+    .a1 .index_img_box dd {
+        font-family: "Microsoft YaHei", verdana, Arial;
+        color: #666;
+        -webkit-margin-start: 0px !important;
+        font-size:14px;
+    }
 
-        </style>
+    .a1 .index_img_box dd b {
+        font-family: "Microsoft YaHei", verdana, Arial;
+        font-weight: bold;
+        color: #666;
+    }
+
+    .a1 .index_img_box dt img {
+        width: 100% !important;
+        height: auto;
+    }
+
+
+</style>
