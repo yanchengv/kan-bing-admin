@@ -130,8 +130,6 @@ class DomainController < ApplicationController
   # 上传logo
   def upload_logo
     file=params[:logoUpload]
-    tmpfile = getFileName(file.original_filename.to_s)
-    uuid = uploadFileToAliyun(file)
     uuid=uploadToAliyun(file,Settings.aliyunOSS.beijing_service,Settings.aliyunOSS.image_bucket)
     url = Settings.aliyunOSS.image_url + uuid
     if true
